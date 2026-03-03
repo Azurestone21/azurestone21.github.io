@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  
+  
+  
+  <entry>
+    <title>纯CSS 动画</title>
+    <link href="/2026/03/02/CSS/%E7%BA%AFCSS%20%E5%8A%A8%E7%94%BB/"/>
+    <url>/2026/03/02/CSS/%E7%BA%AFCSS%20%E5%8A%A8%E7%94%BB/</url>
+    
+    <content type="html"><![CDATA[<h2 id="纯色渐变圆环-1"><a href="#纯色渐变圆环-1" class="headerlink" title="纯色渐变圆环 1"></a>纯色渐变圆环 1</h2><p><img src="/images/circular-ring-loading1.png"></p><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs javascript">.<span class="hljs-property">circular</span>-ring-loading &#123;<br>  <span class="hljs-attr">width</span>: 16px;<br>  <span class="hljs-attr">height</span>: 16px;<br>  border-<span class="hljs-attr">radius</span>: <span class="hljs-number">50</span>%;<br>  <span class="hljs-attr">border</span>: 3px solid transparent;<br>  <span class="hljs-attr">background</span>: conic-<span class="hljs-title function_">gradient</span>(<span class="hljs-keyword">from</span> 90deg at <span class="hljs-number">50</span>% <span class="hljs-number">50</span>%, <span class="hljs-title function_">rgba</span>(<span class="hljs-number">255</span>, <span class="hljs-number">255</span>, <span class="hljs-number">255</span>, <span class="hljs-number">0.01</span>) <span class="hljs-number">0</span>%, #003dd9 <span class="hljs-number">100</span>%);<br>  background-<span class="hljs-attr">clip</span>: padding-box;<br>  <span class="hljs-attr">animation</span>: spin 1s linear infinite;<br>  &amp;::after &#123;<br>    <span class="hljs-attr">content</span>: <span class="hljs-string">&#x27;&#x27;</span>;<br>    <span class="hljs-attr">position</span>: absolute;<br>    <span class="hljs-attr">top</span>: <span class="hljs-number">50</span>%;<br>    <span class="hljs-attr">left</span>: <span class="hljs-number">50</span>%;<br>    <span class="hljs-attr">transform</span>: <span class="hljs-title function_">translate</span>(-<span class="hljs-number">50</span>%, -<span class="hljs-number">50</span>%);<br>    <span class="hljs-attr">width</span>: 12px;<br>    <span class="hljs-attr">height</span>: 12px;<br>    <span class="hljs-attr">background</span>: #ffffff;<br>    border-<span class="hljs-attr">radius</span>: <span class="hljs-number">50</span>%;<br>  &#125;<br>&#125;<br><br>@keyframes spin &#123;<br>  <span class="hljs-number">0</span>% &#123;<br>    <span class="hljs-attr">transform</span>: <span class="hljs-title function_">rotate</span>(0deg);<br>  &#125;<br>  <span class="hljs-number">100</span>% &#123;<br>    <span class="hljs-attr">transform</span>: <span class="hljs-title function_">rotate</span>(360deg);<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure><p>利用背景锥形渐变属性<code>conic-gradient</code>实现渐变，再使用伪元素把中心遮挡，形成圆环。</p><p>注意：中心的颜色需要和外部的背景颜色一致，适合纯色背景的情况。</p><h2 id="纯色渐变圆环-2"><a href="#纯色渐变圆环-2" class="headerlink" title="纯色渐变圆环 2"></a>纯色渐变圆环 2</h2><!-- 这是一张图片，ocr 内容为： --><p><img src="/images/circular-ring-loading2.png"></p><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs javascript">.<span class="hljs-property">circular</span>-ring-loading &#123;<br>  <span class="hljs-attr">width</span>: 16px;<br>  <span class="hljs-attr">height</span>: 16px;<br>  <span class="hljs-attr">background</span>: conic-<span class="hljs-title function_">gradient</span>(<span class="hljs-keyword">from</span> 90deg at <span class="hljs-number">50</span>% <span class="hljs-number">50</span>%, <span class="hljs-title function_">rgba</span>(<span class="hljs-number">255</span>, <span class="hljs-number">255</span>, <span class="hljs-number">255</span>, <span class="hljs-number">0.01</span>) <span class="hljs-number">0</span>%, #ffffff <span class="hljs-number">100</span>%);<br>  -webkit-<span class="hljs-attr">mask</span>: radial-<span class="hljs-title function_">gradient</span>(closest-side circle, transparent <span class="hljs-number">60</span>%, #<span class="hljs-number">000000</span> <span class="hljs-number">61</span>% <span class="hljs-number">99</span>%, transparent <span class="hljs-number">100</span>%);<br>  <span class="hljs-attr">mask</span>: radial-<span class="hljs-title function_">gradient</span>(closest-side circle, transparent <span class="hljs-number">60</span>%, #<span class="hljs-number">000000</span> <span class="hljs-number">61</span>% <span class="hljs-number">99</span>%, transparent <span class="hljs-number">100</span>%);<br>  <span class="hljs-attr">animation</span>: spin 1s linear infinite;<br>  backface-<span class="hljs-attr">visibility</span>: hidden;<br>&#125;<br><br>@keyframes spin &#123;<br>  <span class="hljs-number">0</span>% &#123;<br>    <span class="hljs-attr">transform</span>: <span class="hljs-title function_">rotate</span>(0deg);<br>  &#125;<br>  <span class="hljs-number">100</span>% &#123;<br>    <span class="hljs-attr">transform</span>: <span class="hljs-title function_">rotate</span>(360deg);<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure><p>利用背景锥形渐变属性<code>conic-gradient</code>实现渐变，再使用遮罩<code>mask</code>把中心隐藏起来，形成圆环。</p><p>这种方法生成的圆环中间是透明的，适合任何背景。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>CSS</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>CSS</tag>
+      
+      <tag>动画</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>纯CSS 文字特效</title>
+    <link href="/2026/03/02/CSS/%E7%BA%AFCSS%20%E6%96%87%E5%AD%97%E7%89%B9%E6%95%88/"/>
+    <url>/2026/03/02/CSS/%E7%BA%AFCSS%20%E6%96%87%E5%AD%97%E7%89%B9%E6%95%88/</url>
+    
+    <content type="html"><![CDATA[<h2 id="渐变颜色文字"><a href="#渐变颜色文字" class="headerlink" title="渐变颜色文字"></a>渐变颜色文字</h2><p>实现图片中的文字颜色渐变效果</p><p><img src="/images/gradient-color-text1.png"></p><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-selector-class">.gradient-color-text</span> &#123;<br>  <span class="hljs-comment">/* 定义线性渐变背景 */</span><br>  <span class="hljs-attribute">background</span>: <span class="hljs-built_in">linear-gradient</span>(<span class="hljs-number">90deg</span>, <span class="hljs-number">#2f74ed</span> <span class="hljs-number">0%</span>, <span class="hljs-number">#782fed</span> <span class="hljs-number">100%</span>);<br>  <span class="hljs-comment">/* webkit内核浏览器兼容：背景裁剪为文字区域 */</span><br>  -webkit-<span class="hljs-attribute">background-clip</span>: text;<br>  <span class="hljs-comment">/* 标准属性：背景裁剪为文字区域（核心） */</span><br>  <span class="hljs-attribute">background-clip</span>: text;<br>  <span class="hljs-comment">/* webkit内核浏览器兼容：文字填充色设为透明 */</span><br>  -webkit-<span class="hljs-selector-tag">text</span>-<span class="hljs-attribute">fill</span>-<span class="hljs-attribute">color</span>: transparent;<br>  <span class="hljs-comment">/* 标准属性：文字填充色设为透明 */</span><br>  <span class="hljs-attribute">color</span>: transparent;<br>&#125;<br></code></pre></td></tr></table></figure>]]></content>
+    
+    
+    <categories>
+      
+      <category>CSS</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>CSS</tag>
+      
+      <tag>特效</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Hexo使用教程</title>
+    <link href="/2026/03/02/%E6%8A%80%E6%9C%AF%E6%95%99%E7%A8%8B/Hexo%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/"/>
+    <url>/2026/03/02/%E6%8A%80%E6%9C%AF%E6%95%99%E7%A8%8B/Hexo%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/</url>
+    
+    <content type="html"><![CDATA[<p>文档：<a href="https://hexo.io/zh-cn/">https://hexo.io/zh-cn/</a></p><h2 id="初始化项目"><a href="#初始化项目" class="headerlink" title="初始化项目"></a>初始化项目</h2><ol><li>安装 hexo</li></ol><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">npm install -g hexo-cli<br></code></pre></td></tr></table></figure><p><code>hexo@8.1.1</code>需要 nodejs 版本<code>&gt;=20.19.0</code></p><ol start="2"><li>初始化 hexo 项目（我这里是已经创建了文件夹，直接使用<code>hexo init</code>）</li></ol><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">hexo init<br></code></pre></td></tr></table></figure><ol start="3"><li>启动项目</li></ol><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">hexo s<br></code></pre></td></tr></table></figure><h2 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h2><ol><li>新建页面</li></ol><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">创建「关于我」页面（路径：<span class="hljs-built_in">source</span>/about/index.md）</span><br>hexo new page &lt;页面名称&gt;<br></code></pre></td></tr></table></figure><ol start="2"><li>新建文章</li></ol><p>Hexo 中所有博客文章（post）的默认存放目录是：<code>博客根目录/source/_posts/</code></p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">示例1：创建一篇名为「Hexo Fluid 主题使用教程」的文章</span><br>hexo new &quot;Hexo使用教程&quot;<br></code></pre></td></tr></table></figure><h2 id="Front-matter-配置"><a href="#Front-matter-配置" class="headerlink" title="Front-matter 配置"></a>Front-matter 配置</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs shell">---<br>title: 自定义标题  # 文章标题<br>date: 2026-03-03 18:00:00  # 发布日期<br>categories: 教程  # 分类（可选）<br>tags: [Hexo, Fluid]  # 标签（可选）<br>---<br></code></pre></td></tr></table></figure><h2 id="图片"><a href="#图片" class="headerlink" title="图片"></a>图片</h2><ol><li><p>图片放到到<code>source/images/</code>文件夹</p></li><li><p>使用图床上传图片，获取图片链接</p></li></ol><h2 id="主题"><a href="#主题" class="headerlink" title="主题"></a>主题</h2><p><a href="https://hexo.io/themes/">https://hexo.io/themes/</a></p><ol><li>下载主题到项目 theme 文件夹，文件夹名称改为主题名称</li><li>修改<code>_config.yml</code>文件</li></ol><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-comment"># _config.yml</span><br><span class="hljs-comment"># 原主题可能是 landscape（默认），改为下载的主题名</span><br><span class="hljs-attr">theme:</span> <span class="hljs-string">fluid</span> <span class="hljs-comment"># 对应 themes/fluid 文件夹</span><br></code></pre></td></tr></table></figure><ol start="3"><li>配置主题</li></ol><p>复制<code>themes/主题名/_config.yml</code>到项目根目录，改名为<code>_config.主题名.yml</code>，避免和原主题的配置文件冲突以及更新主题文件时被覆盖。</p><h3 id="Fluid"><a href="#Fluid" class="headerlink" title="Fluid"></a>Fluid</h3><ol><li>代码块里面的代码不能自动换行</li></ol>]]></content>
+    
+    
+    <categories>
+      
+      <category>教程</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Hexo</tag>
+      
+      <tag>Fluid</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  
+</search>
