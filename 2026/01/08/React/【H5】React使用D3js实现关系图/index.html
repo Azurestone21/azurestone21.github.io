@@ -1,0 +1,643 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="文档：https:&#x2F;&#x2F;d3js.org&#x2F; 背景项目是 Taro+React 的 H5 应用，需要实现一个人际关系图，节点样式比较复杂，需要自定义节点。 安装1npm install d3  实现1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【H5】React使用D3js实现关系图">
+<meta property="og:url" content="http://example.com/2026/01/08/React/%E3%80%90H5%E3%80%91React%E4%BD%BF%E7%94%A8D3js%E5%AE%9E%E7%8E%B0%E5%85%B3%E7%B3%BB%E5%9B%BE/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="文档：https:&#x2F;&#x2F;d3js.org&#x2F; 背景项目是 Taro+React 的 H5 应用，需要实现一个人际关系图，节点样式比较复杂，需要自定义节点。 安装1npm install d3  实现1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-01-08T03:33:25.000Z">
+<meta property="article:modified_time" content="2026-03-04T02:18:30.425Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="D3js">
+<meta property="article:tag" content="H5">
+<meta property="article:tag" content="React">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>【H5】React使用D3js实现关系图 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">【H5】React使用D3js实现关系图</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-01-08 11:33" pubdate>
+          2026年1月8日 中午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          17 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">【H5】React使用D3js实现关系图</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>文档：<a target="_blank" rel="noopener" href="https://d3js.org/">https://d3js.org/</a></p>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>项目是 Taro+React 的 H5 应用，需要实现一个人际关系图，节点样式比较复杂，需要自定义节点。</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">npm install d3<br></code></pre></td></tr></table></figure>
+
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">import</span> <span class="hljs-title class_">React</span>, &#123; useEffect, useRef, useState &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;react&#x27;</span><br><span class="hljs-keyword">import</span> &#123; <span class="hljs-title class_">View</span>, <span class="hljs-title class_">Text</span> &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@tarojs/components&#x27;</span><br><span class="hljs-keyword">import</span> <span class="hljs-title class_">Taro</span> <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@tarojs/taro&#x27;</span><br><span class="hljs-keyword">import</span> &#123; useCDN &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@/shared/hooks&#x27;</span><br><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> d3 <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;d3&#x27;</span><br><br><span class="hljs-comment">// 定义节点类型接口</span><br><span class="hljs-keyword">export</span> interface D3GraphNode &#123;<br>  <span class="hljs-attr">id</span>: string<br>  <span class="hljs-attr">size</span>: number<br>  <span class="hljs-attr">data</span>: &#123;<br>    <span class="hljs-attr">name</span>: string<br>    <span class="hljs-attr">avatar</span>: string<br>    isCenter?: boolean<br>  &#125;<br>&#125;<br><br><span class="hljs-comment">// 定义边类型接口</span><br><span class="hljs-keyword">export</span> interface D3GraphEdge &#123;<br>  <span class="hljs-attr">source</span>: string<br>  <span class="hljs-attr">target</span>: string<br>&#125;<br><br><span class="hljs-keyword">const</span> <span class="hljs-attr">D3Graph</span>: <span class="hljs-title class_">React</span>.<span class="hljs-property">FC</span>&lt;&#123;<br>  centerNode?: any<br>  contactNode?: any[]<br>  defaultZoomRatio?: number<br>&#125;&gt; = <span class="hljs-function">(<span class="hljs-params">props</span>) =&gt;</span> &#123;<br>  <span class="hljs-keyword">const</span> containerRef = useRef&lt;<span class="hljs-title class_">HTMLDivElement</span>&gt;(<span class="hljs-literal">null</span>)<br>  <span class="hljs-keyword">const</span> svgRef = useRef&lt;<span class="hljs-title class_">SVGSVGElement</span>&gt;(<span class="hljs-literal">null</span>)<br>  <span class="hljs-keyword">const</span> graphRef = useRef&lt;&#123;<br>    <span class="hljs-attr">simulation</span>: d3.<span class="hljs-property">Simulation</span>&lt;d3.<span class="hljs-property">SimulationNodeDatum</span>, <span class="hljs-literal">undefined</span>&gt; | <span class="hljs-literal">null</span><br>    <span class="hljs-attr">zoom</span>: d3.<span class="hljs-property">ZoomBehavior</span>&lt;<span class="hljs-title class_">SVGSVGElement</span>, unknown&gt; | <span class="hljs-literal">null</span><br>  &#125;&gt;(&#123; <span class="hljs-attr">simulation</span>: <span class="hljs-literal">null</span>, <span class="hljs-attr">zoom</span>: <span class="hljs-literal">null</span> &#125;)<br><br>  <span class="hljs-keyword">const</span> sysInfo = <span class="hljs-title class_">Taro</span>.<span class="hljs-title function_">getSystemInfoSync</span>()<br>  <span class="hljs-keyword">const</span> width = sysInfo.<span class="hljs-property">windowWidth</span><br>  <span class="hljs-keyword">const</span> height = sysInfo.<span class="hljs-property">windowHeight</span><br><br>  <span class="hljs-comment">// 处理节点点击事件</span><br>  <span class="hljs-keyword">const</span> <span class="hljs-title function_">handleNodeClick</span> = (<span class="hljs-params">nodeId: string</span>) =&gt; &#123;&#125;<br><br>  <span class="hljs-comment">// 包含中文标点和全角符号</span><br>  <span class="hljs-keyword">const</span> <span class="hljs-title function_">containsChineseExtended</span> = (<span class="hljs-params">str: string</span>) =&gt; &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-regexp">/[\u4E00-\u9FA5\u3000-\u303F\uFF00-\uFFEF]/</span>.<span class="hljs-title function_">test</span>(str);<br>  &#125;<br><br>  <span class="hljs-comment">// 准备数据</span><br>  <span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>    <span class="hljs-keyword">if</span> (!containerRef.<span class="hljs-property">current</span> || process.<span class="hljs-property">env</span>.<span class="hljs-property">TARO_ENV</span> !== <span class="hljs-string">&#x27;h5&#x27;</span>) <span class="hljs-keyword">return</span><br><br>    <span class="hljs-keyword">const</span> <span class="hljs-attr">nodes</span>: any[] = []<br>    <span class="hljs-keyword">const</span> <span class="hljs-attr">edges</span>: any[] = []<br><br>    <span class="hljs-keyword">if</span> (props.<span class="hljs-property">centerNode</span>) &#123;<br>      nodes.<span class="hljs-title function_">push</span>(&#123;<br>        <span class="hljs-attr">id</span>: props.<span class="hljs-property">centerNode</span>?.<span class="hljs-property">id</span>,<br>        <span class="hljs-attr">size</span>: <span class="hljs-number">66</span>,<br>        ...props.<span class="hljs-property">centerNode</span>,<br>        <span class="hljs-attr">isCenter</span>: <span class="hljs-literal">true</span>,<br>        <span class="hljs-comment">// 初始化中心节点位置为容器中心</span><br>        <span class="hljs-attr">x</span>: width / <span class="hljs-number">2</span>,<br>        <span class="hljs-attr">y</span>: height / <span class="hljs-number">2</span> - <span class="hljs-number">70</span><br>      &#125;)<br><br>      <span class="hljs-keyword">if</span> (props.<span class="hljs-property">contactNode</span>) &#123;<br>        props.<span class="hljs-property">contactNode</span>?.<span class="hljs-title function_">forEach</span>(<span class="hljs-function">(<span class="hljs-params">node, index</span>) =&gt;</span> &#123;<br>          nodes.<span class="hljs-title function_">push</span>(&#123;<br>            <span class="hljs-attr">id</span>: node?.<span class="hljs-property">id</span>,<br>            <span class="hljs-attr">size</span>: node?.<span class="hljs-property">size</span> || <span class="hljs-number">46</span>,<br>            ...node<br>          &#125;)<br><br>          <span class="hljs-comment">// 根据索引设置不同的距离范围</span><br>          <span class="hljs-keyword">let</span> minDistance, maxDistance;<br>          <span class="hljs-keyword">if</span> (index &lt; <span class="hljs-number">50</span>) &#123;<br>            <span class="hljs-comment">// 前50人：距离从30到100随机</span><br>            minDistance = <span class="hljs-number">50</span>;<br>            maxDistance = <span class="hljs-number">100</span>;<br>          &#125; <span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-comment">// 每50人增加距离范围</span><br>            <span class="hljs-keyword">const</span> group = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">floor</span>(index / <span class="hljs-number">50</span>);<br>            minDistance = <span class="hljs-number">50</span> + (group - <span class="hljs-number">1</span>) * <span class="hljs-number">100</span>;<br>            maxDistance = <span class="hljs-number">100</span> + (group - <span class="hljs-number">1</span>) * <span class="hljs-number">100</span>;<br>          &#125;<br><br>          edges.<span class="hljs-title function_">push</span>(&#123;<br>            <span class="hljs-attr">source</span>: props.<span class="hljs-property">centerNode</span>?.<span class="hljs-property">id</span>,<br>            <span class="hljs-attr">target</span>: node?.<span class="hljs-property">id</span>,<br>            <span class="hljs-attr">distance</span>: <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">random</span>() * (maxDistance - minDistance) + minDistance<br>          &#125;)<br>        &#125;)<br>      &#125;<br>    &#125;<br><br>    <span class="hljs-comment">// 清除旧的图形</span><br>    <span class="hljs-keyword">const</span> container = containerRef.<span class="hljs-property">current</span><br>    container.<span class="hljs-property">innerHTML</span> = <span class="hljs-string">&#x27;&#x27;</span><br><br>    <span class="hljs-comment">// 创建SVG</span><br>    <span class="hljs-keyword">const</span> svg = d3.<span class="hljs-title function_">select</span>(container)<br>      .<span class="hljs-title function_">append</span>(<span class="hljs-string">&#x27;svg&#x27;</span>)<br>      .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;width&#x27;</span>, <span class="hljs-string">&#x27;100%&#x27;</span>)<br>      .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;height&#x27;</span>, <span class="hljs-string">&#x27;100%&#x27;</span>)<br>      .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;viewBox&#x27;</span>, <span class="hljs-string">`0 0 <span class="hljs-subst">$&#123;width&#125;</span> <span class="hljs-subst">$&#123;height&#125;</span>`</span>)<br>      .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;preserveAspectRatio&#x27;</span>, <span class="hljs-string">&#x27;xMidYMid meet&#x27;</span>)<br><br>    svgRef.<span class="hljs-property">current</span> = svg.<span class="hljs-title function_">node</span>() <span class="hljs-keyword">as</span> <span class="hljs-title class_">SVGSVGElement</span><br><br>    <span class="hljs-comment">// 创建缩放容器</span><br>    <span class="hljs-keyword">const</span> g = svg.<span class="hljs-title function_">append</span>(<span class="hljs-string">&#x27;g&#x27;</span>)<br><br>    <span class="hljs-comment">// 实现缩放功能</span><br>    <span class="hljs-keyword">const</span> zoom = d3.<span class="hljs-property">zoom</span>&lt;<span class="hljs-title class_">SVGSVGElement</span>, unknown&gt;()<br>      .<span class="hljs-title function_">scaleExtent</span>([<span class="hljs-number">0.5</span>, <span class="hljs-number">5</span>])<br>      .<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;zoom&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">event</span>) =&gt;</span> &#123;<br>        g.<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;transform&#x27;</span>, event.<span class="hljs-property">transform</span>)<br>      &#125;)<br><br>    svg.<span class="hljs-title function_">call</span>(zoom)<br>    <span class="hljs-comment">// 设置默认缩放比，默认为0.8，并将图形中心对准容器中心</span><br>    <span class="hljs-keyword">const</span> zoomRatio = props.<span class="hljs-property">defaultZoomRatio</span> || <span class="hljs-number">1</span><br>    <span class="hljs-comment">// 计算平移量，使缩放后的图形中心与容器中心重合</span><br>    <span class="hljs-keyword">const</span> translateX = (width - width * zoomRatio) / <span class="hljs-number">2</span><br>    <span class="hljs-keyword">const</span> translateY = (height - height * zoomRatio) / <span class="hljs-number">2</span><br>    svg.<span class="hljs-title function_">call</span>(zoom.<span class="hljs-property">transform</span>, d3.<span class="hljs-property">zoomIdentity</span>.<span class="hljs-title function_">translate</span>(translateX, translateY).<span class="hljs-title function_">scale</span>(zoomRatio))<br>    graphRef.<span class="hljs-property">current</span>.<span class="hljs-property">zoom</span> = zoom<br><br>    <span class="hljs-comment">// 创建力导向图</span><br>    <span class="hljs-keyword">const</span> simulation = d3.<span class="hljs-title function_">forceSimulation</span>(nodes <span class="hljs-keyword">as</span> any)<br>      .<span class="hljs-title function_">force</span>(<span class="hljs-string">&#x27;link&#x27;</span>, d3.<span class="hljs-title function_">forceLink</span>(edges <span class="hljs-keyword">as</span> any).<span class="hljs-title function_">id</span>(<span class="hljs-function">(<span class="hljs-params">d: any</span>) =&gt;</span> d.<span class="hljs-property">id</span>).<span class="hljs-title function_">distance</span>(<span class="hljs-function">(<span class="hljs-params">d: any</span>) =&gt;</span> d.<span class="hljs-property">distance</span> || <span class="hljs-number">100</span>).<span class="hljs-title function_">strength</span>(<span class="hljs-number">0.5</span>))<br>      .<span class="hljs-title function_">force</span>(<span class="hljs-string">&#x27;charge&#x27;</span>, d3.<span class="hljs-title function_">forceManyBody</span>().<span class="hljs-title function_">strength</span>(-<span class="hljs-number">500</span>))<br>      .<span class="hljs-title function_">force</span>(<span class="hljs-string">&#x27;center&#x27;</span>, d3.<span class="hljs-title function_">forceCenter</span>(width / <span class="hljs-number">2</span>, height / <span class="hljs-number">2</span>))<br>      .<span class="hljs-title function_">force</span>(<span class="hljs-string">&#x27;collision&#x27;</span>, d3.<span class="hljs-title function_">forceCollide</span>().<span class="hljs-title function_">radius</span>(<span class="hljs-function">(<span class="hljs-params">d: any</span>) =&gt;</span> <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">max</span>(d.<span class="hljs-property">size</span> / <span class="hljs-number">2</span>, <span class="hljs-number">23</span>) + <span class="hljs-number">10</span>))<br><br>    graphRef.<span class="hljs-property">current</span>.<span class="hljs-property">simulation</span> = simulation<br><br>    <span class="hljs-comment">// 创建边</span><br>    <span class="hljs-keyword">const</span> link = g.<span class="hljs-title function_">append</span>(<span class="hljs-string">&#x27;g&#x27;</span>)<br>      .<span class="hljs-title function_">selectAll</span>(<span class="hljs-string">&#x27;line&#x27;</span>)<br>      .<span class="hljs-title function_">data</span>(edges)<br>      .<span class="hljs-title function_">enter</span>()<br>      .<span class="hljs-title function_">append</span>(<span class="hljs-string">&#x27;line&#x27;</span>)<br>      .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;stroke&#x27;</span>, <span class="hljs-string">&#x27;#ccc&#x27;</span>)<br>      .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;stroke-opacity&#x27;</span>, <span class="hljs-number">0.6</span>)<br>      .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;stroke-width&#x27;</span>, <span class="hljs-number">1</span>)<br><br>    <span class="hljs-comment">// 创建节点组</span><br>    <span class="hljs-keyword">const</span> node = g.<span class="hljs-title function_">append</span>(<span class="hljs-string">&#x27;g&#x27;</span>)<br>      .<span class="hljs-title function_">selectAll</span>(<span class="hljs-string">&#x27;g&#x27;</span>)<br>      .<span class="hljs-title function_">data</span>(nodes)<br>      .<span class="hljs-title function_">enter</span>()<br>      .<span class="hljs-title function_">append</span>(<span class="hljs-string">&#x27;g&#x27;</span>)<br>      .<span class="hljs-title function_">call</span>(d3.<span class="hljs-property">drag</span>&lt;<span class="hljs-title class_">SVGGElement</span>, any&gt;()<br>        .<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;start&#x27;</span>, dragstarted)<br>        .<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;drag&#x27;</span>, dragged)<br>        .<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;end&#x27;</span>, dragended))<br><br>    <span class="hljs-comment">// 1. 创建节点容器（使用g元素作为容器）</span><br>    <span class="hljs-keyword">const</span> nodeContainer = node.<span class="hljs-title function_">append</span>(<span class="hljs-string">&#x27;g&#x27;</span>)<br><br>    <span class="hljs-comment">// 2. 实现双层边框效果</span><br>    <span class="hljs-comment">// 2.1 内层白色边框（放在最底层）</span><br>    nodeContainer.<span class="hljs-title function_">append</span>(<span class="hljs-string">&#x27;circle&#x27;</span>)<br>      .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;r&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">d: any</span>) =&gt;</span> d.<span class="hljs-property">size</span> / <span class="hljs-number">2</span>)<br>      .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;fill&#x27;</span>, <span class="hljs-string">&#x27;none&#x27;</span>)<br>      .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;stroke&#x27;</span>, <span class="hljs-string">&#x27;#fff&#x27;</span>)<br>      .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;stroke-width&#x27;</span>, <span class="hljs-number">2</span>)<br><br>    <span class="hljs-comment">// 3. 添加圆形背景（根据是否有头像和是否是中心节点决定颜色）</span><br>    nodeContainer.<span class="hljs-title function_">append</span>(<span class="hljs-string">&#x27;circle&#x27;</span>)<br>      .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;r&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">d: any</span>) =&gt;</span> d.<span class="hljs-property">size</span> / <span class="hljs-number">2</span>)<br>      .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;fill&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">d: any</span>) =&gt;</span> &#123;<br>        <span class="hljs-keyword">if</span> (d.<span class="hljs-property">avatar</span>) &#123;<br>          <span class="hljs-comment">// 如果有头像，保持白色背景</span><br>          <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;#fff&#x27;</span>;<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>          <span class="hljs-comment">// 如果没有头像，根据是否是中心节点设置颜色</span><br>          <span class="hljs-keyword">return</span> d.<span class="hljs-property">isCenter</span> ? <span class="hljs-string">&#x27;#000000&#x27;</span> : <span class="hljs-string">&#x27;#155DFC&#x27;</span>;<br>        &#125;<br>      &#125;)<br><br>    <span class="hljs-comment">// 4. 绘制节点头像 - 只有当有头像时才绘制</span><br>    nodeContainer.<span class="hljs-title function_">filter</span>(<span class="hljs-function">(<span class="hljs-params">d: any</span>) =&gt;</span> d.<span class="hljs-property">avatar</span>).<span class="hljs-title function_">append</span>(<span class="hljs-string">&#x27;image&#x27;</span>)<br>      .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;href&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">d: any</span>) =&gt;</span> d.<span class="hljs-property">avatar</span>)<br>      .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;x&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">d: any</span>) =&gt;</span> -d.<span class="hljs-property">size</span> / <span class="hljs-number">2</span>)<br>      .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;y&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">d: any</span>) =&gt;</span> -d.<span class="hljs-property">size</span> / <span class="hljs-number">2</span>)<br>      .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;width&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">d: any</span>) =&gt;</span> d.<span class="hljs-property">size</span>)<br>      .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;height&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">d: any</span>) =&gt;</span> d.<span class="hljs-property">size</span>)<br>      .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;style&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">d: any</span>) =&gt;</span> <span class="hljs-string">`clip-path: circle(<span class="hljs-subst">$&#123;d.size / <span class="hljs-number">2</span>&#125;</span>px at center);`</span>)<br><br>    <span class="hljs-comment">// 5. 当没有头像时，在圆形背景中间显示name的第一个字</span><br>    nodeContainer.<span class="hljs-title function_">filter</span>(<span class="hljs-function">(<span class="hljs-params">d: any</span>) =&gt;</span> !d.<span class="hljs-property">avatar</span>).<span class="hljs-title function_">append</span>(<span class="hljs-string">&#x27;text&#x27;</span>)<br>      .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;text-anchor&#x27;</span>, <span class="hljs-string">&#x27;middle&#x27;</span>)<br>      .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;font-size&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">d: any</span>) =&gt;</span> d.<span class="hljs-property">isCenter</span> ? <span class="hljs-number">20</span> : <span class="hljs-number">16</span>)<br>      .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;fill&#x27;</span>, <span class="hljs-string">&#x27;#ffffff&#x27;</span>)<br>      .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;font-weight&#x27;</span>, <span class="hljs-string">&#x27;bold&#x27;</span>)<br>      .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;alignment-baseline&#x27;</span>, <span class="hljs-string">&#x27;top&#x27;</span>)<br>      .<span class="hljs-title function_">text</span>(<span class="hljs-function">(<span class="hljs-params">d: any</span>) =&gt;</span> &#123;<br>        <span class="hljs-keyword">const</span> name = d.<span class="hljs-property">name</span> || <span class="hljs-string">&#x27;&#x27;</span>;<br>        <span class="hljs-keyword">return</span> name.<span class="hljs-title function_">charAt</span>(<span class="hljs-number">0</span>) || <span class="hljs-string">&#x27;&#x27;</span>;<br>      &#125;)<br><br>    <span class="hljs-comment">// 5. 添加半透明背景的名称标签（高度为头像的三分之一，圆弧朝下，完全在头像内）</span><br>    <span class="hljs-comment">// 5.1 创建圆弧形的名称背景（使用路径path，放在头像之上）</span><br>    nodeContainer.<span class="hljs-title function_">filter</span>(<span class="hljs-function">(<span class="hljs-params">d: any</span>) =&gt;</span> d.<span class="hljs-property">name</span>).<span class="hljs-title function_">append</span>(<span class="hljs-string">&#x27;path&#x27;</span>)<br>      .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;d&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">d: any</span>) =&gt;</span> &#123;<br>        <span class="hljs-keyword">const</span> radius = d.<span class="hljs-property">size</span> / <span class="hljs-number">2</span>;<br>        <span class="hljs-keyword">const</span> labelHeight = d.<span class="hljs-property">size</span> / <span class="hljs-number">3</span>; <span class="hljs-comment">// 高度设置为头像高度的三分之一</span><br>        <span class="hljs-keyword">const</span> topY = radius - labelHeight;<br>        <span class="hljs-keyword">const</span> bottomY = <span class="hljs-number">3</span>;<br><br>        <span class="hljs-comment">// 调整圆弧半径，使其完全在头像内部</span><br>        <span class="hljs-keyword">const</span> arcRadius = radius;<br><br>        <span class="hljs-comment">// 绘制圆弧形路径：左上角 → 左下角 → 右下角（圆弧）→ 右上角 → 闭合</span><br>        <span class="hljs-comment">// 确保路径完全在头像内部</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-string">`M<span class="hljs-subst">$&#123;-radius&#125;</span> <span class="hljs-subst">$&#123;topY&#125;</span> L<span class="hljs-subst">$&#123;-radius&#125;</span> <span class="hljs-subst">$&#123;bottomY&#125;</span> A<span class="hljs-subst">$&#123;arcRadius&#125;</span> <span class="hljs-subst">$&#123;arcRadius&#125;</span> 0 0 0 <span class="hljs-subst">$&#123;radius&#125;</span> <span class="hljs-subst">$&#123;bottomY&#125;</span> L<span class="hljs-subst">$&#123;radius&#125;</span> <span class="hljs-subst">$&#123;topY&#125;</span> Z`</span>;<br>      &#125;)<br>      .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;fill&#x27;</span>, <span class="hljs-string">&#x27;rgba(255, 255, 255, 0.77)&#x27;</span>)<br><br>    <span class="hljs-comment">// 5.2 名称文本 - 确保在标签中居中显示，超过4个字换行</span><br>    nodeContainer.<span class="hljs-title function_">filter</span>(<span class="hljs-function">(<span class="hljs-params">d: any</span>) =&gt;</span> d.<span class="hljs-property">name</span>).<span class="hljs-title function_">append</span>(<span class="hljs-string">&#x27;text&#x27;</span>)<br>      .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;text-anchor&#x27;</span>, <span class="hljs-string">&#x27;middle&#x27;</span>)<br>      .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;font-size&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">d: any</span>) =&gt;</span> d.<span class="hljs-property">isCenter</span> ? <span class="hljs-number">7</span> : <span class="hljs-number">5</span>)<br>      .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;fill&#x27;</span>, <span class="hljs-string">&#x27;#333&#x27;</span>)<br>      .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;font-weight&#x27;</span>, <span class="hljs-string">&#x27;normal&#x27;</span>)<br>      .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;alignment-baseline&#x27;</span>, <span class="hljs-string">&#x27;middle&#x27;</span>)<br>      .<span class="hljs-title function_">each</span>(<span class="hljs-function">(<span class="hljs-params">d: any, i, nodes</span>) =&gt;</span> &#123;<br>        <span class="hljs-keyword">const</span> textElement = d3.<span class="hljs-title function_">select</span>(nodes[i]);<br>        <span class="hljs-keyword">const</span> name = d.<span class="hljs-property">name</span> || <span class="hljs-string">&#x27;&#x27;</span>;<br>        <span class="hljs-keyword">const</span> radius = d.<span class="hljs-property">size</span> / <span class="hljs-number">2</span>;<br>        <span class="hljs-keyword">const</span> labelHeight = d.<span class="hljs-property">size</span> / <span class="hljs-number">3</span>;<br>        <span class="hljs-keyword">const</span> fontSize = d.<span class="hljs-property">isCenter</span> ? <span class="hljs-number">7</span> : <span class="hljs-number">5</span>;<br><br>        <span class="hljs-comment">// 计算名称标签的垂直范围（基于节点中心的坐标系统）</span><br>        <span class="hljs-keyword">const</span> labelTop = radius - labelHeight; <span class="hljs-comment">// 标签顶部距离节点中心的距离</span><br>        <span class="hljs-keyword">const</span> labelBottom = radius; <span class="hljs-comment">// 标签底部距离节点中心的距离</span><br>        <span class="hljs-keyword">const</span> labelMiddle = (labelTop + labelBottom) / <span class="hljs-number">2</span>; <span class="hljs-comment">// 标签中间距离节点中心的距离</span><br><br>        <span class="hljs-comment">// 设置文本元素的垂直位置为名称标签的中间</span><br>        textElement.<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;y&#x27;</span>, labelMiddle);<br><br>        <span class="hljs-comment">// 名称最多显示6个字符，同时根据fontSize*4的规则换行</span><br>        <span class="hljs-keyword">const</span> truncatedName = name.<span class="hljs-title function_">substring</span>(<span class="hljs-number">0</span>, <span class="hljs-number">6</span>); <span class="hljs-comment">// 最多显示6个字符</span><br>        <span class="hljs-keyword">const</span> maxFirstLineLength = <span class="hljs-number">8</span><br>        <span class="hljs-keyword">let</span> lineCount = <span class="hljs-number">0</span><br>        <span class="hljs-keyword">let</span> line1 = <span class="hljs-string">&#x27;&#x27;</span><br>        <span class="hljs-keyword">let</span> line2 = <span class="hljs-string">&#x27;&#x27;</span><br>        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">const</span> char <span class="hljs-keyword">of</span> truncatedName) &#123;<br>          <span class="hljs-keyword">if</span> (lineCount &lt; maxFirstLineLength) &#123;<br>            <span class="hljs-keyword">if</span>(<span class="hljs-title function_">containsChineseExtended</span>(char)) &#123;<br>              line1 += char<br>              lineCount += <span class="hljs-number">2</span><br>            &#125; <span class="hljs-keyword">else</span> &#123;<br>              line1 += char<br>              lineCount += <span class="hljs-number">1</span><br>            &#125;<br>          &#125; <span class="hljs-keyword">else</span> &#123;<br>            line2 += char<br>          &#125;<br>        &#125;<br><br>        <span class="hljs-comment">// 清空现有内容</span><br>        textElement.<span class="hljs-title function_">text</span>(<span class="hljs-string">&#x27;&#x27;</span>);<br><br>        <span class="hljs-comment">// 添加第一行文本</span><br>        textElement.<span class="hljs-title function_">append</span>(<span class="hljs-string">&#x27;tspan&#x27;</span>)<br>          .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;x&#x27;</span>, <span class="hljs-number">0</span>)<br>          .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;dy&#x27;</span>, line2 == <span class="hljs-string">&#x27;&#x27;</span> ? <span class="hljs-number">0</span> : -fontSize / <span class="hljs-number">2</span> + (d.<span class="hljs-property">isCenter</span> ? <span class="hljs-number">1</span> : <span class="hljs-number">0</span>))<br>          .<span class="hljs-title function_">text</span>(line1);<br><br>        <span class="hljs-comment">// 添加第二行文本</span><br>        <span class="hljs-keyword">if</span> (line2) &#123;<br>          <span class="hljs-keyword">if</span> (name.<span class="hljs-property">length</span> &gt; <span class="hljs-number">6</span>) &#123;<br>            line2 = line2 + <span class="hljs-string">&#x27;...&#x27;</span><br>          &#125;<br>          textElement.<span class="hljs-title function_">append</span>(<span class="hljs-string">&#x27;tspan&#x27;</span>)<br>            .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;x&#x27;</span>, <span class="hljs-number">0</span>)<br>            .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;dy&#x27;</span>, fontSize)<br>            .<span class="hljs-title function_">text</span>(line2);<br>        &#125;<br>      &#125;)<br><br>    <span class="hljs-comment">// 6. 外层彩色边框（放在最后绘制，确保显示在所有元素上层）</span><br>    nodeContainer.<span class="hljs-title function_">append</span>(<span class="hljs-string">&#x27;circle&#x27;</span>)<br>      .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;r&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">d: any</span>) =&gt;</span> d.<span class="hljs-property">size</span> / <span class="hljs-number">2</span>)<br>      .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;fill&#x27;</span>, <span class="hljs-string">&#x27;none&#x27;</span>)<br>      .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;stroke&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">d: any</span>) =&gt;</span> d.<span class="hljs-property">isCenter</span> ? <span class="hljs-string">&#x27;#000000&#x27;</span> : <span class="hljs-string">&#x27;#155DFC&#x27;</span>)<br>      .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;stroke-width&#x27;</span>, <span class="hljs-number">3</span>)<br>    nodeContainer.<span class="hljs-title function_">append</span>(<span class="hljs-string">&#x27;circle&#x27;</span>)<br>      .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;r&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">d: any</span>) =&gt;</span> d.<span class="hljs-property">size</span> / <span class="hljs-number">2</span> - <span class="hljs-number">2</span>)<br>      .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;fill&#x27;</span>, <span class="hljs-string">&#x27;none&#x27;</span>)<br>      .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;stroke&#x27;</span>, <span class="hljs-string">&#x27;#FFFFFF&#x27;</span>)<br>      .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;stroke-width&#x27;</span>, <span class="hljs-number">2</span>)<br><br>    <span class="hljs-comment">// 添加点击事件</span><br>    node.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;click&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">event, d: any</span>) =&gt;</span> &#123;<br>      <span class="hljs-title function_">handleNodeClick</span>(d.<span class="hljs-property">id</span>)<br>    &#125;)<br><br>    <span class="hljs-comment">// 力导向图更新函数</span><br>    simulation.<span class="hljs-title function_">on</span>(<span class="hljs-string">&#x27;tick&#x27;</span>, <span class="hljs-function">() =&gt;</span> &#123;<br>      link<br>        .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;x1&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">d: any</span>) =&gt;</span> d.<span class="hljs-property">source</span>.<span class="hljs-property">x</span>)<br>        .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;y1&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">d: any</span>) =&gt;</span> d.<span class="hljs-property">source</span>.<span class="hljs-property">y</span>)<br>        .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;x2&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">d: any</span>) =&gt;</span> d.<span class="hljs-property">target</span>.<span class="hljs-property">x</span>)<br>        .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;y2&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">d: any</span>) =&gt;</span> d.<span class="hljs-property">target</span>.<span class="hljs-property">y</span>)<br><br>      node<br>        .<span class="hljs-title function_">attr</span>(<span class="hljs-string">&#x27;transform&#x27;</span>, <span class="hljs-function">(<span class="hljs-params">d: any</span>) =&gt;</span> <span class="hljs-string">`translate(<span class="hljs-subst">$&#123;d.x&#125;</span>,<span class="hljs-subst">$&#123;d.y&#125;</span>)`</span>)<br>    &#125;)<br><br>    <span class="hljs-comment">// 拖拽事件处理函数</span><br>    <span class="hljs-keyword">function</span> <span class="hljs-title function_">dragstarted</span>(<span class="hljs-params">event: any, d: any</span>) &#123;<br>      <span class="hljs-keyword">if</span> (!event.<span class="hljs-property">active</span>) simulation.<span class="hljs-title function_">alphaTarget</span>(<span class="hljs-number">0.3</span>).<span class="hljs-title function_">restart</span>()<br>      d.<span class="hljs-property">fx</span> = d.<span class="hljs-property">x</span><br>      d.<span class="hljs-property">fy</span> = d.<span class="hljs-property">y</span><br>    &#125;<br><br>    <span class="hljs-keyword">function</span> <span class="hljs-title function_">dragged</span>(<span class="hljs-params">event: any, d: any</span>) &#123;<br>      d.<span class="hljs-property">fx</span> = event.<span class="hljs-property">x</span><br>      d.<span class="hljs-property">fy</span> = event.<span class="hljs-property">y</span><br>    &#125;<br><br>    <span class="hljs-keyword">function</span> <span class="hljs-title function_">dragended</span>(<span class="hljs-params">event: any, d: any</span>) &#123;<br>      <span class="hljs-keyword">if</span> (!event.<span class="hljs-property">active</span>) simulation.<span class="hljs-title function_">alphaTarget</span>(<span class="hljs-number">0</span>)<br>      d.<span class="hljs-property">fx</span> = <span class="hljs-literal">null</span><br>      d.<span class="hljs-property">fy</span> = <span class="hljs-literal">null</span><br>    &#125;<br><br>    <span class="hljs-comment">// 清理函数</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-function">() =&gt;</span> &#123;<br>      <span class="hljs-keyword">if</span> (graphRef.<span class="hljs-property">current</span>.<span class="hljs-property">simulation</span>) &#123;<br>        graphRef.<span class="hljs-property">current</span>.<span class="hljs-property">simulation</span>.<span class="hljs-title function_">stop</span>()<br>      &#125;<br>      <span class="hljs-keyword">if</span> (containerRef.<span class="hljs-property">current</span>) &#123;<br>        containerRef.<span class="hljs-property">current</span>.<span class="hljs-property">innerHTML</span> = <span class="hljs-string">&#x27;&#x27;</span><br>      &#125;<br>    &#125;<br>  &#125;, [props.<span class="hljs-property">centerNode</span>, props.<span class="hljs-property">contactNode</span>])<br><br>  <span class="hljs-keyword">return</span> (<br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">View</span></span></span><br><span class="hljs-tag"><span class="language-xml">      <span class="hljs-attr">ref</span>=<span class="hljs-string">&#123;containerRef&#125;</span></span></span><br><span class="hljs-tag"><span class="language-xml">      <span class="hljs-attr">style</span>=<span class="hljs-string">&#123;&#123;</span></span></span><br><span class="hljs-tag"><span class="language-xml">        <span class="hljs-attr">width:</span> &#x27;<span class="hljs-attr">100</span>%&#x27;,</span></span><br><span class="hljs-tag"><span class="language-xml">        <span class="hljs-attr">height:</span> &#x27;<span class="hljs-attr">100</span>%&#x27;,</span></span><br><span class="hljs-tag"><span class="language-xml">        <span class="hljs-attr">position:</span> &#x27;<span class="hljs-attr">relative</span>&#x27;,</span></span><br><span class="hljs-tag"><span class="language-xml">        <span class="hljs-attr">background:</span> &#x27;#<span class="hljs-attr">ffffff</span>&#x27;</span></span><br><span class="hljs-tag"><span class="language-xml">      &#125;&#125;</span></span><br><span class="hljs-tag"><span class="language-xml">    /&gt;</span></span><br>  )<br>&#125;<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> D3Graph<br><br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/React/" class="category-chain-item">React</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/React/" class="print-no-link">#React</a>
+      
+        <a href="/tags/D3js/" class="print-no-link">#D3js</a>
+      
+        <a href="/tags/H5/" class="print-no-link">#H5</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>【H5】React使用D3js实现关系图</div>
+      <div>http://example.com/2026/01/08/React/【H5】React使用D3js实现关系图/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年1月8日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/01/12/%E5%B0%8F%E7%A8%8B%E5%BA%8F/%E3%80%90%E5%9D%91%E3%80%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%20IOS%20%E6%98%BE%E7%A4%BA%20GIF%20%E4%B8%8D%E6%92%AD%E6%94%BE/" title="【坑】微信小程序 IOS 显示 GIF 不播放">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">【坑】微信小程序 IOS 显示 GIF 不播放</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/01/05/%E7%BC%96%E8%AF%91/Taro%E7%BC%96%E8%AF%91H5%E7%9A%84%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%EF%BC%8C%E6%89%93%E5%8C%85%E5%90%8E%E4%B8%BA%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83/" title="Taro编译H5的开发环境，打包后为生产环境">
+                        <span class="hidden-mobile">Taro编译H5的开发环境，打包后为生产环境</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
