@@ -14,7 +14,7 @@ tags: [JDK]
 
 如果有多个JDK，可以为每个JDK创建系统变量，再创建一个JAVA_HOME对应正在使用的变量
 
-![](/images/jdk1.png)
+![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260305000657572.png)
 
 - 配置Path环境变量
 
@@ -23,8 +23,8 @@ tags: [JDK]
 %JAVA_HOME%\jre\bin
 ```
 
-![](/images/jdk2.png)
+![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260305000657573.png)
 
 - 重启命令行中，输入 java -version，验证安装是否成功
 
-![](/images/jdk3.png)
+![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260305000657574.png)

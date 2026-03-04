@@ -9,7 +9,7 @@ tags: [CSS, 特效]
 
 实现图片中的文字颜色渐变效果
 
-![](/images/gradient-color-text1.png)
+![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260305000657571.png)
 
 ```css
 .gradient-color-text {

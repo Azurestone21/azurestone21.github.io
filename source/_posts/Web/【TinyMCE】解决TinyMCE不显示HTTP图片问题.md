@@ -23,13 +23,9 @@ Edge浏览器可以在**隐私、搜索和服务/站点权限/所有权限**对*
 
 Google浏览器可以在**隐私与安全/网站设置/更多内容设置**对**不安全内容**进行设置。
 
-<!-- 这是一张图片，ocr 内容为： -->
+![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260305000657575.png)
 
-![浏览器不安全内容设置](/images/tinymce-http-img1.png)
-
-<!-- 这是一张图片，ocr 内容为： -->
-
-![浏览器不安全内容设置](/images/tinymce-http-img2.png)
+![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260305000657576.png)
 
 ### 方法二：设置CSP
 

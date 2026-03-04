@@ -7,7 +7,7 @@ tags: [CSS, 动画]
 
 ## 纯色渐变圆环 1
 
-![](/images/circular-ring-loading1.png)
+![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260305000657568.png)
 
 ```javascript
 .circular-ring-loading {
@@ -47,9 +47,7 @@ tags: [CSS, 动画]
 
 ## 纯色渐变圆环 2
 
-<!-- 这是一张图片，ocr 内容为： -->
-
-![](/images/circular-ring-loading2.png)
+![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260305000657569.png)
 
 ```javascript
 .circular-ring-loading {
