@@ -1,0 +1,654 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="问题描述从第三方网页复制网络HTTP图片到富文本编辑器时，图片不显示。 原因页面是 https 协议，浏览器默认会屏蔽不安全内容，不允许安全的 https 页面混合请求不安全的 http 请求。  控制台会显示警告 “Mixed Content”。  解决办法方法一：修改浏览器配置Edge浏览器可以在隐私、搜索和服务&#x2F;站点权限&#x2F;所有权限对不安全的内容进行设置。 Google浏览">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【TinyMCE】解决TinyMCE不显示HTTP图片问题">
+<meta property="og:url" content="http://example.com/2025/09/03/Web/%E3%80%90TinyMCE%E3%80%91%E8%A7%A3%E5%86%B3TinyMCE%E4%B8%8D%E6%98%BE%E7%A4%BAHTTP%E5%9B%BE%E7%89%87%E9%97%AE%E9%A2%98/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="问题描述从第三方网页复制网络HTTP图片到富文本编辑器时，图片不显示。 原因页面是 https 协议，浏览器默认会屏蔽不安全内容，不允许安全的 https 页面混合请求不安全的 http 请求。  控制台会显示警告 “Mixed Content”。  解决办法方法一：修改浏览器配置Edge浏览器可以在隐私、搜索和服务&#x2F;站点权限&#x2F;所有权限对不安全的内容进行设置。 Google浏览">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260305000657575.png">
+<meta property="og:image" content="https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260305000657576.png">
+<meta property="article:published_time" content="2025-09-03T06:18:23.000Z">
+<meta property="article:modified_time" content="2026-03-04T16:10:44.344Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="TinyMCE">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260305000657575.png">
+  
+  
+  
+  <title>【TinyMCE】解决TinyMCE不显示HTTP图片问题 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">【TinyMCE】解决TinyMCE不显示HTTP图片问题</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-09-03 14:18" pubdate>
+          2025年9月3日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          549 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          5 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">【TinyMCE】解决TinyMCE不显示HTTP图片问题</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>从第三方网页复制网络HTTP图片到富文本编辑器时，图片不显示。</p>
+<h2 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h2><p>页面是 https 协议，浏览器默认会屏蔽不安全内容，不允许安全的 https 页面混合请求不安全的 http 请求。</p>
+<blockquote>
+<p>控制台会显示警告 “Mixed Content”。</p>
+</blockquote>
+<h2 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h2><h3 id="方法一：修改浏览器配置"><a href="#方法一：修改浏览器配置" class="headerlink" title="方法一：修改浏览器配置"></a>方法一：修改浏览器配置</h3><p>Edge浏览器可以在<strong>隐私、搜索和服务&#x2F;站点权限&#x2F;所有权限</strong>对<strong>不安全的内容</strong>进行设置。</p>
+<p>Google浏览器可以在<strong>隐私与安全&#x2F;网站设置&#x2F;更多内容设置</strong>对<strong>不安全内容</strong>进行设置。</p>
+<p><img src="https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260305000657575.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260305000657576.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="方法二：设置CSP"><a href="#方法二：设置CSP" class="headerlink" title="方法二：设置CSP"></a>方法二：设置CSP</h3><p>将自动将 http 的不安全请求升级为 https，但是如果服务器不支持 https，链接将访问不了。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">meta</span></span><br><span class="hljs-tag">  <span class="hljs-attr">http-equiv</span>=<span class="hljs-string">&quot;Content-Security-Policy&quot;</span></span><br><span class="hljs-tag">  <span class="hljs-attr">content</span>=<span class="hljs-string">&quot;upgrade-insecure-requests&quot;</span></span><br><span class="hljs-tag">/&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="方法二：将图片上传到自己的服务器，使用自己服务器的链接"><a href="#方法二：将图片上传到自己的服务器，使用自己服务器的链接" class="headerlink" title="方法二：将图片上传到自己的服务器，使用自己服务器的链接"></a>方法二：将图片上传到自己的服务器，使用自己服务器的链接</h3><ul>
+<li>paste_data_images：允许粘贴图片数据</li>
+<li>paste_postprocess：在将粘贴的内容<strong>解析为 DOM 结构之后，插入编辑器之前</strong>修改粘贴的内容</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">Editor</span></span><br><span class="hljs-tag">  <span class="hljs-attr">...</span></span><br><span class="hljs-tag">  <span class="hljs-attr">init</span>=<span class="hljs-string">&#123;&#123;</span></span><br><span class="hljs-tag">    <span class="hljs-attr">paste_data_images:</span> <span class="hljs-attr">true</span>,</span><br><span class="hljs-tag">    <span class="hljs-attr">paste_postprocess:</span> <span class="hljs-attr">handlePastedContent</span>,</span><br><span class="hljs-tag">    <span class="hljs-attr">setup:</span> (<span class="hljs-attr">editor:</span> <span class="hljs-attr">any</span>) =&gt;</span> &#123;<br>      editor.on(&#x27;change&#x27;, () =&gt; &#123;<br>        const currentContent = editor.getContent()<br>        props.onChange?.(currentContent)<br>      &#125;)<br>    &#125;<br>  &#125;&#125;<br>/&gt;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// 处理粘贴的图片，上传服务器并替换url</span><br><span class="hljs-keyword">const</span> <span class="hljs-title function_">handlePastedContent</span> = <span class="hljs-keyword">async</span> (<span class="hljs-params">editor: any, args: &#123; node: any &#125;</span>) =&gt; &#123;<br>  <span class="hljs-keyword">if</span> (!editor) <span class="hljs-keyword">return</span><br><br>  <span class="hljs-comment">// 1. 创建临时容器处理内容</span><br>  <span class="hljs-keyword">const</span> tempDiv = editor.<span class="hljs-property">dom</span>.<span class="hljs-title function_">create</span>(<span class="hljs-string">&#x27;div&#x27;</span>)<br>  tempDiv.<span class="hljs-property">innerHTML</span> = args.<span class="hljs-property">node</span>.<span class="hljs-property">innerHTML</span><br><br>  <span class="hljs-comment">// 2. 处理所有图片</span><br>  <span class="hljs-keyword">const</span> images = tempDiv.<span class="hljs-title function_">querySelectorAll</span>(<span class="hljs-string">&#x27;img[src^=&quot;http&quot;]&#x27;</span>)<br>  <span class="hljs-keyword">const</span> uploadPromises = <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(images).<span class="hljs-title function_">map</span>(<span class="hljs-title function_">async</span> (<span class="hljs-attr">img</span>: any) =&gt; &#123;<br>    <span class="hljs-comment">// 获取图片链接</span><br>    <span class="hljs-keyword">const</span> originalSrc = img.<span class="hljs-title function_">getAttribute</span>(<span class="hljs-string">&#x27;src&#x27;</span>)<br>    <span class="hljs-keyword">if</span> (!originalSrc || [<span class="hljs-string">&#x27;过滤自己服务器url域名&#x27;</span>].<span class="hljs-title function_">includes</span>(<span class="hljs-keyword">new</span> <span class="hljs-title function_">URL</span>(originalSrc)?.<span class="hljs-property">hostname</span>))<br>      <span class="hljs-keyword">return</span><br><br>    <span class="hljs-keyword">try</span> &#123;<br>      <span class="hljs-comment">// 调用接口换取图片url</span><br>      <span class="hljs-keyword">const</span> &#123; <span class="hljs-attr">data</span>: newUrl &#125; = <span class="hljs-keyword">await</span> <span class="hljs-title function_">copyImageFromUrl</span>(originalSrc)<br><br>      <span class="hljs-keyword">if</span> (code !== <span class="hljs-number">200</span>) &#123;<br>        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">error</span>(<span class="hljs-string">&#x27;图片上传失败:&#x27;</span>, msg)<br>        img.<span class="hljs-property">parentNode</span>?.<span class="hljs-title function_">removeChild</span>(img)<br>        <span class="hljs-keyword">return</span><br>      &#125;<br><br>      <span class="hljs-comment">// 3. 在临时DOM中更新图片</span><br>      img.<span class="hljs-title function_">setAttribute</span>(<span class="hljs-string">&#x27;src&#x27;</span>, newUrl)<br>      img.<span class="hljs-title function_">setAttribute</span>(<span class="hljs-string">&#x27;data-mce-src&#x27;</span>, newUrl)<br>      img.<span class="hljs-title function_">removeAttribute</span>(<span class="hljs-string">&#x27;data-mce-src&#x27;</span>)<br>    &#125; <span class="hljs-keyword">catch</span> (error) &#123;<br>      <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">error</span>(<span class="hljs-string">&#x27;图片上传失败:&#x27;</span>, error)<br>      img.<span class="hljs-property">parentNode</span>?.<span class="hljs-title function_">removeChild</span>(img)<br>    &#125;<br>  &#125;)<br><br>  <span class="hljs-comment">// 4. 等待所有上传完成</span><br>  <span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">all</span>(uploadPromises)<br><br>  <span class="hljs-comment">// 5. 完全替换原始节点内容</span><br>  <span class="hljs-comment">// args.node.innerHTML = tempDiv.innerHTML</span><br><br>  <span class="hljs-comment">// 6. 更新内容</span><br>  props.<span class="hljs-property">onChange</span>?.(tempDiv.<span class="hljs-property">innerHTML</span>)<br>&#125;<br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Web/" class="category-chain-item">Web</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/TinyMCE/" class="print-no-link">#TinyMCE</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>【TinyMCE】解决TinyMCE不显示HTTP图片问题</div>
+      <div>http://example.com/2025/09/03/Web/【TinyMCE】解决TinyMCE不显示HTTP图片问题/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年9月3日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/09/03/%E5%85%B6%E4%BB%96/%E5%9C%B0%E7%90%86%E5%9D%90%E6%A0%87%E7%B3%BB%EF%BC%9AWGS84%E3%80%81GCJ02/" title="地理坐标系：WGS84、GCJ02">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">地理坐标系：WGS84、GCJ02</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/09/03/%E5%B0%8F%E7%A8%8B%E5%BA%8F/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%B8%8EH5%E4%B9%8B%E9%97%B4%E8%B7%B3%E8%BD%AC/" title="微信小程序与H5之间跳转">
+                        <span class="hidden-mobile">微信小程序与H5之间跳转</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
