@@ -29,6 +29,14 @@ hexo init
 hexo s
 ```
 
+4. 部署
+
+```bash
+hexo d
+```
+
+
+
 ## 常用命令
 
 1. 新建页面
