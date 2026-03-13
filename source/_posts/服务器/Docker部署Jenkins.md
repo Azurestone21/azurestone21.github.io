@@ -50,7 +50,7 @@ sudo docker rmi jenkins/jenkins:2.479.3-lts
 sudo docker pull jenkins/jenkins:lts
 
 # 拉取指定版本（推荐）
-sudo docker pull jenkins/jenkins:2.492.3-lts
+sudo docker pull jenkins/jenkins:2.504.3-lts
 # 2.492.3-lts: Pulling from jenkins/jenkins
 # 0a96bdb82805: Pull complete
 # b5e2db483aae: Pull complete
@@ -86,6 +86,7 @@ sudo docker images | grep jenkins
 ```shell
 sudo docker run -d \
   --name jenkins \
+  --privileged \
   --restart=always \
   -p 8080:8080 \
   -p 50000:50000 \
@@ -93,10 +94,11 @@ sudo docker run -d \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v /usr/bin/docker:/usr/bin/docker \
   -e TZ=Asia/Shanghai \
-  jenkins/jenkins:2.492.3-lts
+  jenkins/jenkins:2.504.3-lts
 ```
 
 - `--restart=always`：容器异常退出自动重启
+- `--privileged`：授予容器特权访问宿主机的能力，用于执行 Docker 命令
 - `-p 8080:8080`：映射 Web 端口
 - `-p 50000:50000`：映射 agent 通信端口
 - `-v /data/jenkins_home:/var/jenkins_home`：数据持久化
@@ -139,9 +141,11 @@ sudo cat /data/jenkins_home/secrets/initialAdminPassword
 
 ### 安装插件
 
+如果是新版本就选“安装推荐的插件”。
+
 ![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260313003531467.png)
 
-3. 选第二个，取消所有插件，点击“安装”（因为国内安装会很慢，大概率失败，需要换源）
+1. 如果是旧版本就选“选择插件来安装”。取消所有插件，点击“安装”（因为国内安装会很慢，大概率失败，需要换源）
 
 ![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260313003531468.png)
 
@@ -163,16 +167,18 @@ sudo cat /data/jenkins_home/secrets/initialAdminPassword
 
 ### 手动安装插件
 
+插件库：https://updates.jenkins-ci.org/download/plugins/
+
 安装 Jenkins 插件有明确的顺序要求，核心原则是「先装底层依赖插件，再装业务功能插件」—— 若跳过依赖直接装上层插件，会导致插件加载失败、功能异常。
 
-每安装一个插件，都需要重启 Jenkins 容器，才能使插件生效。
+安装插件需要重启 Jenkins 容器，才能使插件生效。
 
 1. bouncycastle-api：加密算法底层依赖，credentials 插件的核心依赖，必须最先装。
 2. Credentials：基础凭证管理，管理 Gitee 令牌 / SSH 密钥，依赖 bouncycastle-api。
 3. SSH Credentials：SSH 类型凭证管理，依赖 Credentials Plugin，需紧随其后装
-4. git-client：Git 客户端核心插件	所有 Git 相关插件的底层依赖
-5. Git：Git 仓库对接	依赖 git-client，需先装 git-client
-6. Gitee：Gitee 仓库专属对接	强依赖 Git Plugin/git-client
-7. NodeJS：Node.js 环境管理	无依赖，可与 Gitee Plugin 同阶段装
-8. Pipeline：流水线核心插件	依赖 Git Plugin，需后装
-9. Publish Over SSH：远程上传 / 执行命令	无强依赖，最后装即可
+4. git-client：Git 客户端核心插件所有 Git 相关插件的底层依赖
+5. Git：Git 仓库对接，依赖 git-client，需先装 git-client
+6. Gitee：Gitee 仓库专属对接，强依赖 Git Plugin/git-client
+7. NodeJS：Node.js 环境管理，无依赖，可与 Gitee Plugin 同阶段装
+8. Pipeline：流水线核心插件，依赖 Git Plugin，需后装
+9. Publish Over SSH：远程上传 / 执行命令，无强依赖，最后装即可
