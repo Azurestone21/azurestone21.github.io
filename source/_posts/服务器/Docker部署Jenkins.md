@@ -141,15 +141,15 @@ sudo cat /data/jenkins_home/secrets/initialAdminPassword
 
 ### 安装插件
 
-如果是新版本就选“安装推荐的插件”。
+初次安装，如果有梯子，可以选择 “安装推荐的插件”。如果没有就 “选择插件来安装”，取消所有插件，点击“安装”。因为国内安装会很慢，大概率失败，需要换源。
 
 ![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260313003531467.png)
 
-1. 如果是旧版本就选“选择插件来安装”。取消所有插件，点击“安装”（因为国内安装会很慢，大概率失败，需要换源）
+取消所有插件。
 
 ![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260313003531468.png)
 
-4. 如果已经卡在安装步骤上，浏览器输入 http://公网IP:8080/restart，回车，点 Yes 重启 Jenkins。
+如果已经卡在安装步骤上，浏览器输入 http://公网IP:8080/restart，回车，点 Yes 重启 Jenkins。
 
 ![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260313003531470.png)
 
@@ -165,13 +165,13 @@ sudo cat /data/jenkins_home/secrets/initialAdminPassword
 
 ![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260313003531472.png)
 
-### 手动安装插件
+## 手动安装插件
 
 插件库：https://updates.jenkins-ci.org/download/plugins/
 
 安装 Jenkins 插件有明确的顺序要求，核心原则是「先装底层依赖插件，再装业务功能插件」—— 若跳过依赖直接装上层插件，会导致插件加载失败、功能异常。
 
-安装插件需要重启 Jenkins 容器，才能使插件生效。
+安装完插件最好重启 Jenkins 容器，使插件生效。
 
 1. bouncycastle-api：加密算法底层依赖，credentials 插件的核心依赖，必须最先装。
 2. Credentials：基础凭证管理，管理 Gitee 令牌 / SSH 密钥，依赖 bouncycastle-api。
@@ -182,3 +182,126 @@ sudo cat /data/jenkins_home/secrets/initialAdminPassword
 7. NodeJS：Node.js 环境管理，无依赖，可与 Gitee Plugin 同阶段装
 8. Pipeline：流水线核心插件，依赖 Git Plugin，需后装
 9. Publish Over SSH：远程上传 / 执行命令，无强依赖，最后装即可
+
+## 全局工具配置
+
+### 配置 NodeJS
+
+Jenkins → 系统管理 → 全局工具配置 → NodeJS → 新增 NodeJS：
+
+1. 别名：NodeJS 20（自定义）
+2. 版本：选择 20.x（和本地的node版本一致）
+3. Global npm packages to install：空
+4. Global npm packages refresh hours：空 / 0
+5. 保存。
+
+## 新建任务
+
+1. 输入一个任务名称
+2. 选择“构建一个自由风格的软件项目”
+3. 点击“确定”
+
+## 配置任务
+
+1. 获取gitee令牌
+2. 源码管理选择Git，输入仓库URL和选择凭证（没有凭证可以在右边按钮添加。也可以在 Jenkins 全局工具配置中的**凭证管理**中添加）
+3. 编写shell脚本进行构建
+
+```shell
+#!/bin/bash
+set -e
+
+# ===================== 1. 进入项目目录 =====================
+cd $WORKSPACE
+
+# ===================== 2. 安装依赖（关键：去掉 --production，安装所有依赖） =====================
+echo "开始安装依赖（包含开发依赖 vite）..."
+npm install # 不要加 --production，vite 是 devDependencies，会被跳过
+
+# ===================== 3. 打包 Vue 项目（用 npx 调用本地 vite，避免全局依赖问题） =====================
+echo "开始打包项目..."
+npx vite build # 核心修改：用 npx 执行本地 node_modules 中的 vite
+
+# ===================== 4. 备份旧文件（可选） =====================
+echo "备份旧项目文件..."
+mkdir -p /data/project/admin-vue.bak
+cp -r /data/project/admin-vue/* /data/project/admin-vue.bak/ || true
+
+# ===================== 5. 清空旧文件 =====================
+echo "清空旧文件..."
+rm -rf /data/project/admin-vue/*
+
+# ===================== 6. 复制新打包文件 =====================
+echo "部署新文件到 /data/project/admin-vue..."
+cp -r $WORKSPACE/dist/* /data/project/admin-vue/
+
+# ===================== 7. 修复权限 =====================
+echo "修复目录权限..."
+sudo chown -R nobody:nobody /data/project/admin-vue
+sudo chmod -R 755 /data/project/admin-vue
+
+# ===================== 8. 重载 Nginx =====================
+echo "重载 Nginx..."
+/usr/local/nginx/sbin/nginx -s reload
+
+echo "✅ 项目部署完成！"
+```
+
+## 挂载项目目录
+
+我的项目目录在 `/data/project`。
+
+```shell
+# 1. 停止现有 Jenkins 容器（如有）
+sudo docker stop jenkins && sudo docker rm jenkins
+
+# 2. 重新启动 Jenkins，挂载 /data/project 目录（项目存放目录）
+docker run -d \
+  --name jenkins \
+  --privileged \
+  -p 8080:8080 \
+  -p 50000:50000 \
+  -v /data/jenkins_home:/var/jenkins_home \
+  -v /data/project:/data/project \
+  -v /data/jenkins-npm-cache:/root/.npm \
+  --restart=always \
+  jenkins/jenkins:2.504.3-lts
+```
+
+## 立即构建
+
+我的服务器是2核2G，构建后，服务器崩了，直接卡死。
+
+服务器显示：
+
+> 当前实例的云盘在xxxx年x月x日 xx:xx:xx出现读写IO延迟过长，或达到了该云盘类型的IOPS上限，导致实例云盘读写受限。
+
+原因：
+
+- Vue3 + Vite 打包 非常吃 CPU 和内存
+- Jenkins 在容器里疯狂打包 → 服务器资源瞬间占满
+
+重启服务器后，为了避免再次发生崩溃，需要限制 Jenkins 容器的资源使用，避免占满整个服务器。
+
+```shell
+sudo docker stop jenkins && sudo docker rm jenkins
+
+docker run -d \
+  --name jenkins \
+  --privileged \
+  --cpus 1.5 \
+  --memory 2g \
+  --blkio-weight 10 \
+  -p 8080:8080 \
+  -p 50000:50000 \
+  -v /data/jenkins_home:/var/jenkins_home \
+  -v /data/project:/data/project \
+  -v /data/jenkins-npm-cache:/root/.npm \
+  -v /usr/local/nginx/sbin/nginx:/usr/local/nginx/sbin/nginx \
+  --restart=always \
+  jenkins/jenkins:2.504.3-lts
+```
+
+- --cpus 1.5：限制 CPU 使用，避免 CPU 占满导致系统卡死；
+- --memory 2g：限制内存使用，避免触发 swap 交换加剧 IO 压力；
+- --blkio-weight 10：降低 IO 优先级，从根源避免云盘 IOPS 打满。

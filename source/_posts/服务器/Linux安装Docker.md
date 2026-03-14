@@ -5,10 +5,6 @@ category: [服务器]
 tags: [Linux, Docker]
 ---
 
-
-
-
-
 ## 环境
 
 服务器：阿里云 Alibaba Cloud Linux 3
@@ -67,26 +63,26 @@ docker --version
 
 ```json
 // {
-// 		"registry-mirrors": ["<加速器地址>"]
+// 	 "registry-mirrors": ["<加速器地址>"]
 // }
 
 {
-    "registry-mirrors": [
-        "https://docker.registry.cyou",
-        "https://docker-cf.registry.cyou",
-        "https://dockercf.jsdelivr.fyi",
-        "https://docker.jsdelivr.fyi",
-        "https://dockertest.jsdelivr.fyi",
-        "https://mirror.aliyuncs.com",
-        "https://dockerproxy.com",
-        "https://mirror.baidubce.com",
-        "https://docker.m.daocloud.io",
-        "https://docker.nju.edu.cn",
-        "https://docker.mirrors.sjtug.sjtu.edu.cn",
-        "https://docker.mirrors.ustc.edu.cn",
-        "https://mirror.iscas.ac.cn",
-        "https://docker.rainbond.cc"
-    ]
+  "registry-mirrors": [
+    "https://docker.registry.cyou",
+    "https://docker-cf.registry.cyou",
+    "https://dockercf.jsdelivr.fyi",
+    "https://docker.jsdelivr.fyi",
+    "https://dockertest.jsdelivr.fyi",
+    "https://mirror.aliyuncs.com",
+    "https://dockerproxy.com",
+    "https://mirror.baidubce.com",
+    "https://docker.m.daocloud.io",
+    "https://docker.nju.edu.cn",
+    "https://docker.mirrors.sjtug.sjtu.edu.cn",
+    "https://docker.mirrors.ustc.edu.cn",
+    "https://mirror.iscas.ac.cn",
+    "https://docker.rainbond.cc"
+  ]
 }
 ```
 
@@ -97,5 +93,11 @@ sudo systemctl daemon-reload
 sudo systemctl restart docker
 ```
 
+## 安装 Docker Compose
 
+教程：https://help.aliyun.com/zh/ecs/user-guide/install-and-use-docker#a7a051253bxz5
 
+```shell
+# 安装 Docker Compose
+sudo yum -y install docker-compose-plugin
+```
