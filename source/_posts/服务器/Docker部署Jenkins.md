@@ -165,17 +165,29 @@ sudo cat /data/jenkins_home/secrets/initialAdminPassword
 
 ![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260313003531472.png)
 
-## 手动安装插件
+### 换源
+
+https://updates.jenkins.io/update-center.json
+
+![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260316005711621.png)
+
+### 手动安装插件
 
 插件库：https://updates.jenkins-ci.org/download/plugins/
 
-安装 Jenkins 插件有明确的顺序要求，核心原则是「先装底层依赖插件，再装业务功能插件」—— 若跳过依赖直接装上层插件，会导致插件加载失败、功能异常。
+把需要的插件文件下载到本地，然后在 Jenkins 插件管理中部署。
 
-安装完插件最好重启 Jenkins 容器，使插件生效。
+![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260316010148362.png)
+
+安装 Jenkins 插件最好按「先装底层依赖插件，再装业务功能插件」—— 若跳过依赖直接装上层插件，会导致插件加载失败、功能异常。不过在 Jenkins 上安装会自动安装依赖的插件，一般不需要处理。
+
+安装完插件需要重启 Jenkins 容器，使插件生效。
+
+下面是部署前端项目需要用到的插件：
 
 1. bouncycastle-api：加密算法底层依赖，credentials 插件的核心依赖，必须最先装。
 2. Credentials：基础凭证管理，管理 Gitee 令牌 / SSH 密钥，依赖 bouncycastle-api。
-3. SSH Credentials：SSH 类型凭证管理，依赖 Credentials Plugin，需紧随其后装
+3. SSH Credentials：SSH 类型凭证管理，依赖 Credentials Plugin
 4. git-client：Git 客户端核心插件所有 Git 相关插件的底层依赖
 5. Git：Git 仓库对接，依赖 git-client，需先装 git-client
 6. Gitee：Gitee 仓库专属对接，强依赖 Git Plugin/git-client
@@ -183,9 +195,9 @@ sudo cat /data/jenkins_home/secrets/initialAdminPassword
 8. Pipeline：流水线核心插件，依赖 Git Plugin，需后装
 9. Publish Over SSH：远程上传 / 执行命令，无强依赖，最后装即可
 
-## 全局工具配置
+### 全局工具配置
 
-### 配置 NodeJS
+#### 配置 NodeJS
 
 Jenkins → 系统管理 → 全局工具配置 → NodeJS → 新增 NodeJS：
 
@@ -195,17 +207,29 @@ Jenkins → 系统管理 → 全局工具配置 → NodeJS → 新增 NodeJS：
 4. Global npm packages refresh hours：空 / 0
 5. 保存。
 
-## 新建任务
+### 新建任务
 
 1. 输入一个任务名称
 2. 选择“构建一个自由风格的软件项目”
 3. 点击“确定”
 
-## 配置任务
+![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260316005332805.png)
 
-1. 获取gitee令牌
-2. 源码管理选择Git，输入仓库URL和选择凭证（没有凭证可以在右边按钮添加。也可以在 Jenkins 全局工具配置中的**凭证管理**中添加）
-3. 编写shell脚本进行构建
+### 配置任务
+
+#### 获取gitee令牌
+
+![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260316003209696.png)
+
+![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260316003209697.png)
+
+#### 配置Git和凭证
+
+源码管理选择Git，输入仓库URL和选择凭证（没有凭证可以在右边按钮添加。也可以在 Jenkins 的**系统管理**中的**凭据管理**中添加）
+
+![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260316003209698.png)
+
+#### shell脚本
 
 ```shell
 #!/bin/bash
@@ -270,18 +294,17 @@ docker run -d \
 
 ## 立即构建
 
+![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260316010723179.png)
+
 我的服务器是2核2G，构建后，服务器崩了，直接卡死。
 
-服务器显示：
+服务器排查显示：
 
-> 当前实例的云盘在xxxx年x月x日 xx:xx:xx出现读写IO延迟过长，或达到了该云盘类型的IOPS上限，导致实例云盘读写受限。
+![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260316004250083.png)
 
-原因：
+原因：Jenkins 在容器里打包非常吃 CPU 和内存，把服务器资源瞬间占满。
 
-- Vue3 + Vite 打包 非常吃 CPU 和内存
-- Jenkins 在容器里疯狂打包 → 服务器资源瞬间占满
-
-重启服务器后，为了避免再次发生崩溃，需要限制 Jenkins 容器的资源使用，避免占满整个服务器。
+重启服务器后，为了避免再次发生崩溃，限制了 Jenkins 容器的资源使用，避免占满整个服务器。
 
 ```shell
 sudo docker stop jenkins && sudo docker rm jenkins
@@ -289,9 +312,8 @@ sudo docker stop jenkins && sudo docker rm jenkins
 docker run -d \
   --name jenkins \
   --privileged \
-  --cpus 1.5 \
-  --memory 2g \
-  --blkio-weight 10 \
+  --cpus 1 \
+  --memory 1g \
   -p 8080:8080 \
   -p 50000:50000 \
   -v /data/jenkins_home:/var/jenkins_home \
@@ -302,6 +324,9 @@ docker run -d \
   jenkins/jenkins:2.504.3-lts
 ```
 
-- --cpus 1.5：限制 CPU 使用，避免 CPU 占满导致系统卡死；
-- --memory 2g：限制内存使用，避免触发 swap 交换加剧 IO 压力；
-- --blkio-weight 10：降低 IO 优先级，从根源避免云盘 IOPS 打满。
+- --cpus 1：限制 CPU 使用，避免 CPU 占满导致系统卡死；
+- --memory 1g：限制内存使用，避免触发 swap 交换加剧 IO 压力；
+
+限制资源后，服务器没有崩，但是导致 Jenkins 打包项目超时失败。可能还是需要扩容服务器才能解决。
+
+最后使用一个简单的静态项目测试，部署成功。
