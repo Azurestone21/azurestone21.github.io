@@ -127,6 +127,8 @@ server {
   location /blogs {
       alias  /data/project/admin-vue; # 项目存放目录 /data/project/admin-vue
       index  index.html index.htm;
+      # 防止刷新 404
+      try_files $uri $uri/ /blogs/index.html;
   }
 }
 ```
