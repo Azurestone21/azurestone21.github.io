@@ -5,11 +5,13 @@ category: [服务器]
 tags: [Linux, Docker]
 ---
 
-## 环境
+## 测试环境
 
 服务器：阿里云 Alibaba Cloud Linux 3
 
-## 安装
+## 安装 Docker
+
+如果已安装Docker，需要先卸载旧版Docker。
 
 教程：https://help.aliyun.com/zh/ecs/user-guide/install-and-use-docker#940c78642dmq9
 
@@ -55,6 +57,28 @@ docker --version
 # 会出现版本号
 # Docker version 26.1.3, build b72abbb
 ```
+
+## 卸载 Docker
+
+1. 卸载旧版Docker、相关软件包和软件源。
+
+```shell
+#删除Docker相关源
+sudo rm -f /etc/yum.repos.d/docker*.repo
+
+#卸载Docker和相关的软件包
+sudo dnf -y remove \
+docker \
+moby \
+docker-ce \
+containerd.io \
+docker-ce-rootless-extras \
+docker-buildx-plugin \
+docker-ce-cli \
+docker-compose-plugin
+```
+
+2. 卸载Docker不会自动移除镜像、容器、存储卷和网络。这些数据默认存储在/var/lib/docker/目录。需手动删除此目录。
 
 ## 配置镜像源
 

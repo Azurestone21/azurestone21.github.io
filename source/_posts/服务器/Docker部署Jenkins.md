@@ -5,6 +5,8 @@ category: [服务器]
 tags: [Docker, Jenkins]
 ---
 
+> 基于阿里云 Alibaba Cloud Linux 3 服务器，安装 Jenkins 2.504.3 LTS 版本。部署 Gitee 项目到服务器。
+
 ## Docker安装Jenkins
 
 ### 删除旧容器和镜像（可选）
@@ -37,13 +39,23 @@ sudo docker images | grep jenkins
 # 3. 删除旧 LTS 镜像（如果有）
 sudo docker rmi jenkins/jenkins:lts
 
-# 4. 可选：删除指定版本（例如2.479.3-lts）镜像
+# 4. 删除指定版本（例如2.479.3-lts）镜像（如果有）
 sudo docker rmi jenkins/jenkins:2.479.3-lts
+```
+
+### 创建 Jenkins 数据持久化目录
+
+```shell
+# 创建目录
+sudo mkdir -p /data/jenkins_home
+# 设置权限（Jenkins 容器内默认用户 UID 为 1000，需匹配权限）
+sudo chown -R 1000:1000 /data/jenkins_home
+sudo chmod -R 755 /data/jenkins_home
 ```
 
 ### 拉取新镜像
 
-1. 拉取 Jenkins 官方镜像（推荐 LTS 稳定版）
+1. 拉取 Jenkins 官方镜像。最好拉取最新的 LTS 稳定版，避免安装插件时出现版本不兼容问题。
 
 ```shell
 # 拉取最新 LTS 镜像
@@ -51,7 +63,7 @@ sudo docker pull jenkins/jenkins:lts
 
 # 拉取指定版本（推荐）
 sudo docker pull jenkins/jenkins:2.504.3-lts
-# 2.492.3-lts: Pulling from jenkins/jenkins
+# 2.504.3-lts: Pulling from jenkins/jenkins
 # 0a96bdb82805: Pull complete
 # b5e2db483aae: Pull complete
 # 72b137db2cdf: Pull complete
@@ -65,8 +77,8 @@ sudo docker pull jenkins/jenkins:2.504.3-lts
 # b535e1c5efef: Pull complete
 # 3cfa79b75794: Pull complete
 # Digest: sha256:dc56634cc8fa476f36eba16d7db6c6bc1f5e3c7062432256738a008a339ee95c
-# Status: Downloaded newer image for jenkins/jenkins:2.492.3-lts
-# docker.io/jenkins/jenkins:2.492.3-lts
+# Status: Downloaded newer image for jenkins/jenkins:2.504.3-lts
+# docker.io/jenkins/jenkins:2.504.3-lts
 ```
 
 > 安装报错：Error response from daemon: Get "https://registry-1.docker.io/v2/": net/http: request canceled while waiting for connection (Client.Timeout exceeded while awaiting headers)
@@ -118,7 +130,7 @@ sudo docker ps | grep jenkins
 ## 阿里云配置开放端口
 
 1. 登录阿里云控制台 → 云服务器 ECS → 实例 → 网络与安全组
-2. 配置入方向规则，添加端口 8080 和 50000，授权对象为 0.0.0.0/0（公网访问）。
+2. 配置入方向规则，添加端口 8080 和 50000（启动 Jenkins 容器时的映射端口），授权对象为 0.0.0.0/0（公网访问）。
 
 ![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260313003531473.png)
 
@@ -219,6 +231,8 @@ Jenkins → 系统管理 → 全局工具配置 → NodeJS → 新增 NodeJS：
 
 #### 获取gitee令牌
 
+如果原来没有gitee令牌，需要先在gitee上创建一个。
+
 ![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260316003209696.png)
 
 ![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260316003209697.png)
@@ -273,7 +287,7 @@ echo "✅ 项目部署完成！"
 
 ## 挂载项目目录
 
-我的项目目录在 `/data/project`。
+我的项目放在服务器的 `/data/project` 目录。
 
 ```shell
 # 1. 停止现有 Jenkins 容器（如有）
@@ -296,13 +310,13 @@ docker run -d \
 
 ![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260316010723179.png)
 
-我的服务器是2核2G，构建后，服务器崩了，直接卡死。
+构建后，服务器崩了，直接卡死。
 
 服务器排查显示：
 
 ![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260316004250083.png)
 
-原因：Jenkins 在容器里打包非常吃 CPU 和内存，把服务器资源瞬间占满。
+原因：我的服务器是2核2G内存，存储只有40G，Jenkins 在容器里打包非常吃 CPU 和内存，把服务器资源占满。
 
 重启服务器后，为了避免再次发生崩溃，限制了 Jenkins 容器的资源使用，避免占满整个服务器。
 
@@ -329,4 +343,4 @@ docker run -d \
 
 限制资源后，服务器没有崩，但是导致 Jenkins 打包项目超时失败。可能还是需要扩容服务器才能解决。
 
-最后使用一个简单的静态项目测试，部署成功。
+最后使用一个简单的静态项目进行测试，部署成功。

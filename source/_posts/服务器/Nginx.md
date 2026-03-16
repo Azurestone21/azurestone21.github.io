@@ -124,12 +124,16 @@ server {
   }
 
   # 新增
-  location /mgmt {
-      alias   project/admin-vue; # 项目存放目录 /usr/local/nginx/project/admin-vue
+  location /blogs {
+      alias  /data/project/admin-vue; # 项目存放目录 /data/project/admin-vue
       index  index.html index.htm;
   }
 }
 ```
+
+`alias` 需要使用绝对路径。使用相对路径会 Nginx 会默认在前面拼接 Nginx 安装目录（/usr/local/nginx/）
+
+打开 `http://服务器IP/blogs` 即可访问项目。
 
 ### 配置 nginx 服务
 
