@@ -12,23 +12,46 @@ tags: [Jenkins, 钉钉机器人]
 ## 配置钉钉机器人
 
 1. 进入钉钉群聊，进入"群设置 -> 群管理 -> 机器人"。
+
+![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260317234228193.png)
+
 2. 点击"添加机器人"，选择"自定义机器人"。
-3. 自定义“机器人名字”。
-4. 开启“消息推送”。
-5. 设置“安全设置”，选择“IP地址(段)”，填入**服务器公网IP**。
-6. 点击"完成"。完成后，会显示"Webhook"，Webhook需要配置到Jenkins中。
+
+![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260317234230881.png)
+
+![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260317234235190.png)
+
+1. 自定义“机器人名字”。设置“安全设置”，选择“IP地址(段)”，填入**服务器公网IP**。
+
+![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260317234255148.png)
+
+4. 点击"完成"。完成后，会显示 Webhook，Webhook需要配置到Jenkins中。
+
+![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260317234257615.png)
 
 ## 配置Jenkins
 
 ### 方式1：安装钉钉插件
 
+![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260317234618791.png)
+
 安装好钉钉插件后，在 Jenkins 首页就会出现"钉钉"选项卡，也可以在"系统管理 -> 系统配置"中找到"钉钉"选项卡。
+
+![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260317234640603.png)
+
+![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260317234643130.png)
 
 1. 进入"钉钉"选项卡，看到“机器人”，点击“新增”。
 2. 填写id、名称、Webhook。
 3. 点击“测试”，如果显示“测试成功”，钉钉群聊会收到一条消息，说明配置成功。
 4. 进入任务，配置/Configuration -> General -> 钉钉机器人，选择配置好的机器人，点击“保存”。
 5. 点击“立即构建”，查看钉钉群聊是否收到部署成功的通知。
+
+![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260317234705030.png)
+
+![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260317234738213.png)
+
+![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260317234716841.png)
 
 ### 方式2：在 执行 shell 脚本 中添加代码
 
@@ -38,7 +61,7 @@ tags: [Jenkins, 钉钉机器人]
 # 记录开始时间
 START_TIME=$(date +'%Y-%m-%d %H:%M:%S')
 
-# 定义发送钉钉通知的函数（复用）
+# 定义发送钉钉通知的函数
 send_dingtalk_msg() {
   local status=$1  # 成功/失败
   local color=$2   # ✅/❌
@@ -72,6 +95,8 @@ exit 0
 send_dingtalk_msg "部署失败" "❌"
 exit 1
 ```
+
+![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260317234728009.png)
 
 ## 测试
 
