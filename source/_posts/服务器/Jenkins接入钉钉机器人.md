@@ -57,20 +57,26 @@ tags: [Jenkins, 钉钉机器人]
 
 #### 自定义消息内容
 
-Jenkins 内置的环境变量：
-
-- EXECUTOR_NAME：构建人姓名
-- EXECUTOR_MOBILE：构建人手机号
-- PROJECT_NAME：项目名称
-- PROJECT_URL：项目地址
-- JOB_NAME：任务名称
-- JOB_URL：任务地址
-- JOB_DURATION：任务持续时间
-- JOB_STATUS：任务状态
-
 ![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260318003605572.png)
 
+不勾选“禁用内置消息”，会发送 Jenkins 内置的消息格式。
+
+![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260318005003387.png)
+
+勾选“禁用内置消息”，只发送自定义消息。
+
 ![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260318003937847.png)
+
+> Jenkins 内置的环境变量：
+>
+> - EXECUTOR_NAME：构建人姓名
+> - EXECUTOR_MOBILE：构建人手机号
+> - PROJECT_NAME：项目名称
+> - PROJECT_URL：项目地址
+> - JOB_NAME：任务名称
+> - JOB_URL：任务地址
+> - JOB_DURATION：任务持续时间
+> - JOB_STATUS：任务状态
 
 ### 方式2：在 执行 shell 脚本 中添加代码
 
