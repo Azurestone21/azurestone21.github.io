@@ -51,8 +51,11 @@ hexo new page <页面名称>
 Hexo 中所有博客文章（post）的默认存放目录是：`博客根目录/source/_posts/`
 
 ```shell
-# 示例1：创建一篇名为「Hexo Fluid 主题使用教程」的文章
-hexo new "Hexo使用教程"
+# 示例1：创建一篇文章（路径：source/_posts/文章标题.md）
+hexo new 文章标题
+
+# 示例2：在指定目录创建文章（路径：source/自定义路径/文章标题.md）
+hexo new -p 自定义路径/文章标题
 ```
 
 ## Front-matter 配置
