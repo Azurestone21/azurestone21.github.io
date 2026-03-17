@@ -44,14 +44,33 @@ tags: [Jenkins, 钉钉机器人]
 1. 进入"钉钉"选项卡，看到“机器人”，点击“新增”。
 2. 填写id、名称、Webhook。
 3. 点击“测试”，如果显示“测试成功”，钉钉群聊会收到一条消息，说明配置成功。
-4. 进入任务，配置/Configuration -> General -> 钉钉机器人，选择配置好的机器人，点击“保存”。
-5. 点击“立即构建”，查看钉钉群聊是否收到部署成功的通知。
 
 ![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260317234705030.png)
 
 ![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260317234738213.png)
 
+4. 进入任务，配置/Configuration -> General -> 钉钉机器人，选择配置好的机器人，点击“保存”。
+
 ![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260317234716841.png)
+
+5. 点击“立即构建”，查看钉钉群聊是否收到部署成功的通知。
+
+#### 自定义消息内容
+
+Jenkins 内置的环境变量：
+
+- EXECUTOR_NAME：构建人姓名
+- EXECUTOR_MOBILE：构建人手机号
+- PROJECT_NAME：项目名称
+- PROJECT_URL：项目地址
+- JOB_NAME：任务名称
+- JOB_URL：任务地址
+- JOB_DURATION：任务持续时间
+- JOB_STATUS：任务状态
+
+![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260318003605572.png)
+
+![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260318003937847.png)
 
 ### 方式2：在 执行 shell 脚本 中添加代码
 
@@ -100,5 +119,10 @@ exit 1
 
 ## 测试
 
-1. 在 Jenkins 中执行构建任务。
+1. 在 Jenkins 中执行构建任务。如果使用插件方式，一定要在任务中配置钉钉机器人，否则不会收到通知。
 2. 查看钉钉群聊，是否收到部署成功/失败的通知。
+
+## 总结
+
+插件方式配置钉钉机器人比较方便，缺点是只能使用 Jenkins 内置的环境变量。
+执行 shell 脚本中添加代码的方式更加灵活，可以自定义消息内容。
