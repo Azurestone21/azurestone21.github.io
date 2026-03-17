@@ -19,16 +19,16 @@
   <meta name="author" content="Azure">
   <meta name="keywords" content="">
   
-    <meta name="description" content="一、生命周期 小程序热启动（后台进入），app.js 里面 onLaunch 获取到的场景值不正确，需要在 onShow 里面获取。  二、API定位Error: MiniProgramError {“errMsg”:”getFuzzyLocation:fail the api need to be declared in the requiredPrivateInfos field in app">
+    <meta name="description" content="一、生命周期1. 小程序热启动（后台进入），app.js 里面 onLaunch 获取到的场景值不正确。  解决：需要在 onShow 里面获取场景值。  二、API1. Error: MiniProgramError {“errMsg”:”getFuzzyLocation:fail the api need to be declared in the requiredPrivateInfos f">
 <meta property="og:type" content="article">
 <meta property="og:title" content="汇总微信小程序开发遇到的坑">
 <meta property="og:url" content="http://example.com/2026/03/04/%E5%B0%8F%E7%A8%8B%E5%BA%8F/%E6%B1%87%E6%80%BB%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E5%BC%80%E5%8F%91%E9%81%87%E5%88%B0%E7%9A%84%E5%9D%91/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="一、生命周期 小程序热启动（后台进入），app.js 里面 onLaunch 获取到的场景值不正确，需要在 onShow 里面获取。  二、API定位Error: MiniProgramError {“errMsg”:”getFuzzyLocation:fail the api need to be declared in the requiredPrivateInfos field in app">
+<meta property="og:description" content="一、生命周期1. 小程序热启动（后台进入），app.js 里面 onLaunch 获取到的场景值不正确。  解决：需要在 onShow 里面获取场景值。  二、API1. Error: MiniProgramError {“errMsg”:”getFuzzyLocation:fail the api need to be declared in the requiredPrivateInfos f">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://cdn.nlark.com/yuque/0/2025/png/2864072/1766117461397-22097f8b-03e8-4f81-a888-aaefd7218a7e.png">
 <meta property="article:published_time" content="2026-03-04T03:43:26.000Z">
-<meta property="article:modified_time" content="2026-03-04T16:10:48.771Z">
+<meta property="article:modified_time" content="2026-03-13T12:25:08.912Z">
 <meta property="article:author" content="Azure">
 <meta property="article:tag" content="微信小程序">
 <meta name="twitter:card" content="summary_large_image">
@@ -225,7 +225,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          792 字
+          834 字
         
       </span>
     
@@ -278,40 +278,47 @@
             
               <div class="markdown-body">
                 
-                <h2 id="一、生命周期"><a href="#一、生命周期" class="headerlink" title="一、生命周期"></a>一、生命周期</h2><ol>
-<li>小程序热启动（后台进入），app.js 里面 onLaunch 获取到的场景值不正确，需要在 onShow 里面获取。</li>
-</ol>
-<h2 id="二、API"><a href="#二、API" class="headerlink" title="二、API"></a>二、API</h2><h3 id="定位"><a href="#定位" class="headerlink" title="定位"></a><strong>定位</strong></h3><p>Error: MiniProgramError {“errMsg”:”getFuzzyLocation:fail the api need to be declared in the requiredPrivateInfos field in app.json&#x2F;ext.json”}</p>
+                <h2 id="一、生命周期"><a href="#一、生命周期" class="headerlink" title="一、生命周期"></a>一、生命周期</h2><p><strong>1. 小程序热启动（后台进入），app.js 里面 onLaunch 获取到的场景值不正确。</strong></p>
+<ul>
+<li><strong>解决</strong>：需要在 onShow 里面获取场景值。</li>
+</ul>
+<h2 id="二、API"><a href="#二、API" class="headerlink" title="二、API"></a>二、API</h2><p><strong>1. Error: MiniProgramError {“errMsg”:”getFuzzyLocation:fail the api need to be declared in the requiredPrivateInfos field in app.json&#x2F;ext.json”}</strong></p>
 <ul>
 <li><strong>解决</strong>：<code>app.json</code> 配置 <code>requiredPrivateInfos: [&#39;getFuzzyLocation&#39;]</code></li>
 </ul>
-<h3 id="路由"><a href="#路由" class="headerlink" title="路由"></a><strong>路由</strong></h3><p>{“errMsg”:”navigateTo:fail APP-SERVICE-SDK:Unknown URL protocol &quot;https:&#x2F;&#x2F;&quot;“}</p>
+<p><strong>2. {“errMsg”:”navigateTo:fail APP-SERVICE-SDK:Unknown URL protocol &quot;https:&#x2F;&#x2F;&quot;“}</strong></p>
 <ul>
 <li><strong>原因</strong>：<code>navigateTo</code> 不能跳转 <code>http/https</code> 链接</li>
 <li><strong>解决</strong>：使用 <code>webview</code> 组件显示</li>
 </ul>
-<h2 id="三、组件"><a href="#三、组件" class="headerlink" title="三、组件"></a>三、组件</h2><h3 id="input"><a href="#input" class="headerlink" title="input"></a>input</h3><ul>
-<li><strong>问题</strong>：使用 <code>type=&quot;nickname&quot;</code>，<code>onInput</code>函数开发工具控制台获取不到值，预览可以</li>
-</ul>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;nickname&quot;</span> <span class="hljs-attr">onInput</span>=<span class="hljs-string">&quot;&#123;()&quot;</span> =<span class="hljs-string">&quot;&quot;</span> /&gt;</span> &#123;&#125;&#125; /&gt;<br></code></pre></td></tr></table></figure>
+<h2 id="三、组件"><a href="#三、组件" class="headerlink" title="三、组件"></a>三、组件</h2><h3 id="input"><a href="#input" class="headerlink" title="input"></a>input</h3><p><strong>1. 使用 <code>type=&quot;nickname&quot;</code>，<code>onInput</code>函数开发工具控制台获取不到值，预览可以</strong></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;nickname&quot;</span> <span class="hljs-attr">onInput</span>=<span class="hljs-string">&quot;&#123;() =&gt; &#123;&#125;&#125; /&gt;</span></span><br></code></pre></td></tr></table></figure>
 
-<h3 id="image"><a href="#image" class="headerlink" title="image"></a>image</h3><h4 id="微信小程序富文本中GIF图片只会播放一次"><a href="#微信小程序富文本中GIF图片只会播放一次" class="headerlink" title="微信小程序富文本中GIF图片只会播放一次"></a><strong>微信小程序富文本中GIF图片只会播放一次</strong></h4><ul>
+<h3 id="textarea"><a href="#textarea" class="headerlink" title="textarea"></a>textarea</h3><p><strong>1. 描述：ios手机，点击弹窗蒙版会穿透到下面，导致输入框被点击到。</strong></p>
+<ul>
+<li>解决：打开弹窗时，禁用 textarea</li>
+</ul>
+<h3 id="image"><a href="#image" class="headerlink" title="image"></a>image</h3><p><strong>1. 微信小程序富文本中GIF图片只会播放一次</strong></p>
+<ul>
 <li><strong>解决</strong>：使用<code>Mphtml</code>插件显示富文本，在微信开发者工具里面可能还是会只播放一次，但是在手机是可以重复播放的。</li>
 </ul>
-<h4 id="图片设置mode-”heightFix”，图片会伸缩一下，再显示正常。"><a href="#图片设置mode-”heightFix”，图片会伸缩一下，再显示正常。" class="headerlink" title="图片设置mode&#x3D;”heightFix”，图片会伸缩一下，再显示正常。"></a>图片设置mode&#x3D;”heightFix”，图片会伸缩一下，再显示正常。</h4><ul>
+<p><strong>2. 图片设置mode&#x3D;”heightFix”，图片会伸缩一下，再显示正常。</strong></p>
+<ul>
 <li><strong>解决</strong>：设置图片的 height: 100%; width: auto；如果 mode 是 widthFix，width: 100%; height: auto。</li>
 </ul>
-<h3 id="scroll-view"><a href="#scroll-view" class="headerlink" title="scroll-view"></a><strong>scroll-view</strong></h3><p><strong>在Dom结构发生变化会自动回滚到顶部</strong></p>
-<ol>
-<li><font style="color:rgb(0, 0, 0);">避免同级节点操作。把弹窗放在</font><code>&lt;font style=&quot;color:rgb(0, 0, 0);&quot;&gt;ScrollView&lt;/font&gt;</code><font style="color:rgb(0, 0, 0);">里面。</font><ol>
+<h3 id="scroll-view"><a href="#scroll-view" class="headerlink" title="scroll-view"></a><strong>scroll-view</strong></h3><p><strong>1. 在Dom结构发生变化会自动回滚到顶部</strong></p>
+<ul>
+<li><strong>解决</strong>：<ol>
+<li><font style="color:rgb(0, 0, 0);">避免同级节点操作。把弹窗放在</font><code>&lt;font style=&quot;color:rgb(0, 0, 0);&quot;&gt;ScrollView&lt;/font&gt;</code><font style="color:rgb(0, 0, 0);">里面。</font></li>
 <li><font style="color:rgb(0, 0, 0);">例如 关闭 </font><code>&lt;font style=&quot;color:rgb(0, 0, 0);&quot;&gt;Modal&lt;/font&gt;</code><font style="color:rgb(0, 0, 0);"> 后，</font><code>&lt;font style=&quot;color:rgb(0, 0, 0);&quot;&gt;ScrollView&lt;/font&gt;</code><font style="color:rgb(0, 0, 0);"> 会自动滚动会顶部</font></li>
-</ol>
-</li>
 <li><font style="color:rgb(0, 0, 0);">使用 </font><code>&lt;font style=&quot;color:rgb(0, 0, 0);&quot;&gt;Block&lt;/font&gt;</code><font style="color:rgb(0, 0, 0);"> 组件包裹</font><code>&lt;font style=&quot;color:rgb(0, 0, 0);&quot;&gt;ScrollView&lt;/font&gt;</code><font style="color:rgb(0, 0, 0);">的同级节点。</font></li>
 </ol>
+</li>
+</ul>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">ScrollView</span>&gt;</span><br>  ...内容<br><span class="hljs-tag">&lt;/<span class="hljs-name">ScrollView</span>&gt;</span><br><br><span class="hljs-tag">&lt;<span class="hljs-name">Modal</span> <span class="hljs-attr">visible</span>=<span class="hljs-string">&#123;serviceVisiable&#125;</span> <span class="hljs-attr">onClose</span>=<span class="hljs-string">&#123;()</span> =&gt;</span> setServiceVisiable(false)&#125; /&gt;<br><br><span class="hljs-comment">&lt;!-- ——————————  改为 ———————————— --&gt;</span><br><br><span class="hljs-tag">&lt;<span class="hljs-name">ScrollView</span>&gt;</span><br>  ...内容<br>  <span class="hljs-comment">&lt;!-- 把弹窗放在ScrollView里面 --&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">Modal</span> <span class="hljs-attr">visible</span>=<span class="hljs-string">&#123;serviceVisiable&#125;</span> <span class="hljs-attr">onClose</span>=<span class="hljs-string">&#123;()</span> =&gt;</span> setServiceVisiable(false)&#125; /&gt;<br><span class="hljs-tag">&lt;/<span class="hljs-name">ScrollView</span>&gt;</span><br></code></pre></td></tr></table></figure>
 
-<h4 id="scroll-view里面设置tab切换列表内容，切换时会先往下滚动一下"><a href="#scroll-view里面设置tab切换列表内容，切换时会先往下滚动一下" class="headerlink" title="scroll-view里面设置tab切换列表内容，切换时会先往下滚动一下"></a>scroll-view里面设置tab切换列表内容，切换时会先往下滚动一下</h4><ul>
+<p><strong>2. scroll-view里面设置tab切换列表内容，切换时会先往下滚动一下</strong></p>
+<ul>
 <li><strong>原因</strong>：设置了<code>scroll-with-animation=&quot;true&quot;</code>。</li>
 <li><strong>解决</strong>：<ul>
 <li><ol>
@@ -325,7 +332,8 @@
 </ul>
 </li>
 </ul>
-<h3 id="video"><a href="#video" class="headerlink" title="video"></a>video</h3><h4 id="立即播放时会先黑屏加载"><a href="#立即播放时会先黑屏加载" class="headerlink" title="立即播放时会先黑屏加载"></a>立即播放时会先黑屏加载</h4><ul>
+<h3 id="video"><a href="#video" class="headerlink" title="video"></a>video</h3><p><strong>1. 立即播放时会先黑屏加载</strong></p>
+<ul>
 <li><strong>背景</strong>：视频本地缓存，video 加载完成后，即 <font style="color:rgb(53, 53, 53);">loadedmetadata</font> 事件完成后，开始播放时仍会先显示黑屏。</li>
 <li><strong>原因</strong></li>
 </ul>
@@ -338,7 +346,8 @@
 </ul>
 </li>
 </ul>
-<h3 id="web-view"><a href="#web-view" class="headerlink" title="web-view"></a>web-view</h3><h4 id="IOS-真机，web-view显示H5，H5的安全区不生效"><a href="#IOS-真机，web-view显示H5，H5的安全区不生效" class="headerlink" title="IOS 真机，web-view显示H5，H5的安全区不生效"></a>IOS 真机，web-view显示H5，H5的安全区不生效</h4><ul>
+<h3 id="web-view"><a href="#web-view" class="headerlink" title="web-view"></a>web-view</h3><p><strong>1. IOS 真机，web-view显示H5，H5的安全区不生效</strong></p>
+<ul>
 <li><strong>背景</strong>：在微信小程序 <code>web-view</code> 页面显示 H5，H5 也是自己的项目，H5 中使用<code>safe-area-inset-bottom</code>占位底部安全区域。安卓手机和微信开发工具都没有问题，但是 IOS 手机在浏览器中也生效，但是在小程序 <code>web-view</code> 中不生效。</li>
 </ul>
 <figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-selector-class">.safe-area</span> &#123;<br>  <span class="hljs-attribute">width</span>: <span class="hljs-number">100%</span>;<br>  <span class="hljs-attribute">height</span>: <span class="hljs-built_in">constant</span>(safe-area-inset-bottom);<br>  <span class="hljs-attribute">height</span>: <span class="hljs-built_in">env</span>(safe-area-inset-bottom);<br>&#125;<br></code></pre></td></tr></table></figure>
@@ -442,6 +451,12 @@
                 <div class="post-prevnext my-3">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2026/03/10/%E6%A1%8C%E9%9D%A2%E7%AB%AF/Electron%E6%89%93%E5%8C%85/" title="Electron打包">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Electron打包</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">
