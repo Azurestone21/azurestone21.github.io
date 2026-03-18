@@ -84,7 +84,7 @@ cat /data/jenkins_home/.ssh/id_rsa.pub
 
 ## 安装 Jenkins 插件
 
-- NodeJS（需要在系统管理 → 全局工具配置中配置）
+- NodeJS（需要在系统管理 → 全局工具配置中配置，版本需要适配 Hexo 项目依赖，我这里使用 20.20.0）
 - Git
 
 ## 新建任务
@@ -140,6 +140,12 @@ cd ${WORKSPACE}
 hexo deploy
 ```
 
+## 自动部署
+
+1. 进入任务 -> 配置
+2. Triggers -> 选择“定时构建”，日程表 中填入 Cron 表达式。我设置的是每日0点执行一次。填入 `H 0 * * *` 。（用 `H 0 * * *` 替代 `0 0 * * *` 作用是分散负载、避免服务器峰值压力）
+3. 保存配置。
+
 ## 解决错误
 
 ```
@@ -159,3 +165,7 @@ fatal: unable to auto-detect email address (got 'jenkins@545faf00ffb9.(none)')
 error: src refspec HEAD does not match any
 error: failed to push some refs to 'github.com:Azurestone21/azurestone21.github.io.git'
 ```
+
+需要设置：
+git config user.email "Your Email"
+git config user.name "Your Name"
