@@ -56,6 +56,7 @@ docker run -d \
   -v /data/jenkins-npm-cache:/root/.npm \
   -v /usr/local/nginx/sbin/nginx:/usr/local/nginx/sbin/nginx \
   --restart=always \
+  -e TZ="Asia/Shanghai" \
   jenkins/jenkins:2.504.3-lts
 ```
 
