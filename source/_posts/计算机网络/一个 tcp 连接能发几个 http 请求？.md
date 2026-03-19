@@ -2,7 +2,7 @@
 title: 一个 TCP 连接能发几个 HTTP 请求？
 date: 2024-06-19 21:18:03
 categories: [计算机网络]
-tags: [计算机网络]
+tags: [TCP, HTTP, 面试题]
 ---
 
 理论上，一个TCP连接可以发送无限个HTTP请求。
