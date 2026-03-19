@@ -1,5 +1,5 @@
 ---
-title: 安装nvm
+title: Linux安装nvm
 date: 2023-05-10 10:00:00
 category: [服务器]
 tags: [Linux, nvm]
