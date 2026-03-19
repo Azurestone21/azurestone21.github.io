@@ -1,8 +1,8 @@
 ---
 title: Electron入门
 date: 2025-12-28 10:44:11
-categories: [技术教程]
-tags: [electron]
+categories: [桌面端]
+tags: [Electron]
 ---
 
 https://www.electronjs.org/zh/docs/latest/

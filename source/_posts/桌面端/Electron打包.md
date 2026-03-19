@@ -1,7 +1,7 @@
 ---
 title: Electron打包
 date: 2026-03-10 23:49:30
-categories: [技术教程]
+categories: [桌面端]
 tags: [Electron]
 ---
 
