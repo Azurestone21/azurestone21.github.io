@@ -1,7 +1,7 @@
 ---
 title: Jenkins自动部署博客到Github Pages
 date: 2026-03-18 21:49:53
-category: 服务器
+category: [服务器]
 tags: [Jenkins]
 ---
 
@@ -16,7 +16,6 @@ chmod 700 /data/jenkins_home/.ssh
 
 # 2. 生成 SSH 密钥（一路回车，不设密码）
 ssh-keygen -t rsa -b 4096 -C "你的邮箱@example.com" -f /data/jenkins_home/.ssh/id_rsa
-# ssh-keygen -t rsa -b 4096 -C "1055380813@qq.com" -f /data/jenkins_home/.ssh/id_rsa
 
 # 3. 修改权限（关键！Jenkins 容器内用 1000 用户运行）
 chown -R 1000:1000 /data/jenkins_home/.ssh
@@ -77,7 +76,7 @@ ssh -i /var/jenkins_home/.ssh/id_rsa -o UserKnownHostsFile=/var/jenkins_home/.ss
 ## 配置 GitHub 公钥
 
 ```shell
-# 查看公钥（复制到 GitHub）
+# 查看公钥
 cat /data/jenkins_home/.ssh/id_rsa.pub
 ```
 
@@ -85,7 +84,7 @@ cat /data/jenkins_home/.ssh/id_rsa.pub
 
 ## 安装 Jenkins 插件
 
-- NodeJS（需要在系统管理 → 全局工具配置中配置，版本需要适配 Hexo 项目依赖，我这里使用 20.20.0）
+- NodeJS（需要在系统管理 → 全局工具配置中配置，版本需要适配 Hexo 项目依赖，我的hexo版本是8.1.0，使用nodejs 20.20.0）
 - Git
 
 ## 新建任务
