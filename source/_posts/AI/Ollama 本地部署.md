@@ -108,3 +108,19 @@ ollama run <model-name>
 ## 访问 Ollama API
 
 Ollama 默认在 http://localhost:11434 上提供服务。
+
+## 关闭/打开思考过程
+
+发送消息后，模型再生成回答之前，会先生成一个思考过程，展示模型的思考过程和推理步骤。但是这个过程非常慢，影响效率。
+
+```shell
+# 关闭思考过程
+ollama run <model-name> --think=false
+# 或 在对话中输入
+/set nothink
+
+# 打开思考过程
+ollama run <model-name> --think=true
+# 或 在对话中输入
+/set think
+```
