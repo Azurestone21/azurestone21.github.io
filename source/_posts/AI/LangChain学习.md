@@ -384,11 +384,15 @@ chat_prompt_template = ChatPromptTemplate.from_messages([
 ])
 ```
 
+![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260328002755597.png)
+
 ---
 
-## Chain 链（管道调用）
+### Chain 链（管道调用）
 
 将多个组件**串联**，上一个组件的输出自动作为下一个组件的输入，实现数据自动化流转。
+
+![](https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260328002755598.png)
 
 #### 核心语法
 
