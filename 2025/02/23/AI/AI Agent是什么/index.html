@@ -1,0 +1,771 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="一、AI Agent 核心概念1. 定义AI Agent &#x3D; AI管家，是能够感知环境、自主决策、使用工具完成任务的智能实体。 2. 核心能力 自主性：独立思考和决策 工具使用：调用各种外部能力（如搜索、API、插件） 任务规划：拆解并执行复杂任务  3. 核心架构 User Request：用户发起请求 Agent：核心大脑，统筹调度 Tools：外部工具集 Memory：记忆模块，存">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AI Agent是什么">
+<meta property="og:url" content="http://example.com/2025/02/23/AI/AI%20Agent%E6%98%AF%E4%BB%80%E4%B9%88/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="一、AI Agent 核心概念1. 定义AI Agent &#x3D; AI管家，是能够感知环境、自主决策、使用工具完成任务的智能实体。 2. 核心能力 自主性：独立思考和决策 工具使用：调用各种外部能力（如搜索、API、插件） 任务规划：拆解并执行复杂任务  3. 核心架构 User Request：用户发起请求 Agent：核心大脑，统筹调度 Tools：外部工具集 Memory：记忆模块，存">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-02-23T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-03-26T16:06:05.036Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="AI Agent">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>AI Agent是什么 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">AI Agent是什么</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-02-23 10:00" pubdate>
+          2025年2月23日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          10 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">AI Agent是什么</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="一、AI-Agent-核心概念"><a href="#一、AI-Agent-核心概念" class="headerlink" title="一、AI Agent 核心概念"></a>一、AI Agent 核心概念</h2><h3 id="1-定义"><a href="#1-定义" class="headerlink" title="1. 定义"></a>1. 定义</h3><p>AI Agent &#x3D; <strong>AI管家</strong>，是能够<strong>感知环境、自主决策、使用工具完成任务</strong>的智能实体。</p>
+<h3 id="2-核心能力"><a href="#2-核心能力" class="headerlink" title="2. 核心能力"></a>2. 核心能力</h3><ul>
+<li><strong>自主性</strong>：独立思考和决策</li>
+<li><strong>工具使用</strong>：调用各种外部能力（如搜索、API、插件）</li>
+<li><strong>任务规划</strong>：拆解并执行复杂任务</li>
+</ul>
+<h3 id="3-核心架构"><a href="#3-核心架构" class="headerlink" title="3. 核心架构"></a>3. 核心架构</h3><ul>
+<li><strong>User Request</strong>：用户发起请求</li>
+<li><strong>Agent</strong>：核心大脑，统筹调度</li>
+<li><strong>Tools</strong>：外部工具集</li>
+<li><strong>Memory</strong>：记忆模块，存储上下文</li>
+<li><strong>Planning</strong>：任务规划模块，分解复杂任务</li>
+</ul>
+<h3 id="4-与传统大模型（如ChatGPT）的区别"><a href="#4-与传统大模型（如ChatGPT）的区别" class="headerlink" title="4. 与传统大模型（如ChatGPT）的区别"></a>4. 与传统大模型（如ChatGPT）的区别</h3><table>
+<thead>
+<tr>
+<th>对比维度</th>
+<th>传统大模型</th>
+<th>AI Agent</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>定位</td>
+<td>被动响应</td>
+<td>主动执行</td>
+</tr>
+<tr>
+<td>信息获取</td>
+<td>仅限训练数据</td>
+<td>可实时搜索&#x2F;检索知识库</td>
+</tr>
+<tr>
+<td>能力边界</td>
+<td>只能对话</td>
+<td>可调用工具、执行操作</td>
+</tr>
+<tr>
+<td>任务处理</td>
+<td>单轮回答</td>
+<td>多步规划、复杂任务拆解</td>
+</tr>
+<tr>
+<td>应用场景</td>
+<td>咨询问答</td>
+<td>实际业务流程自动化</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="二、提示词（Prompt）设计"><a href="#二、提示词（Prompt）设计" class="headerlink" title="二、提示词（Prompt）设计"></a>二、提示词（Prompt）设计</h2><h3 id="1-定义-1"><a href="#1-定义-1" class="headerlink" title="1. 定义"></a>1. 定义</h3><p>提示词 &#x3D; 与AI沟通的<strong>说明书</strong>，是开发者赋予Bot的身份、能力和行为规范，决定了Bot的响应质量和风格。</p>
+<ul>
+<li>帮助用户控制语言模型输出，适配特定需求</li>
+<li>对措辞和设计敏感，需要精心制定准则</li>
+</ul>
+<h3 id="2-设计四要素"><a href="#2-设计四要素" class="headerlink" title="2. 设计四要素"></a>2. 设计四要素</h3><ul>
+<li><strong>角色定位</strong>：明确Bot身份，建立专业形象</li>
+<li><strong>技能描述</strong>：清晰目标，让Bot知道要做什么</li>
+<li><strong>输出格式</strong>：结构化回复要求，确保输出规范</li>
+<li><strong>约束条件</strong>：限制不当行为，保证安全合规</li>
+</ul>
+<hr>
+<h2 id="三、RAG-技术与知识库构建"><a href="#三、RAG-技术与知识库构建" class="headerlink" title="三、RAG 技术与知识库构建"></a>三、RAG 技术与知识库构建</h2><h3 id="1-RAG-基础原理"><a href="#1-RAG-基础原理" class="headerlink" title="1. RAG 基础原理"></a>1. RAG 基础原理</h3><p>RAG（Retrieval-Augmented Generation，检索增强生成）是<strong>结合知识检索和语言生成</strong>的AI技术，主要用于解决大模型<strong>幻觉问题</strong>。</p>
+<h4 id="传统LLM的缺陷"><a href="#传统LLM的缺陷" class="headerlink" title="传统LLM的缺陷"></a>传统LLM的缺陷</h4><ul>
+<li>知识滞后：无法获取训练数据之外的最新知识</li>
+<li>容易产生幻觉：编造不存在的信息</li>
+</ul>
+<h4 id="RAG-核心流程"><a href="#RAG-核心流程" class="headerlink" title="RAG 核心流程"></a>RAG 核心流程</h4><ol>
+<li><strong>Retrieve（检索）</strong>：将用户问题（Query）向量化后，在知识库&#x2F;向量数据库中检索相关上下文（Context）</li>
+<li><strong>Augment（增强）</strong>：将原始问题与检索到的上下文融合，生成新的Prompt</li>
+<li><strong>Generate（生成）</strong>：将融合后的Prompt输入大模型，基于检索内容生成最终回答</li>
+</ol>
+<h3 id="2-RAG-知识库构建"><a href="#2-RAG-知识库构建" class="headerlink" title="2. RAG 知识库构建"></a>2. RAG 知识库构建</h3><h4 id="核心流程"><a href="#核心流程" class="headerlink" title="核心流程"></a>核心流程</h4><p><strong>文档准备 → 文档切分 → 文档向量化</strong></p>
+<h4 id="关键问题解答"><a href="#关键问题解答" class="headerlink" title="关键问题解答"></a>关键问题解答</h4><ul>
+<li><strong>文档为什么要切片？</strong><br>为了适应大语言模型的上下文长度限制，并提升检索的精确度和效率。</li>
+<li><strong>文档向量化原因？</strong><br>将文本进行向量数字化，便于计算问题和文档的相似性，实现高效语义检索。</li>
+</ul>
+<hr>
+<h2 id="四、Function-Call（函数调用）"><a href="#四、Function-Call（函数调用）" class="headerlink" title="四、Function Call（函数调用）"></a>四、Function Call（函数调用）</h2><h3 id="1-定义-2"><a href="#1-定义-2" class="headerlink" title="1. 定义"></a>1. 定义</h3><p>2023年6月13日 OpenAI 公布的功能，指在语言模型中集成<strong>外部功能或API的调用能力</strong>，让模型在生成文本过程中可调用外部函数&#x2F;服务，获取额外数据或执行特定任务。</p>
+<h3 id="2-应用基本流程（简化）"><a href="#2-应用基本流程（简化）" class="headerlink" title="2. 应用基本流程（简化）"></a>2. 应用基本流程（简化）</h3><ol>
+<li>输入用户请求到大语言模型</li>
+<li>模型判断<strong>是否需要调用外部信息</strong><ul>
+<li><strong>是</strong>：<ol>
+<li>匹配外部函数</li>
+<li>选择合适的外部API</li>
+<li>根据API逻辑生成回复</li>
+</ol>
+</li>
+<li><strong>否</strong>：直接生成文本回复</li>
+</ul>
+</li>
+<li>输出最终结果</li>
+</ol>
+<hr>
+<h2 id="五、工作流体系"><a href="#五、工作流体系" class="headerlink" title="五、工作流体系"></a>五、工作流体系</h2><h3 id="1-两种工作流类型对比"><a href="#1-两种工作流类型对比" class="headerlink" title="1. 两种工作流类型对比"></a>1. 两种工作流类型对比</h3><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>工作流（Workflow）</th>
+<th>对话流（Chatflow）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>适用场景</td>
+<td>功能类、数据处理</td>
+<td>对话类、交互式应用</td>
+</tr>
+<tr>
+<td>典型案例</td>
+<td>报告生成、海报制作、数据分析</td>
+<td>智能客服、AI助手、虚拟伴侣</td>
+</tr>
+<tr>
+<td>上下文</td>
+<td>不支持对话历史</td>
+<td>支持读取对话历史</td>
+</tr>
+<tr>
+<td>会话管理</td>
+<td>无会话概念</td>
+<td>必须传入会话名称</td>
+</tr>
+<tr>
+<td>发布渠道</td>
+<td>API、模板、商店</td>
+<td>全渠道（含社交平台）</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="六、总结"><a href="#六、总结" class="headerlink" title="六、总结"></a>六、总结</h2><ol>
+<li><strong>AI Agent</strong>：感知环境、自主决策、使用工具完成任务的智能实体，是“能干活的助手”</li>
+<li><strong>Agent vs 大模型</strong>：大模型是“聊天对象”，Agent不仅能聊，还能主动执行任务</li>
+<li><strong>提示词</strong>：搭建智能体的第一步，核心是明确角色、技能、格式与约束</li>
+<li><strong>RAG</strong>：通过“检索+生成”解决大模型幻觉与知识滞后问题，知识库构建核心是“文档切分+向量化”</li>
+<li><strong>Function Call</strong>：让模型具备调用外部工具&#x2F;API的能力，突破自身能力边界</li>
+<li><strong>工作流</strong>：<ul>
+<li><strong>Workflow</strong>：适合一次性数据处理、自动化任务</li>
+<li><strong>Chatflow</strong>：适合多轮对话、交互式场景</li>
+</ul>
+</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/AI/" class="category-chain-item">AI</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/AI-Agent/" class="print-no-link">#AI Agent</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>AI Agent是什么</div>
+      <div>http://example.com/2025/02/23/AI/AI Agent是什么/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年2月23日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/08/26/CSS/css%E5%AE%9E%E7%8E%B0%E6%AF%9B%E7%8E%BB%E7%92%83%E6%95%88%E6%9E%9C/" title="css实现毛玻璃效果">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">css实现毛玻璃效果</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/02/23/AI/OpenAI%E5%BA%93/" title="OpenAI库">
+                        <span class="hidden-mobile">OpenAI库</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

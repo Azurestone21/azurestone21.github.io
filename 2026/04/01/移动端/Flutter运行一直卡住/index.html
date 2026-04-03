@@ -1,0 +1,661 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="最近在运行 flutter run 时，一直启动不了，出现了 Waiting for another flutter command to release the startup lock… 排查执行 flutter doctor 命令，出现了以下错误： 1234567891011121314151617181920212223242526272829303132333435363738Comma">
+<meta property="og:type" content="article">
+<meta property="og:title" content="移动端&#x2F;flutter运行显示Flutter运行显示Waiting for another flutter command to release the startup lock...">
+<meta property="og:url" content="http://example.com/2026/04/01/%E7%A7%BB%E5%8A%A8%E7%AB%AF/Flutter%E8%BF%90%E8%A1%8C%E4%B8%80%E7%9B%B4%E5%8D%A1%E4%BD%8F/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="最近在运行 flutter run 时，一直启动不了，出现了 Waiting for another flutter command to release the startup lock… 排查执行 flutter doctor 命令，出现了以下错误： 1234567891011121314151617181920212223242526272829303132333435363738Comma">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-04-01T01:26:44.000Z">
+<meta property="article:modified_time" content="2026-04-03T03:13:48.768Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="Flutter">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>移动端/flutter运行显示Flutter运行显示Waiting for another flutter command to release the startup lock... - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">移动端/flutter运行显示Flutter运行显示Waiting for another flutter command to release the startup lock...</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-04-01 09:26" pubdate>
+          2026年4月1日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          639 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          6 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">移动端/flutter运行显示Flutter运行显示Waiting for another flutter command to release the startup lock...</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>最近在运行 <code>flutter run</code> 时，一直启动不了，出现了 Waiting for another flutter command to release the startup lock…</p>
+<h2 id="排查"><a href="#排查" class="headerlink" title="排查"></a>排查</h2><p>执行 <code>flutter doctor</code> 命令，出现了以下错误：</p>
+<figure class="highlight subunit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs subunit">Command exited with code 1: git fetch --tags<br>Standard error: From https://github.com/flutter/flutter<br> + f468f3366c2...db50e20168d stable                   -&gt; origin/stable  (forced update)<br> * [new branch]              3.29                     -&gt; origin/3.29<br> * [new branch]              3.33.0<span class="hljs-string">-1</span>.0.pre<span class="hljs-string">-1343</span>      -&gt; origin/3.33.0<span class="hljs-string">-1</span>.0.pre<span class="hljs-string">-1343</span><br> * [new branch]              add-ttff-metrics         -&gt; origin/add-ttff-metrics<br> * [new branch]              add-velocity-to-dragtargedetails -&gt; origin/add-velocity-to-dragtargedetails<br> * [new branch]              all_feature_flags        -&gt; origin/all_feature_flags<br><br>...<br><br><span class="hljs-keyword">error: </span>fetching ref refs/remotes/origin/stable failed: incorrect old value provided<br><span class="hljs-keyword">error: </span>fetching ref refs/remotes/origin/beta failed: incorrect old value provided<br><span class="hljs-keyword">error: </span>fetching ref refs/remotes/origin/flutter<span class="hljs-string">-3</span>.10-candidate.1 failed: incorrect old value provided<br><span class="hljs-keyword">error: </span>fetching ref refs/remotes/origin/flutter<span class="hljs-string">-3</span>.13-candidate.0 failed: incorrect old value provided<br><span class="hljs-keyword">error: </span>fetching ref refs/remotes/origin/main failed: incorrect old value provided<br><span class="hljs-keyword">error: </span>fetching ref refs/remotes/origin/master failed: incorrect old value provided<br><br><br>Flutter assets will be downloaded from https://mirrors.tuna.tsinghua.edu.cn/flutter. Make sure you trust this source!<br>Doctor summary (to see all details, run flutter doctor -v):<br>[√] Flutter (Channel stable, 3.10.5, on Microsoft Windows [版本 10.0.22631.3007], locale zh-CN)<br>[√] Windows Version (Installed version of Windows is version 10 or higher)<br>[X] Android toolchain - develop for Android devices<br>    X Unable to locate Android SDK.<br>      Install Android Studio from: https://developer.android.com/studio/index.html<br>      On first launch it will assist you in installing the Android SDK components.<br>      (or visit https://flutter.dev/docs/get-started/install/windows#android-setup for detailed instructions).<br>      If the Android SDK has been installed to a custom location, please use<br>      `flutter config --android-sdk` to update to that location.<br><br>[√] Chrome - develop for the web<br>[√] Visual Studio - develop for Windows (Visual Studio Community 2022 17.14.29 (March 2026))<br>[!] Android Studio (not installed)<br>[√] Connected device (3 available)<br>[√] Network resources<br><br>! Doctor found issues in 2 categories.<br></code></pre></td></tr></table></figure>
+
+<h2 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h2><p>Flutter SDK 所在的 Git 仓库拉取更新时出错，导致 flutter doctor 检查 Git 状态失败。</p>
+<ul>
+<li>本地仓库和远程不一致</li>
+<li>Git 被强制更新（forced update）</li>
+<li>权限 &#x2F; 网络导致 Git 拉取标签失败</li>
+<li>Flutter SDK 文件夹被占用、损坏</li>
+</ul>
+<p>flutter doctor 会检查 Git 更新，所以直接抛出 exit code 1。</p>
+<h2 id="修复"><a href="#修复" class="headerlink" title="修复"></a>修复</h2><h3 id="步骤-1：进入-Flutter-SDK-根目录"><a href="#步骤-1：进入-Flutter-SDK-根目录" class="headerlink" title="步骤 1：进入 Flutter SDK 根目录"></a>步骤 1：进入 Flutter SDK 根目录</h3><p>在这个目录打开 CMD &#x2F; PowerShell</p>
+<h3 id="步骤-2：强制修复-Git-状态"><a href="#步骤-2：强制修复-Git-状态" class="headerlink" title="步骤 2：强制修复 Git 状态"></a>步骤 2：强制修复 Git 状态</h3><p>依次执行下面 3 条命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash">git reset --hard origin/stable<br><span class="hljs-comment"># E:\SDK\flutter_3.10.5&gt;git reset --hard origin/stable</span><br><span class="hljs-comment"># Updating files: 100% (7445/7445), done.</span><br><span class="hljs-comment"># HEAD is now at f468f3366c [flutter_releases] Flutter stable 3.10.6 Framework Cherrypicks (#130446)</span><br><br>git clean -fd<br>git fetch --tags<br></code></pre></td></tr></table></figure>
+
+<h3 id="步骤-3：再运行-flutter-doctor"><a href="#步骤-3：再运行-flutter-doctor" class="headerlink" title="步骤 3：再运行 flutter doctor"></a>步骤 3：再运行 flutter doctor</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">flutter doctor<br><br></code></pre></td></tr></table></figure>
+
+<h2 id="运行结果"><a href="#运行结果" class="headerlink" title="运行结果"></a>运行结果</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs xml">E:\SDK\flutter_3.10.5&gt;flutter doctor<br>Checking Dart SDK version...<br>Downloading Dart SDK from Flutter engine cdbeda788a293fa29665dc3fa3d6e63bd221cb0d...<br>Downloading the Dart SDK using the BITS service failed, retrying with WebRequest...<br>Invoke-WebRequest : <span class="hljs-meta">&lt;!DOCTYPE <span class="hljs-keyword">html</span>&gt;</span> <span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span> <span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span> <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">charset</span>=<span class="hljs-string">&quot;UTF-8&quot;</span>&gt;</span> <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">http-equiv</span>=<span class="hljs-string">&quot;X-UA-Compatible&quot;</span> <span class="hljs-attr">content</span>=<span class="hljs-string">&quot;IE</span></span><br><span class="hljs-string"><span class="hljs-tag">=edge&quot;</span>&gt;</span> <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;viewport&quot;</span> <span class="hljs-attr">content</span>=<span class="hljs-string">&quot;width=device-width, initial-scale=1&quot;</span>&gt;</span> <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;description&quot;</span> <span class="hljs-attr">content</span>=<span class="hljs-string">&quot;您访问的</span></span><br><span class="hljs-string"><span class="hljs-tag">资源未能找到 | 404 | 清华大学开源软件镜像站，致力于为国内和校内用户提供高质量的开源软件镜像、Linux 镜像源服务，帮助用户</span></span><br><span class="hljs-string"><span class="hljs-tag">更方便地获取开源软件。本镜像站由清华大学 TUNA 协会负责运行维护。&quot;</span>&gt;</span> <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;keywords&quot;</span> <span class="hljs-attr">content</span>=<span class="hljs-string">&quot;镜像站,镜像源,Linux,</span></span><br><span class="hljs-string"><span class="hljs-tag">软件源,开源&quot;</span>&gt;</span><br><br>Error: Unable to update Dart SDK. Retrying...<br></code></pre></td></tr></table></figure>
+
+<h3 id="原因-1"><a href="#原因-1" class="headerlink" title="原因"></a>原因</h3><ol>
+<li>我的Flutter 安装包是 3.10.5，但 stable 稳定分支在云端已经更新到了 3.10.6，执行 git reset –hard origin&#x2F;stable，把本地 Flutter 强制同步到了最新的稳定版。</li>
+<li>更新了 Flutter SDK，所以会提示下载新的 Dart SDK。</li>
+<li>本地使用的是清华镜像源，而镜像地址找不到新版本的 Dart SDK。</li>
+</ol>
+<h3 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h3><p>使用官方镜像源（需要梯子）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">set</span> PUB_HOSTED_URL=https://pub.flutter-io.cn<br><span class="hljs-built_in">set</span> FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn<br></code></pre></td></tr></table></figure>
+
+<p>重新运行 flutter doctor。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A7%BB%E5%8A%A8%E7%AB%AF/" class="category-chain-item">移动端</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Flutter/" class="print-no-link">#Flutter</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>移动端/flutter运行显示Flutter运行显示Waiting for another flutter command to release the startup lock...</div>
+      <div>http://example.com/2026/04/01/移动端/Flutter运行一直卡住/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年4月1日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/04/01/%E5%B0%8F%E7%A8%8B%E5%BA%8F/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%B7%AF%E7%94%B1%E7%9B%91%E5%90%AC%E5%99%A8events%E4%B8%AD%E8%8E%B7%E5%8F%96%E7%9A%84%E6%98%AF%E8%B7%B3%E8%BD%AC%E5%90%8E%E9%A1%B5%E9%9D%A2%E7%9A%84%E6%95%B0%E6%8D%AE/" title="微信小程序路由监听器events中获取的是跳转后页面的数据">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">微信小程序路由监听器events中获取的是跳转后页面的数据</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/03/28/%E6%8A%80%E6%9C%AF%E6%95%99%E7%A8%8B/Visual%20Studio%20%E6%95%99%E7%A8%8B/" title="Visual Studio 教程">
+                        <span class="hidden-mobile">Visual Studio 教程</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

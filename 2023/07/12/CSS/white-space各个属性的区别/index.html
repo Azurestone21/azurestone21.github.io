@@ -1,0 +1,744 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="在 CSS 中，white-space 属性用于控制元素内空白字符（空格、制表符 \t、换行符 \n 等）的处理方式，以及文本是否会在容器边界自动换行。它直接影响文本的排版和可读性，是前端布局中处理文本格式的核心属性之一。 1. white-space: normal（正常处理）默认属性，完全遵循浏览器对文本的“常规渲染规则”。  合并空白字符：多个连续的空格、制表符会被合并为 1 个空格；文本开">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CSS &#96;white-space&#96; 各个属性的区别">
+<meta property="og:url" content="http://example.com/2023/07/12/CSS/white-space%E5%90%84%E4%B8%AA%E5%B1%9E%E6%80%A7%E7%9A%84%E5%8C%BA%E5%88%AB/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="在 CSS 中，white-space 属性用于控制元素内空白字符（空格、制表符 \t、换行符 \n 等）的处理方式，以及文本是否会在容器边界自动换行。它直接影响文本的排版和可读性，是前端布局中处理文本格式的核心属性之一。 1. white-space: normal（正常处理）默认属性，完全遵循浏览器对文本的“常规渲染规则”。  合并空白字符：多个连续的空格、制表符会被合并为 1 个空格；文本开">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-07-12T07:32:12.000Z">
+<meta property="article:modified_time" content="2026-03-19T16:06:05.151Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="CSS">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>CSS `white-space` 各个属性的区别 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">CSS `white-space` 各个属性的区别</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-07-12 15:32" pubdate>
+          2023年7月12日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          11 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">CSS `white-space` 各个属性的区别</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>在 CSS 中，<code>white-space</code> 属性用于控制元素内<strong>空白字符（空格、制表符 <strong><code>\t</code></strong>、换行符 <strong><code>\n</code></strong> 等）的处理方式</strong>，以及文本是否会在容器边界自动换行。它直接影响文本的排版和可读性，是前端布局中处理文本格式的核心属性之一。</p>
+<h2 id="1-white-space-normal（正常处理）"><a href="#1-white-space-normal（正常处理）" class="headerlink" title="1. white-space: normal（正常处理）"></a>1. <code>white-space: normal</code>（正常处理）</h2><p><strong>默认属性</strong>，完全遵循浏览器对文本的“常规渲染规则”。</p>
+<ul>
+<li><strong>合并空白字符</strong>：多个连续的空格、制表符会被合并为 1 个空格；文本开头&#x2F;结尾的空白字符会被忽略（除非被其他元素包裹）。</li>
+<li><strong>自动换行</strong>：当文本长度超过容器宽度时，会在单词边界（或标点符号后）自动换行，避免文本溢出容器。</li>
+</ul>
+<h2 id="2-white-space-nowrap（不自动换行）"><a href="#2-white-space-nowrap（不自动换行）" class="headerlink" title="2. white-space: nowrap（不自动换行）"></a>2. <code>white-space: nowrap</code>（不自动换行）</h2><p><strong>禁止文本自动换行</strong>，但仍会合并空白字符。</p>
+<ul>
+<li><strong>合并空白字符</strong>：与 <code>normal</code> 一致，连续空格、制表符合并为 1 个，首尾空白忽略。</li>
+<li><strong>禁止自动换行</strong>：文本会强制在同一行显示，即使超过容器宽度，也会溢出容器（除非配合 <code>overflow</code> 属性处理）。</li>
+</ul>
+<h3 id="使用场景："><a href="#使用场景：" class="headerlink" title="使用场景："></a>使用场景：</h3><ol>
+<li>需要文本保持在一行显示</li>
+<li>超出容器宽度自动省略（需配合 <code>overflow: hidden</code> 和 <code>text-overflow: ellipsis</code>）。</li>
+</ol>
+<h2 id="3-white-space-pre（保留空白，不自动换行）"><a href="#3-white-space-pre（保留空白，不自动换行）" class="headerlink" title="3. white-space: pre（保留空白，不自动换行）"></a>3. <code>white-space: pre</code>（保留空白，不自动换行）</h2><p>“pre” 是“preserve”（保留）的缩写，该属性值会<strong>完全保留源代码中的空白字符</strong>，但<strong>禁止自动换行</strong>。</p>
+<ul>
+<li><strong>保留空白字符</strong>：多个连续空格、制表符 <code>\t</code>、手动换行 <code>\n</code> 都会原样显示，不合并、不忽略。</li>
+<li><strong>禁止自动换行</strong>：文本长度超过容器宽度时，不会自动换行，会横向溢出。</li>
+</ul>
+<h3 id="使用场景：-1"><a href="#使用场景：-1" class="headerlink" title="使用场景："></a>使用场景：</h3><ul>
+<li>显示代码片段（保留代码的缩进和换行）；</li>
+<li>显示需要精确格式的文本（如诗歌、表格）。</li>
+</ul>
+<h2 id="4-white-space-pre-wrap（保留空白，自动换行）"><a href="#4-white-space-pre-wrap（保留空白，自动换行）" class="headerlink" title="4. white-space: pre-wrap（保留空白，自动换行）"></a>4. <code>white-space: pre-wrap</code>（保留空白，自动换行）</h2><p>“pre-wrap” 是“preserve + wrap”的组合，兼具 <code>pre</code> 保留空白的特性和 <code>normal</code> 自动换行的特性，是处理“需保留格式且需自适应容器”文本的最佳选择。</p>
+<ul>
+<li><strong>保留空白字符</strong>：连续空格、制表符、手动换行原样显示（与 <code>pre</code> 一致）。</li>
+<li><strong>自动换行</strong>：文本长度超过容器宽度时，会在适当位置自动换行（与 <code>normal</code> 一致），避免溢出。</li>
+</ul>
+<h3 id="使用场景：-2"><a href="#使用场景：-2" class="headerlink" title="使用场景："></a>使用场景：</h3><ul>
+<li>显示用户输入的富文本（如评论、文章，需保留用户手动换行）；</li>
+<li>显示代码片段（需保留缩进，同时避免横向溢出）。</li>
+</ul>
+<h2 id="5-white-space-pre-line（合并空白，保留换行，自动换行）"><a href="#5-white-space-pre-line（合并空白，保留换行，自动换行）" class="headerlink" title="5. white-space: pre-line（合并空白，保留换行，自动换行）"></a>5. <code>white-space: pre-line</code>（合并空白，保留换行，自动换行）</h2><p>“pre-line” 是“preserve line breaks”的缩写，仅保留**手动换行 **<code>\n</code>，但会合并其他空白字符，同时支持自动换行。</p>
+<ul>
+<li><strong>部分保留空白</strong>：仅保留手动换行 <code>\n</code>，连续空格、制表符会被合并为 1 个（与 <code>normal</code> 一致）。</li>
+<li><strong>自动换行</strong>：文本超过容器宽度时自动换行（与 <code>normal</code> 一致）。</li>
+</ul>
+<h3 id="使用场景：-3"><a href="#使用场景：-3" class="headerlink" title="使用场景："></a>使用场景：</h3><ul>
+<li>显示用户输入的文本（如博客评论，用户手动换行需保留，但多余空格可合并）；</li>
+<li>显示段落文本（需区分段落换行，同时避免多空格影响排版）。</li>
+</ul>
+<h2 id="6-white-space-break-spaces（增强版-pre-wrap，强制换行）"><a href="#6-white-space-break-spaces（增强版-pre-wrap，强制换行）" class="headerlink" title="6. white-space: break-spaces（增强版 pre-wrap，强制换行）"></a>6. <code>white-space: break-spaces</code>（增强版 pre-wrap，强制换行）</h2><p><code>break-spaces</code> 是 <strong>CSS3 新增</strong>的属性值，行为与 <code>pre-wrap</code> 类似，但对“空白字符的换行规则”更严格，会强制将过长的空白字符（如连续空格）也纳入自动换行范围。</p>
+<ul>
+<li><strong>保留所有空白字符</strong>：与 <code>pre-wrap</code> 一致，空格、制表符、换行符均保留。</li>
+<li><strong>强制自动换行</strong>：不仅文本内容会换行，<strong>连续的空白字符（如多个空格）</strong> 如果超过容器宽度，也会被拆分成多行（<code>pre-wrap</code> 不会拆分空白字符，可能导致空白部分溢出）。</li>
+<li><strong>不压缩空白宽度</strong>：即使换行，空白字符的原始宽度也会保留（如制表符 <code>\t</code> 仍占固定宽度）。</li>
+</ul>
+<p>:::info<br>与 <code>pre-wrap</code> 的关键区别：</p>
+<p>当存在<strong>超长连续空白字符</strong>时，<code>pre-wrap</code> 会让空白字符溢出容器，而 <code>break-spaces</code> 会将空白字符拆分行显示。</p>
+<p>:::</p>
+<h2 id="各属性值对比"><a href="#各属性值对比" class="headerlink" title="各属性值对比"></a>各属性值对比</h2><table>
+<thead>
+<tr>
+<th>属性值</th>
+<th>合并连续空格&#x2F;制表符</th>
+<th>保留手动换行（\n）</th>
+<th>文本超宽时自动换行</th>
+<th>超长空白字符是否换行</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>normal</code></td>
+<td>是</td>
+<td>否</td>
+<td>是</td>
+<td>否</td>
+</tr>
+<tr>
+<td><code>nowrap</code></td>
+<td>是</td>
+<td>否</td>
+<td>否</td>
+<td>否</td>
+</tr>
+<tr>
+<td><code>pre</code></td>
+<td>否</td>
+<td>是</td>
+<td>否</td>
+<td>否</td>
+</tr>
+<tr>
+<td><code>pre-wrap</code></td>
+<td>否</td>
+<td>是</td>
+<td>是</td>
+<td>否</td>
+</tr>
+<tr>
+<td><code>pre-line</code></td>
+<td>是</td>
+<td>是</td>
+<td>是</td>
+<td>否</td>
+</tr>
+<tr>
+<td><code>break-spaces</code></td>
+<td>否</td>
+<td>是</td>
+<td>是</td>
+<td>是</td>
+</tr>
+</tbody></table>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol>
+<li><strong>常规文本排版</strong>：用 <code>normal</code>（默认），满足大多数场景；</li>
+<li><strong>禁止换行（如导航）</strong>：用 <code>nowrap</code>，配合 <code>overflow: hidden</code> 处理溢出；</li>
+<li><strong>保留格式不换行（如代码）</strong>：用 <code>pre</code>，适合固定宽度的代码块；</li>
+<li><strong>保留格式且自适应（如用户评论）</strong>：用 <code>pre-wrap</code>，兼顾格式与可读性；</li>
+<li><strong>仅保留换行（如段落）</strong>：用 <code>pre-line</code>，避免多余空格影响排版；</li>
+<li><strong>严格处理超长空白（如特殊格式文本）</strong>：用 <code>break-spaces</code>，适合对空白排版要求极高的场景。</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/CSS/" class="category-chain-item">CSS</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/CSS/" class="print-no-link">#CSS</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>CSS `white-space` 各个属性的区别</div>
+      <div>http://example.com/2023/07/12/CSS/white-space各个属性的区别/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年7月12日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/07/12/JavaScript/%E6%B7%B1%E6%8B%B7%E8%B4%9D%E5%92%8C%E6%B5%85%E6%8B%B7%E8%B4%9D/" title="深拷贝和浅拷贝">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">深拷贝和浅拷贝</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/05/10/%E6%9C%8D%E5%8A%A1%E5%99%A8/Linux%E5%AE%89%E8%A3%85nvm/" title="Linux安装nvm">
+                        <span class="hidden-mobile">Linux安装nvm</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

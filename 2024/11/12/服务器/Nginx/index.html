@@ -1,0 +1,750 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Nginx 是由伊戈尔·赛索耶夫为俄罗斯访问量第二的 Rambler.ru 站点（俄文：Рамблер）开发的，公开版本1.19.6发布于2020年12月15日。 Nginx (engine x) 是一个高性能的 HTTP 和反向代理web服务器，同时也提供了IMAP&#x2F;POP3&#x2F;SMTP服务。可在 BSD-like 协议下发行。其特点是占有内存少，并发能力强。 服务器配置 Ng">
+<meta property="og:type" content="article">
+<meta property="og:title" content="安装Nginx">
+<meta property="og:url" content="http://example.com/2024/11/12/%E6%9C%8D%E5%8A%A1%E5%99%A8/Nginx/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Nginx 是由伊戈尔·赛索耶夫为俄罗斯访问量第二的 Rambler.ru 站点（俄文：Рамблер）开发的，公开版本1.19.6发布于2020年12月15日。 Nginx (engine x) 是一个高性能的 HTTP 和反向代理web服务器，同时也提供了IMAP&#x2F;POP3&#x2F;SMTP服务。可在 BSD-like 协议下发行。其特点是占有内存少，并发能力强。 服务器配置 Ng">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260312001610411.png">
+<meta property="og:image" content="https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260312001610409.png">
+<meta property="og:image" content="https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260312001610408.png">
+<meta property="article:published_time" content="2024-11-12T13:01:00.000Z">
+<meta property="article:modified_time" content="2026-03-18T16:46:09.905Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="Nginx">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260312001610411.png">
+  
+  
+  
+  <title>安装Nginx - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">安装Nginx</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-11-12 21:01" pubdate>
+          2024年11月12日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          10 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">安装Nginx</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>Nginx 是由伊戈尔·赛索耶夫为俄罗斯访问量第二的 Rambler.ru 站点（俄文：Рамблер）开发的，公开版本1.19.6发布于2020年12月15日。</p>
+<p>Nginx (engine x) 是一个高性能的 HTTP 和反向代理web服务器，同时也提供了IMAP&#x2F;POP3&#x2F;SMTP服务。可在 BSD-like 协议下发行。其特点是占有内存少，并发能力强。</p>
+<h2 id="服务器配置-Nginx"><a href="#服务器配置-Nginx" class="headerlink" title="服务器配置 Nginx"></a>服务器配置 Nginx</h2><h3 id="安装-Nginx-依赖库"><a href="#安装-Nginx-依赖库" class="headerlink" title="安装 Nginx 依赖库"></a>安装 Nginx 依赖库</h3><p>1、安装gcc环境</p>
+<p>编译时依赖gcc环境</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">yum -y install gcc gcc-c++ autoconf automake make<br></code></pre></td></tr></table></figure>
+
+<p>2、安装 pcre</p>
+<p>提供nginx支持重写功能</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">yum -y install pcre pcre-devel<br></code></pre></td></tr></table></figure>
+
+<p>3、安装zlib</p>
+<p>zlib 库提供了很多压缩和解压缩的方式，nginx 使用 zlib 对 http 包内容进行 gzip 压缩</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">yum -y install zlib zlib-devel make libtool<br></code></pre></td></tr></table></figure>
+
+<p>4、安装openssl</p>
+<p>安全套接字层密码库，用于通信加密</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">yum -y install openssl openssl-devel<br></code></pre></td></tr></table></figure>
+
+<h3 id="nginx-安装"><a href="#nginx-安装" class="headerlink" title="nginx 安装"></a>nginx 安装</h3><p>手动创建用户和用户组</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">groupadd nginx<br>useradd nginx -g nginx -s /sbin/nologin -M<br></code></pre></td></tr></table></figure>
+
+<p>官网下载nginx源码包</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">wget https://nginx.org/download/nginx-1.20.2.tar.gz<br></code></pre></td></tr></table></figure>
+
+<p>解压</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">tar -zxvf nginx-1.20.2.tar.gz<br></code></pre></td></tr></table></figure>
+
+<p>编译目录</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cd</span> nginx-1.20.2<br></code></pre></td></tr></table></figure>
+
+<p>检查平台安装环境</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">./configure --prefix=/usr/local/nginx --with-http_stub_status_module --with-http_ssl_module --user=nginx --group=nginx<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>参数说明：</p>
+<p>–prefix&#x3D;&#x2F;usr&#x2F;local&#x2F;nginx #编译安装目录<br>–user&#x3D;nginx #所属用户nginx<br>–group&#x3D;nginx #所属组nginx<br>–with-http_stub_status_module #该模块提供nginx的基本状态信息<br>–with-http_ssl_module #支持HTTPS</p>
+</blockquote>
+<p>编译源码并安装，默认安装到 <code>/usr/local/nginx</code></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh">make       <span class="hljs-comment"># 编译</span><br>make install    <span class="hljs-comment"># 安装</span><br><br>make &amp;&amp; make install <span class="hljs-comment"># 可以一起执行</span><br></code></pre></td></tr></table></figure>
+
+<p>查找 nginx 安装位置</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">whereis nginx<br><br><span class="hljs-comment"># nginx: /usr/local/nginx</span><br></code></pre></td></tr></table></figure>
+
+<p>nginx编译安装完成以后，修改nginx.conf</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">vim /usr/local/nginx/conf/nginx.conf<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs conf">server &#123;<br>  listen       80;<br>  server_name  localhost;<br><br>  #charset koi8-r;<br><br>  #access_log  logs/host.access.log  main;<br><br>  location / &#123;<br>      root   html;<br>      index  index.html index.htm;<br>  &#125;<br><br>  # 新增<br>  location /blogs &#123;<br>      alias  /data/project/admin-vue; # 项目存放目录 /data/project/admin-vue<br>      index  index.html index.htm;<br>      # 防止刷新 404<br>      try_files $uri $uri/ /blogs/index.html;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><code>alias</code> 需要使用绝对路径。使用相对路径会 Nginx 会默认在前面拼接 Nginx 安装目录（&#x2F;usr&#x2F;local&#x2F;nginx&#x2F;）</p>
+<p>打开 <code>http://服务器IP/blogs</code> 即可访问项目。</p>
+<h3 id="配置-nginx-服务"><a href="#配置-nginx-服务" class="headerlink" title="配置 nginx 服务"></a>配置 nginx 服务</h3><p>创建并配置服务文件</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">vi /lib/systemd/system/nginx.service<br></code></pre></td></tr></table></figure>
+
+<p>配置信息</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs sh">[Unit]<br>Description=nginx<br>After=network.target<br><br>[Service]<br>Type=forking<br>ExecStart=/usr/local/nginx/sbin/nginx<br>ExecReload=/usr/local/nginx/sbin/nginx reload<br>ExecStop=/usr/local/nginx/sbin/nginx quit<br>PrivateTmp=<span class="hljs-literal">true</span><br><br>[Install]<br>WantedBy=multi-user.target<br></code></pre></td></tr></table></figure>
+
+<p>创建服务</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">systemctl <span class="hljs-built_in">enable</span> nginx.service<br></code></pre></td></tr></table></figure>
+
+<p>使用服务命令</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">systemctl start nginx<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260312001610411.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h2><h3 id="nginx版本信息查看"><a href="#nginx版本信息查看" class="headerlink" title="nginx版本信息查看"></a>nginx版本信息查看</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">nginx -V<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260312001610409.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">vim /usr/local/nginx/conf/nginx.conf<br></code></pre></td></tr></table></figure>
+
+<h3 id="nginx配置文件正否正确"><a href="#nginx配置文件正否正确" class="headerlink" title="nginx配置文件正否正确"></a>nginx配置文件正否正确</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@iZ7xvgqq72fzxpvqh6itdkZ /]# nginx -t -c /usr/local/nginx/conf/nginx.conf<br>nginx: the configuration file /usr/local/nginx/conf/nginx.conf syntax is ok<br>nginx: configuration file /usr/local/nginx/conf/nginx.conf <span class="hljs-built_in">test</span> is successful<br></code></pre></td></tr></table></figure>
+
+<h3 id="创建服务"><a href="#创建服务" class="headerlink" title="创建服务"></a>创建服务</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">systemctl <span class="hljs-built_in">enable</span> nginx.service<br></code></pre></td></tr></table></figure>
+
+<h3 id="启动-nginx-服务"><a href="#启动-nginx-服务" class="headerlink" title="启动 nginx 服务"></a>启动 nginx 服务</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">systemctl start nginx<br></code></pre></td></tr></table></figure>
+
+<h3 id="查看-nginx-服务状态"><a href="#查看-nginx-服务状态" class="headerlink" title="查看 nginx 服务状态"></a>查看 nginx 服务状态</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">systemctl status nginx.service<br></code></pre></td></tr></table></figure>
+
+<h3 id="查看进程"><a href="#查看进程" class="headerlink" title="查看进程"></a>查看进程</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">ps -ef | grep nginx<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260312001610408.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><h3 id="bash-nginx-未找到命令"><a href="#bash-nginx-未找到命令" class="headerlink" title="-bash: nginx: 未找到命令"></a>-bash: nginx: 未找到命令</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">-bash: nginx: 未找到命令<br></code></pre></td></tr></table></figure>
+
+<p>解决方式</p>
+<ol>
+<li>打开环境变量所在的文件：</li>
+</ol>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">vim /etc/profile<br></code></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>在profile文件末尾，加上一行指向你的nginx的安装位置的sbin 目录</li>
+</ol>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">export</span> PATH=<span class="hljs-variable">$PATH</span>:/usr/local/nginx/sbin<br></code></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>重新加载环境，解决</li>
+</ol>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">source</span> /etc/profile<br></code></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>重启nginx</li>
+</ol>
+<p>nginx -s reload</p>
+<h3 id="启动-nginx-失败"><a href="#启动-nginx-失败" class="headerlink" title="启动 nginx 失败"></a>启动 nginx 失败</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@iZ7xvgqq72fzxpvqh6itdkZ /]# systemctl restart nginx<br>Job <span class="hljs-keyword">for</span> nginx.service failed because the control process exited with error code.<br>See <span class="hljs-string">&quot;systemctl status nginx.service&quot;</span> and <span class="hljs-string">&quot;journalctl -xe&quot;</span> <span class="hljs-keyword">for</span> details.<br></code></pre></td></tr></table></figure>
+
+<p>查看日志</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@iZ7xvgqq72fzxpvqh6itdkZ nginx]# journalctl -xe<br>6月 21 00:40:50 iZ7xvgqq72fzxpvqh6itdkZ systemd[1]: Starting system activity accounting tool...<br>-- Subject: sysstat-collect.service 单元已开始启动<br>-- Defined-By: systemd<br>-- Support: https://access.redhat.com/support<br>--<br>-- sysstat-collect.service 单元已开始启动。<br>6月 21 00:40:50 iZ7xvgqq72fzxpvqh6itdkZ systemd[1]: sysstat-collect.service: Succeeded.<br>-- Subject: Unit succeeded<br>-- Defined-By: systemd<br>-- Support: https://access.redhat.com/support<br>--<br>-- The unit sysstat-collect.service has successfully entered the <span class="hljs-string">&#x27;dead&#x27;</span> state.<br>6月 21 00:40:50 iZ7xvgqq72fzxpvqh6itdkZ systemd[1]: Started system activity accounting tool.<br>-- Subject: sysstat-collect.service 单元已结束启动<br>-- Defined-By: systemd<br>-- Support: https://access.redhat.com/support<br>--<br>-- sysstat-collect.service 单元已结束启动。<br>--<br>-- 启动结果为“<span class="hljs-keyword">done</span>”。<br>6月 21 00:42:49 iZ7xvgqq72fzxpvqh6itdkZ systemd[1]: Starting nginx...<br>-- Subject: nginx.service 单元已开始启动<br>-- Defined-By: systemd<br>-- Support: https://access.redhat.com/support<br>--<br>-- nginx.service 单元已开始启动。<br>6月 21 00:42:49 iZ7xvgqq72fzxpvqh6itdkZ nginx[14206]: nginx: [emerg] <span class="hljs-built_in">bind</span>() to 0.0.0.0:80 failed (98: Address already <span class="hljs-keyword">in</span> use)<br>6月 21 00:42:50 iZ7xvgqq72fzxpvqh6itdkZ nginx[14206]: nginx: [emerg] <span class="hljs-built_in">bind</span>() to 0.0.0.0:80 failed (98: Address already <span class="hljs-keyword">in</span> use)<br>6月 21 00:42:50 iZ7xvgqq72fzxpvqh6itdkZ nginx[14206]: nginx: [emerg] <span class="hljs-built_in">bind</span>() to 0.0.0.0:80 failed (98: Address already <span class="hljs-keyword">in</span> use)<br>6月 21 00:42:51 iZ7xvgqq72fzxpvqh6itdkZ nginx[14206]: nginx: [emerg] <span class="hljs-built_in">bind</span>() to 0.0.0.0:80 failed (98: Address already <span class="hljs-keyword">in</span> use)<br>6月 21 00:42:51 iZ7xvgqq72fzxpvqh6itdkZ nginx[14206]: nginx: [emerg] <span class="hljs-built_in">bind</span>() to 0.0.0.0:80 failed (98: Address already <span class="hljs-keyword">in</span> use)<br>6月 21 00:42:52 iZ7xvgqq72fzxpvqh6itdkZ nginx[14206]: nginx: [emerg] still could not <span class="hljs-built_in">bind</span>()<br>6月 21 00:42:52 iZ7xvgqq72fzxpvqh6itdkZ systemd[1]: nginx.service: Control process exited, code=exited status=1<br>6月 21 00:42:52 iZ7xvgqq72fzxpvqh6itdkZ systemd[1]: nginx.service: Failed with result <span class="hljs-string">&#x27;exit-code&#x27;</span>.<br>-- Subject: Unit failed<br>-- Defined-By: systemd<br>-- Support: https://access.redhat.com/support<br>--<br>-- The unit nginx.service has entered the <span class="hljs-string">&#x27;failed&#x27;</span> state with result <span class="hljs-string">&#x27;exit-code&#x27;</span>.<br>6月 21 00:42:52 iZ7xvgqq72fzxpvqh6itdkZ systemd[1]: Failed to start nginx.<br>-- Subject: nginx.service 单元已失败<br>-- Defined-By: systemd<br>-- Support: https://access.redhat.com/support<br>--<br>-- nginx.service 单元已失败。<br>--<br>-- 结果为“failed”。<br></code></pre></td></tr></table></figure>
+
+<p>原因：80端口被占用。</p>
+<p>解决办法：找到占用 80 端口的进程（lsof），并将其结束（kill）。</p>
+<p>如果是 <code>AliYunDun</code>，需要用 <code>fuser -k 80/tcp</code> 命令</p>
+<p>如果还不行，检查防火墙是否开放80端口</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/AlbenXie/article/details/131841546?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_baidulandingword~default-0-131841546-blog-114821637.235%5Ev43%5Epc_blog_bottom_relevance_base6&spm=1001.2101.3001.4242.1&utm_relevant_index=3">https://blog.csdn.net/AlbenXie/article/details/131841546?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_baidulandingword~default-0-131841546-blog-114821637.235^v43^pc_blog_bottom_relevance_base6&amp;spm=1001.2101.3001.4242.1&amp;utm_relevant_index=3</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/" class="category-chain-item">服务器</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Linux/" class="print-no-link">#Linux</a>
+      
+        <a href="/tags/Nginx/" class="print-no-link">#Nginx</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>安装Nginx</div>
+      <div>http://example.com/2024/11/12/服务器/Nginx/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年11月12日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/11/12/%E6%9C%8D%E5%8A%A1%E5%99%A8/Linix/" title="Linux实践">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Linux实践</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/11/12/%E6%9C%8D%E5%8A%A1%E5%99%A8/%E9%83%A8%E7%BD%B2%E5%89%8D%E7%AB%AF%E9%A1%B9%E7%9B%AE/" title="部署前端项目">
+                        <span class="hidden-mobile">部署前端项目</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
