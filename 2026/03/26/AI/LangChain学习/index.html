@@ -1,0 +1,987 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="前置知识：Python 基础、大语言模型（LLM）、提示词、RAG 框架基础  LangChain 框架基础框架简介 创建：由 Harrison Chase 于 2022 年 10 月创建。 定位：围绕大语言模型（LLMs）的 Python 第三方开发框架，自身不开发模型。 核心理念：为各类 LLM 提供通用接口，将相关组件“链接”在一起，简化复杂 LLM 应用开发。 地位：后续学习 RAG 开">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LangChain 学习">
+<meta property="og:url" content="http://example.com/2026/03/26/AI/LangChain%E5%AD%A6%E4%B9%A0/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="前置知识：Python 基础、大语言模型（LLM）、提示词、RAG 框架基础  LangChain 框架基础框架简介 创建：由 Harrison Chase 于 2022 年 10 月创建。 定位：围绕大语言模型（LLMs）的 Python 第三方开发框架，自身不开发模型。 核心理念：为各类 LLM 提供通用接口，将相关组件“链接”在一起，简化复杂 LLM 应用开发。 地位：后续学习 RAG 开">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260328002755597.png">
+<meta property="og:image" content="https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260328002755598.png">
+<meta property="article:published_time" content="2026-03-26T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-03-28T16:06:05.059Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="LangChain">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260328002755597.png">
+  
+  
+  
+  <title>LangChain 学习 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">LangChain 学习</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-03-26 10:00" pubdate>
+          2026年3月26日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          23 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">LangChain 学习</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <blockquote>
+<p>前置知识：Python 基础、大语言模型（LLM）、提示词、RAG 框架基础</p>
+</blockquote>
+<h2 id="LangChain-框架基础"><a href="#LangChain-框架基础" class="headerlink" title="LangChain 框架基础"></a>LangChain 框架基础</h2><h3 id="框架简介"><a href="#框架简介" class="headerlink" title="框架简介"></a>框架简介</h3><ul>
+<li><strong>创建</strong>：由 Harrison Chase 于 2022 年 10 月创建。</li>
+<li><strong>定位</strong>：围绕大语言模型（LLMs）的 Python 第三方开发框架，<strong>自身不开发模型</strong>。</li>
+<li><strong>核心理念</strong>：为各类 LLM 提供通用接口，将相关组件“链接”在一起，简化复杂 LLM 应用开发。</li>
+<li><strong>地位</strong>：后续学习 RAG 开发的主力框架。</li>
+</ul>
+<h3 id="核心功能模块"><a href="#核心功能模块" class="headerlink" title="核心功能模块"></a>核心功能模块</h3><table>
+<thead>
+<tr>
+<th align="left">模块</th>
+<th align="left">功能描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>Prompts</strong></td>
+<td align="left">提示词工程，优化用户指令</td>
+</tr>
+<tr>
+<td align="left"><strong>Models</strong></td>
+<td align="left">统一接口调用各类大模型（通义千问、OpenAI 等）</td>
+</tr>
+<tr>
+<td align="left"><strong>History</strong></td>
+<td align="left">管理会话历史，实现对话记忆</td>
+</tr>
+<tr>
+<td align="left"><strong>Indexes</strong></td>
+<td align="left">文档管理与分析，为 RAG 做准备</td>
+</tr>
+<tr>
+<td align="left"><strong>Chains</strong></td>
+<td align="left">构建功能执行链条，串联多个步骤</td>
+</tr>
+<tr>
+<td align="left"><strong>Agent</strong></td>
+<td align="left">构建能自主决策的智能体</td>
+</tr>
+</tbody></table>
+<h3 id="安装命令"><a href="#安装命令" class="headerlink" title="安装命令"></a>安装命令</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">pip install langchain langchain-community langchain-ollama dashscope chromadb<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>包说明</strong>：<ul>
+<li><code>langchain</code>：核心包</li>
+<li><code>langchain-community</code>：社区扩展包（支持阿里云千问等第三方模型）</li>
+<li><code>langchain-ollama</code>：本地 Ollama 模型支持包</li>
+<li><code>dashscope</code>：阿里云通义千问 Python SDK</li>
+<li><code>chromadb</code>：轻量向量数据库（后续 RAG 场景使用）</li>
+</ul>
+</li>
+</ul>
+<h3 id="核心价值"><a href="#核心价值" class="headerlink" title="核心价值"></a>核心价值</h3><ul>
+<li>提供了提示词、模型调用、记忆、文档管理、Agent 等全链路 API。</li>
+<li>让开发者无需关注底层模型差异，专注于业务逻辑实现。</li>
+<li>口号：<code>Full LLM power—you only need LangChain</code></li>
+<li>LangChain 封装了复杂的 LLM 交互逻辑，包括上下文管理（History）和提示词优化（Prompts），是之前所学上下文对话与提示词工程思想的工程化实现。</li>
+</ul>
+<h2 id="向量（Vector）"><a href="#向量（Vector）" class="headerlink" title="向量（Vector）"></a>向量（Vector）</h2><p>向量是文本的<strong>数学身份证</strong>，它将一段文字的<strong>语义信息</strong>转换为固定长度的<strong>数字列表</strong>，让计算机能“看懂”文字含义并计算相似度。</p>
+<h3 id="核心作用"><a href="#核心作用" class="headerlink" title="核心作用"></a>核心作用</h3><ul>
+<li>让计算机判断两段文本是否表述相似含义</li>
+<li>为语义检索、RAG等应用提供数学基础</li>
+</ul>
+<h3 id="向量生成（文本嵌入）"><a href="#向量生成（文本嵌入）" class="headerlink" title="向量生成（文本嵌入）"></a>向量生成（文本嵌入）</h3><ul>
+<li>借助<strong>文本嵌入模型</strong>（如 <code>text-embedding-v1</code>）完成</li>
+<li>模型通过深度学习提取文本语义特征，映射为数字序列</li>
+</ul>
+<h3 id="向量匹配（相似度计算）"><a href="#向量匹配（相似度计算）" class="headerlink" title="向量匹配（相似度计算）"></a>向量匹配（相似度计算）</h3><ul>
+<li>核心算法：<strong>余弦相似度</strong></li>
+<li>原理：衡量两个向量在高维空间中的方向夹角，夹角越小越相似</li>
+<li>公式：<br>$$<br>\text{cosine similarity}(\vec{A}, \vec{B}) &#x3D; \frac{\vec{A} \cdot \vec{B}}{|\vec{A}| \times |\vec{B}|}<br>$$</li>
+<li>计算步骤：<ol>
+<li><strong>点积</strong>：两个向量同维度乘积之和</li>
+<li><strong>模长</strong>：单个向量各维度平方和开根号</li>
+<li><strong>相似度</strong>：点积 ÷ 模长乘积</li>
+</ol>
+</li>
+</ul>
+<h3 id="向量维度"><a href="#向量维度" class="headerlink" title="向量维度"></a>向量维度</h3><ul>
+<li>维度数：模型用多少个抽象语义特征描述文本</li>
+<li>特点：维度越高，语义匹配越精准，但计算性能压力越大</li>
+</ul>
+<hr>
+<h3 id="余弦相似度（扩展）"><a href="#余弦相似度（扩展）" class="headerlink" title="余弦相似度（扩展）"></a>余弦相似度（扩展）</h3><ul>
+<li>向量的数字序列决定了其在高维空间的<strong>方向</strong>和<strong>长度</strong></li>
+<li>余弦相似度<strong>只关注方向</strong>，剔除长度影响：<ul>
+<li>同向向量（如 <code>[0.5, 0.5]</code> 和 <code>[0.7, 0.7]</code>）相似度为 1</li>
+<li>反向向量（如 <code>[0.5, 0.5]</code> 和 <code>[-0.6, -0.5]</code>）相似度接近 -1</li>
+<li>夹角接近垂直的向量相似度接近 0</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="LangChain-模型"><a href="#LangChain-模型" class="headerlink" title="LangChain 模型"></a>LangChain 模型</h2><p>LangChain模型组件提供了与各种模型的集成，并为所有模型提供一个精简的统一接口。</p>
+<p>LangChain目前支持三种类型的模型：LLMs（大语言模型）、Chat Models（聊天模型）、Embeddings Models（嵌入模型）。</p>
+<ul>
+<li>LLMs：是技术范畴的统称，指基于大参数量、海量文本训练的 Transformer 架构模型，核心能力是理解和生成自然语言，主要服务于文本生成场景。</li>
+<li>Chat Models：是应用范畴的细分，是专为对话场景优化的 LLMs，核心能力是模拟人类对话的轮次交互，主要服务于聊天场景。</li>
+<li>Embeddings Models：文本嵌入模型接收文本作为输入，得到文本的向量。</li>
+</ul>
+<hr>
+<h2 id="模型调用实践"><a href="#模型调用实践" class="headerlink" title="模型调用实践"></a>模型调用实践</h2><h3 id="1-调用大语言模型（LLMs）"><a href="#1-调用大语言模型（LLMs）" class="headerlink" title="1. 调用大语言模型（LLMs）"></a>1. 调用大语言模型（LLMs）</h3><p>LLMs使用场景最多，常用大模型的下载库：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://huggingface.co/models">https://huggingface.co/models</a></li>
+<li><a target="_blank" rel="noopener" href="https://modelscope.cn/models">https://modelscope.cn/models</a></li>
+</ul>
+<ol>
+<li>使用 云模型（如阿里云通义千问）</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> langchain_community.llms.tongyi <span class="hljs-keyword">import</span> Tongyi<br><br><span class="hljs-comment"># 初始化模型（qwen-max 是大语言模型，qwen3-max 是聊天模型）</span><br>model = Tongyi(model=<span class="hljs-string">&quot;qwen-max&quot;</span>)<br><br><span class="hljs-comment"># 批量调用（一次性返回结果）</span><br>res = model.invoke(<span class="hljs-built_in">input</span>=<span class="hljs-string">&quot;你是谁呀能做什么？&quot;</span>)<br><span class="hljs-built_in">print</span>(res)<br><br><span class="hljs-comment"># 流式调用（逐段输出）</span><br>res = model.stream(<span class="hljs-built_in">input</span>=<span class="hljs-string">&quot;你是谁呀能做什么？&quot;</span>)<br><span class="hljs-keyword">for</span> chunk <span class="hljs-keyword">in</span> res:<br>    <span class="hljs-built_in">print</span>(chunk, end=<span class="hljs-string">&quot;&quot;</span>, flush=<span class="hljs-literal">True</span>)<br></code></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>使用 本地 Ollama 模型</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> langchain_ollama <span class="hljs-keyword">import</span> OllamaLLM<br><span class="hljs-comment"># 实例化本地模型（需提前启动Ollama并下载模型）</span><br>model = OllamaLLM(model=<span class="hljs-string">&quot;qwen3:4b&quot;</span>)<br><span class="hljs-comment"># 调用模型</span><br>res = model.invoke(<span class="hljs-built_in">input</span>=<span class="hljs-string">&quot;你是谁呀能做什么？&quot;</span>)<br><span class="hljs-built_in">print</span>(res)<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>invoke方法：一次型返回完整结果</li>
+<li>stream方法：逐段返回结果，流式输出</li>
+</ul>
+<hr>
+<h3 id="2-Chat-Models（聊天模型）"><a href="#2-Chat-Models（聊天模型）" class="headerlink" title="2. Chat Models（聊天模型）"></a>2. Chat Models（聊天模型）</h3><h4 id="消息类型"><a href="#消息类型" class="headerlink" title="消息类型"></a>消息类型</h4><table>
+<thead>
+<tr>
+<th>消息类型</th>
+<th>对应角色</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>SystemMessage</code></td>
+<td>system</td>
+<td>设定模型角色、背景或输出格式（如“你是代码专家”）</td>
+</tr>
+<tr>
+<td><code>HumanMessage</code></td>
+<td>user</td>
+<td>用户输入的问题或指令</td>
+</tr>
+<tr>
+<td><code>AIMessage</code></td>
+<td>assistant</td>
+<td>模型历史回复，用于多轮对话上下文</td>
+</tr>
+</tbody></table>
+<h4 id="基础调用示例"><a href="#基础调用示例" class="headerlink" title="基础调用示例"></a>基础调用示例</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> langchain_community.chat_models.tongyi <span class="hljs-keyword">import</span> ChatTongyi<br><span class="hljs-keyword">from</span> langchain_core.messages <span class="hljs-keyword">import</span> HumanMessage, SystemMessage, AIMessage<br><br><span class="hljs-comment"># 初始化聊天模型</span><br>chat = ChatTongyi(model=<span class="hljs-string">&quot;qwen3-max&quot;</span>)<br><br><span class="hljs-comment"># 构造消息列表</span><br>messages = [<br>    SystemMessage(content=<span class="hljs-string">&quot;你是一名来自边塞的诗人&quot;</span>),<br>    HumanMessage(content=<span class="hljs-string">&quot;给我写一首唐诗&quot;</span>),<br>    AIMessage(content=<span class="hljs-string">&quot;锄禾日当午，汗滴禾下土...&quot;</span>),  <span class="hljs-comment"># 历史回复</span><br>    HumanMessage(content=<span class="hljs-string">&quot;给予你上一首的格式，再来一首&quot;</span>)<br>]<br><br><span class="hljs-comment"># 流式输出</span><br><span class="hljs-keyword">for</span> chunk <span class="hljs-keyword">in</span> chat.stream(<span class="hljs-built_in">input</span>=messages):<br>    <span class="hljs-built_in">print</span>(chunk.content, end=<span class="hljs-string">&quot;&quot;</span>, flush=<span class="hljs-literal">True</span>)<br></code></pre></td></tr></table></figure>
+
+<h4 id="消息简写形式"><a href="#消息简写形式" class="headerlink" title="消息简写形式"></a>消息简写形式</h4><ul>
+<li><strong>类对象形式</strong>：静态，直接得到 Message 对象<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python">messages = [<br>    SystemMessage(content=<span class="hljs-string">&quot;内容...&quot;</span>),<br>    HumanMessage(content=<span class="hljs-string">&quot;内容...&quot;</span>),<br>    AIMessage(content=<span class="hljs-string">&quot;内容...&quot;</span>)<br>]<br></code></pre></td></tr></table></figure></li>
+<li><strong>简写元组形式</strong>：动态，运行时由 LangChain 转换，支持变量占位<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python">messages = [<br>    (<span class="hljs-string">&quot;system&quot;</span>, <span class="hljs-string">&quot;今天的天气是&#123;weather&#125;&quot;</span>),<br>    (<span class="hljs-string">&quot;human&quot;</span>, <span class="hljs-string">&quot;我的名字是: &#123;name&#125;&quot;</span>),<br>    (<span class="hljs-string">&quot;ai&quot;</span>, <span class="hljs-string">&quot;欢迎&#123;lastname&#125;先生&quot;</span>)<br>]<br></code></pre></td></tr></table></figure>
+<blockquote>
+<p>优势：写法更简洁，支持 <code>{变量}</code> 占位，可在运行时填充具体值（提示词模板场景常用）</p>
+</blockquote>
+</li>
+</ul>
+<hr>
+<h3 id="3-Embeddings-Models（文本嵌入模型）"><a href="#3-Embeddings-Models（文本嵌入模型）" class="headerlink" title="3. Embeddings Models（文本嵌入模型）"></a>3. Embeddings Models（文本嵌入模型）</h3><h4 id="核心作用-1"><a href="#核心作用-1" class="headerlink" title="核心作用"></a>核心作用</h4><p>将文本字符串转换为<strong>固定长度的浮点数向量</strong>，用于语义相似度计算、检索等场景。</p>
+<h4 id="阿里云千问嵌入模型"><a href="#阿里云千问嵌入模型" class="headerlink" title="阿里云千问嵌入模型"></a>阿里云千问嵌入模型</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> langchain_community.embeddings <span class="hljs-keyword">import</span> DashScopeEmbeddings<br><br><span class="hljs-comment"># 初始化（默认模型：text-embedding-v1）</span><br>embed = DashScopeEmbeddings()<br><br><span class="hljs-comment"># 单次文本向量化</span><br>vec = embed.embed_query(<span class="hljs-string">&quot;我喜欢你&quot;</span>)<br><span class="hljs-built_in">print</span>(vec)<br><br><span class="hljs-comment"># 批量文本向量化</span><br>vecs = embed.embed_documents([<span class="hljs-string">&quot;我喜欢你&quot;</span>, <span class="hljs-string">&quot;我稀饭你&quot;</span>, <span class="hljs-string">&quot;晚上吃啥&quot;</span>])<br><span class="hljs-built_in">print</span>(vecs)<br></code></pre></td></tr></table></figure>
+
+<h4 id="Ollama-本地嵌入模型"><a href="#Ollama-本地嵌入模型" class="headerlink" title="Ollama 本地嵌入模型"></a>Ollama 本地嵌入模型</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> langchain_ollama <span class="hljs-keyword">import</span> OllamaEmbeddings<br><br>embed = OllamaEmbeddings(model=<span class="hljs-string">&quot;qwen3:4b&quot;</span>)<br>vec = embed.embed_query(<span class="hljs-string">&quot;我喜欢你&quot;</span>)<br><span class="hljs-built_in">print</span>(vec)<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="调用方式对比"><a href="#调用方式对比" class="headerlink" title="调用方式对比"></a>调用方式对比</h4><table>
+<thead>
+<tr>
+<th>模型类型</th>
+<th>调用方法</th>
+<th>输出特点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>LLMs &#x2F; Chat Models</td>
+<td><code>invoke</code></td>
+<td>一次性返回完整结果</td>
+</tr>
+<tr>
+<td>LLMs &#x2F; Chat Models</td>
+<td><code>stream</code></td>
+<td>逐段流式输出，适合实时交互</td>
+</tr>
+<tr>
+<td>Embeddings Models</td>
+<td><code>embed_query</code></td>
+<td>单条文本转向量</td>
+</tr>
+<tr>
+<td>Embeddings Models</td>
+<td><code>embed_documents</code></td>
+<td>多条文本批量转向量</td>
+</tr>
+</tbody></table>
+<hr>
+<h4 id="模型使用总结表"><a href="#模型使用总结表" class="headerlink" title="模型使用总结表"></a>模型使用总结表</h4><table>
+<thead>
+<tr>
+<th>方式</th>
+<th>LLMs 大语言模型</th>
+<th>聊天模型</th>
+<th>文本嵌入模型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>阿里云千问</td>
+<td><code>from langchain_community.llms.tongyi import Tongyi</code></td>
+<td><code>from langchain_community.chat_models.tongyi import ChatTongyi</code></td>
+<td><code>from langchain_community.embeddings import DashScopeEmbeddings</code></td>
+</tr>
+<tr>
+<td>Ollama 本地模型</td>
+<td><code>from langchain_ollama import OllamaLLM</code></td>
+<td><code>from langchain_ollama import ChatOllama</code></td>
+<td><code>from langchain_ollama import OllamaEmbeddings</code></td>
+</tr>
+<tr>
+<td>核心方法</td>
+<td><code>invoke</code> &#x2F; <code>stream</code></td>
+<td><code>invoke</code> &#x2F; <code>stream</code></td>
+<td><code>embed_query</code> &#x2F; <code>embed_documents</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="通用Prompt"><a href="#通用Prompt" class="headerlink" title="通用Prompt"></a>通用Prompt</h3><h4 id="PromptTemplate（zero-shot）"><a href="#PromptTemplate（zero-shot）" class="headerlink" title="PromptTemplate（zero-shot）"></a>PromptTemplate（zero-shot）</h4><p>LangChain提供了PromptTemplate类，用来协助优化提示词。<br>PromptTemplate表示提示词模板，可以构建一个自定义的基础提示词模板，支持变量的注入，最终生成所需的提示词。</p>
+<ol>
+<li>标准写法（format 方式）</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> langchain_core.prompts <span class="hljs-keyword">import</span> PromptTemplate<br><span class="hljs-keyword">from</span> langchain_community.llms.tongyi <span class="hljs-keyword">import</span> Tongyi<br><br><span class="hljs-comment"># 定义模板</span><br>prompt_template = PromptTemplate.from_template(<br>    <span class="hljs-string">&quot;我的邻居姓&#123;lastname&#125;，刚生了&#123;gender&#125;，帮忙起名字，请简略回答。&quot;</span><br>)<br><br><span class="hljs-comment"># 变量注入，生成提示词文本</span><br>prompt_text = prompt_template.<span class="hljs-built_in">format</span>(lastname=<span class="hljs-string">&quot;张&quot;</span>, gender=<span class="hljs-string">&quot;女儿&quot;</span>)<br><br><span class="hljs-comment"># 调用模型</span><br>model = Tongyi(model=<span class="hljs-string">&quot;qwen-max&quot;</span>)<br>res = model.invoke(<span class="hljs-built_in">input</span>=prompt_text)<br><span class="hljs-built_in">print</span>(res)<br></code></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>链式写法（<code>|</code> 管道符）</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> langchain_core.prompts <span class="hljs-keyword">import</span> PromptTemplate<br><span class="hljs-keyword">from</span> langchain_community.llms.tongyi <span class="hljs-keyword">import</span> Tongyi<br><br>prompt_template = PromptTemplate.from_template(<br>    <span class="hljs-string">&quot;我的邻居姓&#123;lastname&#125;，刚生了&#123;gender&#125;，帮忙起名字，请简略回答。&quot;</span><br>)<br>model = Tongyi(model=<span class="hljs-string">&quot;qwen-max&quot;</span>)<br><br><span class="hljs-comment"># 构建链：模板 → 模型</span><br>chain = prompt_template | model<br><br><span class="hljs-comment"># 调用链，传入变量</span><br>res = chain.invoke(<span class="hljs-built_in">input</span>=&#123;<span class="hljs-string">&quot;lastname&quot;</span>: <span class="hljs-string">&quot;曹&quot;</span>, <span class="hljs-string">&quot;gender&quot;</span>: <span class="hljs-string">&quot;女儿&quot;</span>&#125;)<br><span class="hljs-built_in">print</span>(res)<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="FewShotPromptTemplate（少样本提示词模板）"><a href="#FewShotPromptTemplate（少样本提示词模板）" class="headerlink" title="FewShotPromptTemplate（少样本提示词模板）"></a>FewShotPromptTemplate（少样本提示词模板）</h4><p>在提示词中注入<strong>示例数据</strong>，让模型学习特定任务的输出格式（few-shot 思想）。</p>
+<h4 id="核心参数"><a href="#核心参数" class="headerlink" title="核心参数"></a>核心参数</h4><table>
+<thead>
+<tr>
+<th>参数</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>examples</code></td>
+<td>示例数据，<code>list</code> 类型，内部嵌套字典</td>
+</tr>
+<tr>
+<td><code>example_prompt</code></td>
+<td>示例数据的提示词模板（<code>PromptTemplate</code>）</td>
+</tr>
+<tr>
+<td><code>prefix</code></td>
+<td>示例数据前的引导语</td>
+</tr>
+<tr>
+<td><code>suffix</code></td>
+<td>示例数据后的提问语，包含变量占位</td>
+</tr>
+<tr>
+<td><code>input_variables</code></td>
+<td>声明需要注入的变量列表</td>
+</tr>
+</tbody></table>
+<h4 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> langchain_core.prompts <span class="hljs-keyword">import</span> FewShotPromptTemplate, PromptTemplate<br><br><span class="hljs-comment"># 1. 定义示例数据</span><br>examples_data = [<br>    &#123;<span class="hljs-string">&quot;input&quot;</span>: <span class="hljs-string">&quot;高兴&quot;</span>, <span class="hljs-string">&quot;output&quot;</span>: <span class="hljs-string">&quot;难过&quot;</span>&#125;,<br>    &#123;<span class="hljs-string">&quot;input&quot;</span>: <span class="hljs-string">&quot;快&quot;</span>, <span class="hljs-string">&quot;output&quot;</span>: <span class="hljs-string">&quot;慢&quot;</span>&#125;<br>]<br><br><span class="hljs-comment"># 2. 定义示例模板</span><br>example_template = PromptTemplate.from_template(<br>    <span class="hljs-string">&quot;输入：&#123;input&#125;，反义词：&#123;output&#125;&quot;</span><br>)<br><br><span class="hljs-comment"># 3. 构建 FewShot 模板</span><br>few_shot_template = FewShotPromptTemplate(<br>    example_prompt=example_template,<br>    examples=examples_data,<br>    prefix=<span class="hljs-string">&quot;告知我单词的反义词，我提供如下的示例：&quot;</span>,<br>    suffix=<span class="hljs-string">&quot;基于前面的示例告知我，&#123;input_word&#125;的反义词是？&quot;</span>,<br>    input_variables=[<span class="hljs-string">&quot;input_word&quot;</span>]<br>)<br><br><span class="hljs-comment"># 4. 生成提示词</span><br>prompt_text = few_shot_template.invoke(<span class="hljs-built_in">input</span>=&#123;<span class="hljs-string">&quot;input_word&quot;</span>: <span class="hljs-string">&quot;左&quot;</span>&#125;).to_string()<br><span class="hljs-built_in">print</span>(prompt_text)<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="format-vs-invoke-方法对比"><a href="#format-vs-invoke-方法对比" class="headerlink" title="format vs invoke 方法对比"></a>format vs invoke 方法对比</h4><p>所有模板类（<code>PromptTemplate</code>&#x2F;<code>FewShotPromptTemplate</code>&#x2F;<code>ChatPromptTemplate</code>）都支持这两个方法：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th><code>format</code></th>
+<th><code>invoke</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>功能</td>
+<td>纯字符串替换，解析占位符生成提示词</td>
+<td>Runnable 接口标准方法，解析占位符生成提示词</td>
+</tr>
+<tr>
+<td>返回值</td>
+<td>字符串</td>
+<td><code>PromptValue</code> 类对象（需 <code>.to_string()</code> 转文本）</td>
+</tr>
+<tr>
+<td>传参方式</td>
+<td><code>.format(k=v, ...)</code></td>
+<td><code>.invoke({&quot;k&quot;: v, ...})</code></td>
+</tr>
+<tr>
+<td>解析能力</td>
+<td>仅支持 <code>{}</code> 占位符</td>
+<td>支持 <code>{}</code> 占位符 + <code>MessagesPlaceholder</code> 结构化占位</td>
+</tr>
+</tbody></table>
+<hr>
+<h4 id="ChatPromptTemplate（对话提示词模板）"><a href="#ChatPromptTemplate（对话提示词模板）" class="headerlink" title="ChatPromptTemplate（对话提示词模板）"></a>ChatPromptTemplate（对话提示词模板）</h4><p>支持注入<strong>多轮历史会话信息</strong>，专门用于对话场景。</p>
+<ul>
+<li>通过 <code>from_messages</code> 方法接收<strong>消息列表</strong>（区别于 <code>from_template</code> 仅接收单条消息）</li>
+<li>支持 <code>(&quot;system&quot;/&quot;human&quot;/&quot;ai&quot;, &quot;内容&quot;)</code> 简写格式</li>
+<li>可注入历史对话，实现上下文感知</li>
+</ul>
+<h4 id="代码示例-1"><a href="#代码示例-1" class="headerlink" title="代码示例"></a>代码示例</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> langchain_core.prompts <span class="hljs-keyword">import</span> ChatPromptTemplate<br><br>chat_prompt_template = ChatPromptTemplate.from_messages([<br>    (<span class="hljs-string">&quot;system&quot;</span>, <span class="hljs-string">&quot;你是一个边塞诗人，风格苍凉悲壮&quot;</span>),<br>    (<span class="hljs-string">&quot;human&quot;</span>, <span class="hljs-string">&quot;给我写一首关于战争的唐诗&quot;</span>),<br>    (<span class="hljs-string">&quot;ai&quot;</span>, <span class="hljs-string">&quot;黄沙百战穿金甲，不破楼兰终不还&quot;</span>),<br>    (<span class="hljs-string">&quot;human&quot;</span>, <span class="hljs-string">&quot;再来一首，风格保持一致&quot;</span>)<br>])<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260328002755597.png" srcset="/img/loading.gif" lazyload></p>
+<hr>
+<h3 id="Chain-链（管道调用）"><a href="#Chain-链（管道调用）" class="headerlink" title="Chain 链（管道调用）"></a>Chain 链（管道调用）</h3><p>将多个组件<strong>串联</strong>，上一个组件的输出自动作为下一个组件的输入，实现数据自动化流转。</p>
+<p><img src="https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260328002755598.png" srcset="/img/loading.gif" lazyload></p>
+<h4 id="核心语法"><a href="#核心语法" class="headerlink" title="核心语法"></a>核心语法</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">chain = 组件<span class="hljs-number">1</span> | 组件<span class="hljs-number">2</span> | 组件<span class="hljs-number">3</span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>示例：<code>chain = prompt_template | model</code></li>
+<li>执行：<code>chain.invoke(input={&quot;变量&quot;: &quot;值&quot;})</code> 或 <code>chain.stream(...)</code></li>
+</ul>
+<h4 id="关键前提"><a href="#关键前提" class="headerlink" title="关键前提"></a>关键前提</h4><ul>
+<li>只有 <strong>Runnable 接口子类</strong> 才能入链</li>
+<li>我们学过的模板类（<code>PromptTemplate</code> 等）和模型类（<code>Tongyi</code>&#x2F;<code>ChatTongyi</code> 等）都实现了 <code>Runnable</code> 接口</li>
+<li>链本身也是 <code>RunnableSerializable</code> 对象，可继续入链</li>
+</ul>
+<h4 id="执行流程"><a href="#执行流程" class="headerlink" title="执行流程"></a>执行流程</h4><p><code>invoke/stream</code> 触发 → 传入变量字典 → 模板生成 <code>PromptValue</code> → 模型接收并生成回复 → 返回结果</p>
+<hr>
+<h4 id="模板类总结"><a href="#模板类总结" class="headerlink" title="模板类总结"></a>模板类总结</h4><table>
+<thead>
+<tr>
+<th>模板类</th>
+<th>适用场景</th>
+<th>核心特点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>PromptTemplate</code></td>
+<td>通用单轮提示</td>
+<td>支持变量注入，zero-shot 场景</td>
+</tr>
+<tr>
+<td><code>FewShotPromptTemplate</code></td>
+<td>少样本学习</td>
+<td>可注入示例数据，引导模型输出格式</td>
+</tr>
+<tr>
+<td><code>ChatPromptTemplate</code></td>
+<td>多轮对话</td>
+<td>支持历史会话列表，上下文感知</td>
+</tr>
+</tbody></table>
+<hr>
+<h4 id="Chain-链总结"><a href="#Chain-链总结" class="headerlink" title="Chain 链总结"></a>Chain 链总结</h4><ul>
+<li><strong>串联思想</strong>：<code>组件1 | 组件2</code>，自动传递数据</li>
+<li><strong>触发方式</strong>：<code>invoke</code>（批量）&#x2F; <code>stream</code>（流式）</li>
+<li><strong>本质</strong>：将复杂流程拆分为可复用的组件，通过链实现协同工作</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/AI/" class="category-chain-item">AI</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/LangChain/" class="print-no-link">#LangChain</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>LangChain 学习</div>
+      <div>http://example.com/2026/03/26/AI/LangChain学习/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年3月26日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/03/28/%E7%A7%BB%E5%8A%A8%E7%AB%AF/Flutter/" title="Flutter 入门">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Flutter 入门</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/03/26/AI/Ollama%20%E6%9C%AC%E5%9C%B0%E9%83%A8%E7%BD%B2/" title="Ollama 本地部署">
+                        <span class="hidden-mobile">Ollama 本地部署</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

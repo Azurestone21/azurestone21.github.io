@@ -1,0 +1,700 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="弹性布局（Flexible Box Layout，简称 Flexbox）是 CSS3 引入的一种一维布局模型。 一、核心概念：容器与项目Flex 容器（Flex Container）：通过给父元素设置 display: flex 或 display: inline-flex 激活 Flex 布局，该父元素即为 “容器”。 Flex 项目（Flex Item）：容器的直接子元素自动成为 “项目”（孙">
+<meta property="og:type" content="article">
+<meta property="og:title" content="弹性布局">
+<meta property="og:url" content="http://example.com/2024/06/01/CSS/%E5%BC%B9%E6%80%A7%E5%B8%83%E5%B1%80/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="弹性布局（Flexible Box Layout，简称 Flexbox）是 CSS3 引入的一种一维布局模型。 一、核心概念：容器与项目Flex 容器（Flex Container）：通过给父元素设置 display: flex 或 display: inline-flex 激活 Flex 布局，该父元素即为 “容器”。 Flex 项目（Flex Item）：容器的直接子元素自动成为 “项目”（孙">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-06-01T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-03-19T16:06:05.151Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="CSS">
+<meta property="article:tag" content="弹性布局">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>弹性布局 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">弹性布局</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-06-01 10:00" pubdate>
+          2024年6月1日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          10 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">弹性布局</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>弹性布局（Flexible Box Layout，简称 Flexbox）是 CSS3 引入的一种一维布局模型。</p>
+<h2 id="一、核心概念：容器与项目"><a href="#一、核心概念：容器与项目" class="headerlink" title="一、核心概念：容器与项目"></a>一、核心概念：容器与项目</h2><p><strong>Flex 容器（Flex Container）</strong>：通过给父元素设置 <code>display: flex</code> 或 <code>display: inline-flex</code> 激活 Flex 布局，该父元素即为 “容器”。</p>
+<p><strong>Flex 项目（Flex Item）</strong>：容器的<strong>直接子元素</strong>自动成为 “项目”（孙子元素不直接受容器控制），浮动、清除浮动、垂直居中属性（如 vertical-align）对项目无效。</p>
+<h2 id="二、容器的-6-个核心属性"><a href="#二、容器的-6-个核心属性" class="headerlink" title="二、容器的 6 个核心属性"></a>二、容器的 6 个核心属性</h2><h3 id="flex-direction：控制项目的排列方向（主轴方向）"><a href="#flex-direction：控制项目的排列方向（主轴方向）" class="headerlink" title="flex-direction：控制项目的排列方向（主轴方向）"></a>flex-direction：控制项目的排列方向（主轴方向）</h3><ol>
+<li><code>row</code>（默认）：水平从左到右</li>
+<li><code>row-reverse</code>：水平从右到左</li>
+<li><code>column</code>：垂直从上到下</li>
+<li><code>column-reverse</code>：垂直从下到上</li>
+</ol>
+<h3 id="flex-wrap：控制项目是否换行"><a href="#flex-wrap：控制项目是否换行" class="headerlink" title="flex-wrap：控制项目是否换行"></a>flex-wrap：控制项目是否换行</h3><ol>
+<li><code>nowrap（默认）</code>：不换行，项目会压缩宽度适应容器</li>
+<li><code>wrap</code>：自动换行，超出容器的项目到下一行</li>
+<li><code>wrap-reverse</code>：自动反向换行（从下往上排）</li>
+</ol>
+<h3 id="flex-flow：flex-direction-flex-wrap-的简写"><a href="#flex-flow：flex-direction-flex-wrap-的简写" class="headerlink" title="flex-flow：flex-direction + flex-wrap 的简写"></a>flex-flow：flex-direction + flex-wrap 的简写</h3><p>默认值为 <code>row nowrap</code>。</p>
+<h3 id="justify-content：控制项目在主轴上的对齐方式"><a href="#justify-content：控制项目在主轴上的对齐方式" class="headerlink" title="justify-content：控制项目在主轴上的对齐方式"></a>justify-content：控制项目在主轴上的对齐方式</h3><ol>
+<li><code>flex-start（默认）</code>：项目靠主轴起点对齐 (左对齐)</li>
+<li><code>flex-end</code>：项目靠主轴终点对齐 (右对齐)</li>
+<li><code>center</code>：项目在主轴中间对齐 (水平居中)</li>
+<li><code>space-between</code>：项目均匀分布：两端贴容器，中间间距相等</li>
+<li><code>space-around</code>：项目均匀分布：项目两侧间距相等（边缘间距是中间的 1&#x2F;2）</li>
+<li><code>space-evenly</code>：项目均匀分布：项目之间及与边缘的间距完全相等</li>
+</ol>
+<h3 id="align-items：控制项目在交叉轴上的对齐方式"><a href="#align-items：控制项目在交叉轴上的对齐方式" class="headerlink" title="align-items：控制项目在交叉轴上的对齐方式"></a>align-items：控制项目在交叉轴上的对齐方式</h3><ol>
+<li><code>stretch（默认）</code>：项目未设置高度时，拉伸至与容器交叉轴高度一致</li>
+<li><code>flex-start</code>：项目靠交叉轴起点对齐 (顶部对齐)</li>
+<li><code>flex-end</code>：项目靠交叉轴终点对齐 (底部对齐)</li>
+<li><code>center</code>：项目在交叉轴中间对齐 (垂直居中)</li>
+<li><code>baseline</code>：项目按”文字基线”对齐(如不同字号文本对齐)</li>
+</ol>
+<h3 id="align-content：控制多行项目在交叉轴上的对齐方式"><a href="#align-content：控制多行项目在交叉轴上的对齐方式" class="headerlink" title="align-content：控制多行项目在交叉轴上的对齐方式"></a>align-content：控制多行项目在交叉轴上的对齐方式</h3><ol>
+<li><code>stretch（默认）</code>：多根主轴线拉伸至填满容器交叉轴高度</li>
+<li><code>flex-start</code>：多根主轴线靠交叉轴起点对齐(顶部对齐）</li>
+<li><code>flex-end</code>：多根主轴线靠交叉轴终点对齐(底部对齐)</li>
+<li><code>center</code>：多根主轴线在交叉轴中间对齐 (垂直居中)</li>
+<li><code>space-between</code>：多根主轴线均匀分布：两端贴容器，中间间距相等</li>
+<li><code>space-around</code>：多根主轴线均匀分布：两侧间距相等</li>
+</ol>
+<h2 id="三、项目的-6-个核心属性"><a href="#三、项目的-6-个核心属性" class="headerlink" title="三、项目的 6 个核心属性"></a>三、项目的 6 个核心属性</h2><h3 id="flex-grow：控制项目的-“放大比例”"><a href="#flex-grow：控制项目的-“放大比例”" class="headerlink" title="flex-grow：控制项目的 “放大比例”"></a>flex-grow：控制项目的 “放大比例”</h3><p>当容器主轴方向有<strong>剩余空间</strong>时，项目根据 <code>flex-grow</code> 的数值分配剩余空间（默认值为 <code>0</code>，即不放大）。</p>
+<h3 id="flex-shrink：控制项目的-“缩小比例”"><a href="#flex-shrink：控制项目的-“缩小比例”" class="headerlink" title="flex-shrink：控制项目的 “缩小比例”"></a>flex-shrink：控制项目的 “缩小比例”</h3><p>当容器主轴方向<strong>空间不足</strong>时，项目根据 <code>flex-shrink</code> 的数值压缩自身宽度（默认值为 <code>1</code>，即允许缩小）。</p>
+<ul>
+<li>数值为非负整数（0 表示不缩小，1、2… 表示缩小权重）；</li>
+<li>若所有项目 <code>flex-shrink</code> 之和为 <code>n</code>，则每个项目压缩的宽度比例为 <code>自身flex-shrink / n</code>。</li>
+</ul>
+<h3 id="flex-basis：控制项目在主轴上的-“初始尺寸”"><a href="#flex-basis：控制项目在主轴上的-“初始尺寸”" class="headerlink" title="flex-basis：控制项目在主轴上的 “初始尺寸”"></a>flex-basis：控制项目在主轴上的 “初始尺寸”</h3><p>定义项目在分配剩余空间前的初始宽度（主轴为水平）或高度（主轴为垂直），默认值为 <code>auto</code>（即项目自身内容宽度）。</p>
+<ul>
+<li>可设置具体数值（如 <code>100px</code>、<code>20%</code>）；</li>
+<li>若设置为 <code>0</code>，项目尺寸完全由 <code>flex-grow</code>&#x2F;<code>flex-shrink</code> 决定；若设置为 <code>auto</code>，项目先保留自身尺寸，再分配剩余空间。</li>
+</ul>
+<h3 id="flex：flex-grow-flex-shrink-flex-basis-的简写"><a href="#flex：flex-grow-flex-shrink-flex-basis-的简写" class="headerlink" title="flex：flex-grow + flex-shrink + flex-basis 的简写"></a>flex：flex-grow + flex-shrink + flex-basis 的简写</h3><p>默认值为 <code>0 1 auto</code>。</p>
+<pre><code class="hljs">1. 常见简写场景：
+- flex: 1：等价于 flex: 1 1 0% → 项目均分剩余空间（常用作 “自适应宽度”）；
+- flex: auto：等价于 flex: 1 1 auto → 项目先保留自身尺寸，再分配剩余空间；
+- flex: none：等价于 flex: 0 0 auto → 项目不放大、不缩小，尺寸由自身决定（常用作 “固定宽度”）。
+</code></pre>
+<h3 id="order：控制项目的排列顺序"><a href="#order：控制项目的排列顺序" class="headerlink" title="order：控制项目的排列顺序"></a>order：控制项目的排列顺序</h3><p>默认情况下，项目按 “代码书写顺序” 排列（<code>order: 0</code>），通过设置 <code>order</code> 的整数数值（可正可负），可改变项目的排列优先级：</p>
+<ul>
+<li>数值越小，项目越靠前。</li>
+<li>若多个项目 order 相同，则按代码顺序排列。</li>
+</ul>
+<h3 id="align-self：控制单个项目在交叉轴上的对齐方式"><a href="#align-self：控制单个项目在交叉轴上的对齐方式" class="headerlink" title="align-self：控制单个项目在交叉轴上的对齐方式"></a>align-self：控制单个项目在交叉轴上的对齐方式</h3><p>覆盖容器的 <code>align-items</code> 属性，为<strong>单个项目</strong>设置特殊的交叉轴对齐方式。</p>
+<ul>
+<li>属性值与 <code>align-items</code> 完全一致（<code>auto</code>、<code>stretch</code>、<code>flex-start</code>、<code>flex-end</code>、<code>center</code>、<code>baseline</code>）。</li>
+<li>默认值为 <code>auto</code>（继承容器的 <code>align-items</code>）。</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/CSS/" class="category-chain-item">CSS</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/CSS/" class="print-no-link">#CSS</a>
+      
+        <a href="/tags/%E5%BC%B9%E6%80%A7%E5%B8%83%E5%B1%80/" class="print-no-link">#弹性布局</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>弹性布局</div>
+      <div>http://example.com/2024/06/01/CSS/弹性布局/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年6月1日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/06/19/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E4%B8%80%E4%B8%AA%20tcp%20%E8%BF%9E%E6%8E%A5%E8%83%BD%E5%8F%91%E5%87%A0%E4%B8%AA%20http%20%E8%AF%B7%E6%B1%82%EF%BC%9F/" title="一个 TCP 连接能发几个 HTTP 请求？">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">一个 TCP 连接能发几个 HTTP 请求？</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/04/15/%E7%A7%BB%E5%8A%A8%E7%AB%AF/Dart%E5%85%A5%E9%97%A8/" title="Dart入门">
+                        <span class="hidden-mobile">Dart入门</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

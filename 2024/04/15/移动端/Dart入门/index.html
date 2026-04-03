@@ -1,0 +1,964 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="一、Dart 语言基础1. 语言注意事项 文件后缀：Dart 文件以 .dart 结尾。 入口方法：程序入口为 main 方法。 分号规则：绝大多数语句需以分号 ; 结尾，代码块 {} 后通常不加分号。  123void main(List&lt;String&gt; args) &#123;  print(&quot;Hello, World!&quot;); &#x2F;&#x2F; 输出使用 &#96;print&#96; 方">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dart入门">
+<meta property="og:url" content="http://example.com/2024/04/15/%E7%A7%BB%E5%8A%A8%E7%AB%AF/Dart%E5%85%A5%E9%97%A8/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="一、Dart 语言基础1. 语言注意事项 文件后缀：Dart 文件以 .dart 结尾。 入口方法：程序入口为 main 方法。 分号规则：绝大多数语句需以分号 ; 结尾，代码块 {} 后通常不加分号。  123void main(List&lt;String&gt; args) &#123;  print(&quot;Hello, World!&quot;); &#x2F;&#x2F; 输出使用 &#96;print&#96; 方">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-04-15T15:10:13.000Z">
+<meta property="article:modified_time" content="2026-03-23T16:06:05.347Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="Dart">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Dart入门 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">Dart入门</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-04-15 23:10" pubdate>
+          2024年4月15日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          19 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Dart入门</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="一、Dart-语言基础"><a href="#一、Dart-语言基础" class="headerlink" title="一、Dart 语言基础"></a>一、Dart 语言基础</h2><h3 id="1-语言注意事项"><a href="#1-语言注意事项" class="headerlink" title="1. 语言注意事项"></a>1. 语言注意事项</h3><ul>
+<li><strong>文件后缀</strong>：Dart 文件以 <code>.dart</code> 结尾。</li>
+<li><strong>入口方法</strong>：程序入口为 <code>main</code> 方法。</li>
+<li><strong>分号规则</strong>：绝大多数语句需以分号 <code>;</code> 结尾，代码块 <code>{}</code> 后通常不加分号。</li>
+</ul>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-keyword">void</span> main(<span class="hljs-built_in">List</span>&lt;<span class="hljs-built_in">String</span>&gt; args) &#123;<br>  <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Hello, World!&quot;</span>); <span class="hljs-comment">// 输出使用 `print` 方法</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-变量与常量声明"><a href="#2-变量与常量声明" class="headerlink" title="2. 变量与常量声明"></a>2. 变量与常量声明</h3><table>
+<thead>
+<tr>
+<th>关键字</th>
+<th>类型</th>
+<th>特点</th>
+<th>语法示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>var</code></td>
+<td>变量</td>
+<td>第一次赋值后类型确定，不可再赋其他类型的值</td>
+<td><code>var age = 20;</code></td>
+</tr>
+<tr>
+<td><code>const</code></td>
+<td>编译时常量</td>
+<td>编译前确定值，不可修改，表达式只能用常量</td>
+<td><code>const pi = 3.1415926;</code></td>
+</tr>
+<tr>
+<td><code>final</code></td>
+<td>运行时常量</td>
+<td>运行时初始化，赋值后不可修改</td>
+<td><code>final time = DateTime.now();</code></td>
+</tr>
+</tbody></table>
+<h3 id="3-常用数据类型"><a href="#3-常用数据类型" class="headerlink" title="3. 常用数据类型"></a>3. 常用数据类型</h3><h4 id="（1）String（字符串）"><a href="#（1）String（字符串）" class="headerlink" title="（1）String（字符串）"></a>（1）String（字符串）</h4><ul>
+<li><strong>模板字符串</strong>：使用 <code>$变量名</code> 或 <code>${表达式}</code> 嵌入变量&#x2F;表达式，推荐 <code>${}</code>。</li>
+</ul>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-built_in">String</span> text = <span class="hljs-string">&#x27;我要在<span class="hljs-subst">$&#123;DateTime.now()&#125;</span>吃早饭&#x27;</span>;<br></code></pre></td></tr></table></figure>
+
+<h4 id="（2）数字类型"><a href="#（2）数字类型" class="headerlink" title="（2）数字类型"></a>（2）数字类型</h4><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>含义</th>
+<th>赋值关系</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>int</code></td>
+<td>整型</td>
+<td>与 <code>double</code> 不可直接互赋，需 <code>toInt()</code>&#x2F;<code>toDouble()</code> 转换</td>
+</tr>
+<tr>
+<td><code>double</code></td>
+<td>浮点型</td>
+<td>可直接赋值给 <code>num</code></td>
+</tr>
+<tr>
+<td><code>num</code></td>
+<td>数字父类</td>
+<td>可接收 <code>int</code>&#x2F;<code>double</code>，赋值给 <code>double</code> 需 <code>toDouble()</code></td>
+</tr>
+</tbody></table>
+<h4 id="（3）bool（布尔类型）"><a href="#（3）bool（布尔类型）" class="headerlink" title="（3）bool（布尔类型）"></a>（3）bool（布尔类型）</h4><ul>
+<li>表示真&#x2F;假，取值为 <code>true</code>&#x2F;<code>false</code>，常用于条件判断。</li>
+</ul>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-built_in">bool</span> isFinishWork = <span class="hljs-keyword">false</span>;<br></code></pre></td></tr></table></figure>
+
+<h4 id="（4）List（列表）"><a href="#（4）List（列表）" class="headerlink" title="（4）List（列表）"></a>（4）List（列表）</h4><ul>
+<li>存储多个值，支持增删改查与遍历。</li>
+<li><strong>常用操作</strong>：<ul>
+<li><code>add()</code>：添加一个元素到列表末尾。</li>
+<li><code>addAll()</code>：在末尾添加一个列表。</li>
+<li><code>remove()</code>：删除第一个匹配的元素。</li>
+<li><code>removeLast()</code>：删除最后一个元素。</li>
+<li><code>removeRange(start, end)</code>：删除指定范围的元素。</li>
+<li><code>forEach((item) {})</code>：遍历列表中的每个元素。</li>
+<li><code>every((item) { return 布尔值 })</code>：判断列表中是否所有元素都满足指定条件。</li>
+<li><code>where((item) { return 布尔值 })</code>：根据条件筛选元素。</li>
+<li><code>length</code>：获取列表元素数量。</li>
+<li><code>last</code>：获取最后一个元素。</li>
+<li><code>first</code>：获取第一个元素。</li>
+<li><code>isEmpty</code>：判断列表是否为空。</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-built_in">List</span> students = [<span class="hljs-string">&quot;张三&quot;</span>, <span class="hljs-string">&quot;李四&quot;</span>, <span class="hljs-string">&quot;王五&quot;</span>];<br><br>students.add(<span class="hljs-string">&quot;赵六&quot;</span>);<br>students.forEach((item) &#123;<br>  <span class="hljs-built_in">print</span>(item);<br>&#125;);<br></code></pre></td></tr></table></figure>
+
+<h4 id="（5）Map（字典）"><a href="#（5）Map（字典）" class="headerlink" title="（5）Map（字典）"></a>（5）Map（字典）</h4><ul>
+<li>存储键值对</li>
+<li><strong>定义</strong>：<code>{key: value}</code></li>
+<li><strong>取值&#x2F;赋值</strong>：<code>map[key]</code></li>
+<li><strong>常用操作</strong>：<ul>
+<li><code>forEach((item) {})</code>：遍历字典中的每个键值对。</li>
+<li><code>addAll()</code>：在末尾添加一个字典。</li>
+<li><code>containsKey(key)</code>：判断是否包含指定键。</li>
+<li><code>remove(key)</code>：删除指定键值对。</li>
+<li><code>clear()</code>：清空字典。</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-built_in">Map</span>&lt;<span class="hljs-built_in">String</span>, <span class="hljs-built_in">int</span>&gt; scoresMap = &#123;<span class="hljs-string">&quot;张三&quot;</span>: <span class="hljs-number">90</span>, <span class="hljs-string">&quot;李四&quot;</span>: <span class="hljs-number">85</span>, <span class="hljs-string">&quot;王五&quot;</span>: <span class="hljs-number">95</span>&#125;;<br><span class="hljs-built_in">print</span>(scoresMap[<span class="hljs-string">&quot;张三&quot;</span>]);<br><br>scoresMap.forEach((key, value) &#123;<br>  <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;<span class="hljs-subst">$key</span>: <span class="hljs-subst">$value</span>&quot;</span>);<br>&#125;);<br>scoresMap.addAll(&#123;<span class="hljs-string">&quot;赵六&quot;</span>: <span class="hljs-number">88</span>&#125;);<br>scoresMap.containsKey(<span class="hljs-string">&quot;张三&quot;</span>);<br>scoresMap.remove(<span class="hljs-string">&quot;李四&quot;</span>);<br>scoresMap.clear();<br><span class="hljs-built_in">print</span>(scoresMap);<br></code></pre></td></tr></table></figure>
+
+<h4 id="（6）动态类型"><a href="#（6）动态类型" class="headerlink" title="（6）动态类型"></a>（6）动态类型</h4><table>
+<thead>
+<tr>
+<th>关键字</th>
+<th>类型推断</th>
+<th>编译检查</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>var</code></td>
+<td>编译时推断（编辑器会提示错误）</td>
+<td>有</td>
+<td>类型确定后不可修改</td>
+</tr>
+<tr>
+<td><code>dynamic</code></td>
+<td>无编译检查，运行时确定</td>
+<td>无</td>
+<td>可自由修改类型，运行时可能报错</td>
+</tr>
+</tbody></table>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-keyword">var</span> numVar = <span class="hljs-number">10</span><br><span class="hljs-built_in">dynamic</span> numDynamic = <span class="hljs-number">10</span>;<br>numVar.startsWith(<span class="hljs-string">&quot;1&quot;</span>); <span class="hljs-comment">// 编译时报错，int 类型没有 `startsWith` 方法</span><br>numDynamic.startsWith(<span class="hljs-string">&quot;1&quot;</span>); <span class="hljs-comment">// 运行时报错，但是编译通过，不会提示</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="4-空安全机制"><a href="#4-空安全机制" class="headerlink" title="4. 空安全机制"></a>4. 空安全机制</h3><ul>
+<li><strong>核心</strong>：编译时静态检查，提前暴露空指针异常。</li>
+<li><strong>常用操作符</strong>：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>操作符</th>
+<th>符号</th>
+<th>作用</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>可空类型</td>
+<td><code>?</code></td>
+<td>声明变量允许为 <code>null</code></td>
+<td><code>String? name;</code></td>
+</tr>
+<tr>
+<td>安全访问</td>
+<td><code>?.</code></td>
+<td>对象为 <code>null</code> 时返回 <code>null</code></td>
+<td><code>user?.name</code>，user为<code>null</code>时返回<code>null</code></td>
+</tr>
+<tr>
+<td>非空断言</td>
+<td><code>!.</code></td>
+<td>开发者保证变量非空（否则崩溃）</td>
+<td><code>name!.length</code></td>
+</tr>
+<tr>
+<td>空合并</td>
+<td><code>??</code></td>
+<td>左侧为 <code>null</code> 时返回右侧默认值</td>
+<td><code>name ?? &quot;Guest&quot;</code></td>
+</tr>
+</tbody></table>
+<h3 id="5-运算符"><a href="#5-运算符" class="headerlink" title="5. 运算符"></a>5. 运算符</h3><h4 id="（1）算术运算符"><a href="#（1）算术运算符" class="headerlink" title="（1）算术运算符"></a>（1）算术运算符</h4><p><code>+</code>、<code>-</code>、<code>*</code>、<code>/</code>（除）、<code>~/</code>（整除）、<code>%</code>（取余）。</p>
+<h4 id="（2）赋值运算符"><a href="#（2）赋值运算符" class="headerlink" title="（2）赋值运算符"></a>（2）赋值运算符</h4><p><code>=</code>、<code>+=</code>、<code>-=</code>、<code>*=</code>、<code>/=</code>。</p>
+<h4 id="（3）比较运算符"><a href="#（3）比较运算符" class="headerlink" title="（3）比较运算符"></a>（3）比较运算符</h4><p><code>==</code>、<code>!=</code>、<code>&gt;</code>、<code>&gt;=</code>、<code>&lt;</code>、<code>&lt;=</code>，结果为 <code>bool</code> 类型。</p>
+<h4 id="（4）逻辑运算符"><a href="#（4）逻辑运算符" class="headerlink" title="（4）逻辑运算符"></a>（4）逻辑运算符</h4><p><code>&amp;&amp;</code>（与）、<code>||</code>（或）、<code>!</code>（非），仅支持 <code>bool</code> 类型的变量。</p>
+<hr>
+<h2 id="二、流程控制"><a href="#二、流程控制" class="headerlink" title="二、流程控制"></a>二、流程控制</h2><h3 id="1-if-分支语句"><a href="#1-if-分支语句" class="headerlink" title="1. if 分支语句"></a>1. if 分支语句</h3><ul>
+<li><strong>单分支</strong>：<code>if (条件) { 逻辑 }</code></li>
+<li><strong>双分支</strong>：<code>if (条件) { 逻辑1 } else { 逻辑2 }</code></li>
+<li><strong>多分支</strong>：<code>if (条件1) { 逻辑1 } else if (条件2) { 逻辑2 } else { 逻辑3 }</code></li>
+</ul>
+<h3 id="2-三元运算符"><a href="#2-三元运算符" class="headerlink" title="2. 三元运算符"></a>2. 三元运算符</h3><ul>
+<li>简化双分支：<code>条件 ? 结果1 : 结果2</code></li>
+</ul>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-built_in">print</span>(score &gt; <span class="hljs-number">60</span> ? <span class="hljs-string">&quot;及格&quot;</span> : <span class="hljs-string">&quot;不及格&quot;</span>);<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-switch-case-语句"><a href="#3-switch-case-语句" class="headerlink" title="3. switch&#x2F;case 语句"></a>3. switch&#x2F;case 语句</h3><ul>
+<li>适用于多等值判断，每个 <code>case</code> 后需加 <code>break</code>，支持 <code>default</code> 默认分支。</li>
+</ul>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-keyword">switch</span> (变量) &#123;<br>  <span class="hljs-keyword">case</span> 值<span class="hljs-number">1</span>: 逻辑<span class="hljs-number">1</span>; <span class="hljs-keyword">break</span>;<br>  <span class="hljs-keyword">case</span> 值<span class="hljs-number">2</span>: 逻辑<span class="hljs-number">2</span>; <span class="hljs-keyword">break</span>;<br>  <span class="hljs-keyword">default</span>: 默认逻辑;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-循环语句"><a href="#4-循环语句" class="headerlink" title="4. 循环语句"></a>4. 循环语句</h3><h4 id="（1）while-循环"><a href="#（1）while-循环" class="headerlink" title="（1）while 循环"></a>（1）while 循环</h4><figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-keyword">while</span> (条件) &#123;<br>  逻辑;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="（2）for-循环"><a href="#（2）for-循环" class="headerlink" title="（2）for 循环"></a>（2）for 循环</h4><figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-keyword">for</span> (<span class="hljs-built_in">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">10</span>; i++) &#123;<br>  逻辑;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="（3）循环控制"><a href="#（3）循环控制" class="headerlink" title="（3）循环控制"></a>（3）循环控制</h4><ul>
+<li><code>break</code>：跳出整个循环。</li>
+<li><code>continue</code>：跳过当前迭代，进入下一次循环。</li>
+</ul>
+<hr>
+<h2 id="三、函数"><a href="#三、函数" class="headerlink" title="三、函数"></a>三、函数</h2><h3 id="1-函数定义"><a href="#1-函数定义" class="headerlink" title="1. 函数定义"></a>1. 函数定义</h3><ul>
+<li>结构：<code>返回类型 函数名(参数) { 函数体 }</code></li>
+<li>返回值：<ul>
+<li>有返回值：<code>具体类型 函数名称() { 函数体 }</code></li>
+<li>无返回值：<code>void 函数名称() { 函数体 }</code></li>
+<li>自动推断：省略返回类型时，Dart 推断为 <code>dynamic</code>。</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-comment">// 有返回值函数</span><br><span class="hljs-built_in">int</span> add(<span class="hljs-built_in">int</span> a, <span class="hljs-built_in">int</span> b) &#123;<br>  <span class="hljs-keyword">return</span> a + b;<br>&#125;<br><span class="hljs-comment">// 无返回值函数</span><br><span class="hljs-keyword">void</span> test() &#123;<br>  <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;测试&quot;</span>);<br>&#125;<br><span class="hljs-comment">// 省略返回类型</span><br>getHello() &#123;<br>  <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;Hello, World!&quot;</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-参数类型"><a href="#2-参数类型" class="headerlink" title="2. 参数类型"></a>2. 参数类型</h3><h4 id="（1）必传参数（位置参数）"><a href="#（1）必传参数（位置参数）" class="headerlink" title="（1）必传参数（位置参数）"></a>（1）必传参数（位置参数）</h4><ul>
+<li>无默认值，必须在调用时传递。</li>
+<li>顺序不能改变。</li>
+</ul>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-built_in">int</span> add(<span class="hljs-built_in">int</span> a, <span class="hljs-built_in">int</span> b) &#123; <span class="hljs-keyword">return</span> a + b; &#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="（2）可选位置参数"><a href="#（2）可选位置参数" class="headerlink" title="（2）可选位置参数"></a>（2）可选位置参数</h4><ul>
+<li>用 <code>[]</code> 包裹，必须在必传参数后，支持默认值，按顺序传递。</li>
+<li>适用场景：参数数量少，且顺序固定。</li>
+<li>默认值：可以设置默认值，不设置时默认值为 <code>null</code>。</li>
+</ul>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-built_in">String</span> combine(<span class="hljs-built_in">String</span> a, [<span class="hljs-built_in">String?</span> b = <span class="hljs-string">&quot;b&quot;</span>]) &#123; ... &#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="（3）可选命名参数"><a href="#（3）可选命名参数" class="headerlink" title="（3）可选命名参数"></a>（3）可选命名参数</h4><ul>
+<li>用 <code>{}</code> 包裹，必须在必传参数后，支持默认值，按 <code>参数名:值</code> 传递（无需顺序）。</li>
+<li>适用场景：参数数量多，且含义明确。</li>
+<li>默认值：可以设置默认值，不设置时默认值为 <code>null</code>。</li>
+</ul>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-keyword">void</span> showPerson(<span class="hljs-built_in">String</span> username, &#123;<span class="hljs-built_in">int?</span> age = <span class="hljs-number">10</span>&#125;) &#123; ... &#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-特殊函数"><a href="#3-特殊函数" class="headerlink" title="3. 特殊函数"></a>3. 特殊函数</h3><h4 id="（1）匿名函数"><a href="#（1）匿名函数" class="headerlink" title="（1）匿名函数"></a>（1）匿名函数</h4><ul>
+<li>无函数名，可赋值给变量进行调用，或作为参数传递。</li>
+<li>使用 <code>Function</code> 类型定义。</li>
+</ul>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-built_in">Function</span> test = () &#123;<br>  <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;测试&quot;</span>);<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<h4 id="（2）箭头函数"><a href="#（2）箭头函数" class="headerlink" title="（2）箭头函数"></a>（2）箭头函数</h4><ul>
+<li>函数体只有一行代码时使用，可以省略 <code>{}</code> 和 <code>return</code>。</li>
+</ul>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-built_in">int</span> add(<span class="hljs-built_in">int</span> a, <span class="hljs-built_in">int</span> b) =&gt; a + b;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="四、面向对象编程"><a href="#四、面向对象编程" class="headerlink" title="四、面向对象编程"></a>四、面向对象编程</h2><h3 id="1-类的基础"><a href="#1-类的基础" class="headerlink" title="1. 类的基础"></a>1. 类的基础</h3><ul>
+<li>类(class)是<strong>面向对象</strong>编程的核心，类包含<strong>属性</strong>和<strong>方法</strong>来定义对象的行为和状态。</li>
+<li>定义：<code>class 类名 { 属性; 方法(); }</code></li>
+<li>实例化：<code>类名 变量 = 类名();</code></li>
+<li>访问成员：<code>变量.属性</code> &#x2F; <code>变量.方法()</code></li>
+</ul>
+<h3 id="2-构造函数"><a href="#2-构造函数" class="headerlink" title="2. 构造函数"></a>2. 构造函数</h3><h4 id="（1）默认构造函数"><a href="#（1）默认构造函数" class="headerlink" title="（1）默认构造函数"></a>（1）默认构造函数</h4><figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Person</span> </span>&#123;<br>  <span class="hljs-built_in">String?</span> name;<br>  Person(&#123;<span class="hljs-keyword">this</span>.name&#125;); <span class="hljs-comment">// 语法糖简写</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="（2）命名构造函数"><a href="#（2）命名构造函数" class="headerlink" title="（2）命名构造函数"></a>（2）命名构造函数</h4><figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Person</span> </span>&#123;<br>  <span class="hljs-built_in">String?</span> name;<br>  Person.createPerson(&#123;<span class="hljs-keyword">this</span>.name&#125;);<br>&#125;<br><span class="hljs-comment">// 调用：Person p = Person.createPerson(name: &quot;张三&quot;);</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="3-公有与私有属性"><a href="#3-公有与私有属性" class="headerlink" title="3. 公有与私有属性"></a>3. 公有与私有属性</h3><ul>
+<li>公有属性：默认可见，无特殊前缀。</li>
+<li>私有属性：以下划线 <code>_</code> 开头，仅类内部可访问。</li>
+</ul>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Person</span> </span>&#123;<br>  <span class="hljs-built_in">String?</span> _name; <span class="hljs-comment">// 私有属性</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-继承"><a href="#4-继承" class="headerlink" title="4. 继承"></a>4. 继承</h3><ul>
+<li>关键字 <code>extends</code>，Dart 是单继承。</li>
+<li>子类需通过 <code>super</code> 调用父类构造函数。</li>
+<li>方法重写：使用 <code>@override</code> 注解重写父类方法。</li>
+</ul>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Child</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Parent</span> </span>&#123;<br>  Child(&#123;<span class="hljs-built_in">String?</span> name&#125;) : <span class="hljs-keyword">super</span>(name: name);<br>  <span class="hljs-meta">@override</span><br>  <span class="hljs-keyword">void</span> study() &#123; ... &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="5-多态"><a href="#5-多态" class="headerlink" title="5. 多态"></a>5. 多态</h3><ul>
+<li>实现方式：<ol>
+<li>继承 + 方法重写：子类重写父类方法，同一操作产生不同效果。</li>
+<li>抽象类 + 接口：<code>abstract</code> 定义抽象类，<code>implements</code> 实现抽象方法。</li>
+</ol>
+</li>
+</ul>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-keyword">abstract</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PayBase</span> </span>&#123; <span class="hljs-keyword">void</span> pay(); &#125;<br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">WxPay</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">PayBase</span> </span>&#123; <span class="hljs-meta">@override</span> <span class="hljs-keyword">void</span> pay() &#123; ... &#125; &#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="6-Mixin（混入）"><a href="#6-Mixin（混入）" class="headerlink" title="6. Mixin（混入）"></a>6. Mixin（混入）</h3><ul>
+<li>不使用继承，向类中添加功能，关键字 <code>mixin</code> 定义、<code>with</code> 混入。</li>
+<li>支持多混入，同名方法遵循“后来居上”原则，先混入的类方法会被后混入的类方法覆盖。</li>
+</ul>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-keyword">mixin</span> Base &#123; <span class="hljs-keyword">void</span> song() &#123; ... &#125; &#125;<br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Student</span> <span class="hljs-title">with</span> <span class="hljs-title">Base</span> </span>&#123; ... &#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="7-泛型"><a href="#7-泛型" class="headerlink" title="7. 泛型"></a>7. 泛型</h3><ul>
+<li>使用 <code>&lt;T&gt;</code> 定义类型参数，提升类型安全与代码复用。</li>
+<li>分类：泛型集合（<code>List&lt;String&gt;</code>）、泛型方法、泛型类。</li>
+</ul>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Student</span>&lt;<span class="hljs-title">T</span>&gt; </span>&#123;<br>  T? name;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="五、异步编程"><a href="#五、异步编程" class="headerlink" title="五、异步编程"></a>五、异步编程</h2><h3 id="1-事件循环机制"><a href="#1-事件循环机制" class="headerlink" title="1. 事件循环机制"></a>1. 事件循环机制</h3><ul>
+<li>Dart 是单线程语言，采用「同步代码 → 微任务队列 → 事件队列」循环处理异步任务。</li>
+<li>微任务队列：<code>Future.microtask()</code>（高优先级）。</li>
+<li>事件队列：<code>Future</code>、<code>Future.delayed()</code>、I&#x2F;O 操作等（普通优先级）。</li>
+</ul>
+<h3 id="2-Future"><a href="#2-Future" class="headerlink" title="2. Future"></a>2. Future</h3><ul>
+<li><code>Future</code> 代表异步操作的结果，状态：<code>Uncompleted</code> → <code>Completed with value/error</code>。</li>
+<li>基本用法：</li>
+</ul>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs dart">Future(() &#123; <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;结果&quot;</span>; &#125;)<br>  .then((value) &#123; <span class="hljs-built_in">print</span>(value); &#125;) <span class="hljs-comment">// 成功回调</span><br>  .catchError((error) &#123; <span class="hljs-built_in">print</span>(error); &#125;); <span class="hljs-comment">// 失败回调</span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>链式调用：多个 <code>then</code> 按顺序执行，返回值传递给下一个 <code>then</code>。</li>
+</ul>
+<h3 id="3-async-await"><a href="#3-async-await" class="headerlink" title="3. async&#x2F;await"></a>3. async&#x2F;await</h3><ul>
+<li><code>Future.then()</code> 的语法糖，让异步代码像同步代码一样易读。</li>
+<li><code>async</code> 标记函数为异步，<code>await</code> 等待 <code>Future</code> 执行完成。</li>
+<li>异常捕获：使用 <code>try/catch</code>。</li>
+</ul>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-keyword">void</span> test() <span class="hljs-keyword">async</span> &#123;<br>  <span class="hljs-keyword">try</span> &#123;<br>    <span class="hljs-keyword">await</span> Future(() &#123; ... &#125;);<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;成功逻辑&quot;</span>);<br>  &#125; <span class="hljs-keyword">catch</span> (e) &#123;<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;失败逻辑&quot;</span>);<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="六、总结"><a href="#六、总结" class="headerlink" title="六、总结"></a>六、总结</h2><table>
+<thead>
+<tr>
+<th>模块</th>
+<th>核心要点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>基础语法</strong></td>
+<td>变量&#x2F;常量、数据类型、空安全、运算符</td>
+</tr>
+<tr>
+<td><strong>流程控制</strong></td>
+<td>if&#x2F;else、switch、for&#x2F;while、break&#x2F;continue</td>
+</tr>
+<tr>
+<td><strong>函数</strong></td>
+<td>参数类型、匿名函数、箭头函数</td>
+</tr>
+<tr>
+<td><strong>面向对象</strong></td>
+<td>类、构造函数、继承、多态、Mixin、泛型</td>
+</tr>
+<tr>
+<td><strong>异步编程</strong></td>
+<td>事件循环、Future、async&#x2F;await</td>
+</tr>
+</tbody></table>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A7%BB%E5%8A%A8%E7%AB%AF/" class="category-chain-item">移动端</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Dart/" class="print-no-link">#Dart</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Dart入门</div>
+      <div>http://example.com/2024/04/15/移动端/Dart入门/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年4月15日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/06/01/CSS/%E5%BC%B9%E6%80%A7%E5%B8%83%E5%B1%80/" title="弹性布局">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">弹性布局</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/02/19/JavaScript/Promise%E4%B8%8Easync%20await/" title="Promise 与 async/await">
+                        <span class="hidden-mobile">Promise 与 async/await</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

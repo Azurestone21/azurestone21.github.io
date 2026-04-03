@@ -1,0 +1,731 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="CSS 处理器主要分为三大类：预处理器（Preprocessor）、后处理器（Postprocessor） 和 CSS-in-JS 工具。 一、预处理器（Preprocessor）CSS 预处理器（Preprocessor）是一种扩展 CSS 功能的工具，引入了编程语言的特性（如变量、函数、嵌套等），让 CSS 编写更高效、可维护性更强。预处理后的代码最终会被编译为普通 CSS 供浏览器使用。 工">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CSS 处理器">
+<meta property="og:url" content="http://example.com/2024/08/12/CSS/CSS%20%E5%A4%84%E7%90%86%E5%99%A8/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="CSS 处理器主要分为三大类：预处理器（Preprocessor）、后处理器（Postprocessor） 和 CSS-in-JS 工具。 一、预处理器（Preprocessor）CSS 预处理器（Preprocessor）是一种扩展 CSS 功能的工具，引入了编程语言的特性（如变量、函数、嵌套等），让 CSS 编写更高效、可维护性更强。预处理后的代码最终会被编译为普通 CSS 供浏览器使用。 工">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-08-12T08:12:32.000Z">
+<meta property="article:modified_time" content="2026-03-19T16:06:05.151Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="CSS">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>CSS 处理器 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">CSS 处理器</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-08-12 16:12" pubdate>
+          2024年8月12日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          10 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">CSS 处理器</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>CSS 处理器主要分为三大类：<strong>预处理器（Preprocessor）</strong>、<strong>后处理器（Postprocessor）</strong> 和 <strong>CSS-in-JS 工具</strong>。</p>
+<h2 id="一、预处理器（Preprocessor）"><a href="#一、预处理器（Preprocessor）" class="headerlink" title="一、预处理器（Preprocessor）"></a>一、预处理器（Preprocessor）</h2><p>CSS 预处理器（Preprocessor）是一种<strong>扩展 CSS 功能</strong>的工具，引入了编程语言的特性（如变量、函数、嵌套等），让 CSS 编写更高效、可维护性更强。预处理后的代码<strong>最终会被编译为普通 CSS</strong> 供浏览器使用。</p>
+<p><strong>工作阶段</strong>：在代码编写阶段，将扩展语法编译为普通 CSS。</p>
+<p><strong>核心功能</strong>：扩展 CSS 语法，引入编程语言特性（变量、函数、嵌套等）。</p>
+<p><strong>解决问题</strong>：原生 CSS 缺乏模块化、复用性和逻辑处理能力的问题。</p>
+<p><strong>主流工具</strong>：</p>
+<ul>
+<li><strong>Sass&#x2F;SCSS</strong>：最流行，支持两种语法（缩进式 .sass 和类 CSS 式 .scss），提供变量、混入（mixin）、继承、函数等功能。<ul>
+<li><strong>SCSS 语法（.scss）</strong><ul>
+<li>类 CSS 风格，保留了 CSS 的大括号 {} 和分号 ;</li>
+</ul>
+</li>
+<li><strong>SASS 语法（.sass）</strong><ul>
+<li>缩进式语法，不使用大括号和分号</li>
+<li>依靠缩进（空格或制表符）来表示层级关系</li>
+<li>换行代替分号，缩进代替大括号</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Less</strong>：语法接近原生 CSS，学习成本低，支持变量、嵌套、混入，可在浏览器中直接编译。</li>
+<li><strong>Stylus</strong>：语法极简，可选分号和括号，支持灵活的缩进式写法。</li>
+</ul>
+<h2 id="二、后处理器（Postprocessor）"><a href="#二、后处理器（Postprocessor）" class="headerlink" title="二、后处理器（Postprocessor）"></a>二、后处理器（Postprocessor）</h2><p>CSS 后处理器（Postprocessor）是对已经编写完成的普通 CSS 代码进行<strong>优化、转换和增强</strong>的工具。它工作在 CSS 生成之后，主要解决兼容性、性能和规范问题，让 CSS 更健壮、更易维护。通常与构建工具（Webpack、Vite、Gulp 等）结合使用。</p>
+<p><strong>工作阶段</strong>：在普通 CSS 生成后，对其进行优化和转换，输出优化后的 CSS。</p>
+<p><strong>核心功能</strong>：优化 CSS 代码、处理兼容性、规范化语法，输入输出均为标准 CSS。</p>
+<ol>
+<li><strong>兼容性处理</strong><ul>
+<li>自动添加浏览器前缀（如 <code>-webkit-</code>、<code>-moz-</code>）</li>
+<li>将现代 CSS 特性（如 CSS Grid、Flexbox）转换为旧浏览器可识别的语法</li>
+<li>处理不同浏览器的私有属性差异</li>
+</ul>
+</li>
+<li><strong>代码优化</strong><ul>
+<li>压缩 CSS 代码（移除空格、合并重复规则）</li>
+<li>合并相同样式，减少代码体积</li>
+<li>优化选择器，提高渲染性能</li>
+</ul>
+</li>
+<li><strong>规范与校验</strong><ul>
+<li>检查 CSS 语法错误</li>
+<li>强制遵循团队 CSS 规范（如命名约定、属性顺序）</li>
+<li>检测兼容性问题并给出提示</li>
+</ul>
+</li>
+</ol>
+<p><strong>解决问题</strong>：CSS 兼容性、性能优化和代码规范问题。</p>
+<p><strong>主流工具</strong>：</p>
+<ul>
+<li><strong>PostCSS</strong>：最常用，通过插件系统实现功能（如自动前缀、压缩、语法转换）。<ul>
+<li>核心插件：<code>Autoprefixer</code>（自动加浏览器前缀）、<code>cssnano</code>（压缩 CSS）、<code>postcss-preset-env</code>（转换现代 CSS 语法）、<code>stylelint</code>（代码检查）。</li>
+</ul>
+</li>
+<li><strong>Stylelint</strong>：专注于 CSS 代码检查，确保代码符合规范。</li>
+</ul>
+<p><strong>示例</strong>（PostCSS 处理前后对比）：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-comment">/* 输入（原生 CSS）*/</span><br><span class="hljs-selector-class">.container</span> &#123;<br>  <span class="hljs-attribute">display</span>: flex;<br>  <span class="hljs-attribute">gap</span>: <span class="hljs-number">20px</span>;<br>&#125;<br><br><span class="hljs-comment">/* 输出（自动添加前缀后） */</span><br><span class="hljs-selector-class">.container</span> &#123;<br>  <span class="hljs-attribute">display</span>: -webkit-box;<br>  <span class="hljs-attribute">display</span>: -ms-flexbox;<br>  <span class="hljs-attribute">display</span>: flex;<br>  <span class="hljs-attribute">gap</span>: <span class="hljs-number">20px</span>;<br>  -webkit-<span class="hljs-attribute">column-gap</span>: <span class="hljs-number">20px</span>;<br>  -moz-<span class="hljs-attribute">column-gap</span>: <span class="hljs-number">20px</span>;<br>  <span class="hljs-attribute">column-gap</span>: <span class="hljs-number">20px</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="三、CSS-in-JS-工具"><a href="#三、CSS-in-JS-工具" class="headerlink" title="三、CSS-in-JS 工具"></a>三、CSS-in-JS 工具</h2><p><strong>工作阶段</strong>：在 JavaScript 中编写 CSS，运行时或构建时转换为普通 CSS。</p>
+<p><strong>核心功能</strong>：将 CSS 与组件逻辑结合，实现 CSS 的模块化和动态生成。</p>
+<p><strong>解决问题</strong>：CSS 全局作用域冲突、组件样式隔离、动态样式生成困难等问题。</p>
+<p><strong>代表工具</strong>：</p>
+<ul>
+<li><strong>Styled Components</strong>：允许在 JS 中用模板字符串编写组件样式，自动生成唯一类名，避免样式冲突。</li>
+<li><strong>Emotion</strong>：轻量高效，支持类似 Styled Components 的语法，也可用于内联样式。</li>
+<li><strong>JSS</strong>：通过 JavaScript 对象定义样式，更贴近 JS 语法。</li>
+</ul>
+<p><strong>示例</strong>（Styled Components）：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">import</span> styled <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;styled-components&quot;</span>;<br><br><span class="hljs-comment">// 在 JS 中定义样式组件</span><br><span class="hljs-keyword">const</span> <span class="hljs-title class_">Button</span> = styled.<span class="hljs-property">button</span><span class="hljs-string">`</span><br><span class="hljs-string">  background: #4285f4;</span><br><span class="hljs-string">  color: white;</span><br><span class="hljs-string">  &amp;:hover &#123;</span><br><span class="hljs-string">    background: #3367d6;</span><br><span class="hljs-string">  &#125;</span><br><span class="hljs-string">`</span>;<br><br><span class="hljs-comment">// 在组件中使用</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">App</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-keyword">return</span> <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">Button</span>&gt;</span>Click me<span class="hljs-tag">&lt;/<span class="hljs-name">Button</span>&gt;</span></span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>虽然 CSS-in-JS 违背了“关注点分离”的原则，但是有利于组件的隔离。每个组件包含了所有需要用到的代码，不依赖外部，组件之间没有耦合，方便复用。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>工作阶段</th>
+<th>核心特点</th>
+<th>典型工具</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>预处理器</td>
+<td>编写阶段 → 编译为 CSS</td>
+<td>扩展 CSS 语法，增强开发效率</td>
+<td>Sass&#x2F;SCSS、Less、Stylus</td>
+</tr>
+<tr>
+<td>后处理器</td>
+<td>普通 CSS → 优化 CSS</td>
+<td>处理兼容性，优化最终代码</td>
+<td>PostCSS、Stylelint</td>
+</tr>
+<tr>
+<td>CSS-in-JS 工具</td>
+<td>JS 中编写 → 转换为 CSS</td>
+<td>组件化样式，避免全局冲突</td>
+<td>Styled Components、Emotion</td>
+</tr>
+</tbody></table>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/CSS/" class="category-chain-item">CSS</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/CSS/" class="print-no-link">#CSS</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>CSS 处理器</div>
+      <div>http://example.com/2024/08/12/CSS/CSS 处理器/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年8月12日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/08/24/JavaScript/%E4%BA%8B%E4%BB%B6%E6%A8%A1%E5%9E%8B/" title="事件模型">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">事件模型</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/07/23/%E6%8A%80%E6%9C%AF%E6%95%99%E7%A8%8B/%E5%AE%89%E8%A3%85JDK/" title="安装JDK">
+                        <span class="hidden-mobile">安装JDK</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

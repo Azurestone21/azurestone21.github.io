@@ -1,0 +1,738 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="安装1.下载1wget https:&#x2F;&#x2F;dev.mysql.com&#x2F;get&#x2F;Downloads&#x2F;MySQL-5.7&#x2F;mysql-5.7.24-linux-glibc2.12-x86_64.tar.gz  2.解压1tar xzvf mysql-5.7.24-linux-glibc2.12-x86_64.tar.gz  3.移动到 mysql 目录一般是 &#x2F;usr&#x2F;local&amp;#">
+<meta property="og:type" content="article">
+<meta property="og:title" content="安装MySql">
+<meta property="og:url" content="http://example.com/2024/11/12/%E6%95%B0%E6%8D%AE%E5%BA%93/MySql/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="安装1.下载1wget https:&#x2F;&#x2F;dev.mysql.com&#x2F;get&#x2F;Downloads&#x2F;MySQL-5.7&#x2F;mysql-5.7.24-linux-glibc2.12-x86_64.tar.gz  2.解压1tar xzvf mysql-5.7.24-linux-glibc2.12-x86_64.tar.gz  3.移动到 mysql 目录一般是 &#x2F;usr&#x2F;local&amp;#">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260312001929387.png">
+<meta property="article:published_time" content="2024-11-12T13:01:00.000Z">
+<meta property="article:modified_time" content="2026-03-19T16:06:05.153Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="MySql">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260312001929387.png">
+  
+  
+  
+  <title>安装MySql - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">安装MySql</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-11-12 21:01" pubdate>
+          2024年11月12日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          9 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">安装MySql</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><h3 id="1-下载"><a href="#1-下载" class="headerlink" title="1.下载"></a>1.下载</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">wget https://dev.mysql.com/get/Downloads/MySQL-5.7/mysql-5.7.24-linux-glibc2.12-x86_64.tar.gz<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-解压"><a href="#2-解压" class="headerlink" title="2.解压"></a>2.解压</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">tar xzvf mysql-5.7.24-linux-glibc2.12-x86_64.tar.gz<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-移动到-mysql-目录"><a href="#3-移动到-mysql-目录" class="headerlink" title="3.移动到 mysql 目录"></a>3.移动到 mysql 目录</h3><p>一般是 &#x2F;usr&#x2F;local&#x2F;mysql</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">mv</span> mysql-5.7.24-linux-glibc2.12-x86_64 /usr/local/mysql<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-创建-data-目录"><a href="#4-创建-data-目录" class="headerlink" title="4.创建 data 目录"></a>4.创建 data 目录</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">mkdir</span> /usr/local/mysql/data<br></code></pre></td></tr></table></figure>
+
+<h3 id="5-创建用户组"><a href="#5-创建用户组" class="headerlink" title="5.创建用户组"></a>5.创建用户组</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">groupadd mysql     <span class="hljs-comment">#创建用户组</span><br><span class="hljs-comment"># -r 参数表示 mysql 用户是系统用户，不可用于登录系统，创建用户 mysql 并将其添加到用户组 mysql 中</span><br>useradd -r -g mysql mysql<br></code></pre></td></tr></table></figure>
+
+<h3 id="6-分配用户组"><a href="#6-分配用户组" class="headerlink" title="6.分配用户组"></a>6.分配用户组</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">chown</span> -R mysql /usr/local/mysql/ <span class="hljs-comment"># 将文件的所有属性改为 mysql 用户</span><br><span class="hljs-built_in">chgrp</span> -R mysql /usr/local/mysql/ <span class="hljs-comment"># 将组属性改为 mysql 组</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="7-修改配置文件"><a href="#7-修改配置文件" class="headerlink" title="7.修改配置文件"></a>7.修改配置文件</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs sh">vim /etc/my.cnf<br><br>[mysqld]<br>bind-address=0.0.0.0<br>port=3306<br>user=mysql<br>socket=/tmp/mysql.sock<br><span class="hljs-comment"># 设置mysql的安装目录</span><br>basedir=/usr/local/mysql<br><span class="hljs-comment"># 设置mysql数据库的数据的存放目录</span><br>datadir=/usr/local/mysql/data<br><span class="hljs-comment">#设置mysql数据库的日志及进程数据的存放目录</span><br>log-error=/usr/local/mysql/data/mysql.err<br>pid-file=/usr/local/mysql/data/mysql.pid<br><span class="hljs-comment">#character config</span><br>character_set_server=utf8mb4<br>symbolic-links=0<br>explicit_defaults_for_timestamp=<span class="hljs-literal">true</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="8-初始化mysql"><a href="#8-初始化mysql" class="headerlink" title="8.初始化mysql"></a>8.初始化mysql</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@localhost /]# <span class="hljs-built_in">cd</span> /usr/local/mysql/bin<br>[root@localhost bin]# ./mysqld --defaults-file=/etc/my.cnf --basedir=/usr/local/mysql/ --datadir=/usr/local/mysql/data/ --user=mysql --initialize<br></code></pre></td></tr></table></figure>
+
+<h3 id="9-查看初始密码"><a href="#9-查看初始密码" class="headerlink" title="9.查看初始密码"></a>9.查看初始密码</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cat</span> /usr/local/mysql/data/mysql.err<br><br>2024-06-22T16:47:22.528749Z 0 [Warning] InnoDB: New <span class="hljs-built_in">log</span> files created, LSN=45790<br>2024-06-22T16:47:22.618665Z 0 [Warning] InnoDB: Creating foreign key constraint system tables.<br>2024-06-22T16:47:22.683644Z 0 [Warning] No existing UUID has been found, so we assume that this is the first <span class="hljs-keyword">time</span> that this server has been started. Generating a new UUID: 18e8d979-30b7-11ef-bee3-00163e037111.<br>2024-06-22T16:47:22.686107Z 0 [Warning] Gtid table is not ready to be used. Table <span class="hljs-string">&#x27;mysql.gtid_executed&#x27;</span> cannot be opened.<br>2024-06-22T16:47:22.686665Z 1 [Note] A temporary password is generated <span class="hljs-keyword">for</span> root@localhost: N!te%Ok(;4eb<br></code></pre></td></tr></table></figure>
+
+<h3 id="10-配置环境变量"><a href="#10-配置环境变量" class="headerlink" title="10.配置环境变量"></a>10.配置环境变量</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs sh">vi ~/.bashrc <span class="hljs-comment"># 好像不生效</span><br>vim /etc/profile<br><br><span class="hljs-comment"># 加以下配置</span><br><span class="hljs-built_in">export</span> PATH=<span class="hljs-variable">$PATH</span>:/usr/1ocal/mysql/bin<br><br><span class="hljs-comment"># 重启配置</span><br><span class="hljs-built_in">source</span> ~/.bashrc <span class="hljs-comment"># 好像不生效</span><br><span class="hljs-built_in">source</span> /etc/profile<br></code></pre></td></tr></table></figure>
+
+<h3 id="11-mysql-服务"><a href="#11-mysql-服务" class="headerlink" title="11.mysql 服务"></a>11.mysql 服务</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment"># 创建</span><br>systemctl <span class="hljs-built_in">enable</span> mysql.service<br><br><span class="hljs-comment"># 启动</span><br>[root@iZ7xvgqq72fzxpvqh6itdkZ bin]# /usr/local/mysql/support-files/mysql.server start<br>Starting MySQL.                                            [  确定  ]<br></code></pre></td></tr></table></figure>
+
+<h3 id="12-登录mysql，修改密码"><a href="#12-登录mysql，修改密码" class="headerlink" title="12.登录mysql，修改密码"></a>12.登录mysql，修改密码</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@localhost /]#  mysql -u root -p<br>Enter password:<br>mysql&gt;<span class="hljs-built_in">set</span> password <span class="hljs-keyword">for</span> root@localhost = password(<span class="hljs-string">&#x27;n123456&#x27;</span>);<br></code></pre></td></tr></table></figure>
+
+<h2 id="服务"><a href="#服务" class="headerlink" title="服务"></a>服务</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-comment"># 查看 mysql 启动状态</span><br>service mysql status<br><br><span class="hljs-comment"># 启动 mysql 服务</span><br>service mysql start<br><br><span class="hljs-comment"># 停止 mysql 服务</span><br>service mysql stop<br></code></pre></td></tr></table></figure>
+
+<h2 id="设置开机自启动"><a href="#设置开机自启动" class="headerlink" title="设置开机自启动"></a>设置开机自启动</h2><p>1.将mysql.server 文件复制到 &#x2F;etc&#x2F;rc.d&#x2F;init.d&#x2F; 目录下mysql 文件</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">cp</span> /usr/local/mysql/support-files/mysql.server /etc/rc.d/init.d/mysql<br></code></pre></td></tr></table></figure>
+
+<p>2.赋予权限</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">chmod</span> +x /etc/init.d/mysql<br></code></pre></td></tr></table></figure>
+
+<p>3.添加服务</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">chkconfig --add mysql<br></code></pre></td></tr></table></figure>
+
+<p>4.查看服务列表</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs sh">chkconfig --list<br><br>注：该输出结果只显示 SysV 服务，并不包含<br>原生 systemd 服务。SysV 配置数据<br>可能被原生 systemd 配置覆盖。<br><br>      要列出 systemd 服务，请执行 <span class="hljs-string">&#x27;systemctl list-unit-files&#x27;</span>。<br>      查看在具体 target 启用的服务请执行<br>      <span class="hljs-string">&#x27;systemctl list-dependencies [target]&#x27;</span>。<br><br>mysqld           0:关 1:关 2:开 3:开 4:开 5:开 6:关<br></code></pre></td></tr></table></figure>
+
+<p>如果345为关</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">chkconfig --level 345 mysqld on<br></code></pre></td></tr></table></figure>
+
+<h2 id="开放远程连接"><a href="#开放远程连接" class="headerlink" title="开放远程连接"></a>开放远程连接</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs sh">mysql&gt;use mysql;<br><br>msyql&gt;update user <span class="hljs-built_in">set</span> user.Host=<span class="hljs-string">&#x27;%&#x27;</span> <span class="hljs-built_in">where</span> user.User=<span class="hljs-string">&#x27;root&#x27;</span>;<br>Query OK, 1 row affected (0.00 sec)<br>Rows matched: 1  Changed: 1  Warnings: 0<br><br>msyql&gt; grant all privileges on *.* to <span class="hljs-string">&#x27;root&#x27;</span>@<span class="hljs-string">&#x27;%&#x27;</span> identified by <span class="hljs-string">&#x27;n123456&#x27;</span> with grant optionb;<br>msyql&gt; GRANT ALL PRIVILEGES ON *.* TO <span class="hljs-string">&#x27;root&#x27;</span>@<span class="hljs-string">&#x27;%&#x27;</span> IDENTIFIED BY <span class="hljs-string">&#x27;n123456&#x27;</span> WITH GRANT OPTION; <span class="hljs-comment"># ??</span><br><br>mysql&gt;flush privileges;<br>Query OK, 0 rows affected (0.00 sec)<br><br></code></pre></td></tr></table></figure>
+
+<h2 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h2><p>查看已安装的mysql</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">rpm -qa | grep mysql<br></code></pre></td></tr></table></figure>
+
+<p>删除</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">rpm -e --nodeps mysql-libs-5.1.73-5.el6_6.x86_64<br></code></pre></td></tr></table></figure>
+
+<p>查看 mysql 目录，删除</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs swift">[root<span class="hljs-meta">@localhost</span> <span class="hljs-operator">/</span>]# whereis mysql<br>mysql: <span class="hljs-regexp">/usr/</span>bin<span class="hljs-regexp">/mysql /</span>usr<span class="hljs-regexp">/include/</span>mysql<br>[root<span class="hljs-meta">@localhost</span> lib]# find <span class="hljs-operator">/</span> <span class="hljs-operator">-</span>name mysql<br><span class="hljs-regexp">/data/</span>mysql<br><span class="hljs-regexp">/data/</span>mysql<span class="hljs-operator">/</span>mysql<br><br><br>[root<span class="hljs-meta">@localhost</span> <span class="hljs-regexp">/]#  rm -rf /</span>usr<span class="hljs-regexp">/bin/</span>mysql <span class="hljs-regexp">/usr/</span>include<span class="hljs-regexp">/mysql /</span>data<span class="hljs-regexp">/mysql /</span>data<span class="hljs-regexp">/mysql/</span>mysql<br></code></pre></td></tr></table></figure>
+
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><blockquote>
+<p>mysql -u root -p<br>-bash: mysql: 未找到命令</p>
+</blockquote>
+<p>解决办法：</p>
+<ol>
+<li><p>进入mysql的bin目录，使用 <code>./mysql -u root -p</code></p>
+</li>
+<li><p>软链接</p>
+</li>
+</ol>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh"><span class="hljs-built_in">ln</span> -s /usr/local/mysql/bin/mysql /usr/bin<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>[root@iZ7xvgqq72fzxpvqh6itdkZ &#x2F;]# mysql -v<br>ERROR 1045 (28000): Access denied for user ‘root‘@’localhost’ (using password: NO)</p>
+</blockquote>
+<p>原因：</p>
+<blockquote>
+<p>Unit mysql.service could not be found.<br>Failed to start mysqld.service: Unit mysqld.service not found.</p>
+</blockquote>
+<p>原因：mysql 服务没有安装</p>
+<p>解决：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs sh">[root@iZ7xvgqq72fzxpvqh6itdkZ /]# find / -name  mysql.server<br>/usr/local/mysql/support-files/mysql.server<br>[root@iZ7xvgqq72fzxpvqh6itdkZ /]# <span class="hljs-built_in">cd</span> /etc/init.d<br>[root@iZ7xvgqq72fzxpvqh6itdkZ init.d]# <span class="hljs-built_in">ls</span><br><span class="hljs-built_in">functions</span>  README<br>[root@iZ7xvgqq72fzxpvqh6itdkZ init.d]# <span class="hljs-built_in">cd</span> /<br>[root@iZ7xvgqq72fzxpvqh6itdkZ /]# <span class="hljs-built_in">cp</span> /usr/local/mysql/support-files/mysql.server /etc/init.d/mysql<br>[root@iZ7xvgqq72fzxpvqh6itdkZ /]# service mysqld status<br>MySQL running (21056)                                      [  OK  ]<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>在本机用 Navicat 链接服务器数据库报错<br>2003 - Can’t connect to MySQL server on ‘8.138.20.29’(10060 “Unknown error)</p>
+</blockquote>
+<p>解决：</p>
+<ol>
+<li>查看本地 mysql 服务是否启动</li>
+<li>查看服务器 mysql 服务是否启动</li>
+</ol>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">systemctl start mysql<br></code></pre></td></tr></table></figure>
+
+<ol start="3">
+<li><p>检查MySQL配置：编辑MySQL的配置文件（my.cnf或my.ini），确保bind-address参数设置为允许远程连接的值（如0.0.0.0），并检查port参数是否设置为正确的值（默认为3306）。</p>
+</li>
+<li><p>查看服务器是否开放远程连接</p>
+</li>
+<li><p>检查防火墙是否开放端口</p>
+</li>
+</ol>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sh">firewall-cmd --list-ports <span class="hljs-comment">#查看已经开放的端口</span><br>firewall-cmd --zone=public --add-port=3306/tcp --permanent <span class="hljs-comment"># 打开防火墙端口3306</span><br>firewall-cmd --reload  <span class="hljs-comment">#重启firewall</span><br></code></pre></td></tr></table></figure>
+
+<ol start="6">
+<li>阿里云会默认关闭一些端口，需要进入控制台手动添加安全组规则<br><img src="https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260312001929387.png" srcset="/img/loading.gif" lazyload></li>
+</ol>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_45371955/article/details/129026276">https://blog.csdn.net/weixin_45371955/article/details/129026276</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/csjoz/p/18178796">https://www.cnblogs.com/csjoz/p/18178796</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/" class="category-chain-item">服务器</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Linux/" class="print-no-link">#Linux</a>
+      
+        <a href="/tags/MySql/" class="print-no-link">#MySql</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>安装MySql</div>
+      <div>http://example.com/2024/11/12/数据库/MySql/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年11月12日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/11/14/%E6%9C%8D%E5%8A%A1%E5%99%A8/%E4%BC%A0%E8%BE%93%E6%96%87%E4%BB%B6/" title="传输文件">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">传输文件</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/11/12/%E6%9C%8D%E5%8A%A1%E5%99%A8/Linix/" title="Linux实践">
+                        <span class="hidden-mobile">Linux实践</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
