@@ -1,0 +1,714 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="用 Husky + lint-staged + ESLint + Prettier 构建团队代码规范代码规范的核心矛盾在于：规则必须统一，但执行必须无感。如果每次提交都靠人工记得跑 lint 和 format，规范注定会失效。真正可靠的方案是让工具链在 git commit 时自动完成检查与修复，开发者的肌肉记忆不需要改变。  ESLint 负责代码质量，检查未使用变量、潜在 bug、危险写法。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用 Husky + lint-staged + ESLint + Prettier 构建团队代码规范">
+<meta property="og:url" content="http://example.com/2025/09/28/%E5%89%8D%E7%AB%AF/%E3%80%90%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83%E3%80%91%E7%94%A8%20Husky%20+%20lint-staged%20+%20ESLint%20+%20Prettier%20%E6%9E%84%E5%BB%BA%E5%9B%A2%E9%98%9F%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="用 Husky + lint-staged + ESLint + Prettier 构建团队代码规范代码规范的核心矛盾在于：规则必须统一，但执行必须无感。如果每次提交都靠人工记得跑 lint 和 format，规范注定会失效。真正可靠的方案是让工具链在 git commit 时自动完成检查与修复，开发者的肌肉记忆不需要改变。  ESLint 负责代码质量，检查未使用变量、潜在 bug、危险写法。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-09-27T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-14T14:26:02.655Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="ESLint">
+<meta property="article:tag" content="Husky">
+<meta property="article:tag" content="Prettier">
+<meta property="article:tag" content="lint-staged">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>用 Husky + lint-staged + ESLint + Prettier 构建团队代码规范 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">用 Husky + lint-staged + ESLint + Prettier 构建团队代码规范</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-09-28 00:00" pubdate>
+          2025年9月28日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          17 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">用 Husky + lint-staged + ESLint + Prettier 构建团队代码规范</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="用-Husky-lint-staged-ESLint-Prettier-构建团队代码规范"><a href="#用-Husky-lint-staged-ESLint-Prettier-构建团队代码规范" class="headerlink" title="用 Husky + lint-staged + ESLint + Prettier 构建团队代码规范"></a>用 Husky + lint-staged + ESLint + Prettier 构建团队代码规范</h1><p>代码规范的核心矛盾在于：<strong>规则必须统一，但执行必须无感</strong>。如果每次提交都靠人工记得跑 lint 和 format，规范注定会失效。真正可靠的方案是让工具链在 <code>git commit</code> 时自动完成检查与修复，开发者的肌肉记忆不需要改变。</p>
+<ul>
+<li><strong>ESLint</strong> 负责代码质量，检查未使用变量、潜在 bug、危险写法。</li>
+<li><strong>Prettier</strong> 负责代码格式，统一缩进、引号、换行风格。</li>
+<li><strong>Husky</strong> 负责触发时机，在 <code>pre-commit</code> 阶段自动执行检查。</li>
+<li><strong>lint-staged</strong> 负责执行范围，只检查本次提交涉及的文件，避免全量 lint 导致的性能问题。</li>
+</ul>
+<h2 id="环境准备与安装"><a href="#环境准备与安装" class="headerlink" title="环境准备与安装"></a>环境准备与安装</h2><p>安装开发依赖：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">npm install -D eslint prettier husky lint-staged eslint-config-prettier<br></code></pre></td></tr></table></figure>
+
+<p>如果使用 TypeScript，还需要对应的 ESLint 插件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">npm install -D typescript-eslint @eslint/js<br></code></pre></td></tr></table></figure>
+
+<p>安装完成后，先初始化 Husky。Husky v9 推荐使用内置的 <code>init</code> 命令，它会创建 <code>.husky/</code> 目录并自动在 <code>package.json</code> 中添加 <code>prepare</code> 脚本：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">npx husky init<br></code></pre></td></tr></table></figure>
+
+<p><code>husky init</code> 会在 <code>package.json</code> 的 <code>scripts</code> 中写入：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;scripts&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;prepare&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;husky&quot;</span><br>  <span class="hljs-punctuation">&#125;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+<p><code>prepare</code> 脚本会在每次 <code>npm install</code> 后自动执行，确保新克隆仓库的成员也自动启用 Git Hooks，无需手动操作。</p>
+<h2 id="配置-ESLint（Flat-Config）"><a href="#配置-ESLint（Flat-Config）" class="headerlink" title="配置 ESLint（Flat Config）"></a>配置 ESLint（Flat Config）</h2><p>ESLint 从 v9 开始全面采用 <strong>Flat Config</strong> 格式，配置文件为项目根目录的 <code>eslint.config.js</code>（或 <code>.mjs</code>）。如果你还在用 <code>.eslintrc.*</code>，建议尽快迁移，因为 Flat Config 在可组合性和类型提示方面有本质改进。</p>
+<p>一个适用于 TypeScript 项目的基础配置：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// eslint.config.js</span><br><span class="hljs-keyword">import</span> js <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;@eslint/js&quot;</span>;<br><span class="hljs-keyword">import</span> tseslint <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;typescript-eslint&quot;</span>;<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> tseslint.<span class="hljs-title function_">config</span>(<br>  js.<span class="hljs-property">configs</span>.<span class="hljs-property">recommended</span>,<br>  ...tseslint.<span class="hljs-property">configs</span>.<span class="hljs-property">recommended</span>,<br>  &#123;<br>    <span class="hljs-attr">rules</span>: &#123;<br>      <span class="hljs-string">&quot;no-console&quot;</span>: <span class="hljs-string">&quot;warn&quot;</span>,<br>      <span class="hljs-string">&quot;no-unused-vars&quot;</span>: <span class="hljs-string">&quot;off&quot;</span>, <span class="hljs-comment">// 由 @typescript-eslint/no-unused-vars 接管</span><br>      <span class="hljs-string">&quot;@typescript-eslint/no-unused-vars&quot;</span>: [<br>        <span class="hljs-string">&quot;warn&quot;</span>,<br>        &#123; <span class="hljs-attr">argsIgnorePattern</span>: <span class="hljs-string">&quot;^_&quot;</span> &#125;,<br>      ],<br>      <span class="hljs-string">&quot;@typescript-eslint/no-explicit-any&quot;</span>: <span class="hljs-string">&quot;warn&quot;</span>,<br>    &#125;,<br>  &#125;,<br>  &#123;<br>    <span class="hljs-attr">ignores</span>: [<span class="hljs-string">&quot;dist/**&quot;</span>, <span class="hljs-string">&quot;build/**&quot;</span>, <span class="hljs-string">&quot;coverage/**&quot;</span>, <span class="hljs-string">&quot;node_modules/**&quot;</span>],<br>  &#125;,<br>);<br></code></pre></td></tr></table></figure>
+
+<p>关键原则：<strong>ESLint 只保留质量规则，所有格式规则交给 Prettier</strong>。如果你看到 ESLint 配置里还有 <code>indent</code>、<code>quotes</code>、<code>semi</code> 这类规则，把它们删掉。</p>
+<h2 id="配置-Prettier"><a href="#配置-Prettier" class="headerlink" title="配置 Prettier"></a>配置 Prettier</h2><p>Prettier 的配置项很少，这也是它的设计理念。在项目根目录创建 <code>.prettierrc</code>：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;semi&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span> <span class="hljs-comment">// 是否使用分号</span><br>  <span class="hljs-attr">&quot;printWidth&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">120</span><span class="hljs-punctuation">,</span> <span class="hljs-comment">// 每行字符数</span><br>  <span class="hljs-attr">&quot;tabWidth&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">2</span><span class="hljs-punctuation">,</span> <span class="hljs-comment">// 缩进宽度</span><br>  <span class="hljs-attr">&quot;trailingComma&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;es5&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-comment">// 尾随逗号</span><br>  <span class="hljs-attr">&quot;arrowParens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;always&quot;</span> <span class="hljs-comment">// 箭头函数参数是否添加括号</span><br>  <span class="hljs-attr">&quot;singleQuote&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span> <span class="hljs-comment">// 是否使用单引号</span><br>  <span class="hljs-attr">&quot;quoteProps&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;as-needed&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-comment">// 是否在对象属性值为字符串时添加引号</span><br>  <span class="hljs-attr">&quot;jsxSingleQuote&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span> <span class="hljs-comment">// 是否在 JSX 中使用单引号</span><br>  <span class="hljs-attr">&quot;trailingComma&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;none&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-comment">// 尾随逗号</span><br>   <span class="hljs-attr">&quot;bracketSpacing&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span>  <span class="hljs-comment">// 是否在括号内添加空格</span><br>  <span class="hljs-attr">&quot;jsxBracketSameLine&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span> <span class="hljs-comment">// 是否在 JSX 中在闭合括号前换行</span><br>  <span class="hljs-attr">&quot;arrowParens&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;avoid&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-comment">// 箭头函数参数是否添加括号</span><br>  <span class="hljs-attr">&quot;requirePragma&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span> <span class="hljs-comment">// 是否要求在文件开头添加 Prettier 标签</span><br>  <span class="hljs-attr">&quot;insertPragma&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span> <span class="hljs-comment">// 是否在文件开头添加 Prettier 标签</span><br>  <span class="hljs-attr">&quot;proseWrap&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;preserve&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-comment">// 是否在段落中换行</span><br>  <span class="hljs-attr">&quot;htmlWhitespaceSensitivity&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;css&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-comment">// HTML 中的空格敏感度</span><br>  <span class="hljs-attr">&quot;endOfLine&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;auto&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-comment">// 换行符</span><br>  <span class="hljs-comment">// ... 其他配置项</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+<p>如果项目使用 Vue 或 SFC 文件，加上 <code>vueIndentScriptAndStyle: false</code> 通常更符合团队习惯。</p>
+<p>再创建 <code>.prettierignore</code>，排除不需要格式化的目录：</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm"><span class="hljs-keyword">dist</span><br><span class="hljs-keyword"></span><span class="hljs-keyword">build</span><br><span class="hljs-keyword"></span>coverage<br>node_modules<br>*.min.<span class="hljs-keyword">js</span><br></code></pre></td></tr></table></figure>
+
+<p>Prettier 支持通过 <code>.prettierrc</code>、<code>prettier.config.js</code>、<code>.prettierrc.yaml</code> 等多种方式配置，选一种团队统一即可。</p>
+<h2 id="集成-ESLint-与-Prettier：消除冲突"><a href="#集成-ESLint-与-Prettier：消除冲突" class="headerlink" title="集成 ESLint 与 Prettier：消除冲突"></a>集成 ESLint 与 Prettier：消除冲突</h2><p>这是整套工具链中最关键的一步。ESLint 和 Prettier 各自都包含一些格式相关的规则，如果不做处理，两者可能对同一段代码给出矛盾的要求，导致自动修复互相覆盖。</p>
+<p>解决方案是使用 <code>eslint-config-prettier</code>，它会<strong>关闭所有与 Prettier 冲突的 ESLint 规则</strong>，让 Prettier 独占格式化职责。</p>
+<p>在 Flat Config 中，将 <code>eslint-config-prettier</code> 放在配置数组的最后：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// eslint.config.js</span><br><span class="hljs-keyword">import</span> js <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;@eslint/js&quot;</span>;<br><span class="hljs-keyword">import</span> tseslint <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;typescript-eslint&quot;</span>;<br><span class="hljs-keyword">import</span> eslintConfigPrettier <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;eslint-config-prettier/flat&quot;</span>;<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> tseslint.<span class="hljs-title function_">config</span>(<br>  js.<span class="hljs-property">configs</span>.<span class="hljs-property">recommended</span>,<br>  ...tseslint.<span class="hljs-property">configs</span>.<span class="hljs-property">recommended</span>,<br>  &#123;<br>    <span class="hljs-attr">rules</span>: &#123;<br>      <span class="hljs-string">&quot;no-console&quot;</span>: <span class="hljs-string">&quot;warn&quot;</span>,<br>      <span class="hljs-string">&quot;@typescript-eslint/no-explicit-any&quot;</span>: <span class="hljs-string">&quot;warn&quot;</span>,<br>    &#125;,<br>  &#125;,<br>  &#123;<br>    <span class="hljs-attr">ignores</span>: [<span class="hljs-string">&quot;dist/**&quot;</span>, <span class="hljs-string">&quot;build/**&quot;</span>, <span class="hljs-string">&quot;coverage/**&quot;</span>],<br>  &#125;,<br>  eslintConfigPrettier, <span class="hljs-comment">// 必须放在最后，确保覆盖前面的格式规则</span><br>);<br></code></pre></td></tr></table></figure>
+
+<p>注意导入路径是 <code>eslint-config-prettier/flat</code>，而不是 <code>eslint-config-prettier</code>。在 Flat Config 中，<code>/flat</code> 后缀的导出会添加 <code>name</code> 属性，便于调试和配置检查。</p>
+<p>配置完成后，ESLint 只负责“代码写得对不对”，Prettier 只负责“代码排得齐不齐”，两者各司其职。</p>
+<h2 id="配置-Husky-与-lint-staged"><a href="#配置-Husky-与-lint-staged" class="headerlink" title="配置 Husky 与 lint-staged"></a>配置 Husky 与 lint-staged</h2><h3 id="创建-pre-commit-钩子"><a href="#创建-pre-commit-钩子" class="headerlink" title="创建 pre-commit 钩子"></a>创建 pre-commit 钩子</h3><p><code>husky init</code> 已经生成了 <code>.husky/pre-commit</code> 文件，将其内容替换为：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">npx lint-staged<br></code></pre></td></tr></table></figure>
+
+<p>这一行就是整个工作流的入口。每次 <code>git commit</code> 时，Husky 触发这个脚本，<code>lint-staged</code> 接手后续逻辑。</p>
+<h3 id="配置-lint-staged"><a href="#配置-lint-staged" class="headerlink" title="配置 lint-staged"></a>配置 lint-staged</h3><p><code>lint-staged</code> 的配置可以放在 <code>package.json</code> 的 <code>lint-staged</code> 字段中，也可以使用独立的 <code>.lintstagedrc</code> 文件。推荐使用独立配置文件，职责更清晰：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-comment">// .lintstagedrc.json</span><br><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;*.&#123;js,ts,jsx,tsx,vue&#125;&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><br>    <span class="hljs-string">&quot;eslint --fix&quot;</span><span class="hljs-punctuation">,</span> <br>    <span class="hljs-string">&quot;prettier --write&quot;</span><br>  <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;*.&#123;json,md,yml,yaml,css,scss,html&#125;&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><br>    <span class="hljs-string">&quot;prettier --write&quot;</span><br>  <span class="hljs-punctuation">]</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+<p>这里有两个设计决策值得说明：</p>
+<p><strong>只对 JS&#x2F;TS 类文件跑 ESLint</strong>，因为 ESLint 主要解决代码质量问题；JSON、Markdown、CSS 等文件只做格式化，不需要 lint。</p>
+<p><strong>命令按数组顺序执行</strong>，<code>eslint --fix</code> 先修复代码质量问题，<code>prettier --write</code> 再统一格式。<code>lint-staged</code> 会自动将修改后的文件重新加入暂存区，确保修复结果包含在本次提交中。</p>
+<h2 id="完整配置文件汇总"><a href="#完整配置文件汇总" class="headerlink" title="完整配置文件汇总"></a>完整配置文件汇总</h2><p>所有配置文件确认到位后，项目结构应该是：</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs jboss-cli">project-root/<br>├── <span class="hljs-string">.husky/</span><br>│   └── pre-commit          <span class="hljs-comment"># npx lint-staged</span><br>├── eslint.config.js         <span class="hljs-comment"># ESLint Flat Config</span><br>├── <span class="hljs-string">.prettierrc</span>              <span class="hljs-comment"># Prettier 配置</span><br>├── <span class="hljs-string">.prettierignore</span><br>├── <span class="hljs-string">.lintstagedrc.json</span>       <span class="hljs-comment"># lint-staged 配置</span><br>└── package.json             <span class="hljs-comment"># scripts.prepare: &quot;husky&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="工作流验证"><a href="#工作流验证" class="headerlink" title="工作流验证"></a>工作流验证</h2><p>配置完成后，修改一个 JS 文件，故意引入格式问题（比如改成双引号和分号混乱），然后提交：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">git add .<br>git commit -m <span class="hljs-string">&quot;test: 验证代码规范工作流&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>预期结果：</p>
+<ol>
+<li>Husky 触发 <code>.husky/pre-commit</code></li>
+<li><code>lint-staged</code> 筛选出暂存的 JS 文件</li>
+<li>ESLint 自动修复质量问题（如果可修复）</li>
+<li>Prettier 自动重写格式</li>
+<li>修复后的文件被重新暂存</li>
+<li>提交完成</li>
+</ol>
+<p>如果 ESLint 遇到无法自动修复的问题（比如未使用变量），提交会被阻止，终端会显示具体的错误信息，开发者修复后重新提交即可。</p>
+<h2 id="最佳实践与注意事项"><a href="#最佳实践与注意事项" class="headerlink" title="最佳实践与注意事项"></a>最佳实践与注意事项</h2><p><strong>不要在 pre-commit 中跑全量检查。</strong> 全量 lint 在稍大的项目中可能需要数秒甚至更久，开发者会因为等待而使用 <code>git commit --no-verify</code> 绕过检查，规范就形同虚设。<code>lint-staged</code> 的价值正是把检查范围缩小到暂存文件，保持提交速度在可接受范围内。</p>
+<p><strong>关键检查要在 CI 中兜底。</strong> pre-commit 钩子可以被 <code>--no-verify</code> 绕过，也可以被开发者不安装 Husky 而跳过。类型检查、单元测试、安全扫描这类不能妥协的检查，必须在 CI 流水线中再跑一遍。</p>
+<p><strong><code>eslint-config-prettier</code> 的位置不能错。</strong> 在 Flat Config 中，它必须放在配置数组的最后，否则它关闭的规则会被后面的配置重新启用。</p>
+<p><strong>定期更新工具版本。</strong> <code>lint-staged</code> v16 要求 Node.js 20.18+，v17 要求 Node.js 22+。Husky v9 不再使用 <code>husky install</code> 命令，而是 <code>husky init</code>。保持工具链更新可以减少兼容性问题。</p>
+<p><strong>提交信息规范可以一并纳入。</strong> 如果团队使用 Conventional Commits，可以再加一个 <code>commit-msg</code> 钩子配合 commitlint，但这不属于本文核心链路，按需扩展即可。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这套工具链的本质是 <strong>职责分离</strong>：ESLint 管质量，Prettier 管格式，lint-staged 管范围，Husky 管时机。每个工具只做一件事，通过清晰的边界组合在一起。配置一次之后，开发者的日常操作没有任何变化，但代码库的质量底线被自动守住。</p>
+<p>唯一需要团队约定的事情是：<strong>代码规范不是靠自觉，是靠自动化。</strong></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%89%8D%E7%AB%AF/" class="category-chain-item">前端</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Husky/" class="print-no-link">#Husky</a>
+      
+        <a href="/tags/lint-staged/" class="print-no-link">#lint-staged</a>
+      
+        <a href="/tags/ESLint/" class="print-no-link">#ESLint</a>
+      
+        <a href="/tags/Prettier/" class="print-no-link">#Prettier</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>用 Husky + lint-staged + ESLint + Prettier 构建团队代码规范</div>
+      <div>http://example.com/2025/09/28/前端/【代码规范】用 Husky + lint-staged + ESLint + Prettier 构建团队代码规范/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年9月28日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/10/10/%E5%B0%8F%E7%A8%8B%E5%BA%8F/Taro%20%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E5%8C%85%E4%BD%93%E7%A7%AF%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/" title="Taro 微信小程序包体积优化实践">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Taro 微信小程序包体积优化实践</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/09/24/%E5%85%B6%E4%BB%96/Cron%E8%A1%A8%E8%BE%BE%E5%BC%8F/" title="Cron表达式">
+                        <span class="hidden-mobile">Cron表达式</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

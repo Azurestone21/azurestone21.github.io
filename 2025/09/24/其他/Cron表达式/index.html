@@ -19,16 +19,17 @@
   <meta name="author" content="Azure">
   <meta name="keywords" content="">
   
-    <meta name="description" content="cron 是 Linux 系统中的定时任务管理工具，用于在预定时间自动执行指定命令或脚本。 Cron表达式是什么Cron表达式是一个字符串，字符串以5或6个空格隔开，分为6或7个域，每一个域代表一个含义。 Cron表达式的格式表达式结构Seconds Minutes Hours DayofMonth Month DayofWeek [ Year ] 秒 分 小时 月份中的日期 月份 星期中的日期">
+    <meta name="description" content="Cron表达式cron 是 Linux 系统中的定时任务管理工具，用于在预定时间自动执行指定命令或脚本。 Cron表达式是什么Cron表达式是一个字符串，字符串以5或6个空格隔开，分为6或7个域，每一个域代表一个含义。 Cron表达式的格式表达式结构Seconds Minutes Hours DayofMonth Month DayofWeek [ Year ] 秒 分 小时 月份中的日期 月份">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Cron表达式">
 <meta property="og:url" content="http://example.com/2025/09/24/%E5%85%B6%E4%BB%96/Cron%E8%A1%A8%E8%BE%BE%E5%BC%8F/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="cron 是 Linux 系统中的定时任务管理工具，用于在预定时间自动执行指定命令或脚本。 Cron表达式是什么Cron表达式是一个字符串，字符串以5或6个空格隔开，分为6或7个域，每一个域代表一个含义。 Cron表达式的格式表达式结构Seconds Minutes Hours DayofMonth Month DayofWeek [ Year ] 秒 分 小时 月份中的日期 月份 星期中的日期">
+<meta property="og:description" content="Cron表达式cron 是 Linux 系统中的定时任务管理工具，用于在预定时间自动执行指定命令或脚本。 Cron表达式是什么Cron表达式是一个字符串，字符串以5或6个空格隔开，分为6或7个域，每一个域代表一个含义。 Cron表达式的格式表达式结构Seconds Minutes Hours DayofMonth Month DayofWeek [ Year ] 秒 分 小时 月份中的日期 月份">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-09-24T10:07:38.000Z">
-<meta property="article:modified_time" content="2026-03-04T14:43:01.160Z">
+<meta property="article:modified_time" content="2026-10-14T14:26:02.613Z">
 <meta property="article:author" content="Azure">
+<meta property="article:tag" content="Cron">
 <meta property="article:tag" content="定时任务">
 <meta name="twitter:card" content="summary_large_image">
   
@@ -223,7 +224,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          598 字
+          601 字
         
       </span>
     
@@ -234,7 +235,7 @@
         
         
         
-          5 分钟
+          6 分钟
         
       </span>
     
@@ -276,7 +277,7 @@
             
               <div class="markdown-body">
                 
-                <p>cron 是 Linux 系统中的定时任务管理工具，用于在预定时间自动执行指定命令或脚本。</p>
+                <h1 id="Cron表达式"><a href="#Cron表达式" class="headerlink" title="Cron表达式"></a>Cron表达式</h1><p>cron 是 Linux 系统中的定时任务管理工具，用于在预定时间自动执行指定命令或脚本。</p>
 <h2 id="Cron表达式是什么"><a href="#Cron表达式是什么" class="headerlink" title="Cron表达式是什么"></a>Cron表达式是什么</h2><p>Cron表达式是一个字符串，字符串以5或6个空格隔开，分为6或7个域，每一个域代表一个含义。</p>
 <h2 id="Cron表达式的格式"><a href="#Cron表达式的格式" class="headerlink" title="Cron表达式的格式"></a>Cron表达式的格式</h2><h3 id="表达式结构"><a href="#表达式结构" class="headerlink" title="表达式结构"></a>表达式结构</h3><p>Seconds Minutes Hours DayofMonth Month DayofWeek [ Year ]</p>
 <p>秒 分 小时 月份中的日期 月份 星期中的日期 [ 年份 ]</p>
@@ -339,12 +340,12 @@
 <tbody><tr>
 <td><code>*</code></td>
 <td>表示任意值。</td>
-<td>在 <code>Minutes</code> 域使用<code>*</code>，即表示每分钟都会触发事件。</td>
+<td>在<code>Minutes</code> 域使用<code>*</code>，即表示每分钟都会触发事件。</td>
 </tr>
 <tr>
 <td><code>?</code></td>
 <td>表示不指定值。 只能用在<code>DayofMonth</code>和<code>DayofWeek</code>两个域</td>
-<td>在每月的20日触发调度，不管20日到底是星期几，则只能使用如下写法： <code>13 13 15 20 * ?</code>，其中最后一位只能用<code>?</code>，而不能使用<code>*</code>，如果使用<code>*</code>表示不管星期几都会触发。</td>
+<td>在每月的20日触发调度，不管20日到底是星期几，则只能使用如下写法：<code>13 13 15 20 * ?</code>，其中最后一位只能用<code>?</code>，而不能使用<code>*</code>，如果使用<code>*</code>表示不管星期几都会触发。</td>
 </tr>
 <tr>
 <td><code>-</code></td>
@@ -368,8 +369,8 @@
 </tr>
 <tr>
 <td><code>W</code></td>
-<td>表示寻找最近有效工作日(周一到周五)。<br/>最近寻找不会跨过月份 。<br/>只能出现在<code>DayofMonth</code>域。</td>
-<td>在<code>DayofMonth</code>使用<code>5W</code>：<br/>如果5日是工作日，则就在5日触发。<br/>如果5日是周六或周日，则将在最近的工作日触发。</td>
+<td>表示寻找最近有效工作日(周一到周五)。最近寻找不会跨过月份 。只能出现在<code>DayofMonth</code>域。</td>
+<td>在<code>DayofMonth</code>使用<code>5W</code>：如果5日是工作日，则就在5日触发。如果5日是周六或周日，则将在最近的工作日触发。</td>
 </tr>
 <tr>
 <td><code>LW</code></td>
@@ -390,9 +391,32 @@
             <div>
               <div class="post-metas my-3">
   
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%85%B6%E4%BB%96/" class="category-chain-item">其他</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
   
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Cron/" class="print-no-link">#Cron</a>
       
         <a href="/tags/%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1/" class="print-no-link">#定时任务</a>
       
@@ -451,9 +475,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2025/10/31/%E5%B0%8F%E7%A8%8B%E5%BA%8F/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%AE%A2%E9%98%85%E6%B6%88%E6%81%AF%EF%BC%88%E4%B8%80%E6%AC%A1%E6%80%A7%E8%AE%A2%E9%98%85%EF%BC%89/" title="【API】微信小程序订阅消息（一次性订阅）">
+                      <a href="/2025/09/28/%E5%89%8D%E7%AB%AF/%E3%80%90%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83%E3%80%91%E7%94%A8%20Husky%20+%20lint-staged%20+%20ESLint%20+%20Prettier%20%E6%9E%84%E5%BB%BA%E5%9B%A2%E9%98%9F%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83/" title="用 Husky + lint-staged + ESLint + Prettier 构建团队代码规范">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">【API】微信小程序订阅消息（一次性订阅）</span>
+                        <span class="hidden-mobile">用 Husky + lint-staged + ESLint + Prettier 构建团队代码规范</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -461,7 +485,7 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2025/09/20/%E7%BC%96%E8%AF%91/package.json%E5%92%8Cpackage-lock.json/" title="package.json和package-lock.json">
+                      <a href="/2025/09/20/%E5%89%8D%E7%AB%AF/package.json%E5%92%8Cpackage-lock.json/" title="package.json和package-lock.json">
                         <span class="hidden-mobile">package.json和package-lock.json</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>

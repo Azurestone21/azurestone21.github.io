@@ -1,0 +1,761 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="SEO 的工作机制SEO 的工作，可以理解成：帮助搜索引擎发现、理解、信任你的页面，并在用户搜索时把它排到合适的位置。搜索引擎本身并不“看”网页，它靠一套自动化系统完成：抓取 → 渲染 → 索引 → 排名 → 展示。 下面按这个流程讲。 1. 发现 URL：搜索引擎怎么知道你的页面存在搜索引擎先要找到网址。常见来源：  外部链接：其他网站链到你的页面； 站内链接：你自己网站里的 &lt;a hre">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SEO 的工作机制">
+<meta property="og:url" content="http://example.com/2023/08/10/%E5%89%8D%E7%AB%AF/SEO%20%E5%B7%A5%E4%BD%9C%E6%9C%BA%E5%88%B6/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="SEO 的工作机制SEO 的工作，可以理解成：帮助搜索引擎发现、理解、信任你的页面，并在用户搜索时把它排到合适的位置。搜索引擎本身并不“看”网页，它靠一套自动化系统完成：抓取 → 渲染 → 索引 → 排名 → 展示。 下面按这个流程讲。 1. 发现 URL：搜索引擎怎么知道你的页面存在搜索引擎先要找到网址。常见来源：  外部链接：其他网站链到你的页面； 站内链接：你自己网站里的 &lt;a hre">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-08-09T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-14T14:26:02.620Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="SEO">
+<meta property="article:tag" content="前端">
+<meta property="article:tag" content="搜索引擎优化">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>SEO 的工作机制 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">SEO 的工作机制</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-08-10 00:00" pubdate>
+          2023年8月10日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          11 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">SEO 的工作机制</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="SEO-的工作机制"><a href="#SEO-的工作机制" class="headerlink" title="SEO 的工作机制"></a>SEO 的工作机制</h1><p>SEO 的工作，可以理解成：<strong>帮助搜索引擎发现、理解、信任你的页面，并在用户搜索时把它排到合适的位置。</strong><br>搜索引擎本身并不“看”网页，它靠一套自动化系统完成：<strong>抓取 → 渲染 → 索引 → 排名 → 展示</strong>。</p>
+<p>下面按这个流程讲。</p>
+<h2 id="1-发现-URL：搜索引擎怎么知道你的页面存在"><a href="#1-发现-URL：搜索引擎怎么知道你的页面存在" class="headerlink" title="1. 发现 URL：搜索引擎怎么知道你的页面存在"></a>1. 发现 URL：搜索引擎怎么知道你的页面存在</h2><p>搜索引擎先要找到网址。常见来源：</p>
+<ul>
+<li>外部链接：其他网站链到你的页面；</li>
+<li>站内链接：你自己网站里的 <code>&lt;a href&gt;</code>；</li>
+<li>Sitemap：你提交给搜索引擎的页面清单；</li>
+<li>主动提交：Google Search Console、百度搜索资源平台等；</li>
+<li>历史抓取：之前抓过的页面会定期回访。</li>
+</ul>
+<p>SEO 要做的是：</p>
+<ul>
+<li>用 <code>&lt;a href&gt;</code> 做真实链接，别只用 JS 点击跳转；</li>
+<li>提交 sitemap；</li>
+<li>保证重要页面能被站内链接走到；</li>
+<li>用 <code>robots.txt</code> 控制哪些能抓、哪些不能抓。</li>
+</ul>
+<h2 id="2-抓取：爬虫来下载页面"><a href="#2-抓取：爬虫来下载页面" class="headerlink" title="2. 抓取：爬虫来下载页面"></a>2. 抓取：爬虫来下载页面</h2><p>搜索引擎的爬虫，比如 Googlebot、百度蜘蛛，会向你的服务器发请求，下载 HTML。</p>
+<p>抓取时会看：</p>
+<ul>
+<li><code>robots.txt</code>：允许或禁止抓取哪些路径；</li>
+<li>HTTP 状态码：200 正常，404 不存在，301 跳转，500 服务器错误；</li>
+<li>页面大小、加载速度；</li>
+<li>抓取预算：网站越大，爬虫不会无限抓，重要页面要优先。</li>
+</ul>
+<p>SEO 要做的是：</p>
+<ul>
+<li>别把重要页面误封在 <code>robots.txt</code>；</li>
+<li>避免大量死链、软 404；</li>
+<li>服务器稳定、响应快；</li>
+<li>重要页面别藏太深。</li>
+</ul>
+<h2 id="3-渲染：把-JS-页面变成可读内容"><a href="#3-渲染：把-JS-页面变成可读内容" class="headerlink" title="3. 渲染：把 JS 页面变成可读内容"></a>3. 渲染：把 JS 页面变成可读内容</h2><p>传统页面，HTML 里直接有内容，爬虫一读就懂。<br>但 SPA 这类页面，HTML 初始是空壳，内容靠 JS 渲染。</p>
+<p>搜索引擎通常有两阶段：</p>
+<ol>
+<li>先抓原始 HTML；</li>
+<li>再进入渲染队列，执行 JS，生成最终 DOM。</li>
+</ol>
+<p>问题在于：</p>
+<ul>
+<li>渲染要排队，可能延迟；</li>
+<li>JS 报错、接口超时、登录限制会导致内容抓不到；</li>
+<li>百度、Bing、社交平台对 JS 渲染支持不如 Google；</li>
+<li>渲染预算有限，复杂页面可能被放弃。</li>
+</ul>
+<p>所以前面说的 SSR、SSG 就很重要：</p>
+<ul>
+<li>SSR：服务器直接返回带内容的 HTML；</li>
+<li>SSG：构建时生成静态 HTML；</li>
+<li>预渲染：提前把页面变成 HTML。</li>
+</ul>
+<p>这样爬虫不用等 JS，就能直接拿到标题、正文、链接和 Meta。</p>
+<h2 id="4-索引：搜索引擎如何“记住”页面"><a href="#4-索引：搜索引擎如何“记住”页面" class="headerlink" title="4. 索引：搜索引擎如何“记住”页面"></a>4. 索引：搜索引擎如何“记住”页面</h2><p>抓取和渲染后，搜索引擎会分析页面，建立索引。</p>
+<p>它会提取：</p>
+<ul>
+<li>正文内容；</li>
+<li>标题 <code>&lt;title&gt;</code>；</li>
+<li>描述 <code>&lt;meta name=&quot;description&quot;&gt;</code>；</li>
+<li>标题结构 <code>&lt;h1&gt;</code>、<code>&lt;h2&gt;</code>；</li>
+<li>图片 <code>alt</code>；</li>
+<li>链接关系；</li>
+<li>结构化数据，比如 JSON-LD；</li>
+<li>页面语言、地区、移动适配；</li>
+<li>Canonical 规范网址。</li>
+</ul>
+<p>然后把这些信息存入巨大的倒排索引：</p>
+<blockquote>
+<p>某个关键词 → 出现在哪些页面 → 位置、频率、上下文。</p>
+</blockquote>
+<p>SEO 要做的是：</p>
+<ul>
+<li>每个页面有独立、准确的 title 和 description；</li>
+<li>内容清晰、结构分明；</li>
+<li>用 canonical 解决重复内容；</li>
+<li>用结构化数据帮助搜索引擎理解；</li>
+<li>别让重要内容只存在于图片或 JS 里。</li>
+</ul>
+<h2 id="5-排名：用户搜索时，谁排前面"><a href="#5-排名：用户搜索时，谁排前面" class="headerlink" title="5. 排名：用户搜索时，谁排前面"></a>5. 排名：用户搜索时，谁排前面</h2><p>当用户输入关键词，搜索引擎会：</p>
+<ol>
+<li>从索引里召回相关页面；</li>
+<li>用排名算法排序；</li>
+<li>结合个性化、位置、设备等因素；</li>
+<li>生成搜索结果页。</li>
+</ol>
+<p>排名因素大致分几类：</p>
+<h3 id="相关性"><a href="#相关性" class="headerlink" title="相关性"></a>相关性</h3><p>页面内容是否匹配搜索意图。<br>比如搜“Vue 路由”，你给的是 Vue Router 教程，而不是 React 路由。</p>
+<h3 id="质量与权威"><a href="#质量与权威" class="headerlink" title="质量与权威"></a>质量与权威</h3><p>内容是否专业、可信、原创、有深度。<br>Google 用 E-E-A-T 衡量：经验、专业、权威、可信。</p>
+<h3 id="外链与声誉"><a href="#外链与声誉" class="headerlink" title="外链与声誉"></a>外链与声誉</h3><p>其他网站是否链接你、引用你。<br>外链像“投票”，但高质量相关外链才有效。</p>
+<h3 id="技术体验"><a href="#技术体验" class="headerlink" title="技术体验"></a>技术体验</h3><ul>
+<li>移动友好；</li>
+<li>HTTPS；</li>
+<li>Core Web Vitals：加载、交互、视觉稳定性；</li>
+<li>无 intrusive 广告；</li>
+<li>页面结构清晰。</li>
+</ul>
+<h3 id="用户行为"><a href="#用户行为" class="headerlink" title="用户行为"></a>用户行为</h3><p>点击率、停留时间、跳出率等可能间接影响。<br>但搜索引擎不会简单因为“停留久”就给你排名，更多是综合判断。</p>
+<h2 id="6-展示：搜索结果页"><a href="#6-展示：搜索结果页" class="headerlink" title="6. 展示：搜索结果页"></a>6. 展示：搜索结果页</h2><p>最后，搜索引擎把结果展示给用户：</p>
+<ul>
+<li>标题；</li>
+<li>描述；</li>
+<li>网址；</li>
+<li>富媒体：评分、面包屑、FAQ、视频、图片；</li>
+<li>广告和自然结果。</li>
+</ul>
+<p>SEO 的目标就是让页面：</p>
+<ul>
+<li>能被抓；</li>
+<li>能被懂；</li>
+<li>值得信；</li>
+<li>被点击。</li>
+</ul>
+<h2 id="7-用一张流程图概括"><a href="#7-用一张流程图概括" class="headerlink" title="7. 用一张流程图概括"></a>7. 用一张流程图概括</h2><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs text">URL 发现<br>  ↓<br>爬虫抓取<br>  ↓<br>渲染 JS<br>  ↓<br>解析内容<br>  ↓<br>建立索引<br>  ↓<br>用户搜索<br>  ↓<br>召回 + 排名<br>  ↓<br>搜索结果展示<br></code></pre></td></tr></table></figure>
+
+<h2 id="8-结合前面-SPA-的问题"><a href="#8-结合前面-SPA-的问题" class="headerlink" title="8. 结合前面 SPA 的问题"></a>8. 结合前面 SPA 的问题</h2><p>SPA 之所以影响 SEO，是因为它在“抓取”和“渲染”环节容易出问题：</p>
+<ul>
+<li>初始 HTML 空；</li>
+<li>内容靠 JS；</li>
+<li>链接靠 JS 跳转；</li>
+<li>Meta 不独立；</li>
+<li>History 模式可能 404。</li>
+</ul>
+<p>SSR、SSG、预渲染，本质都是让搜索引擎在“抓取”阶段就拿到完整 HTML，从而顺利进入索引和排名。</p>
+<h2 id="一句话总结"><a href="#一句话总结" class="headerlink" title="一句话总结"></a>一句话总结</h2><p>SEO 的工作机制是：<strong>搜索引擎先发现并抓取 URL，再渲染页面、提取内容建立索引，最后在用户搜索时按相关性、质量、权威和体验排序展示。</strong><br>SEO 就是围绕这几个环节，让页面更容易被找到、被理解、被信任、被点击。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%89%8D%E7%AB%AF/" class="category-chain-item">前端</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%89%8D%E7%AB%AF/" class="print-no-link">#前端</a>
+      
+        <a href="/tags/SEO/" class="print-no-link">#SEO</a>
+      
+        <a href="/tags/%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E4%BC%98%E5%8C%96/" class="print-no-link">#搜索引擎优化</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>SEO 的工作机制</div>
+      <div>http://example.com/2023/08/10/前端/SEO 工作机制/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年8月10日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/08/10/%E7%8A%B6%E6%80%81%E7%AE%A1%E7%90%86/MobX%20%E6%A0%B8%E5%BF%83%EF%BC%9A%E8%A7%82%E5%AF%9F%E8%80%85%EF%BC%88Observers%EF%BC%89/" title="MobX 核心：观察者（Observers）">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">MobX 核心：观察者（Observers）</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/08/10/%E5%89%8D%E7%AB%AF/SEO%20%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E4%BC%98%E5%8C%96/" title="搜索引擎优化 SEO">
+                        <span class="hidden-mobile">搜索引擎优化 SEO</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

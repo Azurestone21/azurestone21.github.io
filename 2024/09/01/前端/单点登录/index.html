@@ -1,0 +1,983 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="单点登录一、基础概念1. 同源策略同源 &#x3D; 协议 + 域名 + 端口 完全相同。    父页面 子页面 是否同源    https:&#x2F;&#x2F;a.com https:&#x2F;&#x2F;a.com&#x2F;sub 是   https:&#x2F;&#x2F;a.com https:&#x2F;&#x2F;sub.a.com 否（子域不同）   https:&#x2F;&#x2F;a.com http:&#x2F;&#x2F;a.com 否（协议不同）   https:&#x2F;&#x2F;a.com https:">
+<meta property="og:type" content="article">
+<meta property="og:title" content="单点登录">
+<meta property="og:url" content="http://example.com/2024/09/01/%E5%89%8D%E7%AB%AF/%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="单点登录一、基础概念1. 同源策略同源 &#x3D; 协议 + 域名 + 端口 完全相同。    父页面 子页面 是否同源    https:&#x2F;&#x2F;a.com https:&#x2F;&#x2F;a.com&#x2F;sub 是   https:&#x2F;&#x2F;a.com https:&#x2F;&#x2F;sub.a.com 否（子域不同）   https:&#x2F;&#x2F;a.com http:&#x2F;&#x2F;a.com 否（协议不同）   https:&#x2F;&#x2F;a.com https:">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-08-31T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-14T14:26:02.686Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="单点登录">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>单点登录 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">单点登录</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-09-01 00:00" pubdate>
+          2024年9月1日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          16 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">单点登录</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="单点登录"><a href="#单点登录" class="headerlink" title="单点登录"></a>单点登录</h1><h2 id="一、基础概念"><a href="#一、基础概念" class="headerlink" title="一、基础概念"></a>一、基础概念</h2><h3 id="1-同源策略"><a href="#1-同源策略" class="headerlink" title="1. 同源策略"></a>1. 同源策略</h3><p>同源 &#x3D; <strong>协议 + 域名 + 端口</strong> 完全相同。</p>
+<table>
+<thead>
+<tr>
+<th>父页面</th>
+<th>子页面</th>
+<th>是否同源</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>https://a.com</code></td>
+<td><code>https://a.com/sub</code></td>
+<td>是</td>
+</tr>
+<tr>
+<td><code>https://a.com</code></td>
+<td><code>https://sub.a.com</code></td>
+<td>否（子域不同）</td>
+</tr>
+<tr>
+<td><code>https://a.com</code></td>
+<td><code>http://a.com</code></td>
+<td>否（协议不同）</td>
+</tr>
+<tr>
+<td><code>https://a.com</code></td>
+<td><code>https://a.com:8080</code></td>
+<td>否（端口不同）</td>
+</tr>
+</tbody></table>
+<p><strong>同站</strong>：可注册主域相同。<br>例：<code>cloud.example.com</code> 与 <code>imarketing.cloud.example.com</code> 同站，但跨源。</p>
+<h3 id="2-Cookie-与-localStorage-隔离"><a href="#2-Cookie-与-localStorage-隔离" class="headerlink" title="2. Cookie 与 localStorage 隔离"></a>2. Cookie 与 localStorage 隔离</h3><table>
+<thead>
+<tr>
+<th>特性</th>
+<th>Cookie</th>
+<th>localStorage</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>隔离维度</td>
+<td>域 + 路径，可设 Domain 跨子域</td>
+<td>严格按 Origin 隔离</td>
+</tr>
+<tr>
+<td>跨子域共享</td>
+<td>可以（<code>Domain=.example.com</code>）</td>
+<td>不可以</td>
+</tr>
+<tr>
+<td>JS 可读</td>
+<td>非 HttpOnly 可读</td>
+<td>同源可读</td>
+</tr>
+<tr>
+<td>自动随请求发送</td>
+<td>是</td>
+<td>否</td>
+</tr>
+<tr>
+<td>跨源 iframe 读父的</td>
+<td>不能</td>
+<td>不能</td>
+</tr>
+</tbody></table>
+<h3 id="3-iframe-访问规则"><a href="#3-iframe-访问规则" class="headerlink" title="3. iframe 访问规则"></a>3. iframe 访问规则</h3><p>父：<code>https://cloud.example.com</code><br>子：<code>https://imarketing.cloud.example.com</code><br>→ 同站，跨源。</p>
+<table>
+<thead>
+<tr>
+<th>资源</th>
+<th>同源 iframe</th>
+<th>跨源 iframe</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>window.parent.localStorage</code></td>
+<td>可访问</td>
+<td>不可访问，报 SecurityError</td>
+</tr>
+<tr>
+<td><code>window.parent.document.cookie</code></td>
+<td>可读非 HttpOnly</td>
+<td>不可读</td>
+</tr>
+<tr>
+<td>自己的<code>document.cookie</code></td>
+<td>可读非 HttpOnly</td>
+<td>可读自己域的非 HttpOnly</td>
+</tr>
+<tr>
+<td>自己的<code>localStorage</code></td>
+<td>共享</td>
+<td>按 Origin 隔离，不共享</td>
+</tr>
+</tbody></table>
+<p><strong>注意</strong>：</p>
+<ul>
+<li><code>sandbox</code> 无 <code>allow-same-origin</code> 时，即使同源也受限。</li>
+<li><code>document.domain</code> 已废弃，不要依赖。</li>
+</ul>
+<hr>
+<h2 id="二、跨标签与跨域通信"><a href="#二、跨标签与跨域通信" class="headerlink" title="二、跨标签与跨域通信"></a>二、跨标签与跨域通信</h2><table>
+<thead>
+<tr>
+<th>方案</th>
+<th>跨标签</th>
+<th>跨源</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>BroadcastChannel</code></td>
+<td>是</td>
+<td>否</td>
+<td>同源多标签实时通信，推荐</td>
+</tr>
+<tr>
+<td><code>localStorage + storage</code> 事件</td>
+<td>是</td>
+<td>否</td>
+<td>同源，兼容旧浏览器</td>
+</tr>
+<tr>
+<td><code>SharedWorker</code></td>
+<td>是</td>
+<td>否</td>
+<td>同源共享连接&#x2F;状态</td>
+</tr>
+<tr>
+<td><code>Service Worker</code></td>
+<td>是</td>
+<td>否</td>
+<td>PWA、推送、同源广播</td>
+</tr>
+<tr>
+<td><code>window.postMessage</code></td>
+<td>是（需引用）</td>
+<td>是</td>
+<td>跨域 iframe、弹窗、OAuth</td>
+</tr>
+<tr>
+<td><code>MessageChannel</code></td>
+<td>是</td>
+<td>是</td>
+<td>点对点通信</td>
+</tr>
+<tr>
+<td><code>WebSocket/SSE</code></td>
+<td>是</td>
+<td>是</td>
+<td>跨源跨标签，服务端中转</td>
+</tr>
+</tbody></table>
+<p><strong>选型</strong>：</p>
+<ul>
+<li>同源多标签同步：<code>BroadcastChannel</code> &gt; <code>localStorage + storage</code>。</li>
+<li>跨域 iframe&#x2F;弹窗：<code>window.postMessage</code>，必须校验 <code>origin</code>。</li>
+<li>跨域独立标签：前端无直接方案，走 WebSocket&#x2F;SSE&#x2F;服务端中转。</li>
+</ul>
+<p><strong>postMessage 安全</strong>：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// 发送</span><br>targetWindow.<span class="hljs-title function_">postMessage</span>(data, <span class="hljs-string">&quot;https://target.com&quot;</span>); <span class="hljs-comment">// 不要用 &#x27;*&#x27;</span><br><span class="hljs-comment">// 接收</span><br><span class="hljs-variable language_">window</span>.<span class="hljs-title function_">addEventListener</span>(<span class="hljs-string">&quot;message&quot;</span>, <span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> &#123;<br>  <span class="hljs-keyword">if</span> (e.<span class="hljs-property">origin</span> !== <span class="hljs-string">&quot;https://expected.com&quot;</span>) <span class="hljs-keyword">return</span>;<br>  <span class="hljs-comment">// 处理 e.data</span><br>&#125;);<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="三、SSO-核心与前端角色"><a href="#三、SSO-核心与前端角色" class="headerlink" title="三、SSO 核心与前端角色"></a>三、SSO 核心与前端角色</h2><h3 id="1-定义"><a href="#1-定义" class="headerlink" title="1. 定义"></a>1. 定义</h3><p><strong>集中认证，分散会话</strong>：用户在认证中心登录一次，即可访问多个互信业务系统。</p>
+<h3 id="2-角色"><a href="#2-角色" class="headerlink" title="2. 角色"></a>2. 角色</h3><table>
+<thead>
+<tr>
+<th>角色</th>
+<th>职责</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>认证中心 IdP</td>
+<td>统一登录、维护全局会话、发 code&#x2F;ticket</td>
+</tr>
+<tr>
+<td>业务后端</td>
+<td>用 code 换 token、验证 token、建立局部会话、写 Cookie</td>
+</tr>
+<tr>
+<td>业务前端</td>
+<td>路由守卫、跳转、回调、请求拦截、多标签同步、登出</td>
+</tr>
+</tbody></table>
+<p><strong>前端不实现认证，是 SSO 接入方。真正鉴权在后端。</strong></p>
+<hr>
+<h2 id="四、OIDC-与授权流程"><a href="#四、OIDC-与授权流程" class="headerlink" title="四、OIDC 与授权流程"></a>四、OIDC 与授权流程</h2><h3 id="1-OAuth-2-0-vs-OIDC"><a href="#1-OAuth-2-0-vs-OIDC" class="headerlink" title="1. OAuth 2.0 vs OIDC"></a>1. OAuth 2.0 vs OIDC</h3><table>
+<thead>
+<tr>
+<th></th>
+<th>OAuth 2.0</th>
+<th>OIDC</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>目的</td>
+<td>授权</td>
+<td>认证（用户是谁）</td>
+</tr>
+<tr>
+<td>核心凭证</td>
+<td>Access Token</td>
+<td>ID Token + Access Token</td>
+</tr>
+<tr>
+<td>Token 格式</td>
+<td>不强制</td>
+<td>ID Token 必须是 JWT</td>
+</tr>
+<tr>
+<td>典型场景</td>
+<td>调用 API</td>
+<td>登录、SSO</td>
+</tr>
+</tbody></table>
+<h3 id="2-ID-Token"><a href="#2-ID-Token" class="headerlink" title="2. ID Token"></a>2. ID Token</h3><p>JWT，由 IdP 签名。必须校验：</p>
+<ul>
+<li>签名（通过 <code>jwks_uri</code> 获取公钥）</li>
+<li><code>iss</code>（签发者）</li>
+<li><code>aud</code>（客户端 ID）</li>
+<li><code>exp</code>（过期时间）</li>
+<li><code>nonce</code>（防重放）</li>
+</ul>
+<h3 id="3-授权码-PKCE-流程（推荐）"><a href="#3-授权码-PKCE-流程（推荐）" class="headerlink" title="3. 授权码 + PKCE 流程（推荐）"></a>3. 授权码 + PKCE 流程（推荐）</h3><ol>
+<li>前端生成 <code>state</code>、<code>nonce</code>、<code>code_verifier</code>，计算 <code>code_challenge</code>。</li>
+<li>跳转认证中心：<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs 1c">https<span class="hljs-punctuation">:</span><span class="hljs-comment">//sso.com/authorize?</span><br>  response_type<span class="hljs-punctuation">=</span>code<span class="hljs-meta">&amp;</span><br>  client_id<span class="hljs-punctuation">=</span>xxx<span class="hljs-meta">&amp;</span><br>  redirect_uri<span class="hljs-punctuation">=</span>https<span class="hljs-punctuation">:</span><span class="hljs-comment">//app.com/callback&amp;</span><br>  scope<span class="hljs-punctuation">=</span>openid profile email<span class="hljs-meta">&amp;</span><br>  state<span class="hljs-punctuation">=</span>xxx<span class="hljs-meta">&amp;</span><br>  nonce<span class="hljs-punctuation">=</span>xxx<span class="hljs-meta">&amp;</span><br>  code_challenge<span class="hljs-punctuation">=</span>xxx<span class="hljs-meta">&amp;</span><br>  code_challenge_method<span class="hljs-punctuation">=</span>S256<br></code></pre></td></tr></table></figure></li>
+<li>IdP 有全局会话则直接发 <code>code</code>，否则让用户登录。</li>
+<li>重定向回 <code>https://app.com/callback?code=xxx&amp;state=xxx</code>。</li>
+<li>前端校验 <code>state</code>，把 <code>code</code> 和 <code>code_verifier</code> 交给后端。</li>
+<li>后端换 <code>id_token</code> 和 <code>access_token</code>，验证后建立局部会话（通常写 <code>HttpOnly</code> Cookie）。</li>
+<li>前端调 <code>/api/me</code> 拿用户信息，恢复回跳地址。</li>
+<li>其他系统接同一 IdP，因全局会话存在可静默拿 <code>code</code>，实现免登。</li>
+</ol>
+<hr>
+<h2 id="五、前端-SSO-实现要点"><a href="#五、前端-SSO-实现要点" class="headerlink" title="五、前端 SSO 实现要点"></a>五、前端 SSO 实现要点</h2><h3 id="1-路由守卫"><a href="#1-路由守卫" class="headerlink" title="1. 路由守卫"></a>1. 路由守卫</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs js">router.<span class="hljs-title function_">beforeEach</span>(<span class="hljs-title function_">async</span> (to) =&gt; &#123;<br>  <span class="hljs-keyword">if</span> (to.<span class="hljs-property">meta</span>.<span class="hljs-property">public</span>) <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>  <span class="hljs-keyword">const</span> logged = <span class="hljs-keyword">await</span> <span class="hljs-title function_">checkSession</span>();<br>  <span class="hljs-keyword">if</span> (logged) <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>  <span class="hljs-title function_">redirectToSSO</span>();<br>  <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>&#125;);<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-回调页处理"><a href="#2-回调页处理" class="headerlink" title="2. 回调页处理"></a>2. 回调页处理</h3><ul>
+<li>解析 <code>code</code>、<code>state</code>。</li>
+<li>校验 <code>state</code> 与 sessionStorage 中是否一致。</li>
+<li>把 <code>code</code> 交给后端换 token。</li>
+<li>清理 URL 上的 code，避免刷新重复使用。</li>
+<li>跳回登录前页面。</li>
+</ul>
+<h3 id="3-请求拦截"><a href="#3-请求拦截" class="headerlink" title="3. 请求拦截"></a>3. 请求拦截</h3><ul>
+<li>自动带 Cookie 或 <code>Authorization</code>。</li>
+<li>401 时尝试刷新 token，失败则跳认证中心。</li>
+<li>并发刷新做控制，防止多次请求同时刷新。</li>
+</ul>
+<h3 id="4-多标签同步"><a href="#4-多标签同步" class="headerlink" title="4. 多标签同步"></a>4. 多标签同步</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> bc = <span class="hljs-keyword">new</span> <span class="hljs-title class_">BroadcastChannel</span>(<span class="hljs-string">&quot;auth&quot;</span>);<br>bc.<span class="hljs-title function_">postMessage</span>(&#123; <span class="hljs-attr">type</span>: <span class="hljs-string">&quot;logout&quot;</span> &#125;);<br></code></pre></td></tr></table></figure>
+
+<h3 id="5-单点登出"><a href="#5-单点登出" class="headerlink" title="5. 单点登出"></a>5. 单点登出</h3><ol>
+<li>前端调认证中心 <code>end_session_endpoint</code>。</li>
+<li>认证中心清全局会话，通知各系统清局部会话。</li>
+<li>前端清本地用户信息、token、缓存。</li>
+<li>用 <code>BroadcastChannel</code> 通知其他标签清理。</li>
+</ol>
+<hr>
+<h2 id="六、Cookie-与-fetch-跨源细节"><a href="#六、Cookie-与-fetch-跨源细节" class="headerlink" title="六、Cookie 与 fetch 跨源细节"></a>六、Cookie 与 fetch 跨源细节</h2><h3 id="1-Domain-共享-Cookie"><a href="#1-Domain-共享-Cookie" class="headerlink" title="1. Domain 共享 Cookie"></a>1. Domain 共享 Cookie</h3><figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs http"><span class="hljs-attribute">Set-Cookie</span><span class="hljs-punctuation">: </span>token=xxx; Domain=.example.com; Path=/; Secure; SameSite=Lax<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>请求匹配子域时，浏览器<strong>自动带上</strong>。</li>
+<li>但 JS 不能跨源读对方独有的 <code>document.cookie</code>。</li>
+<li><code>Domain</code> 共享的非 HttpOnly Cookie，两个子域都能通过 <code>document.cookie</code> 读取。</li>
+<li><code>HttpOnly</code> Cookie 任何时候 JS 都读不到，但请求会自动发送。</li>
+</ul>
+<h3 id="2-fetch-XHR-跨源与凭据"><a href="#2-fetch-XHR-跨源与凭据" class="headerlink" title="2. fetch&#x2F;XHR 跨源与凭据"></a>2. fetch&#x2F;XHR 跨源与凭据</h3><p><strong>关键区分</strong>：</p>
+<ul>
+<li>Cookie 的 Domain&#x2F;Path&#x2F;Secure&#x2F;SameSite 规则决定“哪些 Cookie 有资格被带”。</li>
+<li>请求的 <strong>credentials 模式</strong>决定“这次请求允不允许带 Cookie”。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>请求类型</th>
+<th>默认 credentials</th>
+<th>默认是否带匹配 Cookie</th>
+<th>能否读响应</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>&lt;img&gt;</code> &#x2F; <code>&lt;script&gt;</code> &#x2F; <code>&lt;iframe&gt;</code> &#x2F; 表单 &#x2F; 跳转</td>
+<td>include</td>
+<td>带</td>
+<td>否&#x2F;极有限</td>
+</tr>
+<tr>
+<td>同源<code>fetch</code> &#x2F; <code>XHR</code></td>
+<td>same-origin</td>
+<td>带</td>
+<td>是</td>
+</tr>
+<tr>
+<td><strong>跨源 <code>fetch</code> &#x2F; <code>XHR</code></strong></td>
+<td><strong>same-origin</strong></td>
+<td><strong>不带</strong></td>
+<td>是（需 CORS）</td>
+</tr>
+</tbody></table>
+<p><strong>为什么跨源 fetch 默认不带？</strong><br>安全设计：防止恶意脚本跨源读取敏感数据。<code>&lt;img&gt;</code> 等无法读响应，风险可控；fetch 能读响应，必须双重确认。</p>
+<p><strong>让跨源 fetch 带 Cookie 的条件</strong>：</p>
+<ol>
+<li><p>前端：<code>fetch(url, { credentials: &#39;include&#39; })</code></p>
+</li>
+<li><p>服务端 CORS：</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs http"><span class="hljs-attribute">Access-Control-Allow-Origin</span><span class="hljs-punctuation">: </span>https://a.example.com<br><span class="hljs-attribute">Access-Control-Allow-Credentials</span><span class="hljs-punctuation">: </span>true<br></code></pre></td></tr></table></figure>
+
+<p>（不能为 <code>*</code>）</p>
+</li>
+<li><p>SameSite 允许。</p>
+</li>
+</ol>
+<h3 id="3-HttpOnly-与-js-cookie"><a href="#3-HttpOnly-与-js-cookie" class="headerlink" title="3. HttpOnly 与 js-cookie"></a>3. HttpOnly 与 js-cookie</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">import</span> <span class="hljs-title class_">Cookie</span> <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;js-cookie&quot;</span>;<br><span class="hljs-title class_">Cookie</span>.<span class="hljs-title function_">get</span>(<span class="hljs-string">&quot;token&quot;</span>); <span class="hljs-comment">// 本质读取 document.cookie</span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><code>js-cookie</code> 无法绕过 <code>HttpOnly</code>。</li>
+<li>如果代码能通过 <code>Cookie.get</code> 读到 token，说明该 Cookie <strong>没有设置 <code>HttpOnly</code></strong>。</li>
+<li>若设置了 <code>HttpOnly</code>，<code>Cookie.get</code> 返回 <code>undefined</code>，请求时浏览器仍自动携带。</li>
+<li>敏感 token 应放 <code>HttpOnly + Secure + SameSite</code> Cookie，前端不直接读。</li>
+</ul>
+<p><strong>验证方法</strong>：</p>
+<ul>
+<li>Network 看 <code>Set-Cookie</code> 是否有 <code>HttpOnly</code>。</li>
+<li>控制台执行 <code>document.cookie</code> 或 <code>Cookie.get(&#39;token&#39;)</code>。</li>
+<li>DevTools → Application → Cookies 查看 HttpOnly 列。</li>
+</ul>
+<hr>
+<h2 id="七、安全要点"><a href="#七、安全要点" class="headerlink" title="七、安全要点"></a>七、安全要点</h2><ul>
+<li>全站 HTTPS。</li>
+<li>Cookie：<code>HttpOnly</code>、<code>Secure</code>、<code>SameSite</code>。</li>
+<li><code>state</code> 防 CSRF，<code>nonce</code> 防重放，PKCE 防授权码截获。</li>
+<li><code>redirect_uri</code> 必须白名单。</li>
+<li><code>postMessage</code> 校验 <code>origin</code>，发送指定精确 <code>targetOrigin</code>。</li>
+<li>Token 尽量后端保存，前端不放长期 <code>refresh_token</code>。</li>
+<li>路由守卫只是体验，真正鉴权在后端。</li>
+<li>单点登出要清全局会话和局部会话。</li>
+<li>前端不解析 ID Token 当可信信息，应由后端验签后返回用户信息。</li>
+</ul>
+<hr>
+<h2 id="八、面试口述版"><a href="#八、面试口述版" class="headerlink" title="八、面试口述版"></a>八、面试口述版</h2><blockquote>
+<p>SSO 核心是集中认证、分散会话。前端不负责认证，主要负责接入。以 OIDC 授权码 + PKCE 为例：用户访问页面，路由守卫发现没登录，生成 state、nonce、code_verifier，跳转认证中心。认证中心有全局会话就直接带 code 回来；没有就让用户登录。回调页校验 state，把 code 交给后端换 token。后端验证 id_token 后建立局部会话，通常写 HttpOnly Cookie。前端再调用户信息接口，恢复原页面。其他系统接同一认证中心，因全局会话存在可静默拿 code，实现免登。后续请求靠 Cookie 或 Authorization，401 则刷新或重新登录。登出时调认证中心登出，清本地状态，并用 BroadcastChannel 同步多标签。安全上注意 state、nonce、PKCE、redirect_uri 白名单，token 不放 localStorage。</p>
+<p>同域可直接共享父域 Cookie；跨域必须走认证中心重定向。前端不能跨域读认证中心 Cookie 和 localStorage。SPA 用 PKCE，生产更推荐 BFF。路由守卫只是体验，真正鉴权在后端。多标签登录态同步用 BroadcastChannel。OIDC 的 ID Token 是 JWT，必须验签、校验 iss、aud、exp、nonce，不能直接信。</p>
+</blockquote>
+<hr>
+<h2 id="九、关键结论速查"><a href="#九、关键结论速查" class="headerlink" title="九、关键结论速查"></a>九、关键结论速查</h2><ul>
+<li><strong>同源 iframe</strong>：可读父系统 localStorage 和非 HttpOnly Cookie。</li>
+<li><strong>跨源 iframe</strong>：不能直接读，只能 <code>postMessage</code> 或后端中转。</li>
+<li><strong><code>Domain=.example.com</code></strong>：Cookie 可跨子域共享，请求匹配子域自动带上。</li>
+<li><strong>跨源 fetch&#x2F;XHR</strong>：默认不带 Cookie，需 <code>credentials: &#39;include&#39;</code> + CORS 允许。</li>
+<li><strong><code>js-cookie</code> 能读到 token</strong> → 该 Cookie 没有 <code>HttpOnly</code>。</li>
+<li><strong>SSO 前端</strong>：路由守卫、跳转 IdP、处理回调、请求拦截、多标签同步、登出。</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Web%E5%BC%80%E5%8F%91/" class="category-chain-item">Web开发</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/" class="print-no-link">#单点登录</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>单点登录</div>
+      <div>http://example.com/2024/09/01/前端/单点登录/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年9月1日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/11/12/%E6%9C%8D%E5%8A%A1%E7%AB%AF/Linux%E5%AE%89%E8%A3%85MySql/" title="Linux安装MySql">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Linux安装MySql</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/08/12/CSS/%E3%80%90CSS%E3%80%91%E5%A4%84%E7%90%86%E5%99%A8/" title="CSS 处理器">
+                        <span class="hidden-mobile">CSS 处理器</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

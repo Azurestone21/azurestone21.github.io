@@ -1,0 +1,710 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="解决 Tailwind 类名冲突在使用 Tailwind 的过程中，可能会遇到自定义类名与 Tailwind 类名冲突或者Tailwind 类之间的属性冲突的情况。 为了解决这类问题，核心思路有三种：加前缀隔离、遵守命名规范、在运行时合并冲突。 方案一：为 Tailwind 添加全局前缀（最彻底）这是最直接的“物理隔离”方案。在 tailwind.config.js 中设置 prefix，所有 T">
+<meta property="og:type" content="article">
+<meta property="og:title" content="解决 Tailwind 类名冲突">
+<meta property="og:url" content="http://example.com/2026/09/27/CSS/%E8%A7%A3%E5%86%B3%20Tailwind%20%E7%B1%BB%E5%90%8D%E5%86%B2%E7%AA%81/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="解决 Tailwind 类名冲突在使用 Tailwind 的过程中，可能会遇到自定义类名与 Tailwind 类名冲突或者Tailwind 类之间的属性冲突的情况。 为了解决这类问题，核心思路有三种：加前缀隔离、遵守命名规范、在运行时合并冲突。 方案一：为 Tailwind 添加全局前缀（最彻底）这是最直接的“物理隔离”方案。在 tailwind.config.js 中设置 prefix，所有 T">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-09-26T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-09-27T09:07:02.138Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="CSS">
+<meta property="article:tag" content="Tailwind">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>解决 Tailwind 类名冲突 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">解决 Tailwind 类名冲突</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-09-27 00:00" pubdate>
+          2026年9月27日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          951 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          8 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">解决 Tailwind 类名冲突</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="解决-Tailwind-类名冲突"><a href="#解决-Tailwind-类名冲突" class="headerlink" title="解决 Tailwind 类名冲突"></a>解决 Tailwind 类名冲突</h1><p>在使用 Tailwind 的过程中，可能会遇到自定义类名与 Tailwind 类名冲突或者Tailwind 类之间的属性冲突的情况。</p>
+<p>为了解决这类问题，核心思路有三种：<strong>加前缀隔离</strong>、<strong>遵守命名规范</strong>、<strong>在运行时合并冲突</strong>。</p>
+<h2 id="方案一：为-Tailwind-添加全局前缀（最彻底）"><a href="#方案一：为-Tailwind-添加全局前缀（最彻底）" class="headerlink" title="方案一：为 Tailwind 添加全局前缀（最彻底）"></a>方案一：为 Tailwind 添加全局前缀（最彻底）</h2><p>这是最直接的“物理隔离”方案。在 <code>tailwind.config.js</code> 中设置 <code>prefix</code>，所有 Tailwind 生成的工具类都会自动加上前缀。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// tailwind.config.js</span><br><span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = &#123;<br>  <span class="hljs-attr">prefix</span>: <span class="hljs-string">&quot;tw-&quot;</span>, <span class="hljs-comment">// 所有工具类前加上 tw-</span><br>  <span class="hljs-comment">// ...</span><br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<p>配置后，原本的 <code>text-red-500</code>、<code>flex-col</code> 需要写为 <code>tw-text-red-500</code>、<code>tw-flex-col</code>。</p>
+<p><strong>优点</strong>：</p>
+<ul>
+<li><strong>彻底避免命名碰撞</strong>：自定义类永远不会和 Tailwind 的 <code>.flex</code>、<code>.container</code> 冲突。</li>
+<li><strong>兼容第三方库</strong>：即使引入了 Bootstrap 或 Ant Design，它们的 <code>.container</code> 也不会和 Tailwind 的 <code>.container</code> 打架。</li>
+</ul>
+<p><strong>代价</strong>：</p>
+<ul>
+<li><strong>所有模板中的类名都需要手动改</strong>：<code>class=&quot;flex p-4&quot;</code> 必须改成 <code>class=&quot;tw-flex tw-p-4&quot;</code>，漏改一处样式就会“消失”。</li>
+<li><strong>需要团队统一约定</strong>：所有人都要记住加前缀，否则代码风格会混乱。</li>
+</ul>
+<blockquote>
+<p><strong>注意</strong>：<code>prefix</code> 只影响 Tailwind 自己生成的工具类，不影响手写的 CSS 类名，也不解决 <code>preflight</code> 重置带来的冲突。如果在小程序端已经关闭了 <code>preflight</code>，这个方案就非常适合。</p>
+</blockquote>
+<h2 id="方案二：遵守自定义工具类的命名规范"><a href="#方案二：遵守自定义工具类的命名规范" class="headerlink" title="方案二：遵守自定义工具类的命名规范"></a>方案二：遵守自定义工具类的命名规范</h2><p>如果不想加前缀，可以通过命名约定来主动避让 Tailwind 的默认类名。</p>
+<p><strong>避让策略</strong>：</p>
+<ul>
+<li>避免使用 Tailwind 已经占用的“泛化”词汇，如 <code>flex</code>、<code>hidden</code>、<code>container</code>、<code>card</code>、<code>btn</code>。</li>
+<li>使用<strong>带业务前缀或语义化前缀</strong>的命名，例如 <code>.app-card</code>、<code>.ui-btn-primary</code>、<code>.page-header</code>，而不是裸的 <code>.card</code>、<code>.btn</code>。</li>
+<li>如果使用 <code>@layer components</code> 来封装语义化类，同样遵循 kebab-case 规范，保持和 Tailwind 风格一致。</li>
+</ul>
+<p>这种方式的优势是<strong>不改变模板中类名的写法</strong>，但需要团队在定义新类时有意识地避让。</p>
+<h2 id="方案三：运行时解决冲突（tailwind-merge）"><a href="#方案三：运行时解决冲突（tailwind-merge）" class="headerlink" title="方案三：运行时解决冲突（tailwind-merge）"></a>方案三：运行时解决冲突（tailwind-merge）</h2><p><code>prefix</code> 解决的是“命名撞车”，而 <code>tailwind-merge</code> 解决的是<strong>同一个元素上多个 Tailwind 类之间的属性冲突</strong>——比如 <code>p-2</code> 和 <code>p-4</code> 同时出现时，自动保留后者。</p>
+<p><strong>安装</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">pnpm add tailwind-merge clsx<br></code></pre></td></tr></table></figure>
+
+<p><strong>封装一个 <code>cn</code> 工具函数</strong>：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-comment">// src/utils/cn.ts</span><br><span class="hljs-keyword">import</span> &#123; clsx &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;clsx&quot;</span>;<br><span class="hljs-keyword">import</span> &#123; twMerge &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;tailwind-merge&quot;</span>;<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">cn</span>(<span class="hljs-params">...<span class="hljs-attr">inputs</span>: <span class="hljs-title class_">ClassValue</span>[]</span>) &#123;<br>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">twMerge</span>(<span class="hljs-title function_">clsx</span>(inputs));<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong>在组件中使用</strong>：</p>
+<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs tsx">&lt;<span class="hljs-title class_">View</span> className=&#123;<span class="hljs-title function_">cn</span>(<span class="hljs-string">&quot;p-2 bg-red-500&quot;</span>, isLarge &amp;&amp; <span class="hljs-string">&quot;p-4&quot;</span>)&#125;&gt;<br>  &#123;<span class="hljs-comment">/* 最终只输出 p-4 bg-red-500，p-2 被自动移除 */</span>&#125;<br>&lt;/<span class="hljs-title class_">View</span>&gt;<br></code></pre></td></tr></table></figure>
+
+<p><strong>关键点</strong>：如果你已经在 Tailwind 配置中设置了 <code>prefix: &#39;tw-&#39;</code>，<code>tailwind-merge</code> 会自动识别带前缀的类名，无需额外配置。</p>
+<blockquote>
+<p><strong>小程序端特别注意</strong>：在 Taro 小程序中，<code>tailwind-merge</code> 需要配合 <code>weapp-tailwindcss</code> 的运行时包使用，因为类名在编译期已经被转义（如 <code>w-[30px]</code> → <code>w-_30px_</code>），原生的 <code>tailwind-merge</code> 无法正确解析。例如 Tailwind v3 版本，应使用 <strong><code>@weapp-tailwindcss/merge-v3</code></strong> 来处理冲突与转义一致性。</p>
+</blockquote>
+<h2 id="总结与建议"><a href="#总结与建议" class="headerlink" title="总结与建议"></a>总结与建议</h2><table>
+<thead>
+<tr>
+<th align="left">方案</th>
+<th align="left">适用场景</th>
+<th align="left">侵入性</th>
+<th align="left">彻底程度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>prefix 前缀</strong></td>
+<td align="left">项目中大量自定义 CSS，或引入第三方 CSS 框架</td>
+<td align="left">中（需改模板）</td>
+<td align="left">⭐⭐⭐⭐⭐</td>
+</tr>
+<tr>
+<td align="left"><strong>命名规范避让</strong></td>
+<td align="left">新项目，团队愿意遵守约定</td>
+<td align="left">低</td>
+<td align="left">⭐⭐⭐</td>
+</tr>
+<tr>
+<td align="left"><strong>tailwind-merge</strong></td>
+<td align="left">组件库开发，需要动态覆盖样式</td>
+<td align="left">低</td>
+<td align="left">⭐⭐⭐⭐（仅限 Tailwind 内部冲突）</td>
+</tr>
+</tbody></table>
+<p><strong>推荐组合</strong>：</p>
+<ol>
+<li><strong>命名规范 + tailwind-merge</strong> 是日常开发的基础配置，成本低、收益高。</li>
+<li>如果项目已经存在大量自定义 CSS 类名冲突，<strong>加上 <code>prefix: &#39;tw-&#39;</code></strong> 是最一劳永逸的做法。</li>
+<li>在 <strong>Taro 小程序</strong> 中，务必使用 <strong><code>@weapp-tailwindcss/merge-v3</code></strong> 替代原生的 <code>tailwind-merge</code>，否则转义后的类名无法被正确合并。</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Tailwind/" class="category-chain-item">Tailwind</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/CSS/" class="print-no-link">#CSS</a>
+      
+        <a href="/tags/Tailwind/" class="print-no-link">#Tailwind</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>解决 Tailwind 类名冲突</div>
+      <div>http://example.com/2026/09/27/CSS/解决 Tailwind 类名冲突/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年9月27日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/10/01/%E7%AE%97%E6%B3%95/%E3%80%90%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%A0%91%E9%81%8D%E5%8E%86%EF%BC%88%E5%89%8D%E5%BA%8F%E3%80%81%E4%B8%AD%E5%BA%8F%E3%80%81%E5%90%8E%E5%BA%8F%E3%80%81%E5%B1%82%E5%BA%8F%EF%BC%89/" title="">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile"></span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/09/27/%E5%B0%8F%E7%A8%8B%E5%BA%8F/Taro%20%E4%B8%AD%E4%BD%BF%E7%94%A8%20Tailwind%20CSS/" title="Taro 中使用 Tailwind CSS（v3 版本实践指南）">
+                        <span class="hidden-mobile">Taro 中使用 Tailwind CSS（v3 版本实践指南）</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

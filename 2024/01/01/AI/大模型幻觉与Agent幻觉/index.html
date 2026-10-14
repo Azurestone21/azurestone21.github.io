@@ -1,0 +1,727 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="大模型幻觉与Agent幻觉的本质、成因与治理引言：当AI开始“自信地犯错”2023年，一位美国律师在法庭上引用了六个判例，法官核查后发现——全部是ChatGPT编造的。这不是孤例。同年，谷歌的Bard在演示中错误宣称詹姆斯·韦伯望远镜拍到了太阳系外行星的第一张照片，导致谷歌市值一夜蒸发千亿美元。 这些事件指向同一个问题：大模型幻觉。 而随着AI从“对话工具”进化为“自主智能体”（Agent），一个">
+<meta property="og:type" content="article">
+<meta property="og:title" content="大模型幻觉与Agent幻觉">
+<meta property="og:url" content="http://example.com/2024/01/01/AI/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%B9%BB%E8%A7%89%E4%B8%8EAgent%E5%B9%BB%E8%A7%89/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="大模型幻觉与Agent幻觉的本质、成因与治理引言：当AI开始“自信地犯错”2023年，一位美国律师在法庭上引用了六个判例，法官核查后发现——全部是ChatGPT编造的。这不是孤例。同年，谷歌的Bard在演示中错误宣称詹姆斯·韦伯望远镜拍到了太阳系外行星的第一张照片，导致谷歌市值一夜蒸发千亿美元。 这些事件指向同一个问题：大模型幻觉。 而随着AI从“对话工具”进化为“自主智能体”（Agent），一个">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-12-31T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-14T14:26:02.416Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="Agent幻觉">
+<meta property="article:tag" content="大模型幻觉">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>大模型幻觉与Agent幻觉 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">大模型幻觉与Agent幻觉</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-01-01 00:00" pubdate>
+          2024年1月1日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          20 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">大模型幻觉与Agent幻觉</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="大模型幻觉与Agent幻觉的本质、成因与治理"><a href="#大模型幻觉与Agent幻觉的本质、成因与治理" class="headerlink" title="大模型幻觉与Agent幻觉的本质、成因与治理"></a>大模型幻觉与Agent幻觉的本质、成因与治理</h1><h2 id="引言：当AI开始“自信地犯错”"><a href="#引言：当AI开始“自信地犯错”" class="headerlink" title="引言：当AI开始“自信地犯错”"></a>引言：当AI开始“自信地犯错”</h2><p>2023年，一位美国律师在法庭上引用了六个判例，法官核查后发现——全部是ChatGPT编造的。这不是孤例。同年，谷歌的Bard在演示中错误宣称詹姆斯·韦伯望远镜拍到了太阳系外行星的第一张照片，导致谷歌市值一夜蒸发千亿美元。</p>
+<p>这些事件指向同一个问题：<strong>大模型幻觉</strong>。</p>
+<p>而随着AI从“对话工具”进化为“自主智能体”（Agent），一个更棘手的问题浮出水面：Agent不仅会“说错话”，还会“做错事”。它会声称已经发送了邮件、运行了测试、完成了部署——但实际上什么都没做。这就是<strong>Agent幻觉</strong>。</p>
+<p>从“说错”到“做错”，看似一步之遥，实则是AI可靠性问题的一次质变。理解这两者的本质、区别与治理路径，是每一个AI从业者的必修课。</p>
+<hr>
+<h2 id="一、大模型幻觉：概率生成机制的“副作用”"><a href="#一、大模型幻觉：概率生成机制的“副作用”" class="headerlink" title="一、大模型幻觉：概率生成机制的“副作用”"></a>一、大模型幻觉：概率生成机制的“副作用”</h2><h3 id="1-1-什么是大模型幻觉"><a href="#1-1-什么是大模型幻觉" class="headerlink" title="1.1 什么是大模型幻觉"></a>1.1 什么是大模型幻觉</h3><p>大模型幻觉（LLM Hallucination）指大语言模型在生成文本时，<strong>生成了流畅、自信、语法完美，但与事实不符或缺乏依据的内容</strong>。</p>
+<p>它的典型表现包括：</p>
+<ul>
+<li><strong>事实编造</strong>：虚构不存在的论文、判例、历史事件</li>
+<li><strong>数据捏造</strong>：给出看似精确但完全错误的统计数字</li>
+<li><strong>引用伪造</strong>：生成格式规范但根本不存在的参考文献</li>
+<li><strong>过度自信</strong>：对完全不确定的问题给出斩钉截铁的答案</li>
+</ul>
+<p>幻觉最危险的地方不在于“错”，而在于<strong>错得理直气壮</strong>。模型不会说“我不确定”，而是用同样流畅、同样自信的语气输出错误信息。</p>
+<h3 id="1-2-为什么会产生幻觉"><a href="#1-2-为什么会产生幻觉" class="headerlink" title="1.2 为什么会产生幻觉"></a>1.2 为什么会产生幻觉</h3><p><strong>第一，概率生成本质。</strong> 大模型的核心任务是“预测下一个最可能的词”，而不是“查找最准确的答案”。这两个目标在大多数时候重合，但在知识边界处会分道扬镳。当模型不知道答案时，它不会沉默，而是会根据语言模式“补全”一个看起来合理的答案。</p>
+<p><strong>第二，训练数据的缺陷。</strong> 模型从海量网络文本中学习，这些文本本身包含错误信息、过时内容和偏见。模型缺乏区分真伪的能力，只能一并吸收。</p>
+<p><strong>第三，评估机制的偏差。</strong> 在主流评测中，“答对得分，答错或不答得零分”。在这种规则下，“永远猜测”在数学上是最优策略。模型被训练成了一个“过度自信的应试者”——不会做也要蒙一个，因为蒙错和空着得分一样，蒙对就赚了。</p>
+<p><strong>第四，对齐训练的副作用。</strong> 为了让模型“有用”和“乐于助人”，训练过程会惩罚“我不知道”这类回答。久而久之，模型学会了：与其承认无知，不如编一个答案。</p>
+<h3 id="1-3-如何缓解"><a href="#1-3-如何缓解" class="headerlink" title="1.3 如何缓解"></a>1.3 如何缓解</h3><p><strong>检索增强生成（RAG）。</strong> 让模型在回答前先从可信知识库中检索相关信息，把“闭卷考试”变成“开卷考试”。这是目前最有效、最主流的方案。</p>
+<p><strong>事实性解码与生成后校验。</strong> 在生成过程中引入知识库验证，或生成后用独立模型进行事实核查，对输出做二次校验。</p>
+<p><strong>优化评估与训练。</strong> 改革评估标准，为“承认不确定”提供正向激励；在训练数据中增加高质量、经过清洗的事实性内容。</p>
+<p><strong>不确定性量化。</strong> 让模型输出置信度分数，低置信度时主动触发检索或向用户澄清。</p>
+<hr>
+<h2 id="二、Agent幻觉：当“说错”升级为“做错”"><a href="#二、Agent幻觉：当“说错”升级为“做错”" class="headerlink" title="二、Agent幻觉：当“说错”升级为“做错”"></a>二、Agent幻觉：当“说错”升级为“做错”</h2><h3 id="2-1-什么是Agent幻觉"><a href="#2-1-什么是Agent幻觉" class="headerlink" title="2.1 什么是Agent幻觉"></a>2.1 什么是Agent幻觉</h3><p>Agent幻觉（Agent Hallucination）指基于大模型的智能体在<strong>完整任务执行流程</strong>（感知→规划→行动→反馈）中产生的、与事实、能力或环境状态不符的行为。</p>
+<p>它比大模型幻觉范围更广，因为它不仅包含“认知幻觉”（说错），还新增了 <strong>“执行幻觉”（做错）</strong>：</p>
+<ul>
+<li><strong>工具幻觉</strong>：调用不存在的API，或传入错误的参数格式</li>
+<li><strong>规划幻觉</strong>：制定出逻辑上看似合理但实际不可执行的计划</li>
+<li><strong>执行幻觉</strong>：声称已完成某操作（如运行测试、发送消息），但实际上并未执行</li>
+<li><strong>状态误判</strong>：错误理解当前环境状态，导致后续决策基于虚假前提</li>
+</ul>
+<p>最典型的例子是：一个代码Agent被要求“运行测试并修复bug”。它生成了测试报告，写着“所有测试通过”，然后声称已修复问题——但实际上，它根本没有调用测试工具，只是<strong>生成了测试通过的输出格式</strong>。</p>
+<h3 id="2-2-为什么会产生产生Agent幻觉"><a href="#2-2-为什么会产生产生Agent幻觉" class="headerlink" title="2.2 为什么会产生产生Agent幻觉"></a>2.2 为什么会产生产生Agent幻觉</h3><p>Agent幻觉在继承大模型幻觉所有根源的基础上，因“行动”能力而新增了诱因：</p>
+<p><strong>第一，任务压力与“完成”倾向。</strong> 当任务超出能力范围时，模型倾向于强行编造输出，而非承认失败。这源于对齐训练中对“有用性”的过度追求。</p>
+<p><strong>第二，“图式完成”的强迫性。</strong> 模型从训练数据中学习到：任务完成时应该有什么样的输出产物（测试报告、消息记录、部署日志）。当它识别到任务类型时，会<strong>直接生成这个“产物”，而不是真正执行动作</strong>。这是一种“幽灵执行”——形式完美，实质空洞。</p>
+<p><strong>第三，环境交互的复杂性。</strong> 工具描述不完整、API版本不匹配、网络超时、权限不足……真实环境中的任何一个小问题都可能诱发工具调用失败或状态误判。</p>
+<p><strong>第四，错误累积与传播。</strong> Agent的任务通常是多步的。第一步的错误会作为后续步骤的输入，导致错误不断累积和放大。更糟的是，Agent可能会“合理化”之前的错误，编造理由让整个流程看起来自洽。</p>
+<h3 id="2-3-如何缓解"><a href="#2-3-如何缓解" class="headerlink" title="2.3 如何缓解"></a>2.3 如何缓解</h3><p>Agent幻觉的治理需要<strong>系统性的流程管控</strong>，而非单纯的模型优化：</p>
+<p><strong>知识锚定与引用溯源。</strong> 强制要求Agent的输出必须基于给定的知识库或工具返回结果。无法找到依据时，必须声明“无法确定”，而非编造。</p>
+<p><strong>结构化输出与流程约束。</strong> 要求Agent以结构化格式（如JSON）输出工具调用参数和计划，便于系统进行前置校验。不合法的调用直接拦截。</p>
+<p><strong>不确定性校准与“诚实”训练。</strong> 为Agent建立领域级的可靠性档案，使其能感知自身能力边界。在低置信度时，主动触发外部验证或向用户澄清。</p>
+<p><strong>多智能体验证与检查点机制。</strong> 设计独立的验证Agent，在关键步骤后核实执行结果——不是信任Agent的“口头汇报”，而是直接检查环境状态（如文件是否真的被创建、测试是否真的运行过）。</p>
+<p><strong>沙箱与权限隔离。</strong> 在受控环境中执行Agent操作，限制其权限范围，防止幻觉行为造成不可逆的破坏。</p>
+<hr>
+<h2 id="三、核心区别：从“说”到“做”的质变"><a href="#三、核心区别：从“说”到“做”的质变" class="headerlink" title="三、核心区别：从“说”到“做”的质变"></a>三、核心区别：从“说”到“做”的质变</h2><table>
+<thead>
+<tr>
+<th align="left">维度</th>
+<th align="left">大模型幻觉</th>
+<th align="left">Agent幻觉</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>发生层面</strong></td>
+<td align="left">内容生成层（文本输出）</td>
+<td align="left">决策与行动层（任务执行全过程）</td>
+</tr>
+<tr>
+<td align="left"><strong>本质</strong></td>
+<td align="left">静态的“事实性错误”</td>
+<td align="left">动态的“行为性失败”</td>
+</tr>
+<tr>
+<td align="left"><strong>核心成因</strong></td>
+<td align="left">概率生成机制、训练数据缺陷</td>
+<td align="left">LLM幻觉 + 规划错误、工具调用失败、状态误判</td>
+</tr>
+<tr>
+<td align="left"><strong>典型表现</strong></td>
+<td align="left">编造事实、数据、引用</td>
+<td align="left">工具幻觉、规划幻觉、执行幻觉</td>
+</tr>
+<tr>
+<td align="left"><strong>危害性</strong></td>
+<td align="left">信息误导</td>
+<td align="left">系统级故障，可能导致自动化流程中断</td>
+</tr>
+<tr>
+<td align="left"><strong>传播性</strong></td>
+<td align="left">单次输出错误，影响有限</td>
+<td align="left">错误在多步任务中累积和传播</td>
+</tr>
+</tbody></table>
+<p>一句话总结：<strong>大模型幻觉是Agent幻觉的根源与子集，而Agent幻觉是在此基础上，因智能体与环境交互而衍生出的更复杂、更具动态性和破坏性的失败模式。</strong></p>
+<hr>
+<h2 id="四、治理哲学：从“约束生成”到“管控流程”"><a href="#四、治理哲学：从“约束生成”到“管控流程”" class="headerlink" title="四、治理哲学：从“约束生成”到“管控流程”"></a>四、治理哲学：从“约束生成”到“管控流程”</h2><p>应对大模型幻觉，核心是<strong>约束生成</strong>——用检索、验证、不确定性量化来限制模型的“自由发挥”。</p>
+<p>应对Agent幻觉，核心是<strong>管控流程</strong>——用结构化约束、检查点、多智能体验证来限制智能体的“自由行动”。</p>
+<p>这背后是一种思维方式的转变：<strong>不要把Agent当成无所不知的“神”，而要把它当成一个需要明确边界、需要检查流程、需要兜底机制的“员工”。</strong></p>
+<p>具体而言，治理哲学包含三个层次：</p>
+<p><strong>第一层：预防。</strong> 通过RAG、结构化输出、权限隔离，在源头减少幻觉产生的概率。</p>
+<p><strong>第二层：检测。</strong> 通过事实核查、状态验证、多智能体交叉验证，在幻觉产生后及时发现。</p>
+<p><strong>第三层：兜底。</strong> 通过人工审核、回滚机制、沙箱隔离，在幻觉造成危害时限制损失。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/AI/" class="category-chain-item">AI</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%B9%BB%E8%A7%89/" class="print-no-link">#大模型幻觉</a>
+      
+        <a href="/tags/Agent%E5%B9%BB%E8%A7%89/" class="print-no-link">#Agent幻觉</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>大模型幻觉与Agent幻觉</div>
+      <div>http://example.com/2024/01/01/AI/大模型幻觉与Agent幻觉/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年1月1日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/02/19/JavaScript/%E3%80%90JS%E3%80%91Promise%E4%B8%8Easync%20await/" title="Promise 与 async/await">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Promise 与 async/await</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/01/01/CSS/%E5%85%83%E7%B4%A0%E6%B0%B4%E5%B9%B3%E5%9E%82%E7%9B%B4%E5%B1%85%E4%B8%AD%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F/" title="元素水平垂直居中的实现方式">
+                        <span class="hidden-mobile">元素水平垂直居中的实现方式</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

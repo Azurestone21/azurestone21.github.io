@@ -1,0 +1,747 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Hooks 为什么不能条件调用 Hooks 的状态不是存在组件上，而是存在 Fiber 的 memoizedState 链表里。调用顺序就是“地址”。一旦条件调用导致顺序变化，React 就会把状态错配到别的 Hook 上。   一、Hooks 状态存在哪函数组件本身没有实例，useState 返回的 state 不能存在函数里，因为函数每次 render 都会重新执行，局部变量会丢失。 Reac">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【React】Hooks 为什么不能条件调用">
+<meta property="og:url" content="http://example.com/2025/08/10/React/%E3%80%90React%E3%80%91Hooks%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E8%83%BD%E6%9D%A1%E4%BB%B6%E8%B0%83%E7%94%A8/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Hooks 为什么不能条件调用 Hooks 的状态不是存在组件上，而是存在 Fiber 的 memoizedState 链表里。调用顺序就是“地址”。一旦条件调用导致顺序变化，React 就会把状态错配到别的 Hook 上。   一、Hooks 状态存在哪函数组件本身没有实例，useState 返回的 state 不能存在函数里，因为函数每次 render 都会重新执行，局部变量会丢失。 Reac">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-08-09T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-14T14:26:02.551Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="Hook">
+<meta property="article:tag" content="React">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>【React】Hooks 为什么不能条件调用 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">【React】Hooks 为什么不能条件调用</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-08-10 00:00" pubdate>
+          2025年8月10日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          11 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">【React】Hooks 为什么不能条件调用</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Hooks-为什么不能条件调用"><a href="#Hooks-为什么不能条件调用" class="headerlink" title="Hooks 为什么不能条件调用"></a>Hooks 为什么不能条件调用</h1><blockquote>
+<p><strong>Hooks 的状态不是存在组件上，而是存在 Fiber 的 <code>memoizedState</code> 链表里。调用顺序就是“地址”。一旦条件调用导致顺序变化，React 就会把状态错配到别的 Hook 上。</strong></p>
+</blockquote>
+<hr>
+<h2 id="一、Hooks-状态存在哪"><a href="#一、Hooks-状态存在哪" class="headerlink" title="一、Hooks 状态存在哪"></a>一、Hooks 状态存在哪</h2><p>函数组件本身没有实例，<code>useState</code> 返回的 state 不能存在函数里，因为函数每次 render 都会重新执行，局部变量会丢失。</p>
+<p>React 把 Hooks 的状态存在 <strong>Fiber 节点的 <code>memoizedState</code></strong> 上，它是一个<strong>单向链表</strong>：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js">fiber.<span class="hljs-property">memoizedState</span> = hook1 → hook2 → hook3 → <span class="hljs-literal">null</span><br></code></pre></td></tr></table></figure>
+
+<p>每个 Hook 节点大致长这样：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs js">&#123;<br>  <span class="hljs-attr">memoizedState</span>: any,   <span class="hljs-comment">// 状态值</span><br>  <span class="hljs-attr">baseState</span>: any,<br>  <span class="hljs-attr">baseQueue</span>: <span class="hljs-title class_">Update</span> | <span class="hljs-literal">null</span>,<br>  <span class="hljs-attr">queue</span>: <span class="hljs-title class_">UpdateQueue</span> | <span class="hljs-literal">null</span>,  <span class="hljs-comment">// 更新队列</span><br>  <span class="hljs-attr">next</span>: <span class="hljs-title class_">Hook</span> | <span class="hljs-literal">null</span>,          <span class="hljs-comment">// 下一个 Hook</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><code>useState</code>、<code>useEffect</code>、<code>useRef</code>、<code>useMemo</code> 等，每个调用都会在链表上追加一个 Hook 节点。</p>
+<hr>
+<h2 id="二、调用顺序就是“地址”"><a href="#二、调用顺序就是“地址”" class="headerlink" title="二、调用顺序就是“地址”"></a>二、调用顺序就是“地址”</h2><p>React 不通过名字识别 Hook，而是<strong>通过调用顺序</strong>。</p>
+<p>每次 render 时，React 内部维护一个全局的 <code>workInProgressHook</code> 指针，从头开始遍历这条链表：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">useState</span>(<span class="hljs-params">initialState</span>) &#123;<br>  <span class="hljs-keyword">const</span> hook = <span class="hljs-title function_">mountWorkInProgressHook</span>(); <span class="hljs-comment">// 取当前指针位置的 Hook</span><br>  <span class="hljs-comment">// ...</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>第一次 render：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">App</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-keyword">const</span> [a, setA] = <span class="hljs-title function_">useState</span>(<span class="hljs-number">0</span>); <span class="hljs-comment">// Hook 1</span><br>  <span class="hljs-keyword">const</span> [b, setB] = <span class="hljs-title function_">useState</span>(<span class="hljs-number">1</span>); <span class="hljs-comment">// Hook 2</span><br>  <span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> &#123;&#125;, []); <span class="hljs-comment">// Hook 3</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>链表：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">Hook1(a) → Hook2(b) → Hook3(effect) → null<br></code></pre></td></tr></table></figure>
+
+<p>第二次 render 时，React 按同样顺序取：</p>
+<ul>
+<li>第一个 <code>useState</code> → 取 Hook1，拿到 <code>a</code> 的状态和更新队列。</li>
+<li>第二个 <code>useState</code> → 取 Hook2，拿到 <code>b</code>。</li>
+<li><code>useEffect</code> → 取 Hook3。</li>
+</ul>
+<p>所以：<strong>第 N 个 Hook 的状态，永远存在链表的第 N 个节点上。</strong></p>
+<hr>
+<h2 id="三、条件调用为什么出问题"><a href="#三、条件调用为什么出问题" class="headerlink" title="三、条件调用为什么出问题"></a>三、条件调用为什么出问题</h2><p>假设写了条件调用：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">App</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-keyword">const</span> [name, setName] = <span class="hljs-title function_">useState</span>(<span class="hljs-string">&quot;Alice&quot;</span>);<br><br>  <span class="hljs-keyword">if</span> (isLoggedIn) &#123;<br>    <span class="hljs-keyword">const</span> [age, setAge] = <span class="hljs-title function_">useState</span>(<span class="hljs-number">18</span>); <span class="hljs-comment">// 条件 Hook</span><br>  &#125;<br><br>  <span class="hljs-keyword">const</span> [count, setCount] = <span class="hljs-title function_">useState</span>(<span class="hljs-number">0</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="第一次-render，isLoggedIn-true"><a href="#第一次-render，isLoggedIn-true" class="headerlink" title="第一次 render，isLoggedIn &#x3D; true"></a>第一次 render，isLoggedIn &#x3D; true</h3><p>链表：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">Hook1(name) → Hook2(age) → Hook3(count) → null<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><code>name</code> 存在 Hook1。</li>
+<li><code>age</code> 存在 Hook2。</li>
+<li><code>count</code> 存在 Hook3。</li>
+</ul>
+<h3 id="第二次-render，isLoggedIn-false"><a href="#第二次-render，isLoggedIn-false" class="headerlink" title="第二次 render，isLoggedIn &#x3D; false"></a>第二次 render，isLoggedIn &#x3D; false</h3><p>调用顺序变成：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> [name, setName] = <span class="hljs-title function_">useState</span>(<span class="hljs-string">&quot;Alice&quot;</span>); <span class="hljs-comment">// 第 1 个</span><br><span class="hljs-comment">// if 分支跳过</span><br><span class="hljs-keyword">const</span> [count, setCount] = <span class="hljs-title function_">useState</span>(<span class="hljs-number">0</span>); <span class="hljs-comment">// 第 2 个</span><br></code></pre></td></tr></table></figure>
+
+<p>React 按顺序取：</p>
+<ul>
+<li>第 1 个 <code>useState</code> → 取 Hook1，拿到 <code>name</code>。✅ 正确。</li>
+<li>第 2 个 <code>useState</code> → 取 Hook2，但 Hook2 存的是 <strong>age 的状态 18</strong>。❌<ul>
+<li><code>count</code> 拿到了 <code>18</code>。</li>
+<li><code>setCount</code> 拿到的是 <code>setAge</code> 的更新队列。</li>
+</ul>
+</li>
+</ul>
+<p>于是：</p>
+<ul>
+<li><code>count</code> 初始值变成了 18。</li>
+<li>调用 <code>setCount</code> 实际会去改 age 的状态。</li>
+<li><code>age</code> 这个 Hook 被“跳过”后，后面的 Hook 全部错位。</li>
+</ul>
+<p>这就是<strong>状态错配</strong>。</p>
+<hr>
+<h2 id="四、更严重的后果"><a href="#四、更严重的后果" class="headerlink" title="四、更严重的后果"></a>四、更严重的后果</h2><h3 id="1-状态错乱"><a href="#1-状态错乱" class="headerlink" title="1. 状态错乱"></a>1. 状态错乱</h3><p>如上，<code>count</code> 拿到了 <code>age</code> 的状态。</p>
+<h3 id="2-更新队列错配"><a href="#2-更新队列错配" class="headerlink" title="2. 更新队列错配"></a>2. 更新队列错配</h3><p><code>setCount</code> 实际是 <code>setAge</code>，调用后更新的是 age 的队列，而 age 已经不在链表里，行为不可预期。</p>
+<h3 id="3-Hook-数量不匹配时报错"><a href="#3-Hook-数量不匹配时报错" class="headerlink" title="3. Hook 数量不匹配时报错"></a>3. Hook 数量不匹配时报错</h3><p>如果第二次 render 的 Hook 数量比第一次少，React 遍历到链表末尾时找不到对应 Hook，会抛错：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">Rendered fewer hooks than expected. This may be caused by an accidental early return statement.<br></code></pre></td></tr></table></figure>
+
+<p>如果数量变多，React 也会报：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">Rendered more hooks than during the previous render.<br></code></pre></td></tr></table></figure>
+
+<p>这是 React 的一种保护机制，但即使数量相同、顺序不同，也不会报错，只会静默错配，更难排查。</p>
+<h3 id="4-依赖-Hook-顺序的-API-全受影响"><a href="#4-依赖-Hook-顺序的-API-全受影响" class="headerlink" title="4. 依赖 Hook 顺序的 API 全受影响"></a>4. 依赖 Hook 顺序的 API 全受影响</h3><p><code>useEffect</code>、<code>useMemo</code>、<code>useCallback</code>、<code>useRef</code>、<code>useContext</code> 全都依赖链表顺序。一个 Hook 错位，后面全乱。</p>
+<hr>
+<h2 id="五、为什么-React-不设计成按名字或-key-识别"><a href="#五、为什么-React-不设计成按名字或-key-识别" class="headerlink" title="五、为什么 React 不设计成按名字或 key 识别"></a>五、为什么 React 不设计成按名字或 key 识别</h2><p>理论上可以给每个 Hook 一个名字或 key，用 Map 存储：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> hooks = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>();<br>hooks.<span class="hljs-title function_">set</span>(<span class="hljs-string">&#x27;name&#x27;</span>, ...);<br>hooks.<span class="hljs-title function_">set</span>(<span class="hljs-string">&#x27;age&#x27;</span>, ...);<br></code></pre></td></tr></table></figure>
+
+<p>但 React 没这么做，原因：</p>
+<ol>
+<li><strong>性能</strong>：链表 + 顺序访问是 O(1) 且无哈希开销，Map 查找更慢。</li>
+<li><strong>体积</strong>：不需要为每个 Hook 分配 key，减少内存。</li>
+<li><strong>语法简洁</strong>：不需要用户写 <code>useState(&#39;name&#39;, ...)</code> 这种冗余参数。</li>
+<li><strong>编译期无法静态确定顺序</strong>：React 运行时才能确定调用顺序，用顺序是最自然的方案。</li>
+<li><strong>约定优于配置</strong>：只要遵守“顶层调用”，顺序就稳定，不需要额外机制。</li>
+</ol>
+<p>代价就是：<strong>必须保证每次 render 的 Hook 调用顺序完全一致。</strong></p>
+<hr>
+<h2 id="六、哪些写法是禁止的"><a href="#六、哪些写法是禁止的" class="headerlink" title="六、哪些写法是禁止的"></a>六、哪些写法是禁止的</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// ❌ 条件调用</span><br><span class="hljs-keyword">if</span> (cond) &#123;<br>  <span class="hljs-title function_">useState</span>(<span class="hljs-number">0</span>);<br>&#125;<br><br><span class="hljs-comment">// ❌ 循环里调用</span><br><span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; n; i++) &#123;<br>  <span class="hljs-title function_">useState</span>(<span class="hljs-number">0</span>);<br>&#125;<br><br><span class="hljs-comment">// ❌ 在嵌套函数里调用</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">handleClick</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-title function_">useState</span>(<span class="hljs-number">0</span>);<br>&#125;<br><br><span class="hljs-comment">// ❌ 在 try/catch 里条件调用</span><br><span class="hljs-keyword">try</span> &#123;<br>  <span class="hljs-title function_">useState</span>(<span class="hljs-number">0</span>);<br>&#125; <span class="hljs-keyword">catch</span> &#123;&#125;<br></code></pre></td></tr></table></figure>
+
+<p>正确写法：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// ✅ 全部放在组件顶层</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">App</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-keyword">const</span> [a, setA] = <span class="hljs-title function_">useState</span>(<span class="hljs-number">0</span>);<br>  <span class="hljs-keyword">const</span> [b, setB] = <span class="hljs-title function_">useState</span>(<span class="hljs-number">0</span>);<br>  <span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> &#123;&#125;, []);<br>  <span class="hljs-comment">// ...</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>条件逻辑放在 Hook <strong>内部</strong>，而不是决定是否调用 Hook：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// ✅ 条件放在 useEffect 内部</span><br><span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>  <span class="hljs-keyword">if</span> (cond) &#123;<br>    <span class="hljs-comment">// ...</span><br>  &#125;<br>&#125;, [cond]);<br><br><span class="hljs-comment">// ✅ 条件放在 useState 初始值里</span><br><span class="hljs-keyword">const</span> [value, setValue] = <span class="hljs-title function_">useState</span>(<span class="hljs-function">() =&gt;</span> (cond ? <span class="hljs-number">1</span> : <span class="hljs-number">0</span>));<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="七、和-Fiber-的关系"><a href="#七、和-Fiber-的关系" class="headerlink" title="七、和 Fiber 的关系"></a>七、和 Fiber 的关系</h2><ul>
+<li>Fiber 节点保存 <code>memoizedState</code>，就是 Hooks 链表。</li>
+<li>函数组件每次 render，React 从 <code>fiber.memoizedState</code> 开始，按顺序遍历链表。</li>
+<li>链表节点和 Hook 调用一一对应，顺序是唯一映射。</li>
+</ul>
+<p>所以：</p>
+<blockquote>
+<p>Hooks 的“状态”不在函数里，而在 Fiber 的链表里；调用顺序就是访问链表的“指针”。条件调用会打乱顺序，导致指针指向错误的节点。</p>
+</blockquote>
+<p>这也解释了为什么：</p>
+<ul>
+<li>Hooks 只能在函数组件或自定义 Hook 顶层调用。</li>
+<li>自定义 Hook 必须以 <code>use</code> 开头（约定，便于 lint 检查）。</li>
+<li>ESLint 的 <code>react-hooks/rules-of-hooks</code> 能静态检测违规。</li>
+</ul>
+<hr>
+<h2 id="八、总结"><a href="#八、总结" class="headerlink" title="八、总结"></a>八、总结</h2><p><strong>Hooks 的状态存在 Fiber 的 <code>memoizedState</code> 链表上，React 靠调用顺序访问链表。条件调用会让顺序变化，导致状态错配到别的 Hook 上，所以 Hooks 必须无条件和稳定地按同一顺序调用。</strong></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/React/" class="category-chain-item">React</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/React/" class="print-no-link">#React</a>
+      
+        <a href="/tags/Hook/" class="print-no-link">#Hook</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>【React】Hooks 为什么不能条件调用</div>
+      <div>http://example.com/2025/08/10/React/【React】Hooks为什么不能条件调用/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年8月10日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/08/10/AI/Trae%20%E9%85%8D%E7%BD%AE%20Figma%20MCP/" title="Trae 配置 Figma MCP">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Trae 配置 Figma MCP</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/08/10/TypeScript/TypeScript%20%E5%9C%A8%E5%8A%A8%E6%80%81%E9%85%8D%E7%BD%AE%E6%B8%B2%E6%9F%93%E5%9C%BA%E6%99%AF%E4%B8%AD%E7%9A%84%E7%B1%BB%E5%9E%8B%E5%AE%89%E5%85%A8%E8%AE%BE%E8%AE%A1/" title="TypeScript 在动态配置渲染场景中的类型安全设计">
+                        <span class="hidden-mobile">TypeScript 在动态配置渲染场景中的类型安全设计</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

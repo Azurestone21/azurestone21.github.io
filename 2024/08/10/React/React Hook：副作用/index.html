@@ -1,0 +1,867 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="React useEffect HookReact 有三个处理副作用的 Hook，它们的区别主要在执行时机和用途：  useEffect：异步，浏览器绘制后执行，不阻塞渲染。 useLayoutEffect：同步，DOM 更新后、浏览器绘制前执行，会阻塞绘制。 useInsertionEffect：同步，在 DOM 变更阶段、useLayoutEffect 之前执行，主要用于 CSS-in-JS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React useEffect Hook">
+<meta property="og:url" content="http://example.com/2024/08/10/React/React%20Hook%EF%BC%9A%E5%89%AF%E4%BD%9C%E7%94%A8/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="React useEffect HookReact 有三个处理副作用的 Hook，它们的区别主要在执行时机和用途：  useEffect：异步，浏览器绘制后执行，不阻塞渲染。 useLayoutEffect：同步，DOM 更新后、浏览器绘制前执行，会阻塞绘制。 useInsertionEffect：同步，在 DOM 变更阶段、useLayoutEffect 之前执行，主要用于 CSS-in-JS">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-08-09T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-14T14:26:02.548Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="Hook">
+<meta property="article:tag" content="React">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>React useEffect Hook - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">React useEffect Hook</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-08-10 00:00" pubdate>
+          2024年8月10日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          15 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">React useEffect Hook</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="React-useEffect-Hook"><a href="#React-useEffect-Hook" class="headerlink" title="React useEffect Hook"></a>React useEffect Hook</h1><p>React 有三个处理副作用的 Hook，它们的区别主要在<strong>执行时机</strong>和<strong>用途</strong>：</p>
+<ul>
+<li><code>useEffect</code>：异步，浏览器绘制后执行，不阻塞渲染。</li>
+<li><code>useLayoutEffect</code>：同步，DOM 更新后、浏览器绘制前执行，会阻塞绘制。</li>
+<li><code>useInsertionEffect</code>：同步，在 DOM 变更阶段、<code>useLayoutEffect</code> 之前执行，主要用于 CSS-in-JS 插入样式。</li>
+</ul>
+<h2 id="一、执行时机对比"><a href="#一、执行时机对比" class="headerlink" title="一、执行时机对比"></a>一、执行时机对比</h2><p>React 的提交（commit）阶段大致顺序：</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs txt">Render 阶段：计算 React 元素树，不操作 DOM<br>        ↓<br>Commit 阶段：<br>  1. Before mutation：读取 DOM 快照（getSnapshotBeforeUpdate）<br>  2. Mutation：执行 DOM 增删改<br>     - useInsertionEffect 在此阶段执行，用于插入样式<br>  3. Layout：DOM 已更新，执行 useLayoutEffect<br>        ↓<br>浏览器绘制（Paint）<br>        ↓<br>Passive：执行 useEffect（异步，通常在下一次事件循环）<br></code></pre></td></tr></table></figure>
+
+<p>用一句话概括：</p>
+<ul>
+<li><code>useInsertionEffect</code>：最早，在 DOM 变更时插入样式，早于 <code>useLayoutEffect</code>。</li>
+<li><code>useLayoutEffect</code>：DOM 已更新，但浏览器还没绘制，可以读取布局。</li>
+<li><code>useEffect</code>：浏览器已经绘制，不阻塞用户看到界面。</li>
+</ul>
+<h2 id="二、useEffect"><a href="#二、useEffect" class="headerlink" title="二、useEffect"></a>二、useEffect</h2><h3 id="1-是什么"><a href="#1-是什么" class="headerlink" title="1. 是什么"></a>1. 是什么</h3><p><code>useEffect</code> 用于处理组件中的副作用，例如数据请求、订阅、事件监听、操作 DOM 等。它在浏览器绘制完成后异步执行，不会阻塞用户看到界面。</p>
+<h3 id="2-基本语法"><a href="#2-基本语法" class="headerlink" title="2. 基本语法"></a>2. 基本语法</h3><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">import</span> &#123; useEffect &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;react&quot;</span>;<br><br><span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>  <span class="hljs-comment">// 副作用逻辑</span><br>  <span class="hljs-keyword">return</span> <span class="hljs-function">() =&gt;</span> &#123;<br>    <span class="hljs-comment">// 清理逻辑</span><br>  &#125;;<br>&#125;, [deps]);<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>第一个参数：副作用函数。</li>
+<li>返回值：可选的清理函数。</li>
+<li>第二个参数：依赖数组。</li>
+</ul>
+<h3 id="3-依赖数组"><a href="#3-依赖数组" class="headerlink" title="3. 依赖数组"></a>3. 依赖数组</h3><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;每次渲染都执行&quot;</span>);<br>&#125;);<br><br><span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;只在挂载时执行一次&quot;</span>);<br>&#125;, []);<br><br><span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;count 变化时执行&quot;</span>);<br>&#125;, [count]);<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>不传依赖数组：每次渲染后都执行。</li>
+<li>传空数组 <code>[]</code>：只在挂载时执行一次，卸载时执行清理。</li>
+<li>传依赖：依赖变化时重新执行。</li>
+</ul>
+<h3 id="4-清理函数"><a href="#4-清理函数" class="headerlink" title="4. 清理函数"></a>4. 清理函数</h3><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>  <span class="hljs-keyword">const</span> timer = <span class="hljs-built_in">setInterval</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;tick&quot;</span>);<br>  &#125;, <span class="hljs-number">1000</span>);<br><br>  <span class="hljs-keyword">return</span> <span class="hljs-function">() =&gt;</span> &#123;<br>    <span class="hljs-built_in">clearInterval</span>(timer);<br>  &#125;;<br>&#125;, []);<br></code></pre></td></tr></table></figure>
+
+<p>清理函数会在组件卸载或依赖变化导致下一次执行前调用。</p>
+<h3 id="5-常见用途"><a href="#5-常见用途" class="headerlink" title="5. 常见用途"></a>5. 常见用途</h3><ul>
+<li>数据请求</li>
+<li>事件监听与解绑</li>
+<li>订阅与取消订阅</li>
+<li>定时器</li>
+<li>操作 DOM（非布局测量）</li>
+<li>日志上报</li>
+</ul>
+<h3 id="6-注意事项"><a href="#6-注意事项" class="headerlink" title="6. 注意事项"></a>6. 注意事项</h3><ul>
+<li>不要直接修改 state，应通过 setter。</li>
+<li>依赖数组要完整，否则可能捕获过时闭包。</li>
+<li>副作用是异步的，不会阻塞绘制。</li>
+<li>如果依赖了对象或数组，注意引用变化。</li>
+<li>在 SSR 中不会执行。</li>
+</ul>
+<hr>
+<h2 id="三、useLayoutEffect"><a href="#三、useLayoutEffect" class="headerlink" title="三、useLayoutEffect"></a>三、useLayoutEffect</h2><h3 id="1-是什么-1"><a href="#1-是什么-1" class="headerlink" title="1. 是什么"></a>1. 是什么</h3><p><code>useLayoutEffect</code> 的用法和 <code>useEffect</code> 几乎一样，但它在<strong>所有 DOM 变更之后、浏览器绘制之前同步执行</strong>。</p>
+<p>因为它在绘制前执行，所以如果在里面对 DOM 做了修改，用户不会看到中间状态，可以避免闪烁。</p>
+<h3 id="2-基本语法-1"><a href="#2-基本语法-1" class="headerlink" title="2. 基本语法"></a>2. 基本语法</h3><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">import</span> &#123; useLayoutEffect &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;react&quot;</span>;<br><br><span class="hljs-title function_">useLayoutEffect</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>  <span class="hljs-comment">// 读取布局、同步更新</span><br>  <span class="hljs-keyword">return</span> <span class="hljs-function">() =&gt;</span> &#123;<br>    <span class="hljs-comment">// 清理</span><br>  &#125;;<br>&#125;, [deps]);<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-典型场景：测量布局"><a href="#3-典型场景：测量布局" class="headerlink" title="3. 典型场景：测量布局"></a>3. 典型场景：测量布局</h3><p>根据内容高度调整 Tooltip 位置：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">function</span> <span class="hljs-title function_">Tooltip</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-keyword">const</span> ref = <span class="hljs-title function_">useRef</span>(<span class="hljs-literal">null</span>);<br>  <span class="hljs-keyword">const</span> [height, setHeight] = <span class="hljs-title function_">useState</span>(<span class="hljs-number">0</span>);<br><br>  <span class="hljs-title function_">useLayoutEffect</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>    <span class="hljs-keyword">const</span> &#123; height &#125; = ref.<span class="hljs-property">current</span>.<span class="hljs-title function_">getBoundingClientRect</span>();<br>    <span class="hljs-title function_">setHeight</span>(height);<br>  &#125;, []);<br><br>  <span class="hljs-keyword">return</span> (<br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">ref</span>=<span class="hljs-string">&#123;ref&#125;</span> <span class="hljs-attr">style</span>=<span class="hljs-string">&#123;&#123;</span> <span class="hljs-attr">transform:</span> `<span class="hljs-attr">translateY</span>($&#123;<span class="hljs-attr">height</span>&#125;<span class="hljs-attr">px</span>)` &#125;&#125;&gt;</span></span><br><span class="language-xml">      内容</span><br><span class="language-xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br>  );<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>如果换成 <code>useEffect</code>，浏览器可能先绘制一次原始位置，再跳变到新位置，出现闪烁。</p>
+<h3 id="4-其他常见用途"><a href="#4-其他常见用途" class="headerlink" title="4. 其他常见用途"></a>4. 其他常见用途</h3><ul>
+<li>读取元素尺寸、位置、滚动位置</li>
+<li>根据布局同步更新 state</li>
+<li>设置焦点、滚动条位置</li>
+<li>动画初始状态设置，避免首帧跳动</li>
+</ul>
+<h3 id="5-与-useEffect-的区别"><a href="#5-与-useEffect-的区别" class="headerlink" title="5. 与 useEffect 的区别"></a>5. 与 useEffect 的区别</h3><table>
+<thead>
+<tr>
+<th align="left">特性</th>
+<th align="left">useEffect</th>
+<th align="left">useLayoutEffect</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">执行时机</td>
+<td align="left">浏览器绘制后，异步</td>
+<td align="left">DOM 更新后、绘制前，同步</td>
+</tr>
+<tr>
+<td align="left">是否阻塞绘制</td>
+<td align="left">否</td>
+<td align="left">是</td>
+</tr>
+<tr>
+<td align="left">能否读取 DOM 布局</td>
+<td align="left">可以，但可能闪烁</td>
+<td align="left">可以，且不会闪烁</td>
+</tr>
+<tr>
+<td align="left">典型场景</td>
+<td align="left">请求、订阅、日志</td>
+<td align="left">测量布局、避免闪烁</td>
+</tr>
+<tr>
+<td align="left">SSR</td>
+<td align="left">不执行</td>
+<td align="left">不执行，且会警告</td>
+</tr>
+</tbody></table>
+<h3 id="6-注意事项-1"><a href="#6-注意事项-1" class="headerlink" title="6. 注意事项"></a>6. 注意事项</h3><ul>
+<li><strong>会阻塞浏览器绘制</strong>，逻辑太重会拖慢页面。</li>
+<li><strong>不要滥用</strong>，大多数副作用应该用 <code>useEffect</code>。</li>
+<li><strong>SSR 警告</strong>：服务端没有 DOM，<code>useLayoutEffect</code> 不会执行，React 会警告。可以用：<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">const</span> useIsomorphicLayoutEffect =<br>  <span class="hljs-keyword">typeof</span> <span class="hljs-variable language_">window</span> !== <span class="hljs-string">&quot;undefined&quot;</span> ? useLayoutEffect : useEffect;<br></code></pre></td></tr></table></figure></li>
+<li>依赖数组规则和 <code>useEffect</code> 一样。</li>
+</ul>
+<hr>
+<h2 id="四、useInsertionEffect"><a href="#四、useInsertionEffect" class="headerlink" title="四、useInsertionEffect"></a>四、useInsertionEffect</h2><h3 id="1-是什么-2"><a href="#1-是什么-2" class="headerlink" title="1. 是什么"></a>1. 是什么</h3><p><code>useInsertionEffect</code> 是 React 18 引入的 Hook，专门给 <strong>CSS-in-JS 库作者</strong>使用。</p>
+<p>它在 commit 阶段的 mutation 阶段执行，早于 <code>useLayoutEffect</code>，也早于浏览器绘制。它的目的是：<strong>在布局计算之前，把样式插入到 DOM 中</strong>。</p>
+<h3 id="2-基本语法-2"><a href="#2-基本语法-2" class="headerlink" title="2. 基本语法"></a>2. 基本语法</h3><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">import</span> &#123; useInsertionEffect &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;react&quot;</span>;<br><br><span class="hljs-title function_">useInsertionEffect</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>  <span class="hljs-keyword">const</span> style = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">createElement</span>(<span class="hljs-string">&quot;style&quot;</span>);<br>  style.<span class="hljs-property">textContent</span> = rule;<br>  <span class="hljs-variable language_">document</span>.<span class="hljs-property">head</span>.<span class="hljs-title function_">appendChild</span>(style);<br><br>  <span class="hljs-keyword">return</span> <span class="hljs-function">() =&gt;</span> style.<span class="hljs-title function_">remove</span>();<br>&#125;, [rule]);<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-为什么需要它"><a href="#3-为什么需要它" class="headerlink" title="3. 为什么需要它"></a>3. 为什么需要它</h3><p>CSS-in-JS 库（如 styled-components、emotion）在运行时动态生成样式。如果样式插入太晚，浏览器可能先按旧样式布局，然后再重排，导致闪烁或性能问题。</p>
+<p><code>useInsertionEffect</code> 保证：</p>
+<ul>
+<li>样式在 <code>useLayoutEffect</code> 读取布局之前就已经插入。</li>
+<li>不会触发额外的重排。</li>
+<li>适合插入 <code>&lt;style&gt;</code> 标签或更新 CSSOM。</li>
+</ul>
+<h3 id="4-与-useLayoutEffect-的区别"><a href="#4-与-useLayoutEffect-的区别" class="headerlink" title="4. 与 useLayoutEffect 的区别"></a>4. 与 useLayoutEffect 的区别</h3><table>
+<thead>
+<tr>
+<th align="left">特性</th>
+<th align="left">useLayoutEffect</th>
+<th align="left">useInsertionEffect</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">执行时机</td>
+<td align="left">DOM 更新后、绘制前</td>
+<td align="left">DOM 变更前</td>
+</tr>
+<tr>
+<td align="left">主要用途</td>
+<td align="left">读取布局、同步更新</td>
+<td align="left">插入样式</td>
+</tr>
+<tr>
+<td align="left">能否读 DOM 布局</td>
+<td align="left">可以</td>
+<td align="left">不推荐，ref 可能还没挂上</td>
+</tr>
+<tr>
+<td align="left">能否 setState</td>
+<td align="left">可以，但会同步重渲染</td>
+<td align="left">可以但不推荐</td>
+</tr>
+<tr>
+<td align="left">使用者</td>
+<td align="left">普通组件</td>
+<td align="left">CSS-in-JS 库作者</td>
+</tr>
+</tbody></table>
+<h3 id="5-注意事项"><a href="#5-注意事项" class="headerlink" title="5. 注意事项"></a>5. 注意事项</h3><ul>
+<li><strong>普通业务组件几乎不需要它</strong>。如果你不是写 CSS-in-JS 库，用 <code>useEffect</code> 或 <code>useLayoutEffect</code> 就够了。</li>
+<li>它运行在 ref 挂载之前，所以<strong>不要在里面读取 ref 或做布局测量</strong>。</li>
+<li>它不支持 SSR，只在客户端运行。</li>
+<li>不要在里面做数据请求、订阅等常规副作用。</li>
+</ul>
+<hr>
+<h2 id="五、三者对比"><a href="#五、三者对比" class="headerlink" title="五、三者对比"></a>五、三者对比</h2><table>
+<thead>
+<tr>
+<th align="left">Hook</th>
+<th align="left">执行时机</th>
+<th align="left">是否阻塞绘制</th>
+<th align="left">主要用途</th>
+<th align="left">典型场景</th>
+<th align="left">SSR</th>
+<th align="left">使用者</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>useEffect</code></td>
+<td align="left">浏览器绘制后，异步</td>
+<td align="left">否</td>
+<td align="left">常规副作用</td>
+<td align="left">请求、订阅、事件监听</td>
+<td align="left">不执行</td>
+<td align="left">所有组件</td>
+</tr>
+<tr>
+<td align="left"><code>useLayoutEffect</code></td>
+<td align="left">DOM 更新后、绘制前，同步</td>
+<td align="left">是</td>
+<td align="left">读取布局、避免闪烁</td>
+<td align="left">测量尺寸、设置焦点</td>
+<td align="left">不执行且警告</td>
+<td align="left">需要测量布局的组件</td>
+</tr>
+<tr>
+<td align="left"><code>useInsertionEffect</code></td>
+<td align="left">DOM 变更前，同步</td>
+<td align="left">是</td>
+<td align="left">插入样式</td>
+<td align="left">CSS-in-JS</td>
+<td align="left">不执行</td>
+<td align="left">CSS-in-JS 库作者</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="四、如何选择"><a href="#四、如何选择" class="headerlink" title="四、如何选择"></a>四、如何选择</h2><table>
+<thead>
+<tr>
+<th align="left">Hook</th>
+<th align="left">使用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>useEffect</code></td>
+<td align="left">绝大多数副作用：请求、订阅、日志、事件监听</td>
+</tr>
+<tr>
+<td align="left"><code>useLayoutEffect</code></td>
+<td align="left">需要读取 DOM 布局，并且要避免闪烁</td>
+</tr>
+<tr>
+<td align="left"><code>useInsertionEffect</code></td>
+<td align="left">开发 CSS-in-JS 库，需要在布局前插入样式</td>
+</tr>
+</tbody></table>
+<p>简单判断：</p>
+<ul>
+<li>不影响 DOM 布局的副作用 → <code>useEffect</code></li>
+<li>需要测量 DOM、同步修改以避免闪烁 → <code>useLayoutEffect</code></li>
+<li>你是 CSS-in-JS 库作者，需要插入样式 → <code>useInsertionEffect</code></li>
+</ul>
+<h2 id="六、总结"><a href="#六、总结" class="headerlink" title="六、总结"></a>六、总结</h2><ul>
+<li><code>useEffect</code>：异步，绘制后执行，不阻塞，最常用。</li>
+<li><code>useLayoutEffect</code>：同步，DOM 更新后、绘制前执行，会阻塞绘制，用于读取布局、避免闪烁。</li>
+<li><code>useInsertionEffect</code>：同步，DOM 变更阶段执行，早于 <code>useLayoutEffect</code>，专用于 CSS-in-JS 插入样式。</li>
+</ul>
+<p>三者执行顺序：</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs txt">useInsertionEffect → DOM 变更 → useLayoutEffect → 浏览器绘制 → useEffect<br></code></pre></td></tr></table></figure>
+
+<p>记住：<strong>绝大多数情况用 <code>useEffect</code>；需要测量布局才用 <code>useLayoutEffect</code>；只有写 CSS-in-JS 库才考虑 <code>useInsertionEffect</code>。</strong></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/React/" class="category-chain-item">React</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/React/" class="print-no-link">#React</a>
+      
+        <a href="/tags/Hook/" class="print-no-link">#Hook</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>React useEffect Hook</div>
+      <div>http://example.com/2024/08/10/React/React Hook：副作用/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年8月10日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/08/10/React/React%20Hook%EF%BC%9AuseState/" title="React useState Hook">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">React useState Hook</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/08/10/React/React%20Hook%EF%BC%9A%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" title="React Hook：性能优化Hook">
+                        <span class="hidden-mobile">React Hook：性能优化Hook</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

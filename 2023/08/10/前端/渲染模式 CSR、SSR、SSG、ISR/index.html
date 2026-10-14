@@ -1,0 +1,855 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="渲染模式 CSR、SSR、SSG、ISR区分这四种模式，只需要问两个问题：  HTML 在哪里生成？ 服务器 &#x2F; 浏览器 &#x2F; 构建时 什么时候生成？ 每次请求时 &#x2F; 构建时 &#x2F; 后台定时或按需     模式 生成地点 生成时机    CSR 浏览器 运行时（用户访问后）   SSR 服务器 每次请求时   SSG 服务器&#x2F;构建机 构建时（一次）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="渲染模式 CSR、SSR、SSG、ISR">
+<meta property="og:url" content="http://example.com/2023/08/10/%E5%89%8D%E7%AB%AF/%E6%B8%B2%E6%9F%93%E6%A8%A1%E5%BC%8F%20CSR%E3%80%81SSR%E3%80%81SSG%E3%80%81ISR/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="渲染模式 CSR、SSR、SSG、ISR区分这四种模式，只需要问两个问题：  HTML 在哪里生成？ 服务器 &#x2F; 浏览器 &#x2F; 构建时 什么时候生成？ 每次请求时 &#x2F; 构建时 &#x2F; 后台定时或按需     模式 生成地点 生成时机    CSR 浏览器 运行时（用户访问后）   SSR 服务器 每次请求时   SSG 服务器&#x2F;构建机 构建时（一次）">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-08-09T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-14T14:26:02.707Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="CSR">
+<meta property="article:tag" content="ISR">
+<meta property="article:tag" content="SSG">
+<meta property="article:tag" content="SSR">
+<meta property="article:tag" content="渲染模式">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>渲染模式 CSR、SSR、SSG、ISR - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">渲染模式 CSR、SSR、SSG、ISR</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-08-10 00:00" pubdate>
+          2023年8月10日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          12 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">渲染模式 CSR、SSR、SSG、ISR</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="渲染模式-CSR、SSR、SSG、ISR"><a href="#渲染模式-CSR、SSR、SSG、ISR" class="headerlink" title="渲染模式 CSR、SSR、SSG、ISR"></a>渲染模式 CSR、SSR、SSG、ISR</h1><p>区分这四种模式，只需要问两个问题：</p>
+<ol>
+<li><strong>HTML 在哪里生成？</strong> 服务器 &#x2F; 浏览器 &#x2F; 构建时</li>
+<li><strong>什么时候生成？</strong> 每次请求时 &#x2F; 构建时 &#x2F; 后台定时或按需</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>模式</th>
+<th>生成地点</th>
+<th>生成时机</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>CSR</td>
+<td>浏览器</td>
+<td>运行时（用户访问后）</td>
+</tr>
+<tr>
+<td>SSR</td>
+<td>服务器</td>
+<td>每次请求时</td>
+</tr>
+<tr>
+<td>SSG</td>
+<td>服务器&#x2F;构建机</td>
+<td>构建时（一次）</td>
+</tr>
+<tr>
+<td>ISR</td>
+<td>服务器</td>
+<td>构建时 + 后台按需&#x2F;定时再生</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="一、CSR（Client-Side-Rendering，客户端渲染）"><a href="#一、CSR（Client-Side-Rendering，客户端渲染）" class="headerlink" title="一、CSR（Client-Side Rendering，客户端渲染）"></a>一、CSR（Client-Side Rendering，客户端渲染）</h2><h3 id="工作流程"><a href="#工作流程" class="headerlink" title="工作流程"></a>工作流程</h3><ol>
+<li>浏览器请求页面</li>
+<li>服务器返回一个几乎空的 HTML（通常只有一个 <code>&lt;div id=&quot;root&quot;&gt;</code>）和 JS bundle</li>
+<li>浏览器下载、解析、执行 JS</li>
+<li>JS 请求数据（API）</li>
+<li>JS 把内容渲染进 DOM，用户才看到页面</li>
+</ol>
+<h3 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h3><ul>
+<li><strong>首屏白屏时间长</strong>：要等 JS 下载 + 执行 + 数据请求完成</li>
+<li><strong>SEO 弱</strong>：早期爬虫拿到的 HTML 是空的（现代 Google 能执行 JS，但不稳定）</li>
+<li><strong>服务器压力小</strong>：只发静态文件，容易 CDN 加速</li>
+<li><strong>首屏之后体验流畅</strong>：路由切换不刷新页面，像原生 App</li>
+</ul>
+<h3 id="典型场景"><a href="#典型场景" class="headerlink" title="典型场景"></a>典型场景</h3><ul>
+<li>后台管理系统（Admin Dashboard）</li>
+<li>登录后的 SaaS 应用</li>
+<li>交互极重、SEO 不重要的页面</li>
+</ul>
+<h3 id="代表技术"><a href="#代表技术" class="headerlink" title="代表技术"></a>代表技术</h3><p>React（纯 CRA&#x2F;Vite）、Vue（纯 Vite）、Angular</p>
+<hr>
+<h2 id="二、SSR（Server-Side-Rendering，服务端渲染）"><a href="#二、SSR（Server-Side-Rendering，服务端渲染）" class="headerlink" title="二、SSR（Server-Side Rendering，服务端渲染）"></a>二、SSR（Server-Side Rendering，服务端渲染）</h2><h3 id="工作流程-1"><a href="#工作流程-1" class="headerlink" title="工作流程"></a>工作流程</h3><ol>
+<li>浏览器请求页面</li>
+<li>服务器执行前端组件代码，同时取数据</li>
+<li>服务器把组件渲染成<strong>完整 HTML</strong> 返回</li>
+<li>浏览器立即显示内容（首屏快）</li>
+<li>JS 加载后执行 <strong>hydration（注水）</strong>，页面变为可交互</li>
+</ol>
+<h3 id="特点-1"><a href="#特点-1" class="headerlink" title="特点"></a>特点</h3><ul>
+<li><strong>首屏快</strong>：HTML 直达，用户马上看到内容</li>
+<li><strong>SEO 好</strong>：HTML 里有完整内容</li>
+<li><strong>服务器压力大</strong>：每次请求都要渲染 + 取数据</li>
+<li><strong>TTFB 可能变高</strong>：服务器要先干活才能响应</li>
+<li><strong>注水前不可交互</strong>：能看到但不能点，注水完成后才正常</li>
+<li><strong>开发复杂</strong>：要处理服务端&#x2F;客户端环境差异（如 <code>window</code>、<code>document</code> 不存在）</li>
+</ul>
+<h3 id="典型场景-1"><a href="#典型场景-1" class="headerlink" title="典型场景"></a>典型场景</h3><ul>
+<li>电商商品页（SEO + 首屏速度都重要）</li>
+<li>新闻&#x2F;内容网站</li>
+<li>需要个性化 + SEO 的页面</li>
+</ul>
+<h3 id="代表技术-1"><a href="#代表技术-1" class="headerlink" title="代表技术"></a>代表技术</h3><p>Next.js（<code>getServerSideProps</code> &#x2F; Server Components）、Nuxt（<code>ssr: true</code>）、Remix、SvelteKit</p>
+<hr>
+<h2 id="三、SSG（Static-Site-Generation，静态站点生成）"><a href="#三、SSG（Static-Site-Generation，静态站点生成）" class="headerlink" title="三、SSG（Static Site Generation，静态站点生成）"></a>三、SSG（Static Site Generation，静态站点生成）</h2><h3 id="工作流程-2"><a href="#工作流程-2" class="headerlink" title="工作流程"></a>工作流程</h3><ol>
+<li><strong>构建时</strong>（<code>npm run build</code>），框架把所有页面预渲染成 HTML 文件</li>
+<li>部署时把这些 HTML 放到 CDN&#x2F;静态服务器</li>
+<li>用户请求时，直接返回对应的静态 HTML</li>
+<li>浏览器加载 JS 后注水，变为可交互</li>
+</ol>
+<h3 id="特点-2"><a href="#特点-2" class="headerlink" title="特点"></a>特点</h3><ul>
+<li><strong>最快</strong>：纯静态文件，CDN 边缘直接返回，TTFB 极低</li>
+<li><strong>SEO 最好</strong>：HTML 完整</li>
+<li><strong>服务器成本最低</strong>：几乎不需要运行时服务器</li>
+<li><strong>数据是构建时的快照</strong>：内容更新必须重新构建 + 部署</li>
+<li><strong>不适合频繁变动的数据</strong>：比如实时价格、个性化内容</li>
+</ul>
+<h3 id="典型场景-2"><a href="#典型场景-2" class="headerlink" title="典型场景"></a>典型场景</h3><ul>
+<li>博客、文档站</li>
+<li>营销落地页</li>
+<li>企业官网</li>
+<li>内容更新不频繁的电商分类页</li>
+</ul>
+<h3 id="代表技术-2"><a href="#代表技术-2" class="headerlink" title="代表技术"></a>代表技术</h3><p>Next.js（<code>getStaticProps</code>）、Nuxt（<code>ssr: false</code> + generate）、Astro、Gatsby、Hugo、Eleventy</p>
+<hr>
+<h2 id="四、ISR（Incremental-Static-Regeneration，增量静态再生）"><a href="#四、ISR（Incremental-Static-Regeneration，增量静态再生）" class="headerlink" title="四、ISR（Incremental Static Regeneration，增量静态再生）"></a>四、ISR（Incremental Static Regeneration，增量静态再生）</h2><p>ISR 是 <strong>SSG 的进化版</strong>，解决“静态页面数据会过期”的问题。它是 Next.js 提出的概念。</p>
+<h3 id="工作流程（以-Next-js-为例）"><a href="#工作流程（以-Next-js-为例）" class="headerlink" title="工作流程（以 Next.js 为例）"></a>工作流程（以 Next.js 为例）</h3><ol>
+<li>构建时预渲染页面（和 SSG 一样）</li>
+<li>部署到服务器&#x2F;CDN</li>
+<li>用户请求页面 → 先返回<strong>当前缓存的静态 HTML</strong>（快）</li>
+<li>同时后台判断是否超过设定的 <code>revalidate</code> 时间</li>
+<li>如果过期，后台<strong>异步重新生成</strong>该页面</li>
+<li>下一个用户请求就能拿到新版本</li>
+</ol>
+<h3 id="两种触发方式"><a href="#两种触发方式" class="headerlink" title="两种触发方式"></a>两种触发方式</h3><ul>
+<li><strong>时间驱动（revalidate）</strong>：如 <code>revalidate: 60</code>，表示 60 秒后下次请求触发再生</li>
+<li><strong>按需驱动（on-demand）</strong>：通过 API 手动触发某个页面再生，适合内容发布后立即更新</li>
+</ul>
+<h3 id="特点-3"><a href="#特点-3" class="headerlink" title="特点"></a>特点</h3><ul>
+<li><strong>兼具 SSG 的速度和 SSR 的数据新鲜度</strong></li>
+<li><strong>用户永远拿到静态 HTML</strong>，不会被阻塞</li>
+<li><strong>数据有一定延迟</strong>：不是实时的，是“最终一致”</li>
+<li><strong>需要支持 ISR 的托管平台</strong>（如 Vercel、Netlify，或自建配合缓存）</li>
+</ul>
+<h3 id="典型场景-3"><a href="#典型场景-3" class="headerlink" title="典型场景"></a>典型场景</h3><ul>
+<li>电商商品列表&#x2F;详情（价格、库存可容忍几分钟延迟）</li>
+<li>新闻站点（新文章发布后按需再生）</li>
+<li>大型内容站（页面多，不可能全部重新构建）</li>
+</ul>
+<h3 id="代表技术-3"><a href="#代表技术-3" class="headerlink" title="代表技术"></a>代表技术</h3><p>Next.js（<code>revalidate</code>）、Nuxt（配合混合渲染）、Astro（配合 SSR 适配器）</p>
+<hr>
+<h2 id="五、四者横向对比"><a href="#五、四者横向对比" class="headerlink" title="五、四者横向对比"></a>五、四者横向对比</h2><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>CSR</th>
+<th>SSR</th>
+<th>SSG</th>
+<th>ISR</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>HTML 生成时机</td>
+<td>运行时（浏览器）</td>
+<td>每次请求</td>
+<td>构建时</td>
+<td>构建时 + 后台再生</td>
+</tr>
+<tr>
+<td>首屏速度</td>
+<td>慢</td>
+<td>快</td>
+<td>最快</td>
+<td>最快</td>
+</tr>
+<tr>
+<td>SEO</td>
+<td>差</td>
+<td>好</td>
+<td>好</td>
+<td>好</td>
+</tr>
+<tr>
+<td>数据新鲜度</td>
+<td>实时</td>
+<td>实时</td>
+<td>构建时快照</td>
+<td>准实时（有延迟）</td>
+</tr>
+<tr>
+<td>服务器压力</td>
+<td>低</td>
+<td>高</td>
+<td>极低</td>
+<td>低</td>
+</tr>
+<tr>
+<td>可扩展性</td>
+<td>高</td>
+<td>中</td>
+<td>极高</td>
+<td>高</td>
+</tr>
+<tr>
+<td>适用内容</td>
+<td>重交互</td>
+<td>动态 + SEO</td>
+<td>静态内容</td>
+<td>大量动态内容</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="六、实际项目往往是混合的"><a href="#六、实际项目往往是混合的" class="headerlink" title="六、实际项目往往是混合的"></a>六、实际项目往往是混合的</h2><p>现代框架（Next.js App Router、Nuxt 3、SvelteKit）允许<strong>同一项目里不同路由用不同策略</strong>：</p>
+<ul>
+<li>首页&#x2F;营销页 → <strong>SSG</strong></li>
+<li>商品详情页 → <strong>ISR</strong></li>
+<li>用户订单页 → <strong>SSR</strong>（需要登录态）</li>
+<li>后台管理 → <strong>CSR</strong></li>
+</ul>
+<p>这就是所谓的 <strong>混合渲染（Hybrid Rendering）</strong>，也是现在主流的做法。</p>
+<hr>
+<h2 id="七、怎么选：一个简单决策树"><a href="#七、怎么选：一个简单决策树" class="headerlink" title="七、怎么选：一个简单决策树"></a>七、怎么选：一个简单决策树</h2><ol>
+<li>页面需要 SEO 吗？<ul>
+<li>不需要 → <strong>CSR</strong></li>
+<li>需要 → 继续</li>
+</ul>
+</li>
+<li>内容对每个用户不同，或需要实时数据吗？<ul>
+<li>是 → <strong>SSR</strong></li>
+<li>否 → 继续</li>
+</ul>
+</li>
+<li>内容更新频繁吗？<ul>
+<li>不频繁 → <strong>SSG</strong></li>
+<li>频繁但可容忍延迟 → <strong>ISR</strong></li>
+</ul>
+</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%89%8D%E7%AB%AF/" class="category-chain-item">前端</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%B8%B2%E6%9F%93%E6%A8%A1%E5%BC%8F/" class="print-no-link">#渲染模式</a>
+      
+        <a href="/tags/CSR/" class="print-no-link">#CSR</a>
+      
+        <a href="/tags/SSR/" class="print-no-link">#SSR</a>
+      
+        <a href="/tags/SSG/" class="print-no-link">#SSG</a>
+      
+        <a href="/tags/ISR/" class="print-no-link">#ISR</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>渲染模式 CSR、SSR、SSG、ISR</div>
+      <div>http://example.com/2023/08/10/前端/渲染模式 CSR、SSR、SSG、ISR/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年8月10日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/08/10/%E5%89%8D%E7%AB%AF/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" title="前端性能优化">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">前端性能优化</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/08/10/JavaScript/%E3%80%90JS%E3%80%91ES6%20%E7%AE%AD%E5%A4%B4%E5%87%BD%E6%95%B0/" title="ES6 箭头函数">
+                        <span class="hidden-mobile">ES6 箭头函数</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

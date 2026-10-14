@@ -1,0 +1,827 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Taro 微信小程序包体积优化实践 项目技术栈：Taro 4.x + React 18 + MobX 6  一、打包体积分析1.1 安装分析工具使用 webpack-bundle-analyzer 可视化分析打包结果： 1pnpm add -D webpack-bundle-analyzer  1.2 配置 Taro 插件在 config&#x2F;index.ts 的 mini.webpackChain">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Taro 微信小程序包体积优化实践">
+<meta property="og:url" content="http://example.com/2025/10/10/%E5%B0%8F%E7%A8%8B%E5%BA%8F/Taro%20%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E5%8C%85%E4%BD%93%E7%A7%AF%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Taro 微信小程序包体积优化实践 项目技术栈：Taro 4.x + React 18 + MobX 6  一、打包体积分析1.1 安装分析工具使用 webpack-bundle-analyzer 可视化分析打包结果： 1pnpm add -D webpack-bundle-analyzer  1.2 配置 Taro 插件在 config&#x2F;index.ts 的 mini.webpackChain">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260906151905412.png">
+<meta property="og:image" content="https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260906151716558.png">
+<meta property="og:image" content="https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260906151418926.png">
+<meta property="article:published_time" content="2025-10-10T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-14T14:26:02.717Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="Taro">
+<meta property="article:tag" content="包体积">
+<meta property="article:tag" content="微信小程序">
+<meta property="article:tag" content="性能优化">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260906151905412.png">
+  
+  
+  
+  <title>Taro 微信小程序包体积优化实践 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">Taro 微信小程序包体积优化实践</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-10-10 10:00" pubdate>
+          2025年10月10日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          12 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Taro 微信小程序包体积优化实践</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Taro-微信小程序包体积优化实践"><a href="#Taro-微信小程序包体积优化实践" class="headerlink" title="Taro 微信小程序包体积优化实践"></a>Taro 微信小程序包体积优化实践</h1><blockquote>
+<p><strong>项目技术栈</strong>：Taro 4.x + React 18 + MobX 6</p>
+</blockquote>
+<h2 id="一、打包体积分析"><a href="#一、打包体积分析" class="headerlink" title="一、打包体积分析"></a>一、打包体积分析</h2><h3 id="1-1-安装分析工具"><a href="#1-1-安装分析工具" class="headerlink" title="1.1 安装分析工具"></a>1.1 安装分析工具</h3><p>使用 <code>webpack-bundle-analyzer</code> 可视化分析打包结果：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">pnpm add -D webpack-bundle-analyzer<br></code></pre></td></tr></table></figure>
+
+<h3 id="1-2-配置-Taro-插件"><a href="#1-2-配置-Taro-插件" class="headerlink" title="1.2 配置 Taro 插件"></a>1.2 配置 Taro 插件</h3><p>在 <code>config/index.ts</code> 的 <code>mini.webpackChain</code> 中添加插件：</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">// config/index</span><br><span class="hljs-keyword">const</span> config = &#123;<br>  ...<br>  <span class="hljs-attr">mini</span>: &#123;<br>    <span class="hljs-title function_">webpackChain</span> (chain, webpack) &#123;<br>      chain.<span class="hljs-title function_">plugin</span>(<span class="hljs-string">&#x27;analyzer&#x27;</span>)<br>        .<span class="hljs-title function_">use</span>(<span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;webpack-bundle-analyzer&#x27;</span>).<span class="hljs-property">BundleAnalyzerPlugin</span>, [])<br>    &#125;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="1-3-生成分析报告"><a href="#1-3-生成分析报告" class="headerlink" title="1.3 生成分析报告"></a>1.3 生成分析报告</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">pnpm run build<br></code></pre></td></tr></table></figure>
+
+<p>构建完成后会自动打开 <code>http://127.0.0.1:8888</code> 显示分析报告。</p>
+<blockquote>
+<p>⚠️ <strong>注意</strong>：<code>pnpm run dev</code> 也可生成报告，但开发模式下包含热更新等辅助代码，体积不准确。<strong>推荐使用 <code>pnpm run build</code></strong> 查看最终产物。</p>
+</blockquote>
+<p><img src="https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260906151905412.png" srcset="/img/loading.gif" lazyload></p>
+<hr>
+<h2 id="二、读懂分析报告"><a href="#二、读懂分析报告" class="headerlink" title="二、读懂分析报告"></a>二、读懂分析报告</h2><h3 id="2-1-三个核心体积指标"><a href="#2-1-三个核心体积指标" class="headerlink" title="2.1 三个核心体积指标"></a>2.1 三个核心体积指标</h3><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>含义</th>
+<th>优化参考价值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Stat size</strong></td>
+<td>源码在磁盘上的原始大小（含注释、未使用代码）</td>
+<td>⭐ 较低，仅用于对比 Tree Shaking 效果</td>
+</tr>
+<tr>
+<td><strong>Parsed size</strong></td>
+<td>Webpack 打包后的实际代码体积（未压缩）</td>
+<td>⭐⭐⭐ <strong>最重要</strong>，直接决定主包大小</td>
+</tr>
+<tr>
+<td><strong>Gzipped size</strong></td>
+<td>Gzip 压缩后的传输体积</td>
+<td>⭐⭐ 影响用户加载速度，约等于 Parsed 的 20%~30%</td>
+</tr>
+</tbody></table>
+<p><strong>优化原则</strong>：以 <strong>Parsed size</strong> 为优化目标，用 <strong>Gzipped size</strong> 衡量加载性能改善。</p>
+<h3 id="2-2-检查重复打包"><a href="#2-2-检查重复打包" class="headerlink" title="2.2 检查重复打包"></a>2.2 检查重复打包</h3><ol>
+<li>勾选分析器左侧的 <strong>“Show content of concatenated modules”</strong>（可展开模块内部结构）。</li>
+<li>在 <strong>“Search modules”</strong> 中输入库名（如 <code>lodash</code>）。</li>
+<li>查看该库是否出现在<strong>多个 chunk</strong> 中——若是，则存在重复打包。</li>
+</ol>
+<blockquote>
+<p><strong>原理</strong>：Webpack 默认开启作用域提升（Module Concatenation），将多个小模块合并到同一闭包中。开启该选项后，分析器会按比例估算每个子模块的体积（数值不精确，但相对大小足以指导优化）。</p>
+</blockquote>
+<hr>
+<h2 id="三、构建警告及解决方案"><a href="#三、构建警告及解决方案" class="headerlink" title="三、构建警告及解决方案"></a>三、构建警告及解决方案</h2><h3 id="3-1-初始警告"><a href="#3-1-初始警告" class="headerlink" title="3.1 初始警告"></a>3.1 初始警告</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">⚠️ AssetsOverSizeLimitWarning: asset size <span class="hljs-built_in">limit</span> (244 KiB)<br>  vendors.js (348 KiB)<br><br>⚠️ NoAsyncChunksWarning: 建议使用 import() 实现懒加载<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-2-优化-vendors-js（第三方依赖）"><a href="#3-2-优化-vendors-js（第三方依赖）" class="headerlink" title="3.2 优化 vendors.js（第三方依赖）"></a>3.2 优化 <code>vendors.js</code>（第三方依赖）</h3><h4 id="✅-方法一：启用-Taro-自动分包优化"><a href="#✅-方法一：启用-Taro-自动分包优化" class="headerlink" title="✅ 方法一：启用 Taro 自动分包优化"></a>✅ 方法一：启用 Taro 自动分包优化</h4><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">// config/index.ts</span><br><span class="hljs-attr">mini</span>: &#123;<br>  <span class="hljs-attr">optimizeMainPackage</span>: &#123; <span class="hljs-attr">enable</span>: <span class="hljs-literal">true</span> &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>作用：自动将<strong>只在分包中使用的依赖</strong>提取到分包的 <code>sub-vendors</code> 中，减小主包体积。</p>
+<h4 id="✅-方法二：按需引入大型库（以-lodash-为例）"><a href="#✅-方法二：按需引入大型库（以-lodash-为例）" class="headerlink" title="✅ 方法二：按需引入大型库（以 lodash 为例）"></a>✅ 方法二：按需引入大型库（以 <code>lodash</code> 为例）</h4><p><strong>错误示例</strong>（引入全量）：</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> _ <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;lodash&#x27;</span>;          <span class="hljs-comment">// 全量 ~73 KB</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>正确示例</strong>（按需引入）：</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> debounce <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;lodash/debounce&#x27;</span>;  <span class="hljs-comment">// 仅 ~3 KB</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>推荐自动化方案</strong>：使用 <code>babel-plugin-lodash</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">pnpm add -D babel-plugin-lodash<br></code></pre></td></tr></table></figure>
+
+<p>在 <code>babel.config.js</code> 或 <code>config/index.ts</code> 的 babel 配置中添加：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-attr">plugins</span>: [<span class="hljs-string">&quot;lodash&quot;</span>]<br></code></pre></td></tr></table></figure>
+
+<p>之后 <code>import { debounce } from &#39;lodash&#39;</code> 会被自动转换为按需引入。</p>
+<h3 id="3-3-优化效果"><a href="#3-3-优化效果" class="headerlink" title="3.3 优化效果"></a>3.3 优化效果</h3><p><img src="https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260906151716558.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260906151418926.png" srcset="/img/loading.gif" lazyload></p>
+<p><code>lodash</code> 体积从 <strong>176.6 KB → 36.39 KB</strong>，减少了约 <strong>80%</strong>。</p>
+<p>经过上述优化，<code>vendors.js</code> 从 <strong>348 KiB → 280 KiB</strong>，减少了约 <strong>20%</strong>。</p>
+<p>剩余体积主要为 Taro + React + MobX 的<strong>刚性依赖</strong>，无法继续压缩。</p>
+<hr>
+<h2 id="四、继续优化-common-js（公共业务代码）"><a href="#四、继续优化-common-js（公共业务代码）" class="headerlink" title="四、继续优化 common.js（公共业务代码）"></a>四、继续优化 <code>common.js</code>（公共业务代码）</h2><p>调整阈值后，出现了新的警告：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">⚠️ EntrypointsOverSizeLimitWarning: entrypoint size <span class="hljs-built_in">limit</span> (500 KiB)<br>  app (758 KiB) = runtime + taro.js + vendors.js + common.js + app.js<br></code></pre></td></tr></table></figure>
+
+<p>其中 <code>common.js</code> 占 <strong>237 KiB</strong>，成为新的优化目标。</p>
+<h3 id="4-1-common-js-体积构成分析"><a href="#4-1-common-js-体积构成分析" class="headerlink" title="4.1 common.js 体积构成分析"></a>4.1 <code>common.js</code> 体积构成分析</h3><p>分析报告显示 <code>common.js</code> 包含大量 <code>src/shared</code> 下的模块：</p>
+<ul>
+<li>UI 组件（Skeleton、AiUpdateDialog、QuickContact 等）</li>
+<li>Canvas 绘图工具（<code>canvasShareBg.ts</code>、<code>canvasGreetingPoster.ts</code>）</li>
+<li>API 服务（<code>card.ts</code>、<code>privateChat.ts</code>、<code>enterpriseCard.ts</code>）</li>
+<li>自定义 Hooks（<code>useCardDetail</code>、<code>useExchange</code> 等）</li>
+<li>工具函数（<code>storage.ts</code>、<code>eventBus.ts</code>）</li>
+</ul>
+<h3 id="4-2-优化策略：按分包归属迁移"><a href="#4-2-优化策略：按分包归属迁移" class="headerlink" title="4.2 优化策略：按分包归属迁移"></a>4.2 优化策略：按分包归属迁移</h3><table>
+<thead>
+<tr>
+<th>模块</th>
+<th>使用场景</th>
+<th>迁移目标</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>canvasShareBg.ts</code> &#x2F; <code>canvasGreetingPoster.ts</code></td>
+<td>生成分享&#x2F;祝福海报</td>
+<td><code>src/pages/packageCard/utils/canvas/</code></td>
+</tr>
+<tr>
+<td><code>AiUpdateDialog</code></td>
+<td>AI 更新弹窗</td>
+<td><code>src/pages/packageCard/components/</code></td>
+</tr>
+<tr>
+<td><code>privateChat.ts</code> API</td>
+<td>仅用于私聊分包</td>
+<td><code>src/pages/packageUser/services/</code></td>
+</tr>
+<tr>
+<td><code>enterpriseCard.ts</code> API</td>
+<td>仅用于企业名片分包</td>
+<td><code>src/pages/packageEnterprise/services/</code></td>
+</tr>
+</tbody></table>
+<p><strong>核心原则</strong>：</p>
+<ul>
+<li>只被<strong>主包页面</strong>引用的模块 → 保留在 <code>src/shared</code></li>
+<li>只被<strong>分包页面</strong>引用的模块 → 迁移到对应分包目录</li>
+<li>被<strong>多个分包</strong>共享、但<strong>不被主包</strong>引用的模块 → 移至 <code>src/pages/packageCommon/</code></li>
+</ul>
+<h3 id="4-3-避免“桶文件”导致全量引入"><a href="#4-3-避免“桶文件”导致全量引入" class="headerlink" title="4.3 避免“桶文件”导致全量引入"></a>4.3 避免“桶文件”导致全量引入</h3><p><strong>不推荐</strong>（集中导出会导致 Webpack 解析所有依赖）：</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">// src/shared/index.ts</span><br><span class="hljs-keyword">export</span> * <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./components&#x27;</span>;<br><span class="hljs-keyword">export</span> * <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./utils&#x27;</span>;<br><span class="hljs-keyword">export</span> * <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./hooks&#x27;</span>;<br></code></pre></td></tr></table></figure>
+
+<p><strong>推荐</strong>（直接按需导入）：</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">import</span> <span class="hljs-title class_">Skeleton</span> <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@/shared/components/Skeleton&#x27;</span>;<br><span class="hljs-keyword">import</span> &#123; getCardDetail &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@/services/api/card&#x27;</span>;<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-4-图片资源处理"><a href="#4-4-图片资源处理" class="headerlink" title="4.4 图片资源处理"></a>4.4 图片资源处理</h3><p>如果 <code>common.js</code> 中出现了图片文件（如 <code>location.png</code>），说明该图片被 <code>import</code> 进了 JS，被打包为 Base64 或 URL。</p>
+<ul>
+<li>小图标（&lt; 10KB）：可使用 Base64</li>
+<li>大图片：建议上传至 CDN，通过 URL 引用</li>
+</ul>
+<hr>
+<h2 id="五、最终处理方案"><a href="#五、最终处理方案" class="headerlink" title="五、最终处理方案"></a>五、最终处理方案</h2><h3 id="5-1-调高性能阈值"><a href="#5-1-调高性能阈值" class="headerlink" title="5.1 调高性能阈值"></a>5.1 调高性能阈值</h3><p>经过以上优化，<code>vendors.js</code> 已降至合理范围，<code>common.js</code> 也大幅缩减。若入口点总大小仍略超 500 KB，可适度调高 Webpack 性能阈值：</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-comment">// config/index.ts</span><br>chain.<span class="hljs-title function_">merge</span>(&#123;<br>  <span class="hljs-attr">performance</span>: &#123;<br>    <span class="hljs-attr">maxEntrypointSize</span>: <span class="hljs-number">700000</span>,  <span class="hljs-comment">// 入口点限制 700 KB</span><br>    <span class="hljs-attr">maxAssetSize</span>: <span class="hljs-number">400000</span>,       <span class="hljs-comment">// 单文件限制 400 KB</span><br>  &#125;,<br>&#125;);<br></code></pre></td></tr></table></figure>
+
+<h3 id="5-2-优化成果"><a href="#5-2-优化成果" class="headerlink" title="5.2 优化成果"></a>5.2 优化成果</h3><table>
+<thead>
+<tr>
+<th>指标</th>
+<th>优化前</th>
+<th>优化后</th>
+<th>降幅</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>vendors.js</code></td>
+<td>348 KiB</td>
+<td>280 KiB</td>
+<td><strong>↓ 19.5%</strong></td>
+</tr>
+<tr>
+<td><code>common.js</code></td>
+<td>237 KiB</td>
+<td>待验证</td>
+<td>目标 ↓ 40%</td>
+</tr>
+<tr>
+<td>构建警告</td>
+<td>3 个</td>
+<td><strong>0 个</strong></td>
+<td>✅ 全部消除</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="六、总结"><a href="#六、总结" class="headerlink" title="六、总结"></a>六、总结</h2><h3 id="核心方法论"><a href="#核心方法论" class="headerlink" title="核心方法论"></a>核心方法论</h3><ol>
+<li><strong>用数据驱动优化</strong>：通过 <code>webpack-bundle-analyzer</code> 定位体积大头，而非盲目优化。</li>
+<li><strong>优先用自动优化</strong>：Taro 的 <code>optimizeMainPackage</code> 能低成本解决大部分分包依赖问题。</li>
+<li><strong>按需引入是关键</strong>：检查大型库是否全量引入，使用 <code>babel-plugin-import</code> 或 <code>babel-plugin-lodash</code> 等工具自动化处理。</li>
+<li><strong>合理划分代码归属</strong>：将只服务于分包的模块移出主包 <code>shared</code> 目录，避免污染主包 <code>common.js</code>。</li>
+<li><strong>阈值是最后手段</strong>：在无法继续优化的刚性依赖上，适度调高 Webpack 阈值以消除无效警告。</li>
+</ol>
+<h3 id="后续建议"><a href="#后续建议" class="headerlink" title="后续建议"></a>后续建议</h3><ul>
+<li>定期（如每季度）重新生成分析报告，防止体积回弹。</li>
+<li>新增依赖时，先检查其体积（可使用 <code>npm info &lt;pkg&gt; --json</code> 查看）。</li>
+<li>考虑使用 <code>dayjs</code> 替代 <code>moment</code>、使用 <code>lodash-es</code> 配合 Tree Shaking 等更轻量的替代方案。</li>
+</ul>
+<hr>
+<blockquote>
+<p>优化不是一蹴而就的，持续关注体积变化，才能让小程序保持“轻快”的体验。</p>
+</blockquote>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%B0%8F%E7%A8%8B%E5%BA%8F/" class="category-chain-item">小程序</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Taro/" class="print-no-link">#Taro</a>
+      
+        <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" class="print-no-link">#性能优化</a>
+      
+        <a href="/tags/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/" class="print-no-link">#微信小程序</a>
+      
+        <a href="/tags/%E5%8C%85%E4%BD%93%E7%A7%AF/" class="print-no-link">#包体积</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Taro 微信小程序包体积优化实践</div>
+      <div>http://example.com/2025/10/10/小程序/Taro 微信小程序包体积优化实践/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年10月10日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/10/31/%E5%B0%8F%E7%A8%8B%E5%BA%8F/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%AE%A2%E9%98%85%E6%B6%88%E6%81%AF%EF%BC%88%E4%B8%80%E6%AC%A1%E6%80%A7%E8%AE%A2%E9%98%85%EF%BC%89/" title="【API】微信小程序订阅消息（一次性订阅）">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">【API】微信小程序订阅消息（一次性订阅）</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/09/28/%E5%89%8D%E7%AB%AF/%E3%80%90%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83%E3%80%91%E7%94%A8%20Husky%20+%20lint-staged%20+%20ESLint%20+%20Prettier%20%E6%9E%84%E5%BB%BA%E5%9B%A2%E9%98%9F%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83/" title="用 Husky + lint-staged + ESLint + Prettier 构建团队代码规范">
+                        <span class="hidden-mobile">用 Husky + lint-staged + ESLint + Prettier 构建团队代码规范</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

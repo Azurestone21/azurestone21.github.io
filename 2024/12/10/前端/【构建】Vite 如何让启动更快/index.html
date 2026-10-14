@@ -1,0 +1,793 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Vite 如何让启动更快先说结论很多人说“Vite 比 Webpack 快”，更准确的说法是：  Vite 的快，主要体现在开发阶段。Webpack 是“先打包，再启动开发服务器”；Vite 是“先启动开发服务器，浏览器请求什么，再按需编译什么”。  生产环境下，Vite 仍然会打包，通常使用 Rollup，新版本逐步引入 Rolldown，并用 esbuild 做压缩。所以 Vite 并不是完全">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vite 如何让启动更快">
+<meta property="og:url" content="http://example.com/2024/12/10/%E5%89%8D%E7%AB%AF/%E3%80%90%E6%9E%84%E5%BB%BA%E3%80%91Vite%20%E5%A6%82%E4%BD%95%E8%AE%A9%E5%90%AF%E5%8A%A8%E6%9B%B4%E5%BF%AB/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Vite 如何让启动更快先说结论很多人说“Vite 比 Webpack 快”，更准确的说法是：  Vite 的快，主要体现在开发阶段。Webpack 是“先打包，再启动开发服务器”；Vite 是“先启动开发服务器，浏览器请求什么，再按需编译什么”。  生产环境下，Vite 仍然会打包，通常使用 Rollup，新版本逐步引入 Rolldown，并用 esbuild 做压缩。所以 Vite 并不是完全">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-12-09T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-14T14:26:02.666Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="Vite">
+<meta property="article:tag" content="构建工具">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Vite 如何让启动更快 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">Vite 如何让启动更快</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-12-10 00:00" pubdate>
+          2024年12月10日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          13 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Vite 如何让启动更快</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Vite-如何让启动更快"><a href="#Vite-如何让启动更快" class="headerlink" title="Vite 如何让启动更快"></a>Vite 如何让启动更快</h1><h2 id="先说结论"><a href="#先说结论" class="headerlink" title="先说结论"></a>先说结论</h2><p>很多人说“Vite 比 Webpack 快”，更准确的说法是：</p>
+<blockquote>
+<p><strong>Vite 的快，主要体现在开发阶段。</strong><br>Webpack 是“先打包，再启动开发服务器”；Vite 是“先启动开发服务器，浏览器请求什么，再按需编译什么”。</p>
+</blockquote>
+<p>生产环境下，Vite 仍然会打包，通常使用 Rollup，新版本逐步引入 Rolldown，并用 esbuild 做压缩。所以 Vite 并不是完全不打包，而是改变了开发模式下的构建思路。</p>
+<hr>
+<h2 id="一、开发模式：Webpack-先打包，Vite-先启动"><a href="#一、开发模式：Webpack-先打包，Vite-先启动" class="headerlink" title="一、开发模式：Webpack 先打包，Vite 先启动"></a>一、开发模式：Webpack 先打包，Vite 先启动</h2><p>Webpack 的开发流程大致是：</p>
+<ol>
+<li>从 entry 入口开始；</li>
+<li>递归分析所有依赖；</li>
+<li>经过 loader 转换；</li>
+<li>生成 bundle；</li>
+<li>启动 dev server；</li>
+<li>浏览器访问页面。</li>
+</ol>
+<p>也就是说，<strong>项目越大，Webpack 启动前要做的打包工作越多</strong>，冷启动就越慢。</p>
+<p>Vite 的开发流程则是：</p>
+<ol>
+<li>先启动 dev server；</li>
+<li>浏览器请求 <code>index.html</code>；</li>
+<li>浏览器请求入口模块；</li>
+<li>Vite 按需编译这个模块；</li>
+<li>浏览器遇到 <code>import</code>，再请求下一个模块；</li>
+<li>Vite 再编译下一个模块。</li>
+</ol>
+<p>所以 Vite 不需要在启动时打包整个项目，<strong>只编译当前页面真正用到的模块</strong>。项目越大，这种优势越明显。</p>
+<hr>
+<h2 id="二、浏览器原生-ESM，把加载工作交给了浏览器"><a href="#二、浏览器原生-ESM，把加载工作交给了浏览器" class="headerlink" title="二、浏览器原生 ESM，把加载工作交给了浏览器"></a>二、浏览器原生 ESM，把加载工作交给了浏览器</h2><p>现代浏览器支持：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;module&quot;</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;/src/main.js&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>在 <code>type=&quot;module&quot;</code> 的脚本里，浏览器能直接识别 <code>import</code>：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">import</span> &#123; createApp &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;vue&quot;</span>;<br><span class="hljs-keyword">import</span> <span class="hljs-title class_">App</span> <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;./App.vue&quot;</span>;<br></code></pre></td></tr></table></figure>
+
+<p>浏览器会自动解析依赖，并发出 HTTP 请求加载模块。</p>
+<p>Vite 做的事，是把源码里的裸导入重写成浏览器能访问的 URL，例如：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">import</span> &#123; createApp &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;/node_modules/.vite/deps/vue.js?v=xxx&quot;</span>;<br></code></pre></td></tr></table></figure>
+
+<p>也就是说：</p>
+<blockquote>
+<p><strong>浏览器负责加载模块，Vite 负责按需编译模块。</strong></p>
+</blockquote>
+<p>Webpack 则必须自己处理模块依赖图，因为浏览器不能直接运行 CommonJS、TypeScript、JSX、Vue SFC 等内容，所以 Webpack 需要先统一转换和打包。</p>
+<hr>
+<h2 id="三、esbuild-预构建依赖，速度远超-JS-工具链"><a href="#三、esbuild-预构建依赖，速度远超-JS-工具链" class="headerlink" title="三、esbuild 预构建依赖，速度远超 JS 工具链"></a>三、esbuild 预构建依赖，速度远超 JS 工具链</h2><p>Vite 在开发阶段会用 esbuild 做依赖预构建。</p>
+<p>esbuild 快的原因主要有：</p>
+<ul>
+<li>使用 Go 编写，编译成原生机器码；</li>
+<li>多核并行处理；</li>
+<li>没有 JavaScript 单线程和 GC 的性能瓶颈；</li>
+<li>转换、压缩、生成 sourcemap 都很快。</li>
+</ul>
+<p>Vite 用 esbuild 做这些事：</p>
+<ul>
+<li>把 CommonJS &#x2F; UMD 依赖转成 ESM；</li>
+<li>把多个小模块合并成少量文件，减少浏览器请求；</li>
+<li>转换 TypeScript、JSX 等；</li>
+<li>生产构建时做代码压缩。</li>
+</ul>
+<p>Webpack 的 loader 大多由 JavaScript 实现，例如 Babel、ts-loader、css-loader 等。它们功能强大，但速度上通常不如 esbuild。</p>
+<hr>
+<h2 id="四、按需编译，不编译没访问到的代码"><a href="#四、按需编译，不编译没访问到的代码" class="headerlink" title="四、按需编译，不编译没访问到的代码"></a>四、按需编译，不编译没访问到的代码</h2><p>Webpack 开发时通常要构建完整的依赖图。即使你只打开首页，它也可能已经处理了大量路由、组件和工具模块。</p>
+<p>Vite 则是按需编译：</p>
+<ul>
+<li>你访问首页，它只编译首页相关模块；</li>
+<li>你跳到某个路由，它才编译那个路由的组件；</li>
+<li>没被请求的代码，开发阶段根本不用编译。</li>
+</ul>
+<p>这就像餐厅点菜：</p>
+<ul>
+<li>Webpack：先把整本菜单所有菜都做好；</li>
+<li>Vite：你点什么，厨房做什么。</li>
+</ul>
+<p>项目越大，Vite 的按需模式越有优势。</p>
+<hr>
+<h2 id="五、HMR-更快，因为基于-ESM-精确更新"><a href="#五、HMR-更快，因为基于-ESM-精确更新" class="headerlink" title="五、HMR 更快，因为基于 ESM 精确更新"></a>五、HMR 更快，因为基于 ESM 精确更新</h2><p>HMR 是热模块替换。修改代码后，页面不刷新也能更新。</p>
+<p>Vite 的 HMR 基于原生 ESM，模块边界清晰。修改某个模块时，Vite 只需要：</p>
+<ol>
+<li>让这个模块失效；</li>
+<li>沿着 <code>import</code> 链找到接受更新的模块；</li>
+<li>通过 WebSocket 通知浏览器；</li>
+<li>浏览器动态 <code>import</code> 新模块。</li>
+</ol>
+<p>Webpack 的 HMR 也很强，但它通常需要重新构建相关 chunk。项目越大，重新构建的成本越高。</p>
+<p>所以 Vite 的快，不只是启动快，<strong>热更新也通常更快</strong>。</p>
+<hr>
+<h2 id="六、生产构建：Vite-用-Rollup-Rolldown"><a href="#六、生产构建：Vite-用-Rollup-Rolldown" class="headerlink" title="六、生产构建：Vite 用 Rollup &#x2F; Rolldown"></a>六、生产构建：Vite 用 Rollup &#x2F; Rolldown</h2><p>开发阶段 Vite 不打包业务源码，但生产环境仍然要打包，因为需要：</p>
+<ul>
+<li>减少 HTTP 请求；</li>
+<li>tree-shaking；</li>
+<li>压缩代码；</li>
+<li>代码分割；</li>
+<li>兼容旧浏览器；</li>
+<li>优化加载性能。</li>
+</ul>
+<p>Vite 生产构建默认使用 Rollup。Rollup 对 ESM 的静态分析很好，tree-shaking 效率高，输出也比较干净。Vite 还用 esbuild 做压缩，比传统的 Terser 快很多。</p>
+<p>Webpack 5 也有持久化缓存、模块联邦等能力，在复杂项目中生产构建不一定慢。所以：</p>
+<blockquote>
+<p><strong>Vite 开发阶段通常明显快于 Webpack；生产构建则要看项目规模、插件和配置。</strong></p>
+</blockquote>
+<hr>
+<h2 id="七、Vite-不是银弹"><a href="#七、Vite-不是银弹" class="headerlink" title="七、Vite 不是银弹"></a>七、Vite 不是银弹</h2><p>Vite 很快，但并不是所有场景都一定优于 Webpack。</p>
+<p>这些情况 Webpack 可能更合适：</p>
+<ul>
+<li>项目依赖大量 Webpack 专属 loader &#x2F; plugin；</li>
+<li>需要非常复杂的构建定制；</li>
+<li>老项目迁移成本高；</li>
+<li>需要 Module Federation 等高级能力；</li>
+<li>对旧浏览器兼容有特殊要求；</li>
+<li>生产构建流程已经高度优化。</li>
+</ul>
+<p>Vite 生态增长很快，但 Webpack 的成熟度和插件丰富度仍然很强。</p>
+<hr>
+<h2 id="八、总结"><a href="#八、总结" class="headerlink" title="八、总结"></a>八、总结</h2><p>Vite 比 Webpack 快，核心不是“打包算法优化了一点”，而是架构不同：</p>
+<table>
+<thead>
+<tr>
+<th>对比项</th>
+<th>Webpack</th>
+<th>Vite</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>开发启动</td>
+<td>先打包再启动</td>
+<td>先启动再按需编译</td>
+</tr>
+<tr>
+<td>模块加载</td>
+<td>Webpack 构建依赖图</td>
+<td>浏览器原生 ESM</td>
+</tr>
+<tr>
+<td>依赖处理</td>
+<td>JS loader 链</td>
+<td>esbuild 预构建</td>
+</tr>
+<tr>
+<td>HMR</td>
+<td>重新构建相关 chunk</td>
+<td>基于 ESM 精确更新</td>
+</tr>
+<tr>
+<td>生产构建</td>
+<td>Webpack 自身</td>
+<td>Rollup &#x2F; Rolldown</td>
+</tr>
+<tr>
+<td>速度优势</td>
+<td>成熟稳定</td>
+<td>开发体验极快</td>
+</tr>
+</tbody></table>
+<p>一句话概括：</p>
+<blockquote>
+<p><strong>Webpack 是“先打包再服务”，Vite 是“先服务再按需编译”。</strong></p>
+</blockquote>
+<p>Vite 快在开发阶段，靠的是原生 ESM、按需编译、esbuild 预构建和精确 HMR。生产环境仍然要打包，只是换成了 Rollup &#x2F; Rolldown 这套更轻量的方案。</p>
+<p>所以，新项目优先考虑 Vite；老项目、复杂项目、深度定制项目，Webpack 仍然是可靠选择。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%89%8D%E7%AB%AF/" class="category-chain-item">前端</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%9E%84%E5%BB%BA%E5%B7%A5%E5%85%B7/" class="print-no-link">#构建工具</a>
+      
+        <a href="/tags/Vite/" class="print-no-link">#Vite</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Vite 如何让启动更快</div>
+      <div>http://example.com/2024/12/10/前端/【构建】Vite 如何让启动更快/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年12月10日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/12/10/%E5%89%8D%E7%AB%AF/%E3%80%90Web%E6%94%BB%E5%87%BB%E3%80%91%E5%89%8D%E7%AB%AF%E5%B8%B8%E8%A7%81%E6%94%BB%E5%87%BB/" title="前端常见攻击">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">前端常见攻击</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/12/10/%E5%89%8D%E7%AB%AF/%E3%80%90%E6%9E%84%E5%BB%BA%E3%80%91Webpack%20vs%20Vite/" title="Webpack vs Vite">
+                        <span class="hidden-mobile">Webpack vs Vite</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

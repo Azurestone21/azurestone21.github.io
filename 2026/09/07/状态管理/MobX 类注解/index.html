@@ -1,0 +1,798 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="MobX 类注解：makeObservable &#x2F; makeAutoObservable &#x2F; override 一句话理解：这三个 API 是 MobX 将普通类”激活”为响应式数据源的入口。makeObservable 是显式手动挡，makeAutoObservable 是自动挡，override 是继承场景下的专用注解。   1. 三者总览对比   特性 makeObser">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MobX 类注解：makeObservable &#x2F; makeAutoObservable &#x2F; override">
+<meta property="og:url" content="http://example.com/2026/09/07/%E7%8A%B6%E6%80%81%E7%AE%A1%E7%90%86/MobX%20%E7%B1%BB%E6%B3%A8%E8%A7%A3/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="MobX 类注解：makeObservable &#x2F; makeAutoObservable &#x2F; override 一句话理解：这三个 API 是 MobX 将普通类”激活”为响应式数据源的入口。makeObservable 是显式手动挡，makeAutoObservable 是自动挡，override 是继承场景下的专用注解。   1. 三者总览对比   特性 makeObser">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-09-06T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-14T14:41:28.865Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="MobX">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>MobX 类注解：makeObservable / makeAutoObservable / override - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">MobX 类注解：makeObservable / makeAutoObservable / override</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-09-07 00:00" pubdate>
+          2026年9月7日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          13 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">MobX 类注解：makeObservable / makeAutoObservable / override</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="MobX-类注解：makeObservable-makeAutoObservable-override"><a href="#MobX-类注解：makeObservable-makeAutoObservable-override" class="headerlink" title="MobX 类注解：makeObservable &#x2F; makeAutoObservable &#x2F; override"></a>MobX 类注解：makeObservable &#x2F; makeAutoObservable &#x2F; override</h1><blockquote>
+<p>一句话理解：这三个 API 是 MobX 将普通类”激活”为响应式数据源的入口。<strong>makeObservable</strong> 是显式手动挡，<strong>makeAutoObservable</strong> 是自动挡，<strong>override</strong> 是继承场景下的专用注解。</p>
+</blockquote>
+<hr>
+<h2 id="1-三者总览对比"><a href="#1-三者总览对比" class="headerlink" title="1. 三者总览对比"></a>1. 三者总览对比</h2><table>
+<thead>
+<tr>
+<th align="left">特性</th>
+<th align="left"><code>makeObservable</code></th>
+<th align="left"><code>makeAutoObservable</code></th>
+<th align="left"><code>override</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>核心作用</strong></td>
+<td align="left">显式指定每个成员的 MobX 角色</td>
+<td align="left">自动推断成员角色</td>
+<td align="left">标记子类重写了父类的成员</td>
+</tr>
+<tr>
+<td align="left"><strong>代码量</strong></td>
+<td align="left">较多</td>
+<td align="left">最少（无需写注解）</td>
+<td align="left">仅在继承重写时使用</td>
+</tr>
+<tr>
+<td align="left"><strong>是否必须</strong></td>
+<td align="left">是（可选装饰器替代）</td>
+<td align="left">是（<code>makeObservable</code> 的语法糖）</td>
+<td align="left">是（继承重写时必须）</td>
+</tr>
+<tr>
+<td align="left"><strong>适用场景</strong></td>
+<td align="left">精确控制、继承场景</td>
+<td align="left">无继承关系的类</td>
+<td align="left">子类重写父类<code>computed</code>&#x2F;<code>action</code></td>
+</tr>
+<tr>
+<td align="left"><strong>支持子类继承</strong></td>
+<td align="left">✅ 支持（配合<code>override</code>）</td>
+<td align="left">❌ 不支持</td>
+<td align="left">✅ 是<code>makeObservable</code> 的一部分</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="2-makeObservable（显式注解）"><a href="#2-makeObservable（显式注解）" class="headerlink" title="2. makeObservable（显式注解）"></a>2. makeObservable（显式注解）</h2><p><strong>特点</strong>：手动为每个成员指定注解，<strong>意图最清晰</strong>，适合需要精确控制的场景，<strong>也是处理继承时唯一可用的方式</strong>。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">import</span> &#123; makeObservable, observable, action, computed &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;mobx&quot;</span>;<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">TodoStore</span> &#123;<br>  todos = [];<br>  pendingCount = <span class="hljs-number">0</span>;<br><br>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-comment">// 手动为每个成员打标签</span><br>    <span class="hljs-title function_">makeObservable</span>(<span class="hljs-variable language_">this</span>, &#123;<br>      <span class="hljs-attr">todos</span>: observable,           <span class="hljs-comment">// 可观察状态</span><br>      <span class="hljs-attr">pendingCount</span>: observable,    <span class="hljs-comment">// 可观察状态</span><br>      <span class="hljs-attr">addTodo</span>: action,             <span class="hljs-comment">// 修改状态的方法</span><br>      <span class="hljs-attr">toggleComplete</span>: action,      <span class="hljs-comment">// 修改状态的方法</span><br>      get <span class="hljs-attr">completedTodos</span>: computed, <span class="hljs-comment">// 派生值（getter 要加 get 前缀）</span><br>      get <span class="hljs-attr">pendingTodos</span>: computed,<br>    &#125;);<br>  &#125;<br><br>  <span class="hljs-title function_">addTodo</span>(<span class="hljs-params">title</span>) &#123;<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">todos</span>.<span class="hljs-title function_">push</span>(&#123; title, <span class="hljs-attr">completed</span>: <span class="hljs-literal">false</span> &#125;);<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">pendingCount</span>++;<br>  &#125;<br><br>  <span class="hljs-title function_">toggleComplete</span>(<span class="hljs-params">index</span>) &#123;<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">todos</span>[index].<span class="hljs-property">completed</span> = !<span class="hljs-variable language_">this</span>.<span class="hljs-property">todos</span>[index].<span class="hljs-property">completed</span>;<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">pendingCount</span> += <span class="hljs-variable language_">this</span>.<span class="hljs-property">todos</span>[index].<span class="hljs-property">completed</span> ? -<span class="hljs-number">1</span> : <span class="hljs-number">1</span>;<br>  &#125;<br><br>  <span class="hljs-keyword">get</span> <span class="hljs-title function_">completedTodos</span>() &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">todos</span>.<span class="hljs-title function_">filter</span>(<span class="hljs-function"><span class="hljs-params">t</span> =&gt;</span> t.<span class="hljs-property">completed</span>);<br>  &#125;<br><br>  <span class="hljs-keyword">get</span> <span class="hljs-title function_">pendingTodos</span>() &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">todos</span>.<span class="hljs-title function_">filter</span>(<span class="hljs-function"><span class="hljs-params">t</span> =&gt;</span> !t.<span class="hljs-property">completed</span>);<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong>何时使用</strong>：</p>
+<ul>
+<li>需要精确控制每个成员的行为。</li>
+<li>类存在继承关系（子类需要 <code>override</code>）。</li>
+<li>团队成员偏好显式优于隐式。</li>
+</ul>
+<hr>
+<h2 id="3-makeAutoObservable（自动推断）"><a href="#3-makeAutoObservable（自动推断）" class="headerlink" title="3. makeAutoObservable（自动推断）"></a>3. makeAutoObservable（自动推断）</h2><p><strong>特点</strong>：MobX 自动推断成员角色，<strong>代码最简洁</strong>，适合绝大多数无继承关系的类。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">import</span> &#123; makeAutoObservable &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;mobx&quot;</span>;<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">TodoStore</span> &#123;<br>  todos = [];<br>  pendingCount = <span class="hljs-number">0</span>;<br><br>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-title function_">makeAutoObservable</span>(<span class="hljs-variable language_">this</span>);<br>    <span class="hljs-comment">// 就这么简单！不需要任何注解</span><br>  &#125;<br><br>  <span class="hljs-title function_">addTodo</span>(<span class="hljs-params">title</span>) &#123;<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">todos</span>.<span class="hljs-title function_">push</span>(&#123; title, <span class="hljs-attr">completed</span>: <span class="hljs-literal">false</span> &#125;);<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">pendingCount</span>++;<br>  &#125;<br><br>  <span class="hljs-title function_">toggleComplete</span>(<span class="hljs-params">index</span>) &#123;<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">todos</span>[index].<span class="hljs-property">completed</span> = !<span class="hljs-variable language_">this</span>.<span class="hljs-property">todos</span>[index].<span class="hljs-property">completed</span>;<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">pendingCount</span> += <span class="hljs-variable language_">this</span>.<span class="hljs-property">todos</span>[index].<span class="hljs-property">completed</span> ? -<span class="hljs-number">1</span> : <span class="hljs-number">1</span>;<br>  &#125;<br><br>  <span class="hljs-keyword">get</span> <span class="hljs-title function_">completedTodos</span>() &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">todos</span>.<span class="hljs-title function_">filter</span>(<span class="hljs-function">(<span class="hljs-params">t</span>) =&gt;</span> t.<span class="hljs-property">completed</span>);<br>  &#125;<br><br>  <span class="hljs-keyword">get</span> <span class="hljs-title function_">pendingTodos</span>() &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">todos</span>.<span class="hljs-title function_">filter</span>(<span class="hljs-function">(<span class="hljs-params">t</span>) =&gt;</span> !t.<span class="hljs-property">completed</span>);<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong>自动推断规则</strong>：</p>
+<table>
+<thead>
+<tr>
+<th align="left">成员类型</th>
+<th align="left">自动推断为</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">普通属性（<code>todos = []</code>）</td>
+<td align="left"><code>observable</code></td>
+</tr>
+<tr>
+<td align="left">Getter（<code>get completedTodos()</code>）</td>
+<td align="left"><code>computed</code></td>
+</tr>
+<tr>
+<td align="left">方法（<code>addTodo()</code>）</td>
+<td align="left"><code>action</code></td>
+</tr>
+<tr>
+<td align="left">Setter（<code>set value(val)</code>）</td>
+<td align="left"><code>action</code></td>
+</tr>
+<tr>
+<td align="left">箭头函数属性（<code>increment = () =&gt; {}</code>）</td>
+<td align="left"><code>action.bound</code></td>
+</tr>
+</tbody></table>
+<p><strong>何时使用</strong>：</p>
+<ul>
+<li>新项目、无继承关系的类（<strong>首选</strong>）。</li>
+<li>追求代码简洁和开发效率。</li>
+</ul>
+<hr>
+<h2 id="4-override（继承场景的关键注解）"><a href="#4-override（继承场景的关键注解）" class="headerlink" title="4. override（继承场景的关键注解）"></a>4. override（继承场景的关键注解）</h2><p><strong>核心问题</strong>：子类重写父类的 <code>computed</code> 或 <code>action</code> 时，<strong>必须</strong>使用 <code>override</code> 注解，否则 MobX 会报错或行为异常。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">import</span> &#123; makeObservable, observable, computed, action, override &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;mobx&quot;</span>;<br><br><span class="hljs-comment">// ========== 父类 ==========</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Animal</span> &#123;<br>  name = <span class="hljs-string">&quot;&quot;</span>;<br>  age = <span class="hljs-number">0</span>;<br><br>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-comment">// 父类使用 makeObservable（不能使用 makeAutoObservable）</span><br>    <span class="hljs-title function_">makeObservable</span>(<span class="hljs-variable language_">this</span>, &#123;<br>      <span class="hljs-attr">name</span>: observable,<br>      <span class="hljs-attr">age</span>: observable,<br>      get <span class="hljs-attr">description</span>: computed,<br>      <span class="hljs-attr">speak</span>: action,<br>    &#125;);<br>  &#125;<br><br>  <span class="hljs-keyword">get</span> <span class="hljs-title function_">description</span>() &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">`<span class="hljs-subst">$&#123;<span class="hljs-variable language_">this</span>.name&#125;</span> (<span class="hljs-subst">$&#123;<span class="hljs-variable language_">this</span>.age&#125;</span>岁)`</span>;<br>  &#125;<br><br>  <span class="hljs-title function_">speak</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;动物发出声音&quot;</span>);<br>  &#125;<br>&#125;<br><br><span class="hljs-comment">// ========== 子类 ==========</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Dog</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_ inherited__">Animal</span> &#123;<br>  breed = <span class="hljs-string">&quot;&quot;</span>; <span class="hljs-comment">// 子类新增属性</span><br><br>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">name, age, breed</span>) &#123;<br>    <span class="hljs-variable language_">super</span>(); <span class="hljs-comment">// ⚠️ 必须先调用 super()</span><br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">name</span> = name;<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">age</span> = age;<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">breed</span> = breed;<br><br>    <span class="hljs-comment">// ⚠️ 子类也必须调用 makeObservable</span><br>    <span class="hljs-title function_">makeObservable</span>(<span class="hljs-variable language_">this</span>, &#123;<br>      <span class="hljs-attr">breed</span>: observable,           <span class="hljs-comment">// 新增属性：正常标记</span><br>      get <span class="hljs-attr">description</span>: override,   <span class="hljs-comment">// ✅ 重写父类的 computed → 必须用 override</span><br>      <span class="hljs-attr">speak</span>: override,             <span class="hljs-comment">// ✅ 重写父类的 action → 必须用 override</span><br>      <span class="hljs-attr">bark</span>: action,                <span class="hljs-comment">// 新增方法：正常标记</span><br>    &#125;);<br>  &#125;<br><br>  <span class="hljs-comment">// 重写父类的 computed</span><br>  <span class="hljs-keyword">get</span> <span class="hljs-title function_">description</span>() &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">`<span class="hljs-subst">$&#123;<span class="hljs-variable language_">this</span>.name&#125;</span>（<span class="hljs-subst">$&#123;<span class="hljs-variable language_">this</span>.breed&#125;</span>）<span class="hljs-subst">$&#123;<span class="hljs-variable language_">this</span>.age&#125;</span>岁`</span>;<br>  &#125;<br><br>  <span class="hljs-comment">// 重写父类的 action</span><br>  <span class="hljs-title function_">speak</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`<span class="hljs-subst">$&#123;<span class="hljs-variable language_">this</span>.name&#125;</span> 汪汪叫！`</span>);<br>  &#125;<br><br>  <span class="hljs-comment">// 子类新增方法</span><br>  <span class="hljs-title function_">bark</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;汪！汪！&quot;</span>);<br>  &#125;<br>&#125;<br><br><span class="hljs-comment">// ========== 使用效果 ==========</span><br><span class="hljs-keyword">const</span> dog = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Dog</span>(<span class="hljs-string">&quot;旺财&quot;</span>, <span class="hljs-number">3</span>, <span class="hljs-string">&quot;金毛&quot;</span>);<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(dog.<span class="hljs-property">description</span>); <span class="hljs-comment">// &quot;旺财（金毛）3岁&quot;</span><br>dog.<span class="hljs-title function_">speak</span>(); <span class="hljs-comment">// &quot;旺财 汪汪叫！&quot;</span><br>dog.<span class="hljs-title function_">bark</span>(); <span class="hljs-comment">// &quot;汪！汪！&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p><strong><code>override</code> 的核心作用</strong>：</p>
+<ol>
+<li><strong>明确语义</strong>：告诉 MobX 和代码阅读者：”我故意重写了父类的方法”。</li>
+<li><strong>安全保护</strong>：如果父类没有同名的 <code>computed/action</code>，MobX 会报错，防止你写错方法名。</li>
+<li><strong>内部处理</strong>：让 MobX 正确处理继承链中的依赖追踪和缓存。</li>
+</ol>
+<p><strong>❌ 错误示例</strong>：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// ❌ 子类未使用 override</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">BadDog</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_ inherited__">Animal</span> &#123;<br>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">name, age, breed</span>) &#123;<br>    <span class="hljs-variable language_">super</span>();<br>    <span class="hljs-title function_">makeObservable</span>(<span class="hljs-variable language_">this</span>, &#123;<br>      get <span class="hljs-attr">description</span>: computed, <span class="hljs-comment">// ❌ 应该用 override，MobX 会报错</span><br>    &#125;);<br>  &#125;<br>  <span class="hljs-keyword">get</span> <span class="hljs-title function_">description</span>() &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;错误的狗&quot;</span>;<br>  &#125;<br>&#125;<br><span class="hljs-comment">// 报错：MobX: &#x27;description&#x27; is overridden but is not marked as &#x27;override&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="5-为什么-makeAutoObservable-不能用于继承？"><a href="#5-为什么-makeAutoObservable-不能用于继承？" class="headerlink" title="5. 为什么 makeAutoObservable 不能用于继承？"></a>5. 为什么 makeAutoObservable 不能用于继承？</h2><p><code>makeAutoObservable</code> 只能处理<strong>当前类自身</strong>定义的成员，无法感知父类的成员。当子类调用 <code>makeAutoObservable(this)</code> 时：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Parent</span> &#123;<br>  value = <span class="hljs-number">1</span>;<br>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-title function_">makeAutoObservable</span>(<span class="hljs-variable language_">this</span>); <span class="hljs-comment">// 处理 Parent 自身的属性</span><br>  &#125;<br>&#125;<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Child</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_ inherited__">Parent</span> &#123;<br>  value = <span class="hljs-number">2</span>; <span class="hljs-comment">// 重写父类属性</span><br>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-variable language_">super</span>(); <span class="hljs-comment">// 父类先执行，已经把 value 处理为 observable</span><br>    <span class="hljs-title function_">makeAutoObservable</span>(<span class="hljs-variable language_">this</span>); <span class="hljs-comment">// ⚠️ 这里再次处理 value，会导致混乱</span><br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>结果：<code>Child</code> 中的 <code>value</code> 会覆盖父类的，但 MobX 内部追踪会出问题。</p>
+<blockquote>
+<p><strong>结论</strong>：有继承关系的类，<strong>统一使用 <code>makeObservable</code> + <code>override</code></strong>。</p>
+</blockquote>
+<hr>
+<h2 id="6-选型决策指南"><a href="#6-选型决策指南" class="headerlink" title="6. 选型决策指南"></a>6. 选型决策指南</h2><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs text">我的类是否需要继承（extends）？<br>├── 否 → 使用 makeAutoObservable（首选，最简洁）<br>└── 是 → 父类和子类都使用 makeObservable<br>          └── 子类重写了父类方法？<br>              ├── 是 → 子类中使用 override 标记<br>              └── 否 → 正常标记即可<br></code></pre></td></tr></table></figure>
+
+<p><strong>快速决策表</strong>：</p>
+<table>
+<thead>
+<tr>
+<th align="left">场景</th>
+<th align="left">推荐方案</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">新项目，无继承</td>
+<td align="left"><code>makeAutoObservable</code></td>
+</tr>
+<tr>
+<td align="left">需要继承（extends）</td>
+<td align="left"><code>makeObservable</code> + <code>override</code></td>
+</tr>
+<tr>
+<td align="left">需要精细控制（如排除某些属性）</td>
+<td align="left"><code>makeObservable</code></td>
+</tr>
+<tr>
+<td align="left">使用装饰器语法（<code>@observable</code>）</td>
+<td align="left">不需要调用任何<code>make*</code> 函数</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="7-常见错误与陷阱"><a href="#7-常见错误与陷阱" class="headerlink" title="7. 常见错误与陷阱"></a>7. 常见错误与陷阱</h2><h3 id="❌-错误-1：在-observable-工厂函数中混用-makeAutoObservable"><a href="#❌-错误-1：在-observable-工厂函数中混用-makeAutoObservable" class="headerlink" title="❌ 错误 1：在 observable 工厂函数中混用 makeAutoObservable"></a>❌ 错误 1：在 observable 工厂函数中混用 makeAutoObservable</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// ❌ 错误写法</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> <span class="hljs-title class_">ThemeStore</span> = <span class="hljs-title function_">observable</span>(&#123;<br>  <span class="hljs-attr">currentTheme</span>: <span class="hljs-string">&quot;&quot;</span>,<br>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-title function_">makeAutoObservable</span>(<span class="hljs-variable language_">this</span>); <span class="hljs-comment">// 这里的 this 指向原始对象，不是 observable 代理</span><br>  &#125;,<br>&#125;);<br></code></pre></td></tr></table></figure>
+
+<p><strong>正确做法</strong>：<code>observable</code> 工厂已自动处理，<strong>不需要</strong>再调用任何 <code>make*</code> 函数。</p>
+<h3 id="❌-错误-2：有继承关系却使用-makeAutoObservable"><a href="#❌-错误-2：有继承关系却使用-makeAutoObservable" class="headerlink" title="❌ 错误 2：有继承关系却使用 makeAutoObservable"></a>❌ 错误 2：有继承关系却使用 makeAutoObservable</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// ❌ 错误</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Child</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_ inherited__">Parent</span> &#123;<br>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-variable language_">super</span>();<br>    <span class="hljs-title function_">makeAutoObservable</span>(<span class="hljs-variable language_">this</span>); <span class="hljs-comment">// 继承场景下不支持</span><br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong>正确做法</strong>：父类和子类都使用 <code>makeObservable</code>。</p>
+<h3 id="❌-错误-3：重写父类方法但忘记加-override"><a href="#❌-错误-3：重写父类方法但忘记加-override" class="headerlink" title="❌ 错误 3：重写父类方法但忘记加 override"></a>❌ 错误 3：重写父类方法但忘记加 override</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// ❌ 错误</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Child</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_ inherited__">Parent</span> &#123;<br>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-variable language_">super</span>();<br>    <span class="hljs-title function_">makeObservable</span>(<span class="hljs-variable language_">this</span>, &#123;<br>      get <span class="hljs-attr">value</span>: computed, <span class="hljs-comment">// 应该用 override</span><br>    &#125;);<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong>正确做法</strong>：用 <code>override</code> 替换 <code>computed</code>&#x2F;<code>action</code>。</p>
+<h3 id="❌-错误-4：忘记在构造函数中调用-super"><a href="#❌-错误-4：忘记在构造函数中调用-super" class="headerlink" title="❌ 错误 4：忘记在构造函数中调用 super()"></a>❌ 错误 4：忘记在构造函数中调用 super()</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// ❌ 错误</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Child</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_ inherited__">Parent</span> &#123;<br>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-comment">// 忘记调用 super()</span><br>    <span class="hljs-title function_">makeObservable</span>(<span class="hljs-variable language_">this</span>, &#123; ... &#125;);<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong>正确做法</strong>：子类构造函数中<strong>必须先调用 <code>super()</code></strong>，再调用 <code>makeObservable</code>。</p>
+<hr>
+<blockquote>
+<p>💡 <strong>核心原则</strong>：无继承用 <code>makeAutoObservable</code>，有继承用 <code>makeObservable + override</code>。</p>
+</blockquote>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs"><br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%8A%B6%E6%80%81%E7%AE%A1%E7%90%86/" class="category-chain-item">状态管理</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%8A%B6%E6%80%81%E7%AE%A1%E7%90%86/MobX/" class="category-chain-item">MobX</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/MobX/" class="print-no-link">#MobX</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>MobX 类注解：makeObservable / makeAutoObservable / override</div>
+      <div>http://example.com/2026/09/07/状态管理/MobX 类注解/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年9月7日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/09/13/JavaScript/%E3%80%90JS%E3%80%91%E5%8F%AF%E8%BF%AD%E4%BB%A3%E5%8D%8F%E8%AE%AE/" title="【JS】可迭代协议">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">【JS】可迭代协议</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/08/31/%E6%95%B0%E6%8D%AE%E5%BA%93/pgAdmin%E5%AE%89%E8%A3%85%E5%8F%8A%E4%BD%BF%E7%94%A8/" title="pgAdmin安装及使用">
+                        <span class="hidden-mobile">pgAdmin安装及使用</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

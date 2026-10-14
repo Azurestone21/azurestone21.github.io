@@ -1,0 +1,768 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="React ref Hook一、ref 概念ref 可以理解为一个贯穿组件生命周期的可变盒子。它有两个核心特点：  修改 .current 不会触发重新渲染。 它在多次渲染之间保持同一个引用。  用一句话概括： 1ref 是一个不会触发渲染的“逃生舱”，用来存那些“不需要驱动 UI 更新”的值，或者直接访问 DOM。  和 state 对比：    维度 state ref    修改后是否重新渲">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React ref Hook">
+<meta property="og:url" content="http://example.com/2024/08/10/React/React%20Hook%EF%BC%9Aref/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="React ref Hook一、ref 概念ref 可以理解为一个贯穿组件生命周期的可变盒子。它有两个核心特点：  修改 .current 不会触发重新渲染。 它在多次渲染之间保持同一个引用。  用一句话概括： 1ref 是一个不会触发渲染的“逃生舱”，用来存那些“不需要驱动 UI 更新”的值，或者直接访问 DOM。  和 state 对比：    维度 state ref    修改后是否重新渲">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-08-09T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-14T14:26:02.539Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="React">
+<meta property="article:tag" content="ref">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>React ref Hook - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">React ref Hook</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-08-10 00:00" pubdate>
+          2024年8月10日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          13 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">React ref Hook</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="React-ref-Hook"><a href="#React-ref-Hook" class="headerlink" title="React ref Hook"></a>React ref Hook</h1><h2 id="一、ref-概念"><a href="#一、ref-概念" class="headerlink" title="一、ref 概念"></a>一、ref 概念</h2><p><code>ref</code> 可以理解为一个<strong>贯穿组件生命周期的可变盒子</strong>。它有两个核心特点：</p>
+<ol>
+<li><strong>修改 <code>.current</code> 不会触发重新渲染</strong>。</li>
+<li><strong>它在多次渲染之间保持同一个引用</strong>。</li>
+</ol>
+<p>用一句话概括：</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs txt">ref 是一个不会触发渲染的“逃生舱”，用来存那些“不需要驱动 UI 更新”的值，或者直接访问 DOM。<br></code></pre></td></tr></table></figure>
+
+<p>和 state 对比：</p>
+<table>
+<thead>
+<tr>
+<th align="left">维度</th>
+<th align="left">state</th>
+<th align="left">ref</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">修改后是否重新渲染</td>
+<td align="left">是</td>
+<td align="left">否</td>
+</tr>
+<tr>
+<td align="left">是否跨渲染保持</td>
+<td align="left">是</td>
+<td align="left">是</td>
+</tr>
+<tr>
+<td align="left">是否参与渲染计算</td>
+<td align="left">是</td>
+<td align="left">不应该</td>
+</tr>
+<tr>
+<td align="left">典型用途</td>
+<td align="left">驱动 UI</td>
+<td align="left">存 DOM、存定时器 ID、存不需渲染的值</td>
+</tr>
+</tbody></table>
+<p>关键区别：<strong>state 用来渲染，ref 用来记住东西，但不告诉 React 要重渲染。</strong></p>
+<h2 id="二、useRef-基本用法"><a href="#二、useRef-基本用法" class="headerlink" title="二、useRef 基本用法"></a>二、useRef 基本用法</h2><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">import</span> &#123; useRef &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;react&#x27;</span>;<br><br><span class="hljs-keyword">const</span> ref = <span class="hljs-title function_">useRef</span>(initialValue);<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><code>ref.current</code>：当前值，可读写。</li>
+<li><code>initialValue</code>：初始值，只在首次渲染时使用，之后被忽略。</li>
+<li><code>useRef</code> 返回的对象在组件整个生命周期内是<strong>同一个</strong>。</li>
+</ul>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">function</span> <span class="hljs-title function_">Counter</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-keyword">const</span> countRef = <span class="hljs-title function_">useRef</span>(<span class="hljs-number">0</span>);<br><br>  <span class="hljs-keyword">const</span> <span class="hljs-title function_">handleClick</span> = (<span class="hljs-params"></span>) =&gt; &#123;<br>    countRef.<span class="hljs-property">current</span> += <span class="hljs-number">1</span>;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(countRef.<span class="hljs-property">current</span>); <span class="hljs-comment">// 值变了</span><br>    <span class="hljs-comment">// 但 UI 不会更新</span><br>  &#125;;<br><br>  <span class="hljs-keyword">return</span> <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">&#123;handleClick&#125;</span>&gt;</span>点击<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span></span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>点击时 <code>countRef.current</code> 会递增，但组件不会重新渲染，界面上的数字不会变。</p>
+<h2 id="三、两大用途"><a href="#三、两大用途" class="headerlink" title="三、两大用途"></a>三、两大用途</h2><h3 id="1-访问-DOM-元素"><a href="#1-访问-DOM-元素" class="headerlink" title="1. 访问 DOM 元素"></a>1. 访问 DOM 元素</h3><p>最常见的用途。把 <code>ref</code> 传给 JSX 元素的 <code>ref</code> 属性，React 会把真实 DOM 节点挂到 <code>.current</code>：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">function</span> <span class="hljs-title function_">TextInput</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-keyword">const</span> inputRef = <span class="hljs-title function_">useRef</span>(<span class="hljs-literal">null</span>);<br><br>  <span class="hljs-keyword">const</span> <span class="hljs-title function_">focusInput</span> = (<span class="hljs-params"></span>) =&gt; &#123;<br>    inputRef.<span class="hljs-property">current</span>.<span class="hljs-title function_">focus</span>();<br>  &#125;;<br><br>  <span class="hljs-keyword">return</span> (<br>    <span class="language-xml"><span class="hljs-tag">&lt;&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">ref</span>=<span class="hljs-string">&#123;inputRef&#125;</span> /&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">&#123;focusInput&#125;</span>&gt;</span>聚焦输入框<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span></span><br><span class="language-xml">    <span class="hljs-tag">&lt;/&gt;</span></span><br>  );<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>几个关键点：</p>
+<ul>
+<li>初始值是 <code>null</code>，因为首次渲染时 DOM 还没挂载。</li>
+<li>React 在提交阶段把 DOM 赋给 <code>.current</code>。</li>
+<li>组件卸载时，React 把它设回 <code>null</code>。</li>
+<li>不要在渲染期间读取 <code>ref.current</code>，此时可能还是 <code>null</code> 或旧值。</li>
+</ul>
+<p>常见 DOM 操作：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-comment">// 滚动到某个位置</span><br>listRef.<span class="hljs-property">current</span>.<span class="hljs-title function_">scrollIntoView</span>();<br><br><span class="hljs-comment">// 播放视频</span><br>videoRef.<span class="hljs-property">current</span>.<span class="hljs-title function_">play</span>();<br><br><span class="hljs-comment">// 读取尺寸</span><br><span class="hljs-keyword">const</span> &#123; height &#125; = boxRef.<span class="hljs-property">current</span>.<span class="hljs-title function_">getBoundingClientRect</span>();<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-存储不需要触发渲染的值"><a href="#2-存储不需要触发渲染的值" class="headerlink" title="2. 存储不需要触发渲染的值"></a>2. 存储不需要触发渲染的值</h3><p>比如定时器 ID、上一次的值、订阅句柄、计数器等：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">function</span> <span class="hljs-title function_">Timer</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-keyword">const</span> intervalRef = <span class="hljs-title function_">useRef</span>(<span class="hljs-literal">null</span>);<br><br>  <span class="hljs-keyword">const</span> <span class="hljs-title function_">start</span> = (<span class="hljs-params"></span>) =&gt; &#123;<br>    intervalRef.<span class="hljs-property">current</span> = <span class="hljs-built_in">setInterval</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>      <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;tick&#x27;</span>);<br>    &#125;, <span class="hljs-number">1000</span>);<br>  &#125;;<br><br>  <span class="hljs-keyword">const</span> <span class="hljs-title function_">stop</span> = (<span class="hljs-params"></span>) =&gt; &#123;<br>    <span class="hljs-built_in">clearInterval</span>(intervalRef.<span class="hljs-property">current</span>);<br>  &#125;;<br><br>  <span class="hljs-keyword">return</span> (<br>    <span class="language-xml"><span class="hljs-tag">&lt;&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">&#123;start&#125;</span>&gt;</span>开始<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">&#123;stop&#125;</span>&gt;</span>停止<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span></span><br><span class="language-xml">    <span class="hljs-tag">&lt;/&gt;</span></span><br>  );<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这里的 <code>intervalRef</code> 变化不需要 UI 更新，用 ref 就比 state 更合适。</p>
+<h2 id="四、ref-和渲染的关系"><a href="#四、ref-和渲染的关系" class="headerlink" title="四、ref 和渲染的关系"></a>四、ref 和渲染的关系</h2><p>ref 的核心特性：<strong>修改 <code>.current</code> 不会触发重新渲染</strong>。</p>
+<p>这带来两个推论：</p>
+<ol>
+<li><strong>不要在渲染期间读写 ref 来影响 UI</strong>。因为读写 ref 不会触发渲染，UI 可能和 ref 不一致。</li>
+<li><strong>不要在渲染期间写 ref</strong>（除非是惰性初始化）。React 的渲染应该是纯的，写 ref 属于副作用。</li>
+</ol>
+<p>正确用法是：</p>
+<ul>
+<li>在事件处理函数中读写 ref。</li>
+<li>在 <code>useEffect</code> &#x2F; <code>useLayoutEffect</code> 中读写 ref。</li>
+<li>在渲染期间只读取，且用于非 UI 逻辑时要谨慎。</li>
+</ul>
+<h2 id="五、ref-和-state-的配合"><a href="#五、ref-和-state-的配合" class="headerlink" title="五、ref 和 state 的配合"></a>五、ref 和 state 的配合</h2><p>有时候需要“既记住值，又驱动 UI 更新”：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">function</span> <span class="hljs-title function_">Counter</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-keyword">const</span> [count, setCount] = <span class="hljs-title function_">useState</span>(<span class="hljs-number">0</span>);<br>  <span class="hljs-keyword">const</span> prevCountRef = <span class="hljs-title function_">useRef</span>(<span class="hljs-number">0</span>);<br><br>  <span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>    prevCountRef.<span class="hljs-property">current</span> = count;<br>  &#125;, [count]);<br><br>  <span class="hljs-keyword">return</span> (<br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span></span><br><span class="language-xml">      当前：&#123;count&#125;，上一次：&#123;prevCountRef.current&#125;</span><br><span class="language-xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span></span><br>  );<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><code>prevCountRef</code> 用来记录上一次的值，不驱动渲染；<code>count</code> 用来驱动渲染。</p>
+<h2 id="六、不要把-ref-当-state-用"><a href="#六、不要把-ref-当-state-用" class="headerlink" title="六、不要把 ref 当 state 用"></a>六、不要把 ref 当 state 用</h2><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-comment">// 错误：想用 ref 驱动 UI</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">Counter</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-keyword">const</span> countRef = <span class="hljs-title function_">useRef</span>(<span class="hljs-number">0</span>);<br><br>  <span class="hljs-keyword">return</span> (<br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">&#123;()</span> =&gt;</span> &#123; countRef.current += 1; &#125;&#125;&gt;</span><br><span class="language-xml">      &#123;countRef.current&#125; &#123;/* 不会更新 */&#125;</span><br><span class="language-xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span></span><br>  );<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>需要驱动 UI 就用 <code>useState</code>，不需要驱动 UI 才用 <code>useRef</code>。</p>
+<h2 id="七、ref-的其他形式"><a href="#七、ref-的其他形式" class="headerlink" title="七、ref 的其他形式"></a>七、ref 的其他形式</h2><h3 id="1-ref-回调函数"><a href="#1-ref-回调函数" class="headerlink" title="1. ref 回调函数"></a>1. ref 回调函数</h3><p>除了传 ref 对象，还可以传一个函数：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">function</span> <span class="hljs-title function_">Measure</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-keyword">const</span> [height, setHeight] = <span class="hljs-title function_">useState</span>(<span class="hljs-number">0</span>);<br><br>  <span class="hljs-keyword">return</span> (<br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span></span></span><br><span class="hljs-tag"><span class="language-xml">      <span class="hljs-attr">ref</span>=<span class="hljs-string">&#123;(node)</span> =&gt;</span> &#123;</span><br><span class="language-xml">        if (node) &#123;</span><br><span class="language-xml">          setHeight(node.getBoundingClientRect().height);</span><br><span class="language-xml">        &#125;</span><br><span class="language-xml">      &#125;&#125;</span><br><span class="language-xml">    /&gt;</span><br>  );<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>React 会在挂载时调用它并传入 DOM 节点，卸载时传入 <code>null</code>。</p>
+<h3 id="2-forwardRef：把-ref-转发给子组件"><a href="#2-forwardRef：把-ref-转发给子组件" class="headerlink" title="2. forwardRef：把 ref 转发给子组件"></a>2. forwardRef：把 ref 转发给子组件</h3><p>默认情况下，函数组件不能直接接收 <code>ref</code>。用 <code>forwardRef</code> 转发：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">const</span> <span class="hljs-title class_">FancyInput</span> = <span class="hljs-title function_">forwardRef</span>(<span class="hljs-keyword">function</span> <span class="hljs-title function_">FancyInput</span>(<span class="hljs-params">props, ref</span>) &#123;<br>  <span class="hljs-keyword">return</span> <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">ref</span>=<span class="hljs-string">&#123;ref&#125;</span> &#123;<span class="hljs-attr">...props</span>&#125; /&gt;</span></span>;<br>&#125;);<br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">Parent</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-keyword">const</span> inputRef = <span class="hljs-title function_">useRef</span>(<span class="hljs-literal">null</span>);<br><br>  <span class="hljs-keyword">return</span> (<br>    <span class="language-xml"><span class="hljs-tag">&lt;&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">FancyInput</span> <span class="hljs-attr">ref</span>=<span class="hljs-string">&#123;inputRef&#125;</span> /&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">&#123;()</span> =&gt;</span> inputRef.current.focus()&#125;&gt;聚焦<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span></span><br><span class="language-xml">    <span class="hljs-tag">&lt;/&gt;</span></span><br>  );<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>React 19 之后，<code>ref</code> 可以作为普通 prop 传递，不再必须用 <code>forwardRef</code>：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">function</span> <span class="hljs-title function_">FancyInput</span>(<span class="hljs-params">&#123; ref, ...props &#125;</span>) &#123;<br>  <span class="hljs-keyword">return</span> <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">ref</span>=<span class="hljs-string">&#123;ref&#125;</span> &#123;<span class="hljs-attr">...props</span>&#125; /&gt;</span></span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-useImperativeHandle：自定义暴露给父组件的-ref"><a href="#3-useImperativeHandle：自定义暴露给父组件的-ref" class="headerlink" title="3. useImperativeHandle：自定义暴露给父组件的 ref"></a>3. useImperativeHandle：自定义暴露给父组件的 ref</h3><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">const</span> <span class="hljs-title class_">FancyInput</span> = <span class="hljs-title function_">forwardRef</span>(<span class="hljs-keyword">function</span> <span class="hljs-title function_">FancyInput</span>(<span class="hljs-params">props, ref</span>) &#123;<br>  <span class="hljs-keyword">const</span> inputRef = <span class="hljs-title function_">useRef</span>(<span class="hljs-literal">null</span>);<br><br>  <span class="hljs-title function_">useImperativeHandle</span>(ref, <span class="hljs-function">() =&gt;</span> (&#123;<br>    <span class="hljs-title function_">focus</span>(<span class="hljs-params"></span>) &#123;<br>      inputRef.<span class="hljs-property">current</span>.<span class="hljs-title function_">focus</span>();<br>    &#125;,<br>    <span class="hljs-title function_">clear</span>(<span class="hljs-params"></span>) &#123;<br>      inputRef.<span class="hljs-property">current</span>.<span class="hljs-property">value</span> = <span class="hljs-string">&#x27;&#x27;</span>;<br>    &#125;,<br>  &#125;));<br><br>  <span class="hljs-keyword">return</span> <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">ref</span>=<span class="hljs-string">&#123;inputRef&#125;</span> /&gt;</span></span>;<br>&#125;);<br></code></pre></td></tr></table></figure>
+
+<p>父组件拿到的是 <code>{ focus, clear }</code>，而不是原始 DOM。</p>
+<h2 id="八、常见陷阱"><a href="#八、常见陷阱" class="headerlink" title="八、常见陷阱"></a>八、常见陷阱</h2><h3 id="1-在渲染期间读取-ref-current"><a href="#1-在渲染期间读取-ref-current" class="headerlink" title="1. 在渲染期间读取 ref.current"></a>1. 在渲染期间读取 ref.current</h3><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">function</span> <span class="hljs-title function_">Component</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-keyword">const</span> ref = <span class="hljs-title function_">useRef</span>(<span class="hljs-literal">null</span>);<br><br>  <span class="hljs-comment">// 错误：首次渲染时 ref.current 是 null</span><br>  <span class="hljs-keyword">return</span> <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>&#123;ref.current.value&#125;<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-在渲染期间写-ref"><a href="#2-在渲染期间写-ref" class="headerlink" title="2. 在渲染期间写 ref"></a>2. 在渲染期间写 ref</h3><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">function</span> <span class="hljs-title function_">Component</span>(<span class="hljs-params">&#123; value &#125;</span>) &#123;<br>  <span class="hljs-keyword">const</span> ref = <span class="hljs-title function_">useRef</span>(<span class="hljs-number">0</span>);<br><br>  <span class="hljs-comment">// 错误：渲染应该纯，写 ref 是副作用</span><br>  ref.<span class="hljs-property">current</span> = value;<br><br>  <span class="hljs-keyword">return</span> <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>&#123;value&#125;<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-用-ref-存需要渲染的值"><a href="#3-用-ref-存需要渲染的值" class="headerlink" title="3. 用 ref 存需要渲染的值"></a>3. 用 ref 存需要渲染的值</h3><p>如果值变了要反映到 UI，用 <code>useState</code>。</p>
+<h3 id="4-依赖-ref-current-触发重新渲染"><a href="#4-依赖-ref-current-触发重新渲染" class="headerlink" title="4. 依赖 ref.current 触发重新渲染"></a>4. 依赖 ref.current 触发重新渲染</h3><p>ref 变化不会触发渲染，所以不要期望它驱动 UI。</p>
+<h3 id="5-忘记清理"><a href="#5-忘记清理" class="headerlink" title="5. 忘记清理"></a>5. 忘记清理</h3><p>如果 ref 里存了定时器、订阅、事件监听，记得在 <code>useEffect</code> 清理时处理：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>  <span class="hljs-keyword">return</span> <span class="hljs-function">() =&gt;</span> &#123;<br>    <span class="hljs-built_in">clearInterval</span>(intervalRef.<span class="hljs-property">current</span>);<br>  &#125;;<br>&#125;, []);<br></code></pre></td></tr></table></figure>
+
+<h2 id="九、什么时候用-ref"><a href="#九、什么时候用-ref" class="headerlink" title="九、什么时候用 ref"></a>九、什么时候用 ref</h2><ul>
+<li>访问 DOM：聚焦、滚动、测量、播放媒体。</li>
+<li>存定时器 ID、订阅句柄、WebSocket 连接。</li>
+<li>记录上一次的值、渲染次数。</li>
+<li>存不需要触发渲染的可变值。</li>
+<li>与第三方库集成，需要传 DOM 节点。</li>
+</ul>
+<p>什么时候不用：</p>
+<ul>
+<li>需要驱动 UI 更新 → 用 <code>useState</code>。</li>
+<li>能通过 props &#x2F; state 计算出来 → 不需要 ref。</li>
+<li>想在渲染期间同步数据 → 用 state 或 <code>useMemo</code>。</li>
+</ul>
+<h2 id="十、总结"><a href="#十、总结" class="headerlink" title="十、总结"></a>十、总结</h2><p>ref 的核心：</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs txt">ref 是一个跨渲染保持的可变盒子，修改它不会触发重新渲染。<br></code></pre></td></tr></table></figure>
+
+<p>要点：</p>
+<ul>
+<li><code>useRef(initialValue)</code> 返回 <code>{ current }</code>，跨渲染稳定。</li>
+<li>主要用途：访问 DOM、存不驱动 UI 的可变值。</li>
+<li>不要在渲染期间读写 ref。</li>
+<li>需要驱动 UI 就用 state，不需要就用 ref。</li>
+<li>函数组件默认不能接收 ref，需要 <code>forwardRef</code>（React 19 起可直接作为 prop）。</li>
+<li><code>useImperativeHandle</code> 可以自定义暴露给父组件的接口。</li>
+</ul>
+<p><strong>state 用来渲染，ref 用来记住；改 state 会重渲染，改 ref 不会。</strong></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/React/" class="category-chain-item">React</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/React/" class="print-no-link">#React</a>
+      
+        <a href="/tags/ref/" class="print-no-link">#ref</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>React ref Hook</div>
+      <div>http://example.com/2024/08/10/React/React Hook：ref/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年8月10日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/08/10/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL%20%E4%BA%8B%E5%8A%A1%E4%B8%8E%E9%94%81/" title="MySQL：事务与锁">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">MySQL：事务与锁</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/08/10/React/React%20Hook%EF%BC%9AuseState/" title="React useState Hook">
+                        <span class="hidden-mobile">React useState Hook</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,1085 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="一、正则概念1. 正则是什么正则表达式是描述字符串匹配模式的语法，用于：  校验：手机号、邮箱、密码 查找：关键词高亮、提取版本号 替换：千分位、模板变量、下划线转驼峰 分割：query、路径、日志  核心认知：正则是模式匹配工具，不是解析器。 不适合解析 HTML、JSON、复杂嵌套结构。 2. 正则引擎常见分两类：  DFA：线性时间，不支持反向引用、断言等。 NFA：支持更多语法，但可能回溯">
+<meta property="og:type" content="article">
+<meta property="og:title" content="正则表达式">
+<meta property="og:url" content="http://example.com/2024/07/23/%E5%89%8D%E7%AB%AF/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="一、正则概念1. 正则是什么正则表达式是描述字符串匹配模式的语法，用于：  校验：手机号、邮箱、密码 查找：关键词高亮、提取版本号 替换：千分位、模板变量、下划线转驼峰 分割：query、路径、日志  核心认知：正则是模式匹配工具，不是解析器。 不适合解析 HTML、JSON、复杂嵌套结构。 2. 正则引擎常见分两类：  DFA：线性时间，不支持反向引用、断言等。 NFA：支持更多语法，但可能回溯">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-07-22T16:57:20.000Z">
+<meta property="article:modified_time" content="2026-10-14T14:26:02.704Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="正则表达式">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>正则表达式 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">正则表达式</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-07-23 00:57" pubdate>
+          2024年7月23日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          23 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">正则表达式</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="一、正则概念"><a href="#一、正则概念" class="headerlink" title="一、正则概念"></a>一、正则概念</h1><h2 id="1-正则是什么"><a href="#1-正则是什么" class="headerlink" title="1. 正则是什么"></a>1. 正则是什么</h2><p>正则表达式是<strong>描述字符串匹配模式</strong>的语法，用于：</p>
+<ul>
+<li>校验：手机号、邮箱、密码</li>
+<li>查找：关键词高亮、提取版本号</li>
+<li>替换：千分位、模板变量、下划线转驼峰</li>
+<li>分割：query、路径、日志</li>
+</ul>
+<p>核心认知：<br><strong>正则是模式匹配工具，不是解析器。</strong> 不适合解析 HTML、JSON、复杂嵌套结构。</p>
+<h2 id="2-正则引擎"><a href="#2-正则引擎" class="headerlink" title="2. 正则引擎"></a>2. 正则引擎</h2><p>常见分两类：</p>
+<ul>
+<li>DFA：线性时间，不支持反向引用、断言等。</li>
+<li>NFA：支持更多语法，但可能回溯，存在性能问题。</li>
+</ul>
+<p>JS、Python、Java、PCRE 大多属于 NFA 类。<br>JS 正则可能发生 <strong>灾难性回溯</strong>。</p>
+<h2 id="3-贪婪-vs-非贪婪"><a href="#3-贪婪-vs-非贪婪" class="headerlink" title="3. 贪婪 vs 非贪婪"></a>3. 贪婪 vs 非贪婪</h2><ul>
+<li>贪婪：<code>* + ? {n,m}</code> 默认尽量多匹配。</li>
+<li>非贪婪：加 <code>?</code>，如 <code>*? +? ?? {n,m}?</code>，尽量少匹配。</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-string">&quot;&lt;a&gt;1&lt;/a&gt;&lt;a&gt;2&lt;/a&gt;&quot;</span>.<span class="hljs-title function_">match</span>(<span class="hljs-regexp">/&lt;a&gt;.*&lt;\/a&gt;/</span>)[<span class="hljs-number">0</span>];<br><span class="hljs-comment">// &#x27;&lt;a&gt;1&lt;/a&gt;&lt;a&gt;2&lt;/a&gt;&#x27;</span><br><br><span class="hljs-string">&quot;&lt;a&gt;1&lt;/a&gt;&lt;a&gt;2&lt;/a&gt;&quot;</span>.<span class="hljs-title function_">match</span>(<span class="hljs-regexp">/&lt;a&gt;.*?&lt;\/a&gt;/</span>)[<span class="hljs-number">0</span>];<br><span class="hljs-comment">// &#x27;&lt;a&gt;1&lt;/a&gt;&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="二、基础规则速查"><a href="#二、基础规则速查" class="headerlink" title="二、基础规则速查"></a>二、基础规则速查</h1><h2 id="1-字符类"><a href="#1-字符类" class="headerlink" title="1. 字符类"></a>1. 字符类</h2><table>
+<thead>
+<tr>
+<th>语法</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>.</code></td>
+<td>任意字符，默认不含换行</td>
+</tr>
+<tr>
+<td><code>\d</code></td>
+<td>数字<code>[0-9]</code></td>
+</tr>
+<tr>
+<td><code>\D</code></td>
+<td>非数字</td>
+</tr>
+<tr>
+<td><code>\w</code></td>
+<td>字母、数字、下划线<code>[A-Za-z0-9_]</code></td>
+</tr>
+<tr>
+<td><code>\W</code></td>
+<td>非<code>\w</code></td>
+</tr>
+<tr>
+<td><code>\s</code></td>
+<td>空白字符</td>
+</tr>
+<tr>
+<td><code>\S</code></td>
+<td>非空白</td>
+</tr>
+<tr>
+<td><code>[abc]</code></td>
+<td>a、b、c 任意一个</td>
+</tr>
+<tr>
+<td><code>[^abc]</code></td>
+<td>不是 a、b、c</td>
+</tr>
+<tr>
+<td><code>[a-z]</code></td>
+<td>a 到 z</td>
+</tr>
+<tr>
+<td><code>[\s\S]</code></td>
+<td>任意字符，包括换行</td>
+</tr>
+<tr>
+<td><code>[^]</code></td>
+<td>JS 中任意字符，包括换行</td>
+</tr>
+</tbody></table>
+<p>注意：<br>JS 的 <code>\w</code>、<code>\d</code> 默认不匹配中文和 Unicode 数字。<br>匹配中文可用 <code>\p{Script=Han}</code> + <code>u</code>。</p>
+<h2 id="2-量词"><a href="#2-量词" class="headerlink" title="2. 量词"></a>2. 量词</h2><table>
+<thead>
+<tr>
+<th>语法</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>*</code></td>
+<td>0 次或多次</td>
+</tr>
+<tr>
+<td><code>+</code></td>
+<td>1 次或多次</td>
+</tr>
+<tr>
+<td><code>?</code></td>
+<td>0 次或 1 次</td>
+</tr>
+<tr>
+<td><code>{n}</code></td>
+<td>正好 n 次</td>
+</tr>
+<tr>
+<td><code>{n,}</code></td>
+<td>至少 n 次</td>
+</tr>
+<tr>
+<td><code>{n,m}</code></td>
+<td>n 到 m 次</td>
+</tr>
+<tr>
+<td><code>*?</code></td>
+<td>非贪婪，尽量少</td>
+</tr>
+<tr>
+<td><code>+?</code></td>
+<td>非贪婪，尽量少</td>
+</tr>
+</tbody></table>
+<h2 id="3-锚点与边界"><a href="#3-锚点与边界" class="headerlink" title="3. 锚点与边界"></a>3. 锚点与边界</h2><table>
+<thead>
+<tr>
+<th>语法</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>^</code></td>
+<td>字符串开头，m 模式下为行开头</td>
+</tr>
+<tr>
+<td><code>$</code></td>
+<td>字符串结尾，m 模式下为行结尾</td>
+</tr>
+<tr>
+<td><code>\b</code></td>
+<td>单词边界</td>
+</tr>
+<tr>
+<td><code>\B</code></td>
+<td>非单词边界</td>
+</tr>
+</tbody></table>
+<h2 id="4-分组与引用"><a href="#4-分组与引用" class="headerlink" title="4. 分组与引用"></a>4. 分组与引用</h2><table>
+<thead>
+<tr>
+<th>语法</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>(...)</code></td>
+<td>捕获组</td>
+</tr>
+<tr>
+<td><code>(?:...)</code></td>
+<td>非捕获组</td>
+</tr>
+<tr>
+<td><code>(?&lt;name&gt;...)</code></td>
+<td>命名捕获组</td>
+</tr>
+<tr>
+<td><code>\1</code></td>
+<td>反向引用第 1 个捕获组</td>
+</tr>
+<tr>
+<td><code>\k&lt;name&gt;</code></td>
+<td>反向引用命名组</td>
+</tr>
+</tbody></table>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js">/(\w+)\s+\<span class="hljs-number">1</span>/.<span class="hljs-title function_">test</span>(<span class="hljs-string">&quot;hello hello&quot;</span>); <span class="hljs-comment">// true</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="5-零宽断言"><a href="#5-零宽断言" class="headerlink" title="5. 零宽断言"></a>5. 零宽断言</h2><table>
+<thead>
+<tr>
+<th>语法</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>(?=...)</code></td>
+<td>正向前瞻：后面必须是什么</td>
+</tr>
+<tr>
+<td><code>(?!...)</code></td>
+<td>负向前瞻：后面不能是什么</td>
+</tr>
+<tr>
+<td><code>(?&lt;=...)</code></td>
+<td>正向后顾：前面必须是什么</td>
+</tr>
+<tr>
+<td><code>(?&lt;!...)</code></td>
+<td>负向后顾：前面不能是什么</td>
+</tr>
+</tbody></table>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js">/(?&lt;=\$)\d+<span class="hljs-regexp">/.exec(&quot;$100&quot;); /</span>/ [<span class="hljs-string">&#x27;100&#x27;</span>]<br></code></pre></td></tr></table></figure>
+
+<h2 id="6-转义"><a href="#6-转义" class="headerlink" title="6. 转义"></a>6. 转义</h2><p>需要转义的常见特殊字符：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">. * + ? ^ $ &#123; &#125; [ ] ( ) | \ /<br></code></pre></td></tr></table></figure>
+
+<p>动态创建正则前必须转义：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">escapeRegExp</span>(<span class="hljs-params">str</span>) &#123;<br>  <span class="hljs-keyword">return</span> str.<span class="hljs-title function_">replace</span>(<span class="hljs-regexp">/[.*+?^$&#123;&#125;()|[\]\\]/g</span>, <span class="hljs-string">&quot;\\$&amp;&quot;</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="三、JS-正则专题"><a href="#三、JS-正则专题" class="headerlink" title="三、JS 正则专题"></a>三、JS 正则专题</h1><h2 id="1-创建方式"><a href="#1-创建方式" class="headerlink" title="1. 创建方式"></a>1. 创建方式</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> re1 = <span class="hljs-regexp">/abc/i</span>;<br><span class="hljs-keyword">const</span> re2 = <span class="hljs-keyword">new</span> <span class="hljs-title class_">RegExp</span>(<span class="hljs-string">&quot;abc&quot;</span>, <span class="hljs-string">&quot;i&quot;</span>);<br></code></pre></td></tr></table></figure>
+
+<p>动态正则：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> kw = <span class="hljs-string">&quot;a.b&quot;</span>;<br><span class="hljs-keyword">const</span> safe = <span class="hljs-title function_">escapeRegExp</span>(kw);<br><span class="hljs-keyword">const</span> re = <span class="hljs-keyword">new</span> <span class="hljs-title class_">RegExp</span>(safe, <span class="hljs-string">&quot;gi&quot;</span>);<br></code></pre></td></tr></table></figure>
+
+<h2 id="2-标志"><a href="#2-标志" class="headerlink" title="2. 标志"></a>2. 标志</h2><table>
+<thead>
+<tr>
+<th>标志</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>g</code></td>
+<td>全局匹配</td>
+</tr>
+<tr>
+<td><code>i</code></td>
+<td>忽略大小写</td>
+</tr>
+<tr>
+<td><code>m</code></td>
+<td>多行模式，<code>^</code> <code>$</code> 匹配每行</td>
+</tr>
+<tr>
+<td><code>s</code></td>
+<td>dotAll，<code>.</code> 匹配换行</td>
+</tr>
+<tr>
+<td><code>u</code></td>
+<td>Unicode 模式</td>
+</tr>
+<tr>
+<td><code>y</code></td>
+<td>粘性匹配，必须从 lastIndex 开始</td>
+</tr>
+<tr>
+<td><code>d</code></td>
+<td>返回匹配索引 indices</td>
+</tr>
+<tr>
+<td><code>v</code></td>
+<td>ES2024，Unicode 集合运算</td>
+</tr>
+</tbody></table>
+<h2 id="3-常用-API"><a href="#3-常用-API" class="headerlink" title="3. 常用 API"></a>3. 常用 API</h2><table>
+<thead>
+<tr>
+<th>API</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>reg.test(str)</code></td>
+<td>返回 boolean</td>
+</tr>
+<tr>
+<td><code>reg.exec(str)</code></td>
+<td>返回数组或 null，含 index、input、groups</td>
+</tr>
+<tr>
+<td><code>str.match(reg)</code></td>
+<td>无 g 类似 exec，有 g 返回所有匹配字符串</td>
+</tr>
+<tr>
+<td><code>str.matchAll(reg)</code></td>
+<td>必须带 g，返回<strong>迭代器</strong>，含分组和索引</td>
+</tr>
+<tr>
+<td><code>str.replace(reg, fn)</code></td>
+<td>替换</td>
+</tr>
+<tr>
+<td><code>str.replaceAll(reg, fn)</code></td>
+<td>正则必须带 g</td>
+</tr>
+<tr>
+<td><code>str.search(reg)</code></td>
+<td>返回首次匹配索引</td>
+</tr>
+<tr>
+<td><code>str.split(reg)</code></td>
+<td>分割，捕获组会保留在结果中</td>
+</tr>
+</tbody></table>
+<h2 id="4-lastIndex-状态坑"><a href="#4-lastIndex-状态坑" class="headerlink" title="4. lastIndex 状态坑"></a>4. <code>lastIndex</code> 状态坑</h2><p>带 <code>g</code> 或 <code>y</code> 的正则有状态，<code>test/exec</code> 会修改 <code>lastIndex</code>：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> re = <span class="hljs-regexp">/a/g</span>;<br>re.<span class="hljs-title function_">test</span>(<span class="hljs-string">&quot;a&quot;</span>); <span class="hljs-comment">// true, lastIndex = 1</span><br>re.<span class="hljs-title function_">test</span>(<span class="hljs-string">&quot;a&quot;</span>); <span class="hljs-comment">// false, 从 1 开始找不到</span><br></code></pre></td></tr></table></figure>
+
+<p>解决：</p>
+<ul>
+<li>不复用带 <code>g</code> 的正则；</li>
+<li>或手动 <code>re.lastIndex = 0</code>。</li>
+</ul>
+<h2 id="5-g-和-y-区别"><a href="#5-g-和-y-区别" class="headerlink" title="5. g 和 y 区别"></a>5. <code>g</code> 和 <code>y</code> 区别</h2><ul>
+<li><code>g</code>：全局，从 <code>lastIndex</code> 往后找。</li>
+<li><code>y</code>：粘性，必须从 <code>lastIndex</code> 位置正好匹配。</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> re = <span class="hljs-regexp">/a/y</span>;<br>re.<span class="hljs-property">lastIndex</span> = <span class="hljs-number">1</span>;<br>re.<span class="hljs-title function_">test</span>(<span class="hljs-string">&quot;ba&quot;</span>); <span class="hljs-comment">// true</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="6-match-和-matchAll"><a href="#6-match-和-matchAll" class="headerlink" title="6. match 和 matchAll"></a>6. <code>match</code> 和 <code>matchAll</code></h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-string">&quot;a1b2&quot;</span>.<span class="hljs-title function_">match</span>(<span class="hljs-regexp">/([a-z])(\d)/g</span>);<br><span class="hljs-comment">// [&#x27;a1&#x27;, &#x27;b2&#x27;]，带 g 不返回分组</span><br><br><span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> m <span class="hljs-keyword">of</span> <span class="hljs-string">&quot;a1b2&quot;</span>.<span class="hljs-title function_">matchAll</span>(<span class="hljs-regexp">/([a-z])(\d)/g</span>)) &#123;<br>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(m[<span class="hljs-number">0</span>], m[<span class="hljs-number">1</span>], m[<span class="hljs-number">2</span>], m.<span class="hljs-property">index</span>);<br>&#125;<br><span class="hljs-comment">// a1 a 1 0</span><br><span class="hljs-comment">// b2 b 2 2</span><br></code></pre></td></tr></table></figure>
+
+<p><code>matchAll</code> 必须带 <code>g</code>，否则报错。</p>
+<h2 id="7-replace-回调"><a href="#7-replace-回调" class="headerlink" title="7. replace 回调"></a>7. <code>replace</code> 回调</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-string">&quot;abc&quot;</span>.<span class="hljs-title function_">replace</span>(<span class="hljs-regexp">/(a)(b)/</span>, <span class="hljs-function">(<span class="hljs-params">match, p1, p2, offset, str, groups</span>) =&gt;</span> &#123;<br>  <span class="hljs-keyword">return</span> p1 + p2;<br>&#125;);<br></code></pre></td></tr></table></figure>
+
+<p>特殊替换符：</p>
+<ul>
+<li><code>$&amp;</code>：匹配的子串</li>
+<li><code>$1</code>：第 1 个捕获组</li>
+<li><code>$&lt;name&gt;</code>：命名捕获组</li>
+<li><code>$` </code>：匹配前面的内容</li>
+<li><code>$&#39;</code>：匹配后面的内容</li>
+<li><code>$$</code>：美元符号</li>
+</ul>
+<h2 id="8-split-捕获组"><a href="#8-split-捕获组" class="headerlink" title="8. split 捕获组"></a>8. <code>split</code> 捕获组</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-string">&quot;a1b2c&quot;</span>.<span class="hljs-title function_">split</span>(<span class="hljs-regexp">/(\d)/</span>);<br><span class="hljs-comment">// [&#x27;a&#x27;, &#x27;1&#x27;, &#x27;b&#x27;, &#x27;2&#x27;, &#x27;c&#x27;]</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="9-命名捕获组"><a href="#9-命名捕获组" class="headerlink" title="9. 命名捕获组"></a>9. 命名捕获组</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> re = <span class="hljs-regexp">/(?&lt;year&gt;\d&#123;4&#125;)-(?&lt;month&gt;\d&#123;2&#125;)/</span>;<br><span class="hljs-keyword">const</span> m = re.<span class="hljs-title function_">exec</span>(<span class="hljs-string">&quot;2024-01&quot;</span>);<br>m.<span class="hljs-property">groups</span>.<span class="hljs-property">year</span>; <span class="hljs-comment">// &#x27;2024&#x27;</span><br>m.<span class="hljs-property">groups</span>.<span class="hljs-property">month</span>; <span class="hljs-comment">// &#x27;01&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="10-d-标志"><a href="#10-d-标志" class="headerlink" title="10. d 标志"></a>10. <code>d</code> 标志</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> m = <span class="hljs-regexp">/a(b)/</span>d.<span class="hljs-title function_">exec</span>(<span class="hljs-string">&quot;ab&quot;</span>);<br>m.<span class="hljs-property">indices</span>;<br><span class="hljs-comment">// [[0, 2], [1, 2]]</span><br></code></pre></td></tr></table></figure>
+
+<p>适合编辑器高亮、语法分析等场景。</p>
+<h2 id="11-Unicode"><a href="#11-Unicode" class="headerlink" title="11. Unicode"></a>11. Unicode</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs js">/^\p&#123;<span class="hljs-title class_">Script</span>=<span class="hljs-title class_">Han</span>&#125;+$/u.<span class="hljs-title function_">test</span>(<span class="hljs-string">&#x27;中文&#x27;</span>) <span class="hljs-comment">// true</span><br>/\p&#123;<span class="hljs-title class_">Extended</span>_Pictographic&#125;/u.<span class="hljs-title function_">test</span>(<span class="hljs-string">&#x27;😀&#x27;</span>) <span class="hljs-comment">// true</span><br></code></pre></td></tr></table></figure>
+
+<p>匹配 emoji、中文时，<code>u</code> 很重要。<br><code>v</code> 标志支持 Unicode 集合运算，如差集、交集。</p>
+<hr>
+<h1 id="四、高频正则表达式校验"><a href="#四、高频正则表达式校验" class="headerlink" title="四、高频正则表达式校验"></a>四、高频正则表达式校验</h1><h2 id="1-手机号"><a href="#1-手机号" class="headerlink" title="1. 手机号"></a>1. 手机号</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js">/^<span class="hljs-number">1</span>[<span class="hljs-number">3</span>-<span class="hljs-number">9</span>]\d&#123;<span class="hljs-number">9</span>&#125;$/;<br></code></pre></td></tr></table></figure>
+
+<h2 id="2-邮箱简单校验"><a href="#2-邮箱简单校验" class="headerlink" title="2. 邮箱简单校验"></a>2. 邮箱简单校验</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js">/^[A-<span class="hljs-title class_">Za</span>-z0-<span class="hljs-number">9.</span>_%+-]+@[A-<span class="hljs-title class_">Za</span>-z0-<span class="hljs-number">9.</span>-]+\.[A-<span class="hljs-title class_">Za</span>-z]&#123;<span class="hljs-number">2</span>,&#125;$/;<br></code></pre></td></tr></table></figure>
+
+<h2 id="3-密码强度：至少-8-位，含大小写和数字"><a href="#3-密码强度：至少-8-位，含大小写和数字" class="headerlink" title="3. 密码强度：至少 8 位，含大小写和数字"></a>3. 密码强度：至少 8 位，含大小写和数字</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js">/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).&#123;<span class="hljs-number">8</span>,&#125;$/;<br></code></pre></td></tr></table></figure>
+
+<p>再加特殊字符：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js">/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&amp;*]).&#123;<span class="hljs-number">8</span>,&#125;$/;<br></code></pre></td></tr></table></figure>
+
+<h2 id="4-身份证-18-位简单校验"><a href="#4-身份证-18-位简单校验" class="headerlink" title="4. 身份证 18 位简单校验"></a>4. 身份证 18 位简单校验</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js">/^\d&#123;<span class="hljs-number">17</span>&#125;[\dXx]$/;<br></code></pre></td></tr></table></figure>
+
+<p>严格校验需要查日期、地区码、校验位，不能只靠正则。</p>
+<h2 id="5-IPv4"><a href="#5-IPv4" class="headerlink" title="5. IPv4"></a>5. IPv4</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js">/^(?:(?:<span class="hljs-number">25</span>[<span class="hljs-number">0</span>-<span class="hljs-number">5</span>]|<span class="hljs-number">2</span>[<span class="hljs-number">0</span>-<span class="hljs-number">4</span>]\d|<span class="hljs-number">1</span>\d&#123;<span class="hljs-number">2</span>&#125;|[<span class="hljs-number">1</span>-<span class="hljs-number">9</span>]?\d)\.)&#123;<span class="hljs-number">3</span>&#125;(?:<span class="hljs-number">25</span>[<span class="hljs-number">0</span>-<span class="hljs-number">5</span>]|<span class="hljs-number">2</span>[<span class="hljs-number">0</span>-<span class="hljs-number">4</span>]\d|<span class="hljs-number">1</span>\d&#123;<span class="hljs-number">2</span>&#125;|[<span class="hljs-number">1</span>-<span class="hljs-number">9</span>]?\d)$/;<br></code></pre></td></tr></table></figure>
+
+<h2 id="6-日期-YYYY-MM-DD"><a href="#6-日期-YYYY-MM-DD" class="headerlink" title="6. 日期 YYYY-MM-DD"></a>6. 日期 YYYY-MM-DD</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js">/^\d&#123;<span class="hljs-number">4</span>&#125;-(<span class="hljs-number">0</span>[<span class="hljs-number">1</span>-<span class="hljs-number">9</span>]|<span class="hljs-number">1</span>[<span class="hljs-number">0</span>-<span class="hljs-number">2</span>])-(<span class="hljs-number">0</span>[<span class="hljs-number">1</span>-<span class="hljs-number">9</span>]|[<span class="hljs-number">12</span>]\d|<span class="hljs-number">3</span>[<span class="hljs-number">01</span>])$/;<br></code></pre></td></tr></table></figure>
+
+<h2 id="7-时间-HH-mm-ss"><a href="#7-时间-HH-mm-ss" class="headerlink" title="7. 时间 HH:mm:ss"></a>7. 时间 HH:mm:ss</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js">/^([<span class="hljs-number">01</span>]\d|<span class="hljs-number">2</span>[<span class="hljs-number">0</span>-<span class="hljs-number">3</span>]):([<span class="hljs-number">0</span>-<span class="hljs-number">5</span>]\d):([<span class="hljs-number">0</span>-<span class="hljs-number">5</span>]\d)$/;<br></code></pre></td></tr></table></figure>
+
+<h2 id="8-十六进制颜色"><a href="#8-十六进制颜色" class="headerlink" title="8. 十六进制颜色"></a>8. 十六进制颜色</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js">/^#(?:[<span class="hljs-number">0</span>-9a-fA-F]&#123;<span class="hljs-number">3</span>&#125;|[<span class="hljs-number">0</span>-9a-fA-F]&#123;<span class="hljs-number">6</span>&#125;)$/;<br></code></pre></td></tr></table></figure>
+
+<p>带 alpha：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js">/^#(?:[<span class="hljs-number">0</span>-9a-fA-F]&#123;<span class="hljs-number">3</span>,<span class="hljs-number">4</span>&#125;|[<span class="hljs-number">0</span>-9a-fA-F]&#123;<span class="hljs-number">6</span>&#125;|[<span class="hljs-number">0</span>-9a-fA-F]&#123;<span class="hljs-number">8</span>&#125;)$/;<br></code></pre></td></tr></table></figure>
+
+<h2 id="9-中文"><a href="#9-中文" class="headerlink" title="9. 中文"></a>9. 中文</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js">/^[\u4e00-\u9fa5]+$/;<br></code></pre></td></tr></table></figure>
+
+<p>更全：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js">/^\p&#123;<span class="hljs-title class_">Script</span>=<span class="hljs-title class_">Han</span>&#125;+$/u;<br></code></pre></td></tr></table></figure>
+
+<h2 id="10-URL-简单校验"><a href="#10-URL-简单校验" class="headerlink" title="10. URL 简单校验"></a>10. URL 简单校验</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js">/^https?:\/\/[\w.-]+(?::\d+)?(?:\/[\w./?%&amp;=#-]*)?$/;<br></code></pre></td></tr></table></figure>
+
+<p>实际项目更推荐：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">new</span> <span class="hljs-title function_">URL</span>(str);<br></code></pre></td></tr></table></figure>
+
+<h2 id="11-用户名：4-16-位字母数字下划线"><a href="#11-用户名：4-16-位字母数字下划线" class="headerlink" title="11. 用户名：4-16 位字母数字下划线"></a>11. 用户名：4-16 位字母数字下划线</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js">/^[a-zA-<span class="hljs-variable constant_">Z0</span>-9_]&#123;<span class="hljs-number">4</span>,<span class="hljs-number">16</span>&#125;$/;<br></code></pre></td></tr></table></figure>
+
+<h2 id="12-非零正整数"><a href="#12-非零正整数" class="headerlink" title="12. 非零正整数"></a>12. 非零正整数</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js">/^[<span class="hljs-number">1</span>-<span class="hljs-number">9</span>]\d*$/;<br></code></pre></td></tr></table></figure>
+
+<h2 id="13-最多两位小数"><a href="#13-最多两位小数" class="headerlink" title="13. 最多两位小数"></a>13. 最多两位小数</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js">/^-?\d+(\.\d&#123;<span class="hljs-number">1</span>,<span class="hljs-number">2</span>&#125;)?$/;<br></code></pre></td></tr></table></figure>
+
+<h2 id="14-千分位"><a href="#14-千分位" class="headerlink" title="14. 千分位"></a>14. 千分位</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">formatNumber</span>(<span class="hljs-params">num</span>) &#123;<br>  <span class="hljs-keyword">return</span> <span class="hljs-title class_">String</span>(num).<span class="hljs-title function_">replace</span>(<span class="hljs-regexp">/\B(?=(\d&#123;3&#125;)+(?!\d))/g</span>, <span class="hljs-string">&quot;,&quot;</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>带小数：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">formatMoney</span>(<span class="hljs-params">num</span>) &#123;<br>  <span class="hljs-keyword">const</span> [int, dec] = <span class="hljs-title class_">String</span>(num).<span class="hljs-title function_">split</span>(<span class="hljs-string">&quot;.&quot;</span>);<br>  <span class="hljs-keyword">const</span> i = int.<span class="hljs-title function_">replace</span>(<span class="hljs-regexp">/\B(?=(\d&#123;3&#125;)+(?!\d))/g</span>, <span class="hljs-string">&quot;,&quot;</span>);<br>  <span class="hljs-keyword">return</span> dec ? <span class="hljs-string">`<span class="hljs-subst">$&#123;i&#125;</span>.<span class="hljs-subst">$&#123;dec&#125;</span>`</span> : i;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="15-下划线转驼峰"><a href="#15-下划线转驼峰" class="headerlink" title="15. 下划线转驼峰"></a>15. 下划线转驼峰</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-string">&quot;user_name&quot;</span>.<span class="hljs-title function_">replace</span>(<span class="hljs-regexp">/_(\w)/g</span>, <span class="hljs-function">(<span class="hljs-params">_, c</span>) =&gt;</span> c.<span class="hljs-title function_">toUpperCase</span>());<br><span class="hljs-comment">// &#x27;userName&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="16-驼峰转下划线"><a href="#16-驼峰转下划线" class="headerlink" title="16. 驼峰转下划线"></a>16. 驼峰转下划线</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-string">&quot;userName&quot;</span>.<span class="hljs-title function_">replace</span>(<span class="hljs-regexp">/([A-Z])/g</span>, <span class="hljs-string">&quot;_$1&quot;</span>).<span class="hljs-title function_">toLowerCase</span>();<br><span class="hljs-comment">// &#x27;user_name&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="17-模板变量替换"><a href="#17-模板变量替换" class="headerlink" title="17. 模板变量替换"></a>17. 模板变量替换</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">render</span>(<span class="hljs-params">tpl, data</span>) &#123;<br>  <span class="hljs-keyword">return</span> tpl.<span class="hljs-title function_">replace</span>(<span class="hljs-regexp">/\&#123;\&#123;\s*(\w+)\s*\&#125;\&#125;/g</span>, <span class="hljs-function">(<span class="hljs-params">_, key</span>) =&gt;</span> data[key] ?? <span class="hljs-string">&quot;&quot;</span>);<br>&#125;<br><br><span class="hljs-title function_">render</span>(<span class="hljs-string">&quot;你好，&#123;&#123;name&#125;&#125;&quot;</span>, &#123; <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;张三&quot;</span> &#125;); <span class="hljs-comment">// &#x27;你好，张三&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<p>支持路径：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js">/\&#123;\&#123;\s*([\w.]+)\s*\&#125;\&#125;/g;<br></code></pre></td></tr></table></figure>
+
+<h2 id="18-解析-query"><a href="#18-解析-query" class="headerlink" title="18. 解析 query"></a>18. 解析 query</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">parseQuery</span>(<span class="hljs-params">url</span>) &#123;<br>  <span class="hljs-keyword">const</span> q = url.<span class="hljs-title function_">split</span>(<span class="hljs-string">&quot;?&quot;</span>)[<span class="hljs-number">1</span>] || <span class="hljs-string">&quot;&quot;</span>;<br>  <span class="hljs-keyword">const</span> res = &#123;&#125;;<br>  q.<span class="hljs-title function_">replace</span>(<span class="hljs-regexp">/([^=&amp;]+)=([^&amp;]*)/g</span>, <span class="hljs-function">(<span class="hljs-params">_, k, v</span>) =&gt;</span> &#123;<br>    res[<span class="hljs-built_in">decodeURIComponent</span>(k)] = <span class="hljs-built_in">decodeURIComponent</span>(v.<span class="hljs-title function_">replace</span>(<span class="hljs-regexp">/\+/g</span>, <span class="hljs-string">&quot; &quot;</span>));<br>  &#125;);<br>  <span class="hljs-keyword">return</span> res;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>实际更推荐：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-title class_">Object</span>.<span class="hljs-title function_">fromEntries</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">URLSearchParams</span>(location.<span class="hljs-property">search</span>));<br></code></pre></td></tr></table></figure>
+
+<h2 id="19-关键词高亮"><a href="#19-关键词高亮" class="headerlink" title="19. 关键词高亮"></a>19. 关键词高亮</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">escapeRegExp</span>(<span class="hljs-params">str</span>) &#123;<br>  <span class="hljs-keyword">return</span> str.<span class="hljs-title function_">replace</span>(<span class="hljs-regexp">/[.*+?^$&#123;&#125;()|[\]\\]/g</span>, <span class="hljs-string">&quot;\\$&amp;&quot;</span>);<br>&#125;<br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">highlight</span>(<span class="hljs-params">text, kw</span>) &#123;<br>  <span class="hljs-keyword">const</span> re = <span class="hljs-keyword">new</span> <span class="hljs-title class_">RegExp</span>(<span class="hljs-title function_">escapeRegExp</span>(kw), <span class="hljs-string">&quot;gi&quot;</span>);<br>  <span class="hljs-keyword">return</span> text.<span class="hljs-title function_">replace</span>(re, <span class="hljs-string">&quot;&lt;mark&gt;$&amp;&lt;/mark&gt;&quot;</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>注意：真实项目要转义 HTML，防止 XSS。</p>
+<h2 id="20-版本号提取"><a href="#20-版本号提取" class="headerlink" title="20. 版本号提取"></a>20. 版本号提取</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> re = <span class="hljs-regexp">/^v?(\d+)\.(\d+)\.(\d+)(?:-([\w.-]+))?$/</span>;<br><span class="hljs-keyword">const</span> m = re.<span class="hljs-title function_">exec</span>(<span class="hljs-string">&quot;v1.2.3-beta.1&quot;</span>);<br><span class="hljs-comment">// m[1]=&#x27;1&#x27;, m[2]=&#x27;2&#x27;, m[3]=&#x27;3&#x27;, m[4]=&#x27;beta.1&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="五、算法题"><a href="#五、算法题" class="headerlink" title="五、算法题"></a>五、算法题</h1><h2 id="1-LeetCode-10：正则表达式匹配"><a href="#1-LeetCode-10：正则表达式匹配" class="headerlink" title="1. LeetCode 10：正则表达式匹配"></a>1. LeetCode 10：正则表达式匹配</h2><p>实现支持 <code>.</code> 和 <code>*</code> 的正则：</p>
+<ul>
+<li><code>.</code> 匹配任意单个字符。</li>
+<li><code>*</code> 匹配零个或多个前面的那一个字符。</li>
+</ul>
+<p>DP 定义：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">dp[i][j] 表示 s 前 i 个字符和 p 前 j 个字符是否匹配。<br></code></pre></td></tr></table></figure>
+
+<p>转移：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs text">如果 p[j-1] === &#x27;*&#x27;:<br>  dp[i][j] = dp[i][j-2]  // * 匹配零次<br>  或 dp[i-1][j] &amp;&amp; (s[i-1] === p[j-2] || p[j-2] === &#x27;.&#x27;)<br><br>否则:<br>  dp[i][j] = dp[i-1][j-1] &amp;&amp; (s[i-1] === p[j-1] || p[j-1] === &#x27;.&#x27;)<br></code></pre></td></tr></table></figure>
+
+<p>JS 代码：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">isMatch</span>(<span class="hljs-params">s, p</span>) &#123;<br>  <span class="hljs-keyword">const</span> m = s.<span class="hljs-property">length</span>;<br>  <span class="hljs-keyword">const</span> n = p.<span class="hljs-property">length</span>;<br>  <span class="hljs-keyword">const</span> dp = <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(&#123; <span class="hljs-attr">length</span>: m + <span class="hljs-number">1</span> &#125;, <span class="hljs-function">() =&gt;</span> <span class="hljs-title class_">Array</span>(n + <span class="hljs-number">1</span>).<span class="hljs-title function_">fill</span>(<span class="hljs-literal">false</span>));<br><br>  dp[<span class="hljs-number">0</span>][<span class="hljs-number">0</span>] = <span class="hljs-literal">true</span>;<br><br>  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> j = <span class="hljs-number">1</span>; j &lt;= n; j++) &#123;<br>    <span class="hljs-keyword">if</span> (p[j - <span class="hljs-number">1</span>] === <span class="hljs-string">&quot;*&quot;</span>) &#123;<br>      dp[<span class="hljs-number">0</span>][j] = dp[<span class="hljs-number">0</span>][j - <span class="hljs-number">2</span>];<br>    &#125;<br>  &#125;<br><br>  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">1</span>; i &lt;= m; i++) &#123;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> j = <span class="hljs-number">1</span>; j &lt;= n; j++) &#123;<br>      <span class="hljs-keyword">if</span> (p[j - <span class="hljs-number">1</span>] === <span class="hljs-string">&quot;*&quot;</span>) &#123;<br>        dp[i][j] =<br>          dp[i][j - <span class="hljs-number">2</span>] ||<br>          (dp[i - <span class="hljs-number">1</span>][j] &amp;&amp; (s[i - <span class="hljs-number">1</span>] === p[j - <span class="hljs-number">2</span>] || p[j - <span class="hljs-number">2</span>] === <span class="hljs-string">&quot;.&quot;</span>));<br>      &#125; <span class="hljs-keyword">else</span> &#123;<br>        dp[i][j] =<br>          dp[i - <span class="hljs-number">1</span>][j - <span class="hljs-number">1</span>] &amp;&amp; (s[i - <span class="hljs-number">1</span>] === p[j - <span class="hljs-number">1</span>] || p[j - <span class="hljs-number">1</span>] === <span class="hljs-string">&quot;.&quot;</span>);<br>      &#125;<br>    &#125;<br>  &#125;<br><br>  <span class="hljs-keyword">return</span> dp[m][n];<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="2-LeetCode-44：通配符匹配"><a href="#2-LeetCode-44：通配符匹配" class="headerlink" title="2. LeetCode 44：通配符匹配"></a>2. LeetCode 44：通配符匹配</h2><p><code>?</code> 匹配任意单字符，<code>*</code> 匹配任意字符串。</p>
+<p>DP：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">isWildcardMatch</span>(<span class="hljs-params">s, p</span>) &#123;<br>  <span class="hljs-keyword">const</span> m = s.<span class="hljs-property">length</span>;<br>  <span class="hljs-keyword">const</span> n = p.<span class="hljs-property">length</span>;<br>  <span class="hljs-keyword">const</span> dp = <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(&#123; <span class="hljs-attr">length</span>: m + <span class="hljs-number">1</span> &#125;, <span class="hljs-function">() =&gt;</span> <span class="hljs-title class_">Array</span>(n + <span class="hljs-number">1</span>).<span class="hljs-title function_">fill</span>(<span class="hljs-literal">false</span>));<br><br>  dp[<span class="hljs-number">0</span>][<span class="hljs-number">0</span>] = <span class="hljs-literal">true</span>;<br><br>  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> j = <span class="hljs-number">1</span>; j &lt;= n; j++) &#123;<br>    <span class="hljs-keyword">if</span> (p[j - <span class="hljs-number">1</span>] === <span class="hljs-string">&quot;*&quot;</span>) dp[<span class="hljs-number">0</span>][j] = dp[<span class="hljs-number">0</span>][j - <span class="hljs-number">1</span>];<br>  &#125;<br><br>  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">1</span>; i &lt;= m; i++) &#123;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> j = <span class="hljs-number">1</span>; j &lt;= n; j++) &#123;<br>      <span class="hljs-keyword">if</span> (p[j - <span class="hljs-number">1</span>] === <span class="hljs-string">&quot;*&quot;</span>) &#123;<br>        dp[i][j] = dp[i - <span class="hljs-number">1</span>][j] || dp[i][j - <span class="hljs-number">1</span>];<br>      &#125; <span class="hljs-keyword">else</span> &#123;<br>        dp[i][j] =<br>          dp[i - <span class="hljs-number">1</span>][j - <span class="hljs-number">1</span>] &amp;&amp; (p[j - <span class="hljs-number">1</span>] === <span class="hljs-string">&quot;?&quot;</span> || p[j - <span class="hljs-number">1</span>] === s[i - <span class="hljs-number">1</span>]);<br>      &#125;<br>    &#125;<br>  &#125;<br><br>  <span class="hljs-keyword">return</span> dp[m][n];<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="3-实现简易模板引擎"><a href="#3-实现简易模板引擎" class="headerlink" title="3. 实现简易模板引擎"></a>3. 实现简易模板引擎</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">render</span>(<span class="hljs-params">tpl, data</span>) &#123;<br>  <span class="hljs-keyword">return</span> tpl.<span class="hljs-title function_">replace</span>(<span class="hljs-regexp">/\&#123;\&#123;\s*(\w+)\s*\&#125;\&#125;/g</span>, <span class="hljs-function">(<span class="hljs-params">_, key</span>) =&gt;</span> data[key] ?? <span class="hljs-string">&quot;&quot;</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="4-实现千分位"><a href="#4-实现千分位" class="headerlink" title="4. 实现千分位"></a>4. 实现千分位</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">formatNumber</span>(<span class="hljs-params">num</span>) &#123;<br>  <span class="hljs-keyword">return</span> <span class="hljs-title class_">String</span>(num).<span class="hljs-title function_">replace</span>(<span class="hljs-regexp">/\B(?=(\d&#123;3&#125;)+(?!\d))/g</span>, <span class="hljs-string">&quot;,&quot;</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="5-实现-query-解析"><a href="#5-实现-query-解析" class="headerlink" title="5. 实现 query 解析"></a>5. 实现 query 解析</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">parseQuery</span>(<span class="hljs-params">url</span>) &#123;<br>  <span class="hljs-keyword">const</span> q = url.<span class="hljs-title function_">split</span>(<span class="hljs-string">&quot;?&quot;</span>)[<span class="hljs-number">1</span>] || <span class="hljs-string">&quot;&quot;</span>;<br>  <span class="hljs-keyword">const</span> res = &#123;&#125;;<br>  q.<span class="hljs-title function_">replace</span>(<span class="hljs-regexp">/([^=&amp;]+)=([^&amp;]*)/g</span>, <span class="hljs-function">(<span class="hljs-params">_, k, v</span>) =&gt;</span> &#123;<br>    res[<span class="hljs-built_in">decodeURIComponent</span>(k)] = <span class="hljs-built_in">decodeURIComponent</span>(v.<span class="hljs-title function_">replace</span>(<span class="hljs-regexp">/\+/g</span>, <span class="hljs-string">&quot; &quot;</span>));<br>  &#125;);<br>  <span class="hljs-keyword">return</span> res;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="6-实现关键词高亮"><a href="#6-实现关键词高亮" class="headerlink" title="6. 实现关键词高亮"></a>6. 实现关键词高亮</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">escapeRegExp</span>(<span class="hljs-params">str</span>) &#123;<br>  <span class="hljs-keyword">return</span> str.<span class="hljs-title function_">replace</span>(<span class="hljs-regexp">/[.*+?^$&#123;&#125;()|[\]\\]/g</span>, <span class="hljs-string">&quot;\\$&amp;&quot;</span>);<br>&#125;<br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">highlight</span>(<span class="hljs-params">text, kw</span>) &#123;<br>  <span class="hljs-keyword">return</span> text.<span class="hljs-title function_">replace</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">RegExp</span>(<span class="hljs-title function_">escapeRegExp</span>(kw), <span class="hljs-string">&quot;gi&quot;</span>), <span class="hljs-string">&quot;&lt;mark&gt;$&amp;&lt;/mark&gt;&quot;</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="7-版本号比较"><a href="#7-版本号比较" class="headerlink" title="7. 版本号比较"></a>7. 版本号比较</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">compareVersion</span>(<span class="hljs-params">a, b</span>) &#123;<br>  <span class="hljs-keyword">const</span> pa = a.<span class="hljs-title function_">split</span>(<span class="hljs-string">&quot;.&quot;</span>).<span class="hljs-title function_">map</span>(<span class="hljs-title class_">Number</span>);<br>  <span class="hljs-keyword">const</span> pb = b.<span class="hljs-title function_">split</span>(<span class="hljs-string">&quot;.&quot;</span>).<span class="hljs-title function_">map</span>(<span class="hljs-title class_">Number</span>);<br>  <span class="hljs-keyword">const</span> len = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">max</span>(pa.<span class="hljs-property">length</span>, pb.<span class="hljs-property">length</span>);<br><br>  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; len; i++) &#123;<br>    <span class="hljs-keyword">const</span> x = pa[i] || <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">const</span> y = pb[i] || <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">if</span> (x &gt; y) <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>    <span class="hljs-keyword">if</span> (x &lt; y) <span class="hljs-keyword">return</span> -<span class="hljs-number">1</span>;<br>  &#125;<br><br>  <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="六、性能与陷阱"><a href="#六、性能与陷阱" class="headerlink" title="六、性能与陷阱"></a>六、性能与陷阱</h1><h2 id="1-灾难性回溯"><a href="#1-灾难性回溯" class="headerlink" title="1. 灾难性回溯"></a>1. 灾难性回溯</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js">/(a+)+b/.<span class="hljs-title function_">test</span>(<span class="hljs-string">&quot;aaaaaaaaaaaaaaaaaaaaaac&quot;</span>);<br></code></pre></td></tr></table></figure>
+
+<p>嵌套量词在匹配失败时可能指数级回溯，导致页面卡死。避免：</p>
+<ul>
+<li>少写嵌套量词。</li>
+<li>尽量具体，如 <code>\d{1,3}</code> 代替 <code>.*</code>。</li>
+<li>大文本避免复杂正则。</li>
+<li>JS 不支持原子组和占有量词，可用前瞻模拟，但复杂场景建议换算法。</li>
+</ul>
+<h2 id="2-不要用正则解析-HTML-JSON"><a href="#2-不要用正则解析-HTML-JSON" class="headerlink" title="2. 不要用正则解析 HTML &#x2F; JSON"></a>2. 不要用正则解析 HTML &#x2F; JSON</h2><p>HTML、JSON 是嵌套结构，正则不可靠。前端应使用：</p>
+<ul>
+<li><code>DOMParser</code></li>
+<li><code>innerHTML</code> + 浏览器解析</li>
+<li>专门的 parser</li>
+</ul>
+<h2 id="3-动态正则必须转义"><a href="#3-动态正则必须转义" class="headerlink" title="3. 动态正则必须转义"></a>3. 动态正则必须转义</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">new</span> <span class="hljs-title class_">RegExp</span>(userInput);<br></code></pre></td></tr></table></figure>
+
+<p>如果用户输入 <code>.*</code>，会变成通配符。<br>必须：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">new</span> <span class="hljs-title class_">RegExp</span>(<span class="hljs-title function_">escapeRegExp</span>(userInput));<br></code></pre></td></tr></table></figure>
+
+<h2 id="4-g-正则复用状态"><a href="#4-g-正则复用状态" class="headerlink" title="4. g 正则复用状态"></a>4. <code>g</code> 正则复用状态</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> re = <span class="hljs-regexp">/a/g</span>;<br>re.<span class="hljs-title function_">test</span>(<span class="hljs-string">&quot;a&quot;</span>); <span class="hljs-comment">// true</span><br>re.<span class="hljs-title function_">test</span>(<span class="hljs-string">&quot;a&quot;</span>); <span class="hljs-comment">// false</span><br></code></pre></td></tr></table></figure>
+
+<p>解决：不复用，或重置 <code>lastIndex</code>。</p>
+<h2 id="5-和"><a href="#5-和" class="headerlink" title="5. . 和 [.]"></a>5. <code>.</code> 和 <code>[.]</code></h2><ul>
+<li><code>.</code>：任意字符。</li>
+<li><code>[.]</code>：只匹配点号本身。</li>
+</ul>
+<h2 id="6-split-捕获组"><a href="#6-split-捕获组" class="headerlink" title="6. split 捕获组"></a>6. <code>split</code> 捕获组</h2><p>捕获组会保留在结果中：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-string">&quot;a1b2c&quot;</span>.<span class="hljs-title function_">split</span>(<span class="hljs-regexp">/(\d)/</span>);<br><span class="hljs-comment">// [&#x27;a&#x27;, &#x27;1&#x27;, &#x27;b&#x27;, &#x27;2&#x27;, &#x27;c&#x27;]</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="7-replaceAll-与正则"><a href="#7-replaceAll-与正则" class="headerlink" title="7. replaceAll 与正则"></a>7. <code>replaceAll</code> 与正则</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-string">&quot;aaa&quot;</span>.<span class="hljs-title function_">replaceAll</span>(<span class="hljs-regexp">/a/g</span>, <span class="hljs-string">&quot;b&quot;</span>); <span class="hljs-comment">// 正确</span><br><span class="hljs-string">&quot;aaa&quot;</span>.<span class="hljs-title function_">replaceAll</span>(<span class="hljs-regexp">/a/</span>, <span class="hljs-string">&quot;b&quot;</span>); <span class="hljs-comment">// 报错，正则必须带 g</span><br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" class="category-chain-item">正则表达式</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" class="print-no-link">#正则表达式</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>正则表达式</div>
+      <div>http://example.com/2024/07/23/前端/正则表达式/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年7月23日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/08/10/%E7%8A%B6%E6%80%81%E7%AE%A1%E7%90%86/MobX%20%E5%A4%9Astore%E8%81%94%E5%8A%A8/" title="MobX 多store联动">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">MobX 多store联动</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/07/23/%E5%89%8D%E7%AB%AF/%E5%9B%BE%E7%89%87%E6%A0%BC%E5%BC%8F/" title="图片格式">
+                        <span class="hidden-mobile">图片格式</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

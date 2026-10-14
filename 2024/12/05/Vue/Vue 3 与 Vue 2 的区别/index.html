@@ -1,0 +1,688 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Vue 3 与 Vue 2 的区别Vue 3 与 Vue 2 的核心区别在于响应式原理、API 设计哲学和性能表现。Vue 3 是一次彻底的重构，旨在解决 Vue 2 在大型应用中的局限性。 一、响应式系统：从 Object.defineProperty 到 Proxy这是两者最根本的区别。  Vue 2：使用 Object.defineProperty 来劫持对象属性的读写。这种方式存在局限：无">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vue 3 与 Vue 2 的区别">
+<meta property="og:url" content="http://example.com/2024/12/05/Vue/Vue%203%20%E4%B8%8E%20Vue%202%20%E7%9A%84%E5%8C%BA%E5%88%AB/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Vue 3 与 Vue 2 的区别Vue 3 与 Vue 2 的核心区别在于响应式原理、API 设计哲学和性能表现。Vue 3 是一次彻底的重构，旨在解决 Vue 2 在大型应用中的局限性。 一、响应式系统：从 Object.defineProperty 到 Proxy这是两者最根本的区别。  Vue 2：使用 Object.defineProperty 来劫持对象属性的读写。这种方式存在局限：无">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-12-04T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-14T14:26:02.579Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="Vue2">
+<meta property="article:tag" content="Vue3">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Vue 3 与 Vue 2 的区别 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">Vue 3 与 Vue 2 的区别</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-12-05 00:00" pubdate>
+          2024年12月5日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          839 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          7 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Vue 3 与 Vue 2 的区别</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Vue-3-与-Vue-2-的区别"><a href="#Vue-3-与-Vue-2-的区别" class="headerlink" title="Vue 3 与 Vue 2 的区别"></a>Vue 3 与 Vue 2 的区别</h1><p>Vue 3 与 Vue 2 的核心区别在于<strong>响应式原理、API 设计哲学和性能表现</strong>。Vue 3 是一次彻底的重构，旨在解决 Vue 2 在大型应用中的局限性。</p>
+<h3 id="一、响应式系统：从-Object-defineProperty-到-Proxy"><a href="#一、响应式系统：从-Object-defineProperty-到-Proxy" class="headerlink" title="一、响应式系统：从 Object.defineProperty 到 Proxy"></a>一、响应式系统：从 <code>Object.defineProperty</code> 到 <code>Proxy</code></h3><p>这是两者最根本的区别。</p>
+<ul>
+<li><strong>Vue 2</strong>：使用 <code>Object.defineProperty</code> 来劫持对象属性的读写。这种方式存在局限：<strong>无法监听对象属性的新增和删除</strong>（需要 <code>Vue.set</code>&#x2F;<code>Vue.delete</code>），<strong>对数组索引和长度的直接修改也无效</strong>（通过重写数组方法实现响应式）。</li>
+<li><strong>Vue 3</strong>：改用 ES6 的 <code>Proxy</code> 代理整个对象。它<strong>可以监听属性的新增、删除，以及数组索引和 <code>Map</code>、<code>Set</code> 等数据结构的变化</strong>，不再需要 <code>Vue.set</code>，代码更简洁，性能也更好。</li>
+</ul>
+<h3 id="二、组件逻辑组织：Options-API-vs-Composition-API"><a href="#二、组件逻辑组织：Options-API-vs-Composition-API" class="headerlink" title="二、组件逻辑组织：Options API vs Composition API"></a>二、组件逻辑组织：Options API vs Composition API</h3><ul>
+<li><strong>Vue 2 的 Options API</strong>：逻辑按选项（<code>data</code>、<code>methods</code>、<code>computed</code> 等）分散组织。当组件复杂时，<strong>同一功能的代码可能被拆散</strong>，难以阅读和复用。</li>
+<li><strong>Vue 3 的 Composition API</strong>：引入 <code>setup</code> 函数，允许<strong>按功能逻辑而非选项类型来组织代码</strong>。你可以将相关状态、方法和生命周期钩子写在一起，<strong>逻辑复用和类型推导都更友好</strong>，尤其适合大型组件。</li>
+</ul>
+<h3 id="三、性能优化：更快、更轻"><a href="#三、性能优化：更快、更轻" class="headerlink" title="三、性能优化：更快、更轻"></a>三、性能优化：更快、更轻</h3><p>Vue 3 在性能上有显著提升，渲染性能比 Vue 2 <strong>提高了近 40%</strong>。</p>
+<ul>
+<li><strong>编译优化</strong>：Vue 3 引入了<strong>静态提升</strong>、<strong>补丁标记</strong>和<strong>事件监听器缓存</strong>等技术，在编译时标记静态内容，大幅减少了运行时 diff 比较的工作量。</li>
+<li><strong>更小的打包体积</strong>：Vue 3 的代码库是模块化的，<strong>支持 Tree-shaking</strong>。未使用到的功能（如 <code>v-model</code> 的某些修饰符）可以在打包时被剔除，使最终体积比 Vue 2 <strong>减小约 10%</strong>。</li>
+</ul>
+<h3 id="四、生命周期钩子：名称与用法的变化"><a href="#四、生命周期钩子：名称与用法的变化" class="headerlink" title="四、生命周期钩子：名称与用法的变化"></a>四、生命周期钩子：名称与用法的变化</h3><p>Vue 3 保留了生命周期概念，但为了配合 Composition API，<strong>钩子名称前都加了 <code>on</code>，并作为函数在 <code>setup</code> 中调用</strong>。同时，<code>beforeCreate</code> 和 <code>created</code> 被 <code>setup</code> 本身替代。</p>
+<table>
+<thead>
+<tr>
+<th align="left">Vue 2 钩子</th>
+<th align="left">Vue 3 钩子 (Composition API)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>beforeCreate</code> &#x2F; <code>created</code></td>
+<td align="left"><code>setup()</code></td>
+</tr>
+<tr>
+<td align="left"><code>beforeMount</code> &#x2F; <code>mounted</code></td>
+<td align="left"><code>onBeforeMount</code> &#x2F; <code>onMounted</code></td>
+</tr>
+<tr>
+<td align="left"><code>beforeUpdate</code> &#x2F; <code>updated</code></td>
+<td align="left"><code>onBeforeUpdate</code> &#x2F; <code>onUpdated</code></td>
+</tr>
+<tr>
+<td align="left"><code>beforeDestroy</code> &#x2F; <code>destroyed</code></td>
+<td align="left"><code>onBeforeUnmount</code> &#x2F; <code>onUnmounted</code></td>
+</tr>
+</tbody></table>
+<p>Vue 3 还新增了 <code>onRenderTracked</code> 和 <code>onRenderTriggered</code> 等<strong>调试钩子</strong>。</p>
+<h3 id="五、新特性与功能增强"><a href="#五、新特性与功能增强" class="headerlink" title="五、新特性与功能增强"></a>五、新特性与功能增强</h3><ul>
+<li><strong>多根节点 (Fragment)</strong>：Vue 2 强制组件只能有一个根元素，Vue 3 <strong>允许组件有多个根节点</strong>，减少了无意义的包裹 <code>div</code>。</li>
+<li><strong>Teleport</strong>：可将组件的一部分模板<strong>渲染到 DOM 树的其他位置</strong>，非常适合实现模态框、通知等。</li>
+<li><strong>Suspense</strong>：用于<strong>处理异步组件</strong>的加载状态，提供更好的用户体验。</li>
+<li><strong>自定义渲染器</strong>：Vue 3 的核心逻辑与 DOM 解耦，使其<strong>可以渲染到 Canvas、原生应用等非 DOM 环境</strong>。</li>
+</ul>
+<h3 id="六、其他重要变化"><a href="#六、其他重要变化" class="headerlink" title="六、其他重要变化"></a>六、其他重要变化</h3><ul>
+<li><strong>TypeScript 支持</strong>：Vue 3 的源码<strong>完全使用 TypeScript 重写</strong>，提供了<strong>一流的类型支持</strong>，这是 Vue 2 无法比拟的。</li>
+<li><strong>全局 API 重构</strong>：Vue 2 通过 <code>new Vue()</code> 创建根实例，全局配置会影响所有实例。Vue 3 改用 <code>createApp()</code> <strong>创建独立的应用实例</strong>，避免了全局污染，使代码更模块化。</li>
+<li><strong><code>v-if</code> 与 <code>v-for</code> 优先级</strong>：在 Vue 2 中 <code>v-for</code> 优先，而在 Vue 3 中 <strong><code>v-if</code> 优先</strong>，这可以减少不必要的循环计算，提升性能。</li>
+</ul>
+<h3 id="七、总结"><a href="#七、总结" class="headerlink" title="七、总结"></a>七、总结</h3><p>总的来说，<strong>Vue 3 在性能、TypeScript 支持和代码组织能力上全面优于 Vue 2</strong>，是当前新项目的首选。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Vue/" class="category-chain-item">Vue</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Vue3/" class="print-no-link">#Vue3</a>
+      
+        <a href="/tags/Vue2/" class="print-no-link">#Vue2</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Vue 3 与 Vue 2 的区别</div>
+      <div>http://example.com/2024/12/05/Vue/Vue 3 与 Vue 2 的区别/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年12月5日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/12/05/JavaScript/%E3%80%90JS%E3%80%91%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF/" title="JS 事件循环">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">JS 事件循环</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/12/04/%E5%89%8D%E7%AB%AF/%E7%90%86%E8%A7%A3%E6%B5%8F%E8%A7%88%E5%99%A8%E6%B8%B2%E6%9F%93%E9%A1%B5%E9%9D%A2%E7%9A%84%E8%BF%87%E7%A8%8B/" title="理解浏览器渲染页面的过程">
+                        <span class="hidden-mobile">理解浏览器渲染页面的过程</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

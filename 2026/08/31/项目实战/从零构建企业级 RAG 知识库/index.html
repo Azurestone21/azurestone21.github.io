@@ -1,0 +1,762 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="从零构建企业级 RAG 知识库从零构建企业级 RAG 知识库：NestJS + React + pgvector 全栈实战一、为什么要写这个项目RAG（Retrieval-Augmented Generation） 在 2024 年被吹上了天，2025 年又被骂成”过时方案”。但企业内部知识库问答、客服话术检索、合同条款比对这些场景，RAG 依然是性价比最高的方案——不需要训练模型，只要做好切片、">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从零构建企业级 RAG 知识库">
+<meta property="og:url" content="http://example.com/2026/08/31/%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98/%E4%BB%8E%E9%9B%B6%E6%9E%84%E5%BB%BA%E4%BC%81%E4%B8%9A%E7%BA%A7%20RAG%20%E7%9F%A5%E8%AF%86%E5%BA%93/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="从零构建企业级 RAG 知识库从零构建企业级 RAG 知识库：NestJS + React + pgvector 全栈实战一、为什么要写这个项目RAG（Retrieval-Augmented Generation） 在 2024 年被吹上了天，2025 年又被骂成”过时方案”。但企业内部知识库问答、客服话术检索、合同条款比对这些场景，RAG 依然是性价比最高的方案——不需要训练模型，只要做好切片、">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-08-31T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-14T14:26:02.872Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="RAG">
+<meta property="article:tag" content="知识库">
+<meta property="article:tag" content="项目实践">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>从零构建企业级 RAG 知识库 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">从零构建企业级 RAG 知识库</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-08-31 10:00" pubdate>
+          2026年8月31日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          20 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">从零构建企业级 RAG 知识库</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="从零构建企业级-RAG-知识库"><a href="#从零构建企业级-RAG-知识库" class="headerlink" title="从零构建企业级 RAG 知识库"></a>从零构建企业级 RAG 知识库</h1><h2 id="从零构建企业级-RAG-知识库：NestJS-React-pgvector-全栈实战"><a href="#从零构建企业级-RAG-知识库：NestJS-React-pgvector-全栈实战" class="headerlink" title="从零构建企业级 RAG 知识库：NestJS + React + pgvector 全栈实战"></a>从零构建企业级 RAG 知识库：NestJS + React + pgvector 全栈实战</h2><h3 id="一、为什么要写这个项目"><a href="#一、为什么要写这个项目" class="headerlink" title="一、为什么要写这个项目"></a>一、为什么要写这个项目</h3><p><strong>RAG（Retrieval-Augmented Generation）</strong> 在 2024 年被吹上了天，2025 年又被骂成”过时方案”。但企业内部知识库问答、客服话术检索、合同条款比对这些场景，RAG 依然是性价比最高的方案——不需要训练模型，只要做好<strong>切片、检索、引用</strong>三件事。</p>
+<p>市面上的开源 RAG 框架（Dify、FastGPT、MaxKB）功能越来越重，但当你想<strong>接入自己的百炼 API、自定义切片策略、或者给前端加一个 3 步骤上传向导</strong>时，二次开发的成本可能比自己搭一套还高。</p>
+<p>所以我决定用最小可维护的技术栈，从零实现一个 <strong>MVP 级别但生产可用</strong> 的 RAG 系统。本文是这个项目的完整复盘。</p>
+<hr>
+<h3 id="二、技术选型：为什么选这些"><a href="#二、技术选型：为什么选这些" class="headerlink" title="二、技术选型：为什么选这些"></a>二、技术选型：为什么选这些</h3><table>
+<thead>
+<tr>
+<th>层</th>
+<th>选型</th>
+<th>理由</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>构建</strong></td>
+<td>pnpm + Turborepo</td>
+<td>真正的 workspace，shared 包类型实时同步</td>
+</tr>
+<tr>
+<td><strong>后端</strong></td>
+<td>NestJS 9 + TypeORM</td>
+<td>模块化清晰，SSE&#x2F;Guard&#x2F;Interceptor 都是内置的</td>
+</tr>
+<tr>
+<td><strong>数据库</strong></td>
+<td>PostgreSQL 17 + pgvector</td>
+<td>一个库搞定结构化数据 + 向量 + 全文检索，运维零成本</td>
+</tr>
+<tr>
+<td><strong>Embedding&#x2F;LLM</strong></td>
+<td>百炼 qwen3.7-text-embedding + qwen3.7-plus</td>
+<td>1024 维向量，128K 上下文，OpenAI 兼容接口</td>
+</tr>
+<tr>
+<td><strong>前端</strong></td>
+<td>React 19 + Vite + Zustand + shadcn</td>
+<td>轻量、类型安全、Tailwind v4 零配置</td>
+</tr>
+</tbody></table>
+<p><strong>没有选 LangChain JS 做全套</strong>。只用了它的 <code>RecursiveCharacterTextSplitter</code> 做文本分段，其他全部手写。LangChain 的抽象层太厚，debug 困难，很多时候你要的只是”按分隔符切段”，而不是一个 500 行的 Chain。</p>
+<hr>
+<h3 id="三、项目结构：Monorepo-共享类型"><a href="#三、项目结构：Monorepo-共享类型" class="headerlink" title="三、项目结构：Monorepo + 共享类型"></a>三、项目结构：Monorepo + 共享类型</h3><figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs nix">my-rag-agent<span class="hljs-symbol">/</span><br>├── apps<span class="hljs-symbol">/</span><br>│   ├── api<span class="hljs-symbol">/</span>          <span class="hljs-comment"># NestJS 后端（KnowledgeBase/Document/Chunk/Search/Chat/ServiceCall 6 模块）</span><br>│   └── web<span class="hljs-symbol">/</span>          <span class="hljs-comment"># React 前端（5 页面 + 6 store + shadcn 组件）</span><br>├── packages<span class="hljs-symbol">/</span><br>│   └── shared<span class="hljs-symbol">/</span>       <span class="hljs-comment"># 跨前后端共享的 DTO 类型（@my-rag-agent/shared）</span><br>├── docker-compose.yml  <span class="hljs-comment"># PostgreSQL 17 + pgvector + API + Nginx</span><br>└── pnpm-workspace.yaml<br></code></pre></td></tr></table></figure>
+
+<p><strong><code>packages/shared</code> 是整个项目的灵魂</strong>。所有 API 的请求&#x2F;响应类型都定义在这里：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-comment">// packages/shared/src/document.ts</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">type</span> <span class="hljs-title class_">ChunkProcessConfig</span> =<br>  | &#123; <span class="hljs-attr">fileType</span>: <span class="hljs-string">&quot;text&quot;</span>; <span class="hljs-attr">splitMode</span>: <span class="hljs-string">&quot;auto&quot;</span> &#125;<br>  | &#123;<br>      <span class="hljs-attr">fileType</span>: <span class="hljs-string">&quot;text&quot;</span>;<br>      <span class="hljs-attr">splitMode</span>: <span class="hljs-string">&quot;custom&quot;</span>;<br>      <span class="hljs-attr">separator</span>: <span class="hljs-built_in">string</span>;<br>      <span class="hljs-attr">chunkSize</span>: <span class="hljs-built_in">number</span>;<br>      <span class="hljs-attr">chunkOverlap</span>: <span class="hljs-built_in">number</span>;<br>    &#125;<br>  | &#123; <span class="hljs-attr">fileType</span>: <span class="hljs-string">&quot;table&quot;</span>; <span class="hljs-attr">headerRow</span>: <span class="hljs-built_in">number</span>; <span class="hljs-attr">dataRow</span>: <span class="hljs-built_in">number</span> &#125;;<br></code></pre></td></tr></table></figure>
+
+<p>后端用它做 Controller 参数校验，前端用它做 Service 返回值类型。改一个接口字段，TypeScript 会把前后端全部标红——这就是 monorepo 的快乐。</p>
+<hr>
+<h3 id="四、核心实现一：三种切片策略"><a href="#四、核心实现一：三种切片策略" class="headerlink" title="四、核心实现一：三种切片策略"></a>四、核心实现一：三种切片策略</h3><p>上传文件是 RAG 的起点，也是最容易被忽视的环节。LangChain 默认的 <code>RecursiveCharacterTextSplitter</code> 是 <strong>chunkSize 优先</strong> 的——只要一段文本能塞进 500 字符就不切，separator 只是”超长时用什么切”。</p>
+<p>但我想要的是：<strong>文本格式的文件强制按用户选的分隔符切</strong>、<strong>表格格式的文件按设置的行号解析</strong>。所以我在 <code>chunk.service.ts</code> 里实现了三路分支：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs routeros">resolveConfig() → 推断或读取用户配置<br>  ├─ <span class="hljs-attribute">fileType</span>=<span class="hljs-string">&#x27;text&#x27;</span>, <span class="hljs-attribute">splitMode</span>=<span class="hljs-string">&#x27;auto&#x27;</span>    → LangChain 默认行为（按 \n\n, \n, 字符 递回归纳）<br>  ├─ <span class="hljs-attribute">fileType</span>=<span class="hljs-string">&#x27;text&#x27;</span>, <span class="hljs-attribute">splitMode</span>=<span class="hljs-string">&#x27;custom&#x27;</span>  → splitBySeparator() 强制按用户选的分隔符切<br>  └─ <span class="hljs-attribute">fileType</span>=<span class="hljs-string">&#x27;table&#x27;</span>                     → extractTableData() 按 headerRow/dataRow 配置解析<br></code></pre></td></tr></table></figure>
+
+<p><strong>强制分隔符切分的实现</strong>：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">splitBySeparator</span>(<span class="hljs-params"></span><br><span class="hljs-params">  <span class="hljs-attr">text</span>: <span class="hljs-built_in">string</span>,</span><br><span class="hljs-params">  <span class="hljs-attr">separators</span>: <span class="hljs-built_in">string</span>[],</span><br><span class="hljs-params">  <span class="hljs-attr">chunkSize</span>: <span class="hljs-built_in">number</span>,</span><br><span class="hljs-params"></span>): <span class="hljs-built_in">string</span>[] &#123;<br>  <span class="hljs-comment">// 第 1 个 separator 强制切段</span><br>  <span class="hljs-keyword">const</span> first = separators[<span class="hljs-number">0</span>];<br>  <span class="hljs-keyword">if</span> (!first) <span class="hljs-keyword">return</span> [text];<br><br>  <span class="hljs-keyword">const</span> segments = text.<span class="hljs-title function_">split</span>(<br>    <span class="hljs-keyword">new</span> <span class="hljs-title class_">RegExp</span>(first.<span class="hljs-title function_">replace</span>(<span class="hljs-regexp">/[.*+?^$&#123;&#125;()|[\]\\]/g</span>, <span class="hljs-string">&quot;\\$&amp;&quot;</span>), <span class="hljs-string">&quot;g&quot;</span>),<br>  );<br><br>  <span class="hljs-comment">// 超过 chunkSize 的段才继续递归切，否则直接返回</span><br>  <span class="hljs-keyword">return</span> segments.<span class="hljs-title function_">flatMap</span>(<span class="hljs-function">(<span class="hljs-params">seg</span>) =&gt;</span><br>    seg.<span class="hljs-property">length</span> &gt; chunkSize<br>      ? <span class="hljs-title function_">splitBySeparator</span>(seg, separators.<span class="hljs-title function_">slice</span>(<span class="hljs-number">1</span>), chunkSize)<br>      : [seg],<br>  );<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>Excel 解析用 <code>xlsx</code> 库的 <code>sheet_to_json({ header: 1 })</code>，拿到二维数组后根据 <code>config.headerRow</code> 和 <code>config.dataRow</code> 取出真正的表头和数据行，然后按”表头: 值 | 表头: 值”格式拼接成每段文本。</p>
+<hr>
+<h3 id="五、核心实现二：混合检索（Dense-Sparse）"><a href="#五、核心实现二：混合检索（Dense-Sparse）" class="headerlink" title="五、核心实现二：混合检索（Dense + Sparse）"></a>五、核心实现二：混合检索（Dense + Sparse）</h3><p><strong>只有向量检索为什么不够？</strong></p>
+<p>向量相似度擅长”语义相近”（”销售额环比” 和 “销量变化趋势” 能对上），但遇到精确匹配查询（”XS20250103001 这个单号”）时，纯余弦相似度可能会把正确结果排在后面。</p>
+<p><strong>解决方案：pgvector 余弦距离 + PostgreSQL tsquery 全文检索，加权融合</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-comment">-- 向量检索（dense）</span><br><span class="hljs-keyword">SELECT</span> id, <span class="hljs-number">1</span> <span class="hljs-operator">-</span> (embedding <span class="hljs-operator">&lt;=&gt;</span> query_embedding) <span class="hljs-keyword">AS</span> dense_score<br><span class="hljs-keyword">FROM</span> chunks <span class="hljs-keyword">WHERE</span> document_id <span class="hljs-keyword">IN</span> (...)<br><span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> embedding <span class="hljs-operator">&lt;=&gt;</span> query_embedding LIMIT <span class="hljs-number">20</span>;<br><br><span class="hljs-comment">-- 关键词检索（sparse）</span><br><span class="hljs-keyword">SELECT</span> id, ts_rank(to_tsvector(<span class="hljs-string">&#x27;simple&#x27;</span>, content), plainto_tsquery(<span class="hljs-string">&#x27;simple&#x27;</span>, query)) <span class="hljs-keyword">AS</span> sparse_score<br><span class="hljs-keyword">FROM</span> chunks <span class="hljs-keyword">WHERE</span> document_id <span class="hljs-keyword">IN</span> (...)<br><span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> sparse_score <span class="hljs-keyword">DESC</span> LIMIT <span class="hljs-number">20</span>;<br></code></pre></td></tr></table></figure>
+
+<p>后端 <code>search.service.ts</code> 的融合逻辑：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-keyword">const</span> denseWeight = config.<span class="hljs-property">denseWeight</span> ?? <span class="hljs-number">0.6</span>; <span class="hljs-comment">// 默认向量 60%，关键词 40%</span><br><br><span class="hljs-keyword">const</span> [denseRows, keywordRows] = <span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">all</span>([<br>  <span class="hljs-title function_">vectorSearch</span>(queryVector, topK),<br>  <span class="hljs-title function_">keywordSearch</span>(query, topK),<br>]);<br><br><span class="hljs-comment">// 归一化 + 加权</span><br><span class="hljs-keyword">const</span> fused = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>&lt;<span class="hljs-built_in">string</span>, &#123; <span class="hljs-attr">chunk</span>: <span class="hljs-title class_">ChunkDto</span>; <span class="hljs-attr">score</span>: <span class="hljs-built_in">number</span> &#125;&gt;();<br><span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> row <span class="hljs-keyword">of</span> denseRows)<br>  fused.<span class="hljs-title function_">set</span>(row.<span class="hljs-property">id</span>, &#123; <span class="hljs-attr">chunk</span>: row, <span class="hljs-attr">score</span>: (<span class="hljs-number">1</span> - row.<span class="hljs-property">distance</span>) * denseWeight &#125;);<br><span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> row <span class="hljs-keyword">of</span> keywordRows) &#123;<br>  <span class="hljs-keyword">const</span> existing = fused.<span class="hljs-title function_">get</span>(row.<span class="hljs-property">id</span>);<br>  <span class="hljs-keyword">const</span> keywordScore = row.<span class="hljs-property">rank</span> / (keywordMaxRank || <span class="hljs-number">1</span>); <span class="hljs-comment">// 归一化</span><br>  <span class="hljs-keyword">if</span> (existing) existing.<span class="hljs-property">score</span> += keywordScore * (<span class="hljs-number">1</span> - denseWeight);<br>  <span class="hljs-keyword">else</span><br>    fused.<span class="hljs-title function_">set</span>(row.<span class="hljs-property">id</span>, &#123; <span class="hljs-attr">chunk</span>: row, <span class="hljs-attr">score</span>: keywordScore * (<span class="hljs-number">1</span> - denseWeight) &#125;);<br>&#125;<br><br><span class="hljs-keyword">return</span> [...fused.<span class="hljs-title function_">values</span>()].<span class="hljs-title function_">sort</span>(<span class="hljs-function">(<span class="hljs-params">a, b</span>) =&gt;</span> b.<span class="hljs-property">score</span> - a.<span class="hljs-property">score</span>).<span class="hljs-title function_">slice</span>(<span class="hljs-number">0</span>, topK);<br></code></pre></td></tr></table></figure>
+
+<p>踩过的坑：最初没做 min-max normalize，向量分数在 0.5+，关键词 rank 只有 0.06，融合后全被向量盖住。加了归一化之后才正常。</p>
+<p>Rerank 集成用的是百炼的 <code>qwen3-rerank</code>，放在融合之后做二次排序。开启后检索质量明显提升，尤其是精确匹配场景。</p>
+<hr>
+<h3 id="六、核心实现三：SSE-流式问答"><a href="#六、核心实现三：SSE-流式问答" class="headerlink" title="六、核心实现三：SSE 流式问答"></a>六、核心实现三：SSE 流式问答</h3><p>用户发消息 → 后端检索 Top-K 切片 → 拼 Prompt → 调 LLM → <strong>SSE 流式返回</strong>。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-comment">// chat.service.ts</span><br><span class="hljs-keyword">async</span> <span class="hljs-title function_">stream</span>(<span class="hljs-params"><span class="hljs-attr">dto</span>: <span class="hljs-title class_">ChatDto</span>, <span class="hljs-attr">res</span>: <span class="hljs-title class_">Response</span></span>) &#123;<br>  res.<span class="hljs-title function_">setHeader</span>(<span class="hljs-string">&#x27;Content-Type&#x27;</span>, <span class="hljs-string">&#x27;text/event-stream; charset=utf-8&#x27;</span>);<br>  res.<span class="hljs-title function_">setHeader</span>(<span class="hljs-string">&#x27;Cache-Control&#x27;</span>, <span class="hljs-string">&#x27;no-cache, no-transform&#x27;</span>); <span class="hljs-comment">// 关键：禁 Nginx 缓冲</span><br>  res.<span class="hljs-title function_">setHeader</span>(<span class="hljs-string">&#x27;X-Accel-Buffering&#x27;</span>, <span class="hljs-string">&#x27;no&#x27;</span>);                   <span class="hljs-comment">// 禁 Nginx accel</span><br><br>  <span class="hljs-comment">// 事件序列</span><br>  <span class="hljs-title function_">writeEvent</span>(<span class="hljs-string">&#x27;metadata&#x27;</span>, &#123; query, model &#125;);<br>  <span class="hljs-title function_">writeEvent</span>(<span class="hljs-string">&#x27;sources&#x27;</span>, <span class="hljs-keyword">await</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">search</span>.<span class="hljs-title function_">search</span>(dto));  <span class="hljs-comment">// 先返回引用来源</span><br><br>  <span class="hljs-comment">// 流式调用 LangChain ChatOpenAI</span><br>  <span class="hljs-keyword">const</span> stream = <span class="hljs-keyword">await</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">model</span>.<span class="hljs-title function_">stream</span>([...messages]);<br>  <span class="hljs-keyword">for</span> <span class="hljs-title function_">await</span> (<span class="hljs-keyword">const</span> chunk <span class="hljs-keyword">of</span> stream) &#123;<br>    <span class="hljs-title function_">writeEvent</span>(<span class="hljs-string">&#x27;content&#x27;</span>, chunk.<span class="hljs-property">content</span>);<br>  &#125;<br>  <span class="hljs-title function_">writeEvent</span>(<span class="hljs-string">&#x27;done&#x27;</span>, &#123;&#125;);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong>停止生成</strong>：前端用 <code>AbortController</code>，点停止后 <code>abort()</code> 断开 SSE 连接。后端 catch 到错误就停。前端检测到流断了但有 content，显示”已停止”。</p>
+<hr>
+<h3 id="七、核心实现四：知识库隔离"><a href="#七、核心实现四：知识库隔离" class="headerlink" title="七、核心实现四：知识库隔离"></a>七、核心实现四：知识库隔离</h3><p>项目支持多个知识库，每个知识库下有独立的文档、切片、检索历史。<br>隔离方式很简单：<strong>所有 API 都接收 <code>knowledgeBaseId</code> 作为第一个 query 参数</strong>，后端用 <code>innerJoin</code> 保证切片只能查到自己知识库的：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-comment">// chunk.service.ts — 带 kbId 的查询</span><br><span class="hljs-keyword">const</span> entities = <span class="hljs-keyword">await</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">chunks</span><br>  .<span class="hljs-title function_">createQueryBuilder</span>(<span class="hljs-string">&quot;chunk&quot;</span>)<br>  .<span class="hljs-title function_">innerJoin</span>(<span class="hljs-string">&quot;chunk.document&quot;</span>, <span class="hljs-string">&quot;doc&quot;</span>)<br>  .<span class="hljs-title function_">where</span>(<span class="hljs-string">&quot;doc.knowledgeBaseId = :kbId&quot;</span>, &#123; <span class="hljs-attr">kbId</span>: knowledgeBaseId &#125;)<br>  .<span class="hljs-title function_">andWhere</span>(documentId ? <span class="hljs-string">&quot;chunk.documentId = :docId&quot;</span> : <span class="hljs-string">&quot;1=1&quot;</span>, &#123;<br>    <span class="hljs-attr">docId</span>: documentId,<br>  &#125;)<br>  .<span class="hljs-title function_">orderBy</span>(<span class="hljs-string">&quot;chunk.chunkIndex&quot;</span>, <span class="hljs-string">&quot;ASC&quot;</span>)<br>  .<span class="hljs-title function_">getMany</span>();<br></code></pre></td></tr></table></figure>
+
+<p>前端侧用 Zustand 的 <code>selectedKbId</code> store 统一管理，切换知识库时：</p>
+<ul>
+<li>重新拉取文档列表、切片列表、服务调用列表</li>
+<li><strong>清空聊天消息</strong></li>
+</ul>
+<hr>
+<h3 id="八、核心实现五：3-步骤上传向导"><a href="#八、核心实现五：3-步骤上传向导" class="headerlink" title="八、核心实现五：3 步骤上传向导"></a>八、核心实现五：3 步骤上传向导</h3><p>原来设计的上传是一个弹窗，点击上传按钮就加文件进去直接切片。现在改成独立页面，引导用户做更精细的配置：</p>
+<p><strong>步骤 1：选类型 + 上传</strong></p>
+<ul>
+<li>两卡片单选：文本格式 &#x2F; 表格格式</li>
+<li>根据选的类型，显示不同的上传区域</li>
+<li>上传后隐藏上传区域，显示文件卡片（文件名 + 大小 + 垃圾桶删除）</li>
+<li>切换类型时自动清空已上传文件</li>
+</ul>
+<p><strong>步骤 2：文件处理配置</strong></p>
+<ul>
+<li>文本 → 自动分段（默认）&#x2F; 自定义（选分隔符如中文句号、英文问号、换行，设 chunkSize、chunkOverlap）</li>
+<li>表格 → 选表头是第几行、数据从第几行开始解析</li>
+</ul>
+<p><strong>步骤 3：自动切片 + 进度</strong></p>
+<ul>
+<li>提交后后台轮询文档状态，每 2 秒查一次</li>
+<li>状态变成 <code>completed</code> 后跳回文档管理页并刷新</li>
+</ul>
+<p>前端 Wizard 用 Zustand 一个 state 对象管理 3 步的所有状态，<code>buildConfig()</code> 在提交时把 UI 状态转成后端类型。</p>
+<hr>
+<h3 id="九、踩过的-5-个坑"><a href="#九、踩过的-5-个坑" class="headerlink" title="九、踩过的 5 个坑"></a>九、踩过的 5 个坑</h3><p><strong>1. pgvector 索引类型选错</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-comment">-- ❌ ivfflat 适合百万级，小数据集反而慢</span><br><span class="hljs-keyword">CREATE</span> INDEX idx_chunks_embedding <span class="hljs-keyword">ON</span> chunks <span class="hljs-keyword">USING</span> ivfflat (embedding vector_cosine_ops);<br><span class="hljs-comment">-- ✅ hnsw 适合中小数据集，构建慢但查询快</span><br><span class="hljs-keyword">CREATE</span> INDEX idx_chunks_embedding <span class="hljs-keyword">ON</span> chunks <span class="hljs-keyword">USING</span> hnsw (embedding vector_cosine_ops);<br></code></pre></td></tr></table></figure>
+
+<p><strong>2. TypeORM synchronize 自动迁移 jsonb 列</strong><br>Entity 上加了 <code>@Column({ type: &#39;jsonb&#39;, nullable: true }) config</code> 后，TypeORM 会 <code>ALTER TABLE ADD COLUMN config jsonb</code>——但需要 API 重启才生效。我一开始手动写 SQL 加列，结果忘了 TypeORM 自己也在管 schema。</p>
+<p><strong>3. Excel <code>__EMPTY</code> 表头</strong><br>合并单元格后 <code>sheet_to_json</code> 会产生 <code>__EMPTY</code> 列名。必须过滤：<code>Object.keys(row).filter(k =&gt; !k.startsWith(&#39;__EMPTY&#39;))</code>。</p>
+<p><strong>4. SSE 被 Nginx 缓冲</strong><br>流式内容攒 64KB 才发，前端等几秒才有反应。必须加 <code>X-Accel-Buffering: no</code> header。</p>
+<p><strong>5. LangChain TextSplitter 的 chunkOverlap 是字符数，不是百分比</strong><br>UI 上给用户的是百分比（好理解），传给 <code>RecursiveCharacterTextSplitter</code> 前要换算：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-keyword">const</span> overlapChars = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">round</span>((chunkSize * overlapPercent) / <span class="hljs-number">100</span>);<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="十、后续规划"><a href="#十、后续规划" class="headerlink" title="十、后续规划"></a>十、后续规划</h3><p>MVP 完成了，但离生产还有不少差距。按优先级排：</p>
+<ol>
+<li><strong>检索评估</strong>：整理小型测试集（20 个查询 + 预期文档），跑 top-k 命中率，找到 denseWeight 最佳值</li>
+<li><strong>会话历史</strong>：新增 <code>chat_sessions</code> &#x2F; <code>chat_messages</code> 表，多轮对话时带上下文一起调 LLM</li>
+<li><strong>引用来源可点击</strong>：SourcesPanel 点击某条引用 → ChunkManage 自动定位并高亮对应切片</li>
+<li><strong>用户权限</strong>：登录 + 知识库级 ACL</li>
+<li><strong>生产部署</strong>：HTTPS + 定时 pg_dump + 对象存储存文件</li>
+</ol>
+<hr>
+<h3 id="十一、结语"><a href="#十一、结语" class="headerlink" title="十一、结语"></a>十一、结语</h3><p>这个项目证明了一件事：<strong>企业级 RAG 不需要 Dify 那么重</strong>。NestJS + React + pgvector 三样东西，各自负责自己的事，加起来就是一个能跑、能调、能改的知识库系统。</p>
+<p>最有成就感的时刻不是”上传一个文档然后检索到结果”，而是：用户问出”XS20250103001 这个销售单的销售员是谁？”，系统从 5000 个切片里精准找出那一行 Excel 数据，Rerank 把它压到第 1 位，然后 LLM 回答”销售员是张三，销售门店深圳南山店”——全程 300ms。</p>
+<p><strong>切片对了、检索准了、答案自然就对了</strong>。这才是 RAG 的本质。</p>
+<hr>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E9%A1%B9%E7%9B%AE%E5%AE%9E%E8%B7%B5/" class="category-chain-item">项目实践</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/RAG/" class="print-no-link">#RAG</a>
+      
+        <a href="/tags/%E7%9F%A5%E8%AF%86%E5%BA%93/" class="print-no-link">#知识库</a>
+      
+        <a href="/tags/%E9%A1%B9%E7%9B%AE%E5%AE%9E%E8%B7%B5/" class="print-no-link">#项目实践</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>从零构建企业级 RAG 知识库</div>
+      <div>http://example.com/2026/08/31/项目实战/从零构建企业级 RAG 知识库/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年8月31日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/08/31/%E6%95%B0%E6%8D%AE%E5%BA%93/pgvector%20%E6%A0%B8%E5%BF%83%20SQL%20%E6%93%8D%E4%BD%9C/" title="pgvector 核心 SQL 操作">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">pgvector 核心 SQL 操作</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/08/25/%E5%89%8D%E7%AB%AF/%E8%B0%83%E8%AF%95Socket.IO/" title="调试 Socket.IO">
+                        <span class="hidden-mobile">调试 Socket.IO</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

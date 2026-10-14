@@ -1,0 +1,761 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Taro 长列表渲染一、 核心痛点总览小程序长列表卡顿的根源在于 逻辑层 ↔ 渲染层 的异步通讯机制（setData）。  通讯瓶颈：数据序列化与传输耗时。 内存瓶颈：DOM 节点过多导致渲染树庞大。 交互瓶颈：图片加载导致布局抖动（CLS）。   二、 第一层：数据通信与渲染优化（基础必答）   优化维度 核心策略 关键原理解析    数据裁剪 过滤冗余字段 接口数据往往包含几十个字段，只保留">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Taro 长列表渲染">
+<meta property="og:url" content="http://example.com/2025/04/01/%E5%B0%8F%E7%A8%8B%E5%BA%8F/Taro%20%E9%95%BF%E5%88%97%E8%A1%A8%E6%B8%B2%E6%9F%93/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Taro 长列表渲染一、 核心痛点总览小程序长列表卡顿的根源在于 逻辑层 ↔ 渲染层 的异步通讯机制（setData）。  通讯瓶颈：数据序列化与传输耗时。 内存瓶颈：DOM 节点过多导致渲染树庞大。 交互瓶颈：图片加载导致布局抖动（CLS）。   二、 第一层：数据通信与渲染优化（基础必答）   优化维度 核心策略 关键原理解析    数据裁剪 过滤冗余字段 接口数据往往包含几十个字段，只保留">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-04-01T10:19:22.000Z">
+<meta property="article:modified_time" content="2026-09-06T16:32:03.469Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="Taro">
+<meta property="article:tag" content="优化思路">
+<meta property="article:tag" content="渲染机制">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Taro 长列表渲染 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">Taro 长列表渲染</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-04-01 18:19" pubdate>
+          2025年4月1日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          13 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Taro 长列表渲染</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Taro-长列表渲染"><a href="#Taro-长列表渲染" class="headerlink" title="Taro 长列表渲染"></a>Taro 长列表渲染</h1><h2 id="一、-核心痛点总览"><a href="#一、-核心痛点总览" class="headerlink" title="一、 核心痛点总览"></a>一、 核心痛点总览</h2><p>小程序长列表卡顿的根源在于 <strong>逻辑层 ↔ 渲染层</strong> 的异步通讯机制（<code>setData</code>）。</p>
+<ul>
+<li><strong>通讯瓶颈</strong>：数据序列化与传输耗时。</li>
+<li><strong>内存瓶颈</strong>：DOM 节点过多导致渲染树庞大。</li>
+<li><strong>交互瓶颈</strong>：图片加载导致布局抖动（CLS）。</li>
+</ul>
+<hr>
+<h2 id="二、-第一层：数据通信与渲染优化（基础必答）"><a href="#二、-第一层：数据通信与渲染优化（基础必答）" class="headerlink" title="二、 第一层：数据通信与渲染优化（基础必答）"></a>二、 第一层：数据通信与渲染优化（基础必答）</h2><table>
+<thead>
+<tr>
+<th align="left">优化维度</th>
+<th align="left">核心策略</th>
+<th align="left">关键原理解析</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>数据裁剪</strong></td>
+<td align="left">过滤冗余字段</td>
+<td align="left">接口数据往往包含几十个字段，只保留 <code>id</code>、<code>title</code>、<code>pic</code> 等渲染必需的字段，减小 <code>setData</code> 体积。</td>
+</tr>
+<tr>
+<td align="left"><strong>分页加载</strong></td>
+<td align="left">20-30 条&#x2F;页</td>
+<td align="left">控制单次渲染节点数。</td>
+</tr>
+<tr>
+<td align="left"><strong><code>setData</code> 限制</strong></td>
+<td align="left">单次 &lt; 1MB</td>
+<td align="left">微信小程序单次传输数据超过 1MB 会直接崩溃或报错。</td>
+</tr>
+<tr>
+<td align="left"><strong>图片懒加载</strong></td>
+<td align="left"><code>lazy-load</code></td>
+<td align="left">仅加载可视区及预加载区图片，减少并发网络请求和 GPU 渲染压力。</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="三、-第二层：交互体验与预加载（消除白屏）"><a href="#三、-第二层：交互体验与预加载（消除白屏）" class="headerlink" title="三、 第二层：交互体验与预加载（消除白屏）"></a>三、 第二层：交互体验与预加载（消除白屏）</h2><p><strong>痛点</strong>：滑动到底部时才请求下一页，网络慢导致“加载中”闪烁。</p>
+<p><strong>核心解法：预加载阈值</strong></p>
+<ul>
+<li>监听 <code>onScrollToLower</code> 或滚动事件，计算 <strong>剩余高度</strong>。</li>
+<li><strong>触发时机</strong>：当剩余可视高度小于 <strong>2-3 屏</strong> 时，提前发起下一页请求。</li>
+<li><strong>滚动计算标准</strong>：<code>scrollTop + clientHeight &gt;= scrollHeight - threshold</code>。</li>
+</ul>
+<p><strong>辅助策略</strong>：</p>
+<ul>
+<li><strong>骨架屏</strong>：数据未返回时展示占位灰块，比转圈 Loading 视觉上更平滑。</li>
+<li><strong>请求锁</strong>：使用 <code>useRef</code> 做 <code>isLoading</code> 标记，防止预加载和触底加载同时发起两次请求。</li>
+</ul>
+<hr>
+<h2 id="四、-第三层：布局稳定性与图片防抖（防跳动）"><a href="#四、-第三层：布局稳定性与图片防抖（防跳动）" class="headerlink" title="四、 第三层：布局稳定性与图片防抖（防跳动）"></a>四、 第三层：布局稳定性与图片防抖（防跳动）</h2><p><strong>痛点</strong>：图片加载前后高度变化（0 -&gt; 真实高度），导致滚动条跳动，用户点错位置。</p>
+<h3 id="🅰️-方案一：CSS-占位（强力推荐）"><a href="#🅰️-方案一：CSS-占位（强力推荐）" class="headerlink" title="🅰️ 方案一：CSS 占位（强力推荐）"></a>🅰️ 方案一：CSS 占位（强力推荐）</h3><p>利用 <code>aspect-ratio</code> 提前锁定容器宽高比，图片加载前后容器尺寸纹丝不动。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-selector-class">.image-wrapper</span> &#123;<br>  <span class="hljs-attribute">width</span>: <span class="hljs-number">100%</span>;<br>  <span class="hljs-attribute">aspect-ratio</span>: <span class="hljs-number">3</span> / <span class="hljs-number">4</span>; <span class="hljs-comment">/* 锁定比例 */</span><br>  <span class="hljs-attribute">background</span>: <span class="hljs-number">#f0f0f0</span>; <span class="hljs-comment">/* 占位背景色 */</span><br>&#125;<br><span class="hljs-selector-class">.image</span> &#123;<br>  <span class="hljs-attribute">width</span>: <span class="hljs-number">100%</span>;<br>  <span class="hljs-attribute">height</span>: <span class="hljs-number">100%</span>;<br>  <span class="hljs-attribute">object-fit</span>: cover; <span class="hljs-comment">/* 裁剪填充，不撑开容器 */</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="🅱️-方案二：后端返回宽高（工业级标准）"><a href="#🅱️-方案二：后端返回宽高（工业级标准）" class="headerlink" title="🅱️ 方案二：后端返回宽高（工业级标准）"></a>🅱️ 方案二：后端返回宽高（工业级标准）</h3><p>后端接口附带 <code>picWidth</code> &#x2F; <code>picHeight</code>，前端根据屏幕宽度动态计算容器高度（行内样式写死），保证 <code>object-fit: contain</code>（完整显示）时不跳动。</p>
+<h3 id="🅲️-方案三：小程序-widthFix-的坑"><a href="#🅲️-方案三：小程序-widthFix-的坑" class="headerlink" title="🅲️ 方案三：小程序 widthFix 的坑"></a>🅲️ 方案三：小程序 <code>widthFix</code> 的坑</h3><ul>
+<li><strong>现象</strong>：<code>mode=&quot;widthFix&quot;</code> 在 <code>onLoad</code> 后才调整高度，依然会触发重排。</li>
+<li><strong>补救</strong>：在外层包裹固定比例的 <code>aspect-ratio</code> 父容器，或将 <code>min-height</code> 设为预估高度。</li>
+</ul>
+<hr>
+<h2 id="五、-第四层：虚拟列表底层原理（深水区）"><a href="#五、-第四层：虚拟列表底层原理（深水区）" class="headerlink" title="五、 第四层：虚拟列表底层原理（深水区）"></a>五、 第四层：虚拟列表底层原理（深水区）</h2><p><strong>适用场景</strong>：数据量突破 1000+ 条，即使分页也积累了过多 DOM 节点。</p>
+<h3 id="1-核心机制"><a href="#1-核心机制" class="headerlink" title="1. 核心机制"></a>1. 核心机制</h3><p>只渲染 <strong>可视区域（Viewport）</strong> + <strong>上下缓冲区（Buffer）</strong> 内的节点。</p>
+<h3 id="2-定高-vs-不定高"><a href="#2-定高-vs-不定高" class="headerlink" title="2. 定高 vs 不定高"></a>2. 定高 vs 不定高</h3><table>
+<thead>
+<tr>
+<th align="left">类型</th>
+<th align="left">实现原理</th>
+<th align="left">复杂度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>定高</strong></td>
+<td align="left"><code>startIndex = scrollTop / itemHeight</code>，直接计算偏移量。</td>
+<td align="left">低</td>
+</tr>
+<tr>
+<td align="left"><strong>不定高</strong></td>
+<td align="left">必须采用 <strong>“预估-渲染-测量-修正”</strong> 闭环。</td>
+<td align="left">高</td>
+</tr>
+</tbody></table>
+<h3 id="3-不定高标准推导逻辑（面试必背）"><a href="#3-不定高标准推导逻辑（面试必背）" class="headerlink" title="3. 不定高标准推导逻辑（面试必背）"></a>3. 不定高标准推导逻辑（面试必背）</h3><ol>
+<li><strong>预估（Estimate）</strong>：先假设每项高度为 <code>200px</code>（默认值），用于计算滚动条总高度和初始偏移量（<code>translateY</code>），保证页面能滑得动。</li>
+<li><strong>渲染（Render）</strong>：渲染可视区域内的 Item。</li>
+<li><strong>测量（Measure）</strong>：渲染完成后，通过 <code>createSelectorQuery</code> 精确获取每一项的真实高度。</li>
+<li><strong>修正（Correct）</strong>：将真实高度存入 <strong>高度缓存池（Map）</strong>，并重新计算总高度和当前偏移量。</li>
+<li><strong>为什么必须预估？</strong> 因为 JS 逻辑层在渲染前无法获知 DOM 真实高度（特别是涉及图片异步加载时），必须给一个初始值让滚动容器先“撑起来”。</li>
+</ol>
+<h3 id="4-工程化落地路径"><a href="#4-工程化落地路径" class="headerlink" title="4. 工程化落地路径"></a>4. 工程化落地路径</h3><ul>
+<li><strong>路径 A（新能力）</strong>：微信小程序 <strong>Skyline 渲染引擎</strong> 的 <code>ListBuilder</code> 组件，设置 <code>type=&quot;dynamic&quot;</code> 原生支持不定高，性能最优（仅限微信）。</li>
+<li><strong>路径 B（社区方案）</strong>：使用 <code>taro3-virtual-list</code> 等库，它们通过骨架屏测量法更好地解决了白屏问题。</li>
+</ul>
+<hr>
+<h2 id="六、-第五层：架构设计与状态恢复（压轴题）"><a href="#六、-第五层：架构设计与状态恢复（压轴题）" class="headerlink" title="六、 第五层：架构设计与状态恢复（压轴题）"></a>六、 第五层：架构设计与状态恢复（压轴题）</h2><p><strong>面试场景</strong>：用户从列表页 -&gt; 详情页 -&gt; 返回列表页。</p>
+<h3 id="关键认知（必读）"><a href="#关键认知（必读）" class="headerlink" title="关键认知（必读）"></a>关键认知（必读）</h3><blockquote>
+<p><strong>在标准小程序中，<code>navigateTo</code> + <code>navigateBack</code> 不会销毁页面实例，滚动位置是原生保留的。</strong><br>所以我们的重点不是“恢复滚动”，而是<strong>防止 <code>onShow</code> 里的冗余请求破坏体验</strong>，以及处理 <code>redirectTo</code> 等销毁场景。</p>
+</blockquote>
+<h3 id="1-数据缓存策略（防刷新）"><a href="#1-数据缓存策略（防刷新）" class="headerlink" title="1. 数据缓存策略（防刷新）"></a>1. 数据缓存策略（防刷新）</h3><ul>
+<li><strong>核心机制</strong>：<strong>Stale-While-Revalidate（陈旧数据优先）</strong>。</li>
+<li><strong>实现</strong>：<ul>
+<li>在全局 Store（Redux&#x2F;Zustand）中存储列表数据 + <code>timestamp</code>（时间戳）。</li>
+<li><code>onShow</code> 时判断：若缓存存在且未过期（如 &lt; 5分钟），<strong>直接展示缓存，不发请求</strong>。</li>
+<li>若过期，<strong>先展示旧数据（防白屏）</strong>，后台静默请求新数据，请求成功后增量合并（patch），不重置整个数组。</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-滚动位置兜底（针对-redirectTo-reLaunch）"><a href="#2-滚动位置兜底（针对-redirectTo-reLaunch）" class="headerlink" title="2. 滚动位置兜底（针对 redirectTo&#x2F;reLaunch）"></a>2. 滚动位置兜底（针对 <code>redirectTo</code>&#x2F;<code>reLaunch</code>）</h3><ul>
+<li><strong>存</strong>：在 <code>onUnload</code> 中读取 <code>scrollTop</code> 存入内存。</li>
+<li><strong>还</strong>：在 <code>onLoad</code> 中通过 <code>ScrollView</code> 的 <code>scroll-top</code> 属性还原。</li>
+<li><strong>⚠️ 关键重置技巧（防不生效）</strong>：必须<strong>先置 <code>0</code>，再 <code>nextTick</code> 置目标值</strong>，强制触发渲染层更新。<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-title function_">setScrollTop</span>(<span class="hljs-number">0</span>);<br><span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">setScrollTop</span>(target), <span class="hljs-number">50</span>);<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="3-跨页面状态同步（详情页修改了数据）"><a href="#3-跨页面状态同步（详情页修改了数据）" class="headerlink" title="3. 跨页面状态同步（详情页修改了数据）"></a>3. 跨页面状态同步（详情页修改了数据）</h3><ul>
+<li>详情页操作（如收藏&#x2F;删除）成功后，通过 <strong>EventBus</strong> 或 <strong>直接 dispatch Redux Action</strong> 通知列表页。</li>
+<li>列表页收到信号后，<strong>精确修改（patch）</strong> 对应 ID 的单项数据（如 <code>list[5].isFav = true</code>），绝不重建整个数组。</li>
+</ul>
+<h3 id="4-分页状态持久化"><a href="#4-分页状态持久化" class="headerlink" title="4. 分页状态持久化"></a>4. 分页状态持久化</h3><ul>
+<li>不仅要存 <code>list</code>，还要存 <code>pageIndex</code>（当前页码）和 <code>hasMore</code>（是否还有更多）。</li>
+<li>返回后触底加载，直接从 <code>pageIndex + 1</code> 开始请求。</li>
+</ul>
+<hr>
+<h2 id="🎯-总结"><a href="#🎯-总结" class="headerlink" title="🎯 总结"></a>🎯 总结</h2><blockquote>
+<p>“处理长列表，我们要分层治理：**首屏用分页和裁剪减轻 <code>setData</code> 压力；交互上用预加载消除白屏；视觉上用 <code>aspect-ratio</code> 锁住布局跳动；极致场景引入虚拟列表，通过预估-测量闭环解决不定高痛点；最后在架构上，利用小程序的页面栈特性，配合缓存时间戳和精准 Patch 更新，实现返回‘零请求、瞬开、无闪烁’的极致体验。”</p>
+</blockquote>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%B0%8F%E7%A8%8B%E5%BA%8F/" class="category-chain-item">小程序</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Taro/" class="print-no-link">#Taro</a>
+      
+        <a href="/tags/%E6%B8%B2%E6%9F%93%E6%9C%BA%E5%88%B6/" class="print-no-link">#渲染机制</a>
+      
+        <a href="/tags/%E4%BC%98%E5%8C%96%E6%80%9D%E8%B7%AF/" class="print-no-link">#优化思路</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Taro 长列表渲染</div>
+      <div>http://example.com/2025/04/01/小程序/Taro 长列表渲染/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年4月1日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/06/01/React/%E3%80%90React%E3%80%91%E4%B8%BA%E4%BB%80%E4%B9%88useEffect%E7%9A%84%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0%E4%B8%8D%E8%83%BD%E6%98%AFasync%E5%BC%82%E6%AD%A5%E7%9A%84/" title="为什么useEffect的回调函数不能是async异步的">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">为什么useEffect的回调函数不能是async异步的</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/02/23/AI/AI%20Agent%E6%98%AF%E4%BB%80%E4%B9%88/" title="AI Agent是什么">
+                        <span class="hidden-mobile">AI Agent是什么</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

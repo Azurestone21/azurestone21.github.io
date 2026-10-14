@@ -1,0 +1,828 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Dockerfile 完全指南 以 Taro 多端应用构建为例，从零开始，打造生产级 Docker 镜像   什么是 Dockerfile？Dockerfile 是一个包含一系列指令的纯文本文件，用于自动化构建 Docker 镜像。它就像一张自动化的“安装说明书”——告诉 Docker 如何一步步地把你的应用打包成一个可移植的镜像。 最大特点：文件名为 Dockerfile（无后缀），通过 doc">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dockerfile 指南">
+<meta property="og:url" content="http://example.com/2023/08/01/Docker/Dockerfile%E6%8C%87%E5%8D%97/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Dockerfile 完全指南 以 Taro 多端应用构建为例，从零开始，打造生产级 Docker 镜像   什么是 Dockerfile？Dockerfile 是一个包含一系列指令的纯文本文件，用于自动化构建 Docker 镜像。它就像一张自动化的“安装说明书”——告诉 Docker 如何一步步地把你的应用打包成一个可移植的镜像。 最大特点：文件名为 Dockerfile（无后缀），通过 doc">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-08-01T04:00:00.000Z">
+<meta property="article:modified_time" content="2026-09-01T06:18:06.956Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="Docker">
+<meta property="article:tag" content="Dockerfile">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Dockerfile 指南 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">Dockerfile 指南</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-08-01 12:00" pubdate>
+          2023年8月1日 中午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          17 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Dockerfile 指南</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Dockerfile-完全指南"><a href="#Dockerfile-完全指南" class="headerlink" title="Dockerfile 完全指南"></a>Dockerfile 完全指南</h1><blockquote>
+<p>以 Taro 多端应用构建为例，从零开始，打造生产级 Docker 镜像</p>
+</blockquote>
+<hr>
+<h2 id="什么是-Dockerfile？"><a href="#什么是-Dockerfile？" class="headerlink" title="什么是 Dockerfile？"></a>什么是 Dockerfile？</h2><p>Dockerfile 是一个<strong>包含一系列指令的纯文本文件</strong>，用于自动化构建 Docker 镜像。它就像一张自动化的“安装说明书”——告诉 Docker 如何一步步地把你的应用打包成一个可移植的镜像。</p>
+<p><strong>最大特点</strong>：文件名为 <code>Dockerfile</code>（无后缀），通过 <code>docker build</code> 命令执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker build -t my-app:1.0 .<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><code>-t</code>：指定镜像名称和标签</li>
+<li><code>.</code>：指定构建上下文（通常是 Dockerfile 所在目录）</li>
+</ul>
+<hr>
+<h2 id="一个真实的-Dockerfile"><a href="#一个真实的-Dockerfile" class="headerlink" title="一个真实的 Dockerfile"></a>一个真实的 Dockerfile</h2><p>下面是一个真实项目中的 Dockerfile，它用于构建一个 <strong>Taro 多端应用</strong>（支持微信小程序、H5 等多平台）：</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs dockerfile"><span class="hljs-keyword">FROM</span> node:<span class="hljs-number">20.18</span>.<span class="hljs-number">0</span> as build<br><span class="hljs-keyword">WORKDIR</span><span class="language-bash"> /usr/src/app</span><br><br><span class="hljs-comment"># 设置 npm 镜像</span><br><span class="hljs-keyword">COPY</span><span class="language-bash"> package.json ./</span><br><span class="hljs-keyword">RUN</span><span class="language-bash"> npm config <span class="hljs-built_in">set</span> registry https://registry.npmmirror.com &amp;&amp; \</span><br><span class="language-bash">    npm install -g pnpm &amp;&amp; pnpm install</span><br><br><span class="hljs-comment"># 复制源代码并构建</span><br><span class="hljs-keyword">COPY</span><span class="language-bash"> . ./</span><br><span class="hljs-keyword">ARG</span> PROJECT_ENV<br><span class="hljs-keyword">ARG</span> VERSION<br><span class="hljs-keyword">ARG</span> DESC<br><br><span class="hljs-comment"># 定义为容器内的环境变量</span><br><span class="hljs-keyword">ENV</span> TARO_APP_VERSION=$&#123;VERSION&#125;<br><br><span class="hljs-keyword">RUN</span><span class="language-bash"> <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;TARO_APP_VERSION: <span class="hljs-variable">$&#123;TARO_APP_VERSION&#125;</span>&quot;</span></span><br><span class="hljs-keyword">RUN</span><span class="language-bash"> pnpm build <span class="hljs-variable">$&#123;PROJECT_ENV&#125;</span></span><br><br><span class="hljs-comment"># 执行 CI 脚本</span><br><span class="hljs-keyword">RUN</span><span class="language-bash"> <span class="hljs-built_in">cd</span> ./ci &amp;&amp; npm install</span><br><span class="hljs-keyword">RUN</span><span class="language-bash"> <span class="hljs-built_in">cd</span> ./ci &amp;&amp; <span class="hljs-built_in">export</span> no_proxy=servicewechat.com &amp;&amp; \</span><br><span class="language-bash">  node index.js --rversion <span class="hljs-variable">$&#123;VERSION&#125;</span> --rdesc <span class="hljs-variable">$&#123;DESC&#125;</span></span><br></code></pre></td></tr></table></figure>
+
+<p>接下来，我们将逐行解读这份 Dockerfile，并由此展开所有核心知识。</p>
+<hr>
+<h2 id="核心指令详解"><a href="#核心指令详解" class="headerlink" title="核心指令详解"></a>核心指令详解</h2><h3 id="FROM-——-指定基础镜像"><a href="#FROM-——-指定基础镜像" class="headerlink" title="FROM —— 指定基础镜像"></a>FROM —— 指定基础镜像</h3><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs dockerfile"><span class="hljs-keyword">FROM</span> node:<span class="hljs-number">20.18</span>.<span class="hljs-number">0</span> as build<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><code>FROM</code> 是 Dockerfile 的<strong>第一条指令</strong>，指定基础镜像</li>
+<li><code>node:20.18.0</code> 选择了 Node.js 的特定版本（而非 <code>latest</code>），确保环境一致性</li>
+<li><code>as build</code> 为这个阶段命名为 <code>build</code>，这是<strong>多阶段构建</strong>的用法（下文会详解）</li>
+</ul>
+<p><strong>最佳实践</strong>：始终指定明确版本号，避免使用 <code>latest</code>。</p>
+<hr>
+<h3 id="WORKDIR-——-设置工作目录"><a href="#WORKDIR-——-设置工作目录" class="headerlink" title="WORKDIR —— 设置工作目录"></a>WORKDIR —— 设置工作目录</h3><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs dockerfile"><span class="hljs-keyword">WORKDIR</span><span class="language-bash"> /usr/src/app</span><br></code></pre></td></tr></table></figure>
+
+<p>相当于在容器内执行 <code>mkdir -p /usr/src/app &amp;&amp; cd /usr/src/app</code>。后续的 <code>COPY</code>、<code>RUN</code>、<code>CMD</code> 都会以此目录为基准。</p>
+<p><strong>最佳实践</strong>：使用绝对路径，不要把 <code>WORKDIR</code> 放在 <code>RUN</code> 里用 <code>cd</code> 代替。</p>
+<hr>
+<h3 id="COPY-——-复制文件"><a href="#COPY-——-复制文件" class="headerlink" title="COPY —— 复制文件"></a>COPY —— 复制文件</h3><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs dockerfile"><span class="hljs-keyword">COPY</span><span class="language-bash"> package.json ./</span><br><span class="hljs-keyword">COPY</span><span class="language-bash"> . ./</span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>第一行：只复制 <code>package.json</code>（<strong>利用构建缓存的关键</strong>）</li>
+<li>第二行：在依赖安装完成后，再复制全部源代码</li>
+</ul>
+<p><strong>为什么分两步？</strong> 因为 <code>package.json</code> 的改动频率远低于源代码。只要 <code>package.json</code> 没变，Docker 就会复用缓存的依赖安装层，构建速度飞起。</p>
+<hr>
+<h3 id="RUN-——-执行构建命令"><a href="#RUN-——-执行构建命令" class="headerlink" title="RUN —— 执行构建命令"></a>RUN —— 执行构建命令</h3><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs dockerfile"><span class="hljs-keyword">RUN</span><span class="language-bash"> npm config <span class="hljs-built_in">set</span> registry https://registry.npmmirror.com &amp;&amp; \</span><br><span class="language-bash">    npm install -g pnpm &amp;&amp; pnpm install</span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>每一条 <code>RUN</code> 都会创建一个新的镜像层</li>
+<li>这里用 <code>&amp;&amp;</code> 将多个命令串联在<strong>一条 <code>RUN</code></strong> 中，减少层数</li>
+<li>先设置 npm 镜像源（国内加速），再全局安装 pnpm，最后安装项目依赖</li>
+</ul>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs dockerfile"><span class="hljs-keyword">RUN</span><span class="language-bash"> <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;TARO_APP_VERSION: <span class="hljs-variable">$&#123;TARO_APP_VERSION&#125;</span>&quot;</span></span><br><span class="hljs-keyword">RUN</span><span class="language-bash"> pnpm build <span class="hljs-variable">$&#123;PROJECT_ENV&#125;</span></span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>第一行打印版本信息（便于调试）</li>
+<li>第二行执行 Taro 项目的构建命令，<code>${PROJECT_ENV}</code> 是构建参数</li>
+</ul>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs dockerfile"><span class="hljs-keyword">RUN</span><span class="language-bash"> <span class="hljs-built_in">cd</span> ./ci &amp;&amp; npm install</span><br><span class="hljs-keyword">RUN</span><span class="language-bash"> <span class="hljs-built_in">cd</span> ./ci &amp;&amp; <span class="hljs-built_in">export</span> no_proxy=servicewechat.com &amp;&amp; \</span><br><span class="language-bash">  node index.js --rversion <span class="hljs-variable">$&#123;VERSION&#125;</span> --rdesc <span class="hljs-variable">$&#123;DESC&#125;</span></span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>进入 <code>ci</code> 目录安装依赖</li>
+<li>执行 CI 脚本，上传构建产物或执行后续流程</li>
+<li><code>export no_proxy=servicewechat.com</code> 绕过代理，确保微信相关服务可访问</li>
+</ul>
+<hr>
+<h3 id="ARG-——-构建参数"><a href="#ARG-——-构建参数" class="headerlink" title="ARG —— 构建参数"></a>ARG —— 构建参数</h3><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs dockerfile"><span class="hljs-keyword">ARG</span> PROJECT_ENV<br><span class="hljs-keyword">ARG</span> VERSION<br><span class="hljs-keyword">ARG</span> DESC<br></code></pre></td></tr></table></figure>
+
+<p><code>ARG</code> 用于定义在 <strong><code>docker build</code> 时</strong>传入的变量：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker build --build-arg PROJECT_ENV=production --build-arg VERSION=v1.0.0 --build-arg DESC=<span class="hljs-string">&quot;正式发布&quot;</span> -t my-app .<br></code></pre></td></tr></table></figure>
+
+<p>这些参数不会保留在最终镜像的环境变量中（除非用 <code>ENV</code> 转发）。</p>
+<hr>
+<h3 id="ENV-——-环境变量"><a href="#ENV-——-环境变量" class="headerlink" title="ENV —— 环境变量"></a>ENV —— 环境变量</h3><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs dockerfile"><span class="hljs-keyword">ENV</span> TARO_APP_VERSION=$&#123;VERSION&#125;<br></code></pre></td></tr></table></figure>
+
+<p><code>ENV</code> 定义的变量<strong>会保留在镜像中</strong>，在容器运行时依然可用。这里将构建参数 <code>VERSION</code> 转存为环境变量 <code>TARO_APP_VERSION</code>，供应用在运行时读取。</p>
+<p><strong>最佳实践</strong>：<code>ARG</code> 用于构建时传参，<code>ENV</code> 用于运行时配置。如需在运行时使用构建参数，用 <code>ENV</code> 做一次转发。</p>
+<hr>
+<h2 id="深入理解分层构建与缓存"><a href="#深入理解分层构建与缓存" class="headerlink" title="深入理解分层构建与缓存"></a>深入理解分层构建与缓存</h2><p>Docker 镜像由多个只读层堆叠而成。<strong>Dockerfile 中的每条指令都生成一个新层</strong>。构建时，Docker 会检查每一层是否变化：</p>
+<ul>
+<li>如果没变化 → 直接复用缓存（<strong>秒过</strong>）</li>
+<li>如果变化 → 该层及后续所有层重新构建</li>
+</ul>
+<p>基于这个原理，我们的 Dockerfile 做了精心的顺序安排：</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs dockerfile"><span class="hljs-number">1</span>. <span class="hljs-keyword">FROM</span> node:<span class="hljs-number">20.18</span>.<span class="hljs-number">0</span>        → 基础层（几乎不变）<br><span class="hljs-number">2</span>. <span class="hljs-keyword">WORKDIR</span><span class="language-bash">                 → 基本不变</span><br><span class="hljs-number">3</span>. <span class="hljs-keyword">COPY</span><span class="language-bash"> package.json ./    → 依赖文件（很少变）</span><br><span class="hljs-number">4</span>. <span class="hljs-keyword">RUN</span><span class="language-bash"> pnpm install        → 依赖层（package.json 不变则缓存命中）</span><br><span class="hljs-number">5</span>. <span class="hljs-keyword">COPY</span><span class="language-bash"> . ./               → 源代码（经常变）  ← 从这里开始重建</span><br><span class="hljs-number">6</span>. <span class="hljs-keyword">ARG</span> / <span class="hljs-keyword">ENV</span>               → 通常不变<br><span class="hljs-number">7</span>. <span class="hljs-keyword">RUN</span><span class="language-bash"> pnpm build          → 构建层（每次源码变化才重建）</span><br><span class="hljs-number">8</span>. <span class="hljs-keyword">RUN</span><span class="language-bash"> <span class="hljs-built_in">cd</span> ./ci ...         → CI 层</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>这就是为什么先拷 <code>package.json</code> 再拷源码</strong>——即使源码天天改，依赖也无需重装，每次构建节省 2-3 分钟。</p>
+<hr>
+<h2 id="多阶段构建（Multi-stage-Builds）"><a href="#多阶段构建（Multi-stage-Builds）" class="headerlink" title="多阶段构建（Multi-stage Builds）"></a>多阶段构建（Multi-stage Builds）</h2><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs dockerfile"><span class="hljs-keyword">FROM</span> node:<span class="hljs-number">20.18</span>.<span class="hljs-number">0</span> as build   <span class="hljs-comment"># 第一阶段命名为 build</span><br><span class="hljs-comment"># ... 构建过程 ...</span><br><span class="hljs-comment"># 没有第二阶段？！那这个 &quot;as build&quot; 有何用？</span><br></code></pre></td></tr></table></figure>
+
+<p>实际上，这个 Dockerfile 目前只用了单阶段。但 <code>as build</code> 的写法为未来扩展留了余地。一个典型的多阶段构建是这样的：</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs dockerfile"><span class="hljs-comment"># 第一阶段：构建</span><br><span class="hljs-keyword">FROM</span> node:<span class="hljs-number">20.18</span>.<span class="hljs-number">0</span> AS builder<br><span class="hljs-keyword">WORKDIR</span><span class="language-bash"> /app</span><br><span class="hljs-keyword">COPY</span><span class="language-bash"> package*.json ./</span><br><span class="hljs-keyword">RUN</span><span class="language-bash"> npm install</span><br><span class="hljs-keyword">COPY</span><span class="language-bash"> . .</span><br><span class="hljs-keyword">RUN</span><span class="language-bash"> npm run build</span><br><br><span class="hljs-comment"># 第二阶段：运行（只复制构建产物）</span><br><span class="hljs-keyword">FROM</span> nginx:alpine<br><span class="hljs-keyword">COPY</span><span class="language-bash"> --from=builder /app/dist /usr/share/nginx/html</span><br><span class="hljs-keyword">EXPOSE</span> <span class="hljs-number">80</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>效果</strong>：最终镜像从 <strong>1GB+</strong>（包含 Node.js、源码、node_modules）降到 <strong>~20MB</strong>（仅 Nginx + 静态文件）。</p>
+<p>对于 Taro 项目，如果你只需要最终构建的静态文件或小程序包，也可以采用多阶段构建，分离构建环境与运行环境。</p>
+<hr>
+<h2 id="常用指令速查表"><a href="#常用指令速查表" class="headerlink" title="常用指令速查表"></a>常用指令速查表</h2><table>
+<thead>
+<tr>
+<th>指令</th>
+<th>用途</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>FROM</code></td>
+<td>指定基础镜像</td>
+<td><code>FROM node:20.18.0</code></td>
+</tr>
+<tr>
+<td><code>WORKDIR</code></td>
+<td>设置工作目录</td>
+<td><code>WORKDIR /app</code></td>
+</tr>
+<tr>
+<td><code>COPY</code></td>
+<td>复制文件&#x2F;目录</td>
+<td><code>COPY package.json ./</code></td>
+</tr>
+<tr>
+<td><code>ADD</code></td>
+<td>复制 + 自动解压 + URL 下载</td>
+<td><code>ADD app.tar.gz /</code></td>
+</tr>
+<tr>
+<td><code>RUN</code></td>
+<td>构建时执行命令</td>
+<td><code>RUN npm install</code></td>
+</tr>
+<tr>
+<td><code>ARG</code></td>
+<td>构建时传入参数</td>
+<td><code>ARG VERSION</code></td>
+</tr>
+<tr>
+<td><code>ENV</code></td>
+<td>设置环境变量（保留在镜像中）</td>
+<td><code>ENV NODE_ENV=production</code></td>
+</tr>
+<tr>
+<td><code>EXPOSE</code></td>
+<td>声明容器监听端口（仅声明）</td>
+<td><code>EXPOSE 3000</code></td>
+</tr>
+<tr>
+<td><code>CMD</code></td>
+<td>容器启动时的默认命令（可被覆盖）</td>
+<td><code>CMD [&quot;node&quot;, &quot;app.js&quot;]</code></td>
+</tr>
+<tr>
+<td><code>ENTRYPOINT</code></td>
+<td>容器启动的主命令（不可覆盖）</td>
+<td><code>ENTRYPOINT [&quot;node&quot;]</code></td>
+</tr>
+<tr>
+<td><code>LABEL</code></td>
+<td>添加元数据</td>
+<td><code>LABEL version=&quot;1.0&quot;</code></td>
+</tr>
+<tr>
+<td><code>VOLUME</code></td>
+<td>声明挂载点</td>
+<td><code>VOLUME /data</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="构建与运行命令"><a href="#构建与运行命令" class="headerlink" title="构建与运行命令"></a>构建与运行命令</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 带参数构建</span><br>docker build \<br>  --build-arg PROJECT_ENV=production \<br>  --build-arg VERSION=v2.3.1 \<br>  --build-arg DESC=<span class="hljs-string">&quot;修复若干问题&quot;</span> \<br>  -t taro-app:latest .<br><br><span class="hljs-comment"># 运行容器</span><br>docker run -p 3000:3000 taro-app:latest<br><br><span class="hljs-comment"># 查看镜像历史（每一层的大小）</span><br>docker <span class="hljs-built_in">history</span> taro-app:latest<br><br><span class="hljs-comment"># 清理构建缓存</span><br>docker builder prune<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="最佳实践总结"><a href="#最佳实践总结" class="headerlink" title="最佳实践总结"></a>最佳实践总结</h2><p>基于这份 Dockerfile，我们总结出 5 条核心原则：</p>
+<h3 id="1-利用缓存，先拷依赖文件"><a href="#1-利用缓存，先拷依赖文件" class="headerlink" title="1. 利用缓存，先拷依赖文件"></a>1. 利用缓存，先拷依赖文件</h3><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs dockerfile"><span class="hljs-keyword">COPY</span><span class="language-bash"> package.json ./     <span class="hljs-comment"># 先拷依赖</span></span><br><span class="hljs-keyword">RUN</span><span class="language-bash"> pnpm install         <span class="hljs-comment"># 依赖不变则缓存命中</span></span><br><span class="hljs-keyword">COPY</span><span class="language-bash"> . ./                <span class="hljs-comment"># 后拷源码</span></span><br></code></pre></td></tr></table></figure>
+
+<h3 id="2-合并-RUN-命令，减少层数"><a href="#2-合并-RUN-命令，减少层数" class="headerlink" title="2. 合并 RUN 命令，减少层数"></a>2. 合并 RUN 命令，减少层数</h3><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs dockerfile"><span class="hljs-keyword">RUN</span><span class="language-bash"> npm config <span class="hljs-built_in">set</span> registry https://registry.npmmirror.com &amp;&amp; \</span><br><span class="language-bash">    npm install -g pnpm &amp;&amp; pnpm install</span><br></code></pre></td></tr></table></figure>
+<p>合并后镜像更小，构建更快。</p>
+<h3 id="3-使用-ARG-实现参数化构建"><a href="#3-使用-ARG-实现参数化构建" class="headerlink" title="3. 使用 ARG 实现参数化构建"></a>3. 使用 ARG 实现参数化构建</h3><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs dockerfile"><span class="hljs-keyword">ARG</span> PROJECT_ENV<br><span class="hljs-keyword">ARG</span> VERSION<br><span class="hljs-keyword">RUN</span><span class="language-bash"> pnpm build <span class="hljs-variable">$&#123;PROJECT_ENV&#125;</span></span><br></code></pre></td></tr></table></figure>
+<p>同一个 Dockerfile 可构建不同环境（dev&#x2F;test&#x2F;prod）。</p>
+<h3 id="4-用-ENV-转发-ARG，实现运行时可用"><a href="#4-用-ENV-转发-ARG，实现运行时可用" class="headerlink" title="4. 用 ENV 转发 ARG，实现运行时可用"></a>4. 用 ENV 转发 ARG，实现运行时可用</h3><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs dockerfile"><span class="hljs-keyword">ENV</span> TARO_APP_VERSION=$&#123;VERSION&#125;<br></code></pre></td></tr></table></figure>
+<p>这样应用在容器内可以通过 <code>process.env.TARO_APP_VERSION</code> 读取版本号。</p>
+<h3 id="5-添加-dockerignore"><a href="#5-添加-dockerignore" class="headerlink" title="5. 添加 .dockerignore"></a>5. 添加 .dockerignore</h3><p>在项目根目录创建 <code>.dockerignore</code>，排除不必要的文件：</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs jboss-cli">node_modules<br><span class="hljs-string">.git</span><br>*<span class="hljs-string">.log</span><br><span class="hljs-string">.env</span><br>dist<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="进阶优化建议"><a href="#进阶优化建议" class="headerlink" title="进阶优化建议"></a>进阶优化建议</h2><p>针对当前的 Taro Dockerfile，还可以进一步优化：</p>
+<h3 id="优化一：使用-pnpm-官方镜像（更小更快）"><a href="#优化一：使用-pnpm-官方镜像（更小更快）" class="headerlink" title="优化一：使用 pnpm 官方镜像（更小更快）"></a>优化一：使用 pnpm 官方镜像（更小更快）</h3><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs dockerfile"><span class="hljs-keyword">FROM</span> node:<span class="hljs-number">20.18</span>.<span class="hljs-number">0</span>-alpine   <span class="hljs-comment"># Alpine 版更小（约 50MB vs 200MB）</span><br><span class="hljs-keyword">RUN</span><span class="language-bash"> corepack <span class="hljs-built_in">enable</span> &amp;&amp; corepack prepare pnpm@latest --activate</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="优化二：拆分-CI-步骤为独立阶段（提高可读性）"><a href="#优化二：拆分-CI-步骤为独立阶段（提高可读性）" class="headerlink" title="优化二：拆分 CI 步骤为独立阶段（提高可读性）"></a>优化二：拆分 CI 步骤为独立阶段（提高可读性）</h3><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs dockerfile"><span class="hljs-keyword">FROM</span> node:<span class="hljs-number">20.18</span>.<span class="hljs-number">0</span> AS builder<br><span class="hljs-comment"># ... 构建 ...</span><br><br><span class="hljs-keyword">FROM</span> node:<span class="hljs-number">20.18</span>.<span class="hljs-number">0</span> AS ci-runner<br><span class="hljs-keyword">COPY</span><span class="language-bash"> --from=builder /usr/src/app/ci /ci</span><br><span class="hljs-keyword">WORKDIR</span><span class="language-bash"> /ci</span><br><span class="hljs-keyword">RUN</span><span class="language-bash"> npm install</span><br><span class="hljs-keyword">CMD</span><span class="language-bash"> [<span class="hljs-string">&quot;node&quot;</span>, <span class="hljs-string">&quot;index.js&quot;</span>]</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="优化三：将敏感信息通过环境变量注入，而非-ARG"><a href="#优化三：将敏感信息通过环境变量注入，而非-ARG" class="headerlink" title="优化三：将敏感信息通过环境变量注入，而非 ARG"></a>优化三：将敏感信息通过环境变量注入，而非 ARG</h3><p><code>ARG</code> 会在镜像历史中暴露（<code>docker history</code> 可见），敏感信息（如密钥）应通过运行时环境变量或 Docker Secret 传递。</p>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Dockerfile 是 Docker 生态中最基础也最重要的文件之一。一个好的 Dockerfile 应该具备：</p>
+<ul>
+<li><strong>可读性</strong>：清晰的指令顺序和注释</li>
+<li><strong>高效性</strong>：充分利用构建缓存</li>
+<li><strong>安全性</strong>：避免暴露敏感信息</li>
+<li><strong>灵活性</strong>：通过 ARG&#x2F;ENV 支持多环境</li>
+</ul>
+<hr>
+<p><em>想了解更多？查阅官方文档：<a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/builder/">Dockerfile 参考手册</a></em></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Docker/" class="category-chain-item">Docker</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Docker/" class="print-no-link">#Docker</a>
+      
+        <a href="/tags/Dockerfile/" class="print-no-link">#Dockerfile</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Dockerfile 指南</div>
+      <div>http://example.com/2023/08/01/Docker/Dockerfile指南/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年8月1日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/08/01/Docker/Docker%20compose%E6%8C%87%E5%8D%97/" title="Docker compose 指南">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Docker compose 指南</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/08/01/AI/Codex%20%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81%E9%97%AE%E9%A2%98/" title="Codex 中文乱码问题">
+                        <span class="hidden-mobile">Codex 中文乱码问题</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,757 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Skills的结构Agent Skills 完全指南：从原理到实践引言：Agent 能力扩展的第三条路2025 年 10 月，Anthropic 正式发布 Agent Skills，并将其定位为“AI Agent 生态的核心能力扩展机制”。在此之前，给 Agent 注入领域知识主要有两条路径：一是把所有指令写进 System Prompt，二是在运行时拼接上下文。两条路都有各自的瓶颈——前者让上下">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Skills的结构">
+<meta property="og:url" content="http://example.com/2026/08/01/AI/Agent%20Skills%20%E5%AE%8C%E5%85%A8%E6%8C%87%E5%8D%97/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Skills的结构Agent Skills 完全指南：从原理到实践引言：Agent 能力扩展的第三条路2025 年 10 月，Anthropic 正式发布 Agent Skills，并将其定位为“AI Agent 生态的核心能力扩展机制”。在此之前，给 Agent 注入领域知识主要有两条路径：一是把所有指令写进 System Prompt，二是在运行时拼接上下文。两条路都有各自的瓶颈——前者让上下">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-07-31T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-14T14:26:02.395Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="Skills">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Skills的结构 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">Skills的结构</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-08-01 00:00" pubdate>
+          2026年8月1日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          30 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Skills的结构</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Skills的结构"><a href="#Skills的结构" class="headerlink" title="Skills的结构"></a>Skills的结构</h1><h2 id="Agent-Skills-完全指南：从原理到实践"><a href="#Agent-Skills-完全指南：从原理到实践" class="headerlink" title="Agent Skills 完全指南：从原理到实践"></a>Agent Skills 完全指南：从原理到实践</h2><h3 id="引言：Agent-能力扩展的第三条路"><a href="#引言：Agent-能力扩展的第三条路" class="headerlink" title="引言：Agent 能力扩展的第三条路"></a>引言：Agent 能力扩展的第三条路</h3><p>2025 年 10 月，Anthropic 正式发布 Agent Skills，并将其定位为“AI Agent 生态的核心能力扩展机制”。在此之前，给 Agent 注入领域知识主要有两条路径：一是把所有指令写进 System Prompt，二是在运行时拼接上下文。两条路都有各自的瓶颈——前者让上下文迅速膨胀，后者缺乏结构化和可复用性。</p>
+<p>Agent Skills 给出了第三条路：<strong>把领域知识打包成文件系统上的标准化文件夹，让 Agent 按需发现、按需加载</strong>。Anthropic 在官方工程博客中给出了一个精准的类比——“为一个 Agent 构建 Skill，就像为新员工准备一份入职指南”。你不需要为每个场景重新训练一个专用 Agent，只需要把程序性知识封装成可组合、可共享的 Skill，就能让通用 Agent 在需要时化身为特定领域的专家。</p>
+<p>Skills 发布后迅速被多个平台采纳。Microsoft Learn 将其定义为“可移植的指令、脚本和资源包，为 Agent 提供专门功能和领域知识”。Agent Skills 也已成为一个开放标准，规范文档托管在 agentskills.io，目标是实现跨平台的可移植性。</p>
+<h3 id="什么是-Agent-Skills"><a href="#什么是-Agent-Skills" class="headerlink" title="什么是 Agent Skills"></a>什么是 Agent Skills</h3><p>Agent Skills 是<strong>模块化的能力扩展包</strong>，专为通用 AI Agent 设计，用于注入流程化、确定性的领域知识。它的本质是一个<strong>基于文件系统的、可复用的知识包</strong>，让通用 Agent 在相关任务上按需加载成领域专家，而不是把整本操作手册塞进每一次对话的系统提示词。</p>
+<p>一个 Skill 解决的核心问题是<strong>程序性知识的复用</strong>。它不是“这次怎么做”的一次性指令，而是“这类事以后都这么做”的标准化操作流程（SOP）。Skill 封装的是“何时用、怎么做”的知识——包括触发条件、执行步骤、边界判断、禁止行为和输出验证。</p>
+<p>从技术本质上看，Skill 是<strong>有组织的指令、脚本和资源文件夹</strong>，Agent 可以动态发现并加载它们以在特定任务上表现更好。它既可以简单到一个 <code>SKILL.md</code> 文件，也可以复杂到包含脚本、参考文档和资源模板的完整目录结构。</p>
+<h3 id="基本结构：一个文件夹，三层加载"><a href="#基本结构：一个文件夹，三层加载" class="headerlink" title="基本结构：一个文件夹，三层加载"></a>基本结构：一个文件夹，三层加载</h3><p>Agent Skills 的目录结构遵循极简原则。最简单的 Skill 就是一个包含 <code>SKILL.md</code> 文件的文件夹。随着复杂度增加，可以在目录中捆绑额外的资源文件。</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs text">skill-name/<br>├── SKILL.md          # 必需：元数据 + 指令<br>├── scripts/          # 可选：可执行代码<br>├── references/       # 可选：参考文档<br>├── assets/           # 可选：模板、图片、字体<br>└── ...               # 其他按需资源<br></code></pre></td></tr></table></figure>
+
+<p><code>SKILL.md</code> 由两部分组成：<strong>YAML frontmatter</strong> 和 <strong>Markdown 正文</strong>。Frontmatter 必须用 <code>---</code> 标记开始和结束，包含以下字段：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>必需</th>
+<th>约束</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>name</code></td>
+<td>是</td>
+<td>最多 64 字符，仅小写字母、数字和连字符，不可首尾为连字符，需与目录名一致</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>是</td>
+<td>最多 1024 字符，非空，需描述“做什么”和“何时使用”</td>
+</tr>
+<tr>
+<td><code>license</code></td>
+<td>否</td>
+<td>许可证名称或对捆绑许可证文件的引用</td>
+</tr>
+<tr>
+<td><code>compatibility</code></td>
+<td>否</td>
+<td>最多 500 字符，环境要求（产品、系统包、网络访问等）</td>
+</tr>
+<tr>
+<td><code>metadata</code></td>
+<td>否</td>
+<td>任意键值对，用于附加元数据</td>
+</tr>
+<tr>
+<td><code>allowed-tools</code></td>
+<td>否</td>
+<td>预批准工具列表（实验性）</td>
+</tr>
+</tbody></table>
+<p><code>description</code> 是最关键的字段。它是 Agent 判断是否加载某个 Skill 的主要依据——Agent 在启动时会扫描所有 Skill 的 <code>description</code>，将其与当前任务做语义匹配。官方推荐的写法公式是：<strong>做什么 + 何时使用 + 触发短语</strong>。一个好的 description 会主动列出用户可能说出的关键词和场景，以对抗 Agent “欠触发”的倾向。</p>
+<p>Markdown 正文则是第二级指令，理想情况下应控制在 500 行以内。正文应包含工作流程、资源索引、边界说明和输出模板等内容。官方建议正文使用祈使句式，并解释“为什么”而不只是“做什么”，让 Agent 能适应边缘情况。</p>
+<h3 id="如何设计一个高质量的-Skill"><a href="#如何设计一个高质量的-Skill" class="headerlink" title="如何设计一个高质量的 Skill"></a>如何设计一个高质量的 Skill</h3><p>设计一个 Skill 的核心判断标准是：<strong>任务中是否存在显著的专家判断差异</strong>。如果熟手和新手做出来差距很大，这个任务就值得 Skill 化；如果只是简单的执行步骤，封装成本可能并不划算。</p>
+<p><strong>第一，从 <code>description</code> 开始设计。</strong> 大多数 Skill 不触发的问题都源于 description 写得太模糊。一个好的 description 应该像这样：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">name:</span> <span class="hljs-string">pdf-processing</span><br><span class="hljs-attr">description:</span> <span class="hljs-string">从</span> <span class="hljs-string">PDF</span> <span class="hljs-string">文件中提取文本和表格，填写</span> <span class="hljs-string">PDF</span> <span class="hljs-string">表单，合并多个</span> <span class="hljs-string">PDF。</span><br>  <span class="hljs-string">当用户处理</span> <span class="hljs-string">PDF</span> <span class="hljs-string">文档、提到表单填写、扫描件或文档提取时使用。</span><br></code></pre></td></tr></table></figure>
+
+<p>对比一个糟糕的例子：<code>description: Helps with PDFs.</code>——没有说明能力边界，也没有给出触发场景。</p>
+<p><strong>第二，让 SKILL.md 保持精简。</strong> 不要把 SKILL.md 写成百科全书的正文。它应该像一个组织良好的手册的目录页——告诉 Agent“这里有哪几章，什么时候去翻哪一章”，而把详细内容放到 <code>references/</code> 中。当参考文件超过 300 行时，建议在文件开头添加目录。</p>
+<p><strong>第三，用脚本替代重复代码生成。</strong> 如果 Skill 涉及确定性或重复性的操作，把可执行代码放到 <code>scripts/</code> 目录中。执行脚本时，只有脚本的输出结果会进入上下文，代码本身不会，这能显著节省 Token。Anthropic 官方的 <code>skill-creator</code> 和 <code>frontend-design</code> Skill 是展示渐进式披露和脚本自动化最佳实践的优秀范例，值得参考。</p>
+<p><strong>第四，为边缘情况做好设计。</strong> 高质量的 Skill 需要明确回答：<strong>何时触发、何时不触发、按什么流程执行、边界情况怎么判断、禁止哪些行为、输出如何验证、失败后如何修正</strong>。这七个问题构成了一个可复用、可验证、可迭代的专家能力包的基本框架。</p>
+<p><strong>第五，考虑安全风险。</strong> Skills 并非没有代价。2026 年 2 月的一项审计发现，在 3,984 个 AI Agent Skill 中，<strong>36.82% 存在安全缺陷</strong>，76 个包含确认的恶意载荷。Snyk 的研究也发现 36% 的 Skill 存在提示注入问题。设计 Skill 时，应避免在文件中硬编码凭据，谨慎处理来自外部的指令，并对脚本权限进行最小化授予。</p>
+<h3 id="什么情况下应该使用-Skills"><a href="#什么情况下应该使用-Skills" class="headerlink" title="什么情况下应该使用 Skills"></a>什么情况下应该使用 Skills</h3><p>Skills 最自然的适用场景是<strong>重复性工作流</strong>。Anthropic 官方博客给出的判断标准很直接：“如果你在多个对话中反复输入相同的请求，那就是时候创建一个 Skill 了”。</p>
+<p>具体来说，以下三类场景最适合 Skill 化：</p>
+<p><strong>组织级工作流。</strong> 品牌规范、合规流程、文档模板——这些是团队中每个成员都需要遵循的标准，但每次都要向 AI 重新解释一遍。把这些标准封装成 Skill，Claude 在生成演示文稿或文档时会自动应用，无需每次重复说明。</p>
+<p><strong>领域专业知识。</strong> Excel 公式、PDF 操作、数据分析、代码审查——这些需要专家判断的领域，Skill 能把熟手的经验固化为可复用的操作流程。例如，一个代码审查 Skill 可以封装触发条件、审查流程、反模式约束和输出格式规范。</p>
+<p><strong>个人偏好与工作方法。</strong> 笔记系统、编程模式、研究方法——个人的工作习惯同样值得 Skill 化。这类 Skill 的维护成本低，但能显著提升日常与 Agent 协作的效率。</p>
+<p>相反，<strong>不适合 Skill 化的场景</strong>包括：简单的单步执行（用 Prompt 就够了）、需要运行时动态变化的信息（用 MCP 工具查询更合适）、以及有严格状态机要求的流程控制（Workflow 更合适）。</p>
+<h3 id="Skills-如何加载：渐进式披露"><a href="#Skills-如何加载：渐进式披露" class="headerlink" title="Skills 如何加载：渐进式披露"></a>Skills 如何加载：渐进式披露</h3><p>Skills 最核心的设计原则是<strong>渐进式披露（Progressive Disclosure）</strong> 。它借鉴了 UI&#x2F;UX 领域的信息披露策略，将信息按需分层加载，在上下文效率和知识深度之间取得平衡。</p>
+<p>整个加载过程分为三层：</p>
+<p><strong>第一层：元数据层（启动时加载）。</strong> Agent 启动时，只将所有已安装 Skill 的 <code>name</code> 和 <code>description</code> 预加载到系统提示中，每个 Skill 大约消耗 <strong>100 Token</strong>。即使安装了 30 个 Skill，开局消耗也仅约 3000 Token。这层信息的作用是让 Agent 知道“有哪些 Skill 存在，它们大概能做什么”。</p>
+<p><strong>第二层：指令层（触发时加载）。</strong> 当用户请求与某个 Skill 的 <code>description</code> 语义匹配时，Agent 才会读取完整的 <code>SKILL.md</code> 正文，通常控制在 <strong>5000 Token 以内</strong>。这层信息告诉 Agent“具体怎么做”。</p>
+<p><strong>第三层：资源层（按需加载）。</strong> <code>scripts/</code>、<code>references/</code> 和 <code>assets/</code> 中的文件<strong>不会自动进入上下文</strong>。只有当 <code>SKILL.md</code> 正文中明确指引 Agent 去读取某个文件或执行某个脚本时，Agent 才会主动使用工具去访问它们。读到才进，不读就不进，因此其体积理论上几乎没有上限——“可以捆绑进 Skill 的上下文量实际上是无限的”。</p>
+<p>这种三层结构的关键在于<strong>物理分离</strong>：把“有哪些能力”和“具体怎么做”拆开，让 Agent 在启动时只需要知道目录的存在，而不需要加载每一章的内容。Anthropic 官方的 PDF Skill 是一个典型案例：<code>SKILL.md</code> 核心文件保持精简，表单填写指令被移到独立的 <code>forms.md</code> 中，Agent 只在真正需要填表时才去读取那个文件。</p>
+<h3 id="Skills-与-Prompt-Memory-MCP-的区别"><a href="#Skills-与-Prompt-Memory-MCP-的区别" class="headerlink" title="Skills 与 Prompt &#x2F; Memory &#x2F; MCP 的区别"></a>Skills 与 Prompt &#x2F; Memory &#x2F; MCP 的区别</h3><p>理解 Skills 的最佳方式，是把它放在 Agent 能力体系的坐标系中，与相邻概念做清晰对比。</p>
+<p><strong>Skills vs Prompt。</strong> Prompt 是“一次性指令”，告诉 AI 这一次要做什么；Skill 是“程序性知识”，教 AI 遇到一类事情时应该怎么做。用做菜来类比：Prompt 是你临时口头交代“今天做个宫保鸡丁”，Skill 是厨师掌握的那套宫保鸡丁标准做法。Skills 不是 Prompt 的替代品，而是<strong>Prompt 的容器</strong>——一个 Skill 里必然包含精心设计的 Prompt，外加脚本、依赖声明和测试用例。</p>
+<blockquote>
+<p>不能把 Skill 直接写进 System Prompt：几十个 Skill 的全文会让 System Prompt 极度臃肿，token 成本极高，且 System Prompt 是静态的，修改会破坏 prompt cache，无法支持 Skill 的动态更新与演进。</p>
+</blockquote>
+<p><strong>Skills vs Memory。</strong> Memory 保存的是<strong>陈述性知识</strong>（“用户偏好中文回复”），Skill 保存的是<strong>程序性知识</strong>（“部署到生产环境的标准流程”）。Memory 在每轮对话中自动注入系统提示，而 Skill 按需加载。两者的边界在于：可复用的操作方法归入 Skill，事实性偏好信息归入 Memory。</p>
+<p><strong>Skills vs MCP。</strong> 这是最容易混淆的一对概念。MCP 是<strong>通信协议</strong>，解决“能不能连”——让 AI 标准化地访问外部工具和数据；Skill 是<strong>操作手册</strong>，解决“会不会做”——教 AI 如何按规范流程完成任务。Anthropic 的官方表述最为精炼：“MCP 把 Claude 连接到数据；Skills 教 Claude 如何用这些数据做事”。MCP 让 AI 能连上数据库，Skill 教 AI 怎么按公司的规范查数据。</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>Prompt</th>
+<th>Memory</th>
+<th>MCP</th>
+<th>Skill</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>定位</td>
+<td>一次性指令</td>
+<td>持久化事实</td>
+<td>工具通信协议</td>
+<td>标准化能力包</td>
+</tr>
+<tr>
+<td>解决</td>
+<td>这次做什么</td>
+<td>记住什么</td>
+<td>能不能连</td>
+<td>会不会做</td>
+</tr>
+<tr>
+<td>加载</td>
+<td>随对话</td>
+<td>每轮自动注入</td>
+<td>运行时调用</td>
+<td>按需渐进加载</td>
+</tr>
+<tr>
+<td>生命周期</td>
+<td>单次对话</td>
+<td>跨会话</td>
+<td>持续</td>
+<td>持续，可版本管理</td>
+</tr>
+</tbody></table>
+<h3 id="常见问题与排查"><a href="#常见问题与排查" class="headerlink" title="常见问题与排查"></a>常见问题与排查</h3><p><strong>Skill 不触发怎么办？</strong> 原因几乎总是出在 <code>description</code> 上。Agent 使用语义匹配来判断是否加载 Skill，如果用户请求的语义与 description 的重叠不够，就不会匹配。解决方案是：对照用户实际表达请求的方式检查 description，添加用户会真实说出的触发短语，并用多个变体进行测试。</p>
+<p><strong>Skill 不加载怎么办？</strong> 检查结构性要求：<code>SKILL.md</code> 文件必须位于一个命名目录内，文件名必须恰好是 <code>SKILL.md</code>（全部大写），而不是在技能根目录下。使用 <code>claude --debug</code> 查看加载错误。</p>
+<p><strong>多个 Skill 冲突怎么办？</strong> 如果 Agent 在多个 Skill 之间感到困惑，说明 description 过于相似，需要让它们更具区分度。如果个人 Skill 被忽略，检查是否存在同名的高优先级 Skill（如企业级 Skill 会覆盖个人级同名 Skill）。</p>
+<p><strong>Skill 的上下文会爆炸吗？</strong> 这是对渐进式披露最常见的误解。启动时只加载元数据，触发时加载指令层，资源层按需读取。即使安装了 100 个 Skill，开局消耗也仅约 10,000 Token。真正触发执行的通常只有 1-3 个 Skill，且资源层不会一次性全部进入上下文。</p>
+<p><strong>Skills 的安全风险有哪些？</strong> 主要风险包括：脚本执行（Skill 目录中的 <code>.py</code>&#x2F;<code>.sh</code>&#x2F;<code>.js</code> 文件）、指令操纵（要求忽略安全规则或隐藏操作的指令）、硬编码凭据（API 密钥、令牌）。企业级部署应考虑沙箱隔离、权限声明和质量审核三层防护。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>Agent Skills 的核心贡献不在于“更长的 Prompt”或“更复杂的配置”，而在于它把<strong>程序性知识的复用</strong>变成了一个标准化的工程问题。通过文件系统的天然结构、渐进式披露的加载机制、以及跨平台的可移植规范，Skills 让通用 Agent 能够在需要时精准地加载所需的领域知识，而不必在每次对话中都背负全部能力的上下文成本。</p>
+<p>理解 Skills 的关键，是把它放在 Agent 能力体系的坐标系中：<strong>Prompt 管这一次，Memory 管记住什么，MCP 管能不能连，Skill 管会不会做</strong>。四者互补而非替代。掌握这个坐标系，比记住任何具体的 <code>SKILL.md</code> 写法都更有价值。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/AI/" class="category-chain-item">AI</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Skills/" class="print-no-link">#Skills</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Skills的结构</div>
+      <div>http://example.com/2026/08/01/AI/Agent Skills 完全指南/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年8月1日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/08/17/AI/Open%20Design/" title="Open Design">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Open Design</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/07/17/%E5%B0%8F%E7%A8%8B%E5%BA%8F/Taro%20%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%BD%93%E9%AA%8C%E5%88%86%E6%9E%90/" title="Taro微信小程序体验分析">
+                        <span class="hidden-mobile">Taro微信小程序体验分析</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

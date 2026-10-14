@@ -1,0 +1,772 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="JS Object.defineProperty和ProxyObject.defineProperty 是“属性级”劫持，只能针对单个属性定义 getter&#x2F;setter；Proxy 是“对象级”代理，能拦截整个对象的多种操作。 这也是 Vue2 和 Vue3 响应式原理的核心差异。  对比表格   维度 Object.defineProperty Proxy    版本 ES5 ES6">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JS Object.defineProperty和Proxy">
+<meta property="og:url" content="http://example.com/2023/08/10/JavaScript/%E3%80%90JS%E3%80%91Object.defineProperty%E5%92%8CProxy/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="JS Object.defineProperty和ProxyObject.defineProperty 是“属性级”劫持，只能针对单个属性定义 getter&#x2F;setter；Proxy 是“对象级”代理，能拦截整个对象的多种操作。 这也是 Vue2 和 Vue3 响应式原理的核心差异。  对比表格   维度 Object.defineProperty Proxy    版本 ES5 ES6">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-08-10T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-14T14:26:02.497Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="JavaScript">
+<meta property="article:tag" content="Object.defineProperty">
+<meta property="article:tag" content="Proxy">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>JS Object.defineProperty和Proxy - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">JS Object.defineProperty和Proxy</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-08-10 10:00" pubdate>
+          2023年8月10日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          11 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">JS Object.defineProperty和Proxy</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="JS-Object-defineProperty和Proxy"><a href="#JS-Object-defineProperty和Proxy" class="headerlink" title="JS Object.defineProperty和Proxy"></a>JS Object.defineProperty和Proxy</h1><p><strong><code>Object.defineProperty</code> 是“属性级”劫持，只能针对单个属性定义 getter&#x2F;setter；<code>Proxy</code> 是“对象级”代理，能拦截整个对象的多种操作。</strong> 这也是 Vue2 和 Vue3 响应式原理的核心差异。</p>
+<hr>
+<h2 id="对比表格"><a href="#对比表格" class="headerlink" title="对比表格"></a>对比表格</h2><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>Object.defineProperty</th>
+<th>Proxy</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>版本</td>
+<td>ES5</td>
+<td>ES6</td>
+</tr>
+<tr>
+<td>拦截粒度</td>
+<td>单个属性</td>
+<td>整个对象</td>
+</tr>
+<tr>
+<td>拦截操作</td>
+<td>主要是 <code>get</code> &#x2F; <code>set</code></td>
+<td><code>get</code>、<code>set</code>、<code>has</code>、<code>deleteProperty</code>、<code>ownKeys</code>、<code>apply</code>、<code>construct</code> 等 13 种</td>
+</tr>
+<tr>
+<td>新增属性</td>
+<td>不能直接监听，需手动再 <code>defineProperty</code></td>
+<td>可以监听</td>
+</tr>
+<tr>
+<td>删除属性</td>
+<td>不能监听</td>
+<td>可以监听 <code>deleteProperty</code></td>
+</tr>
+<tr>
+<td>数组索引&#x2F;length</td>
+<td>不能直接监听，Vue2 需重写数组方法</td>
+<td>可以直接监听</td>
+</tr>
+<tr>
+<td><code>in</code> 操作符</td>
+<td>不能拦截</td>
+<td>可以拦截 <code>has</code></td>
+</tr>
+<tr>
+<td><code>Object.keys</code></td>
+<td>不能拦截</td>
+<td>可以拦截 <code>ownKeys</code></td>
+</tr>
+<tr>
+<td>函数调用&#x2F;构造</td>
+<td>不能拦截</td>
+<td>可以拦截 <code>apply</code> &#x2F; <code>construct</code></td>
+</tr>
+<tr>
+<td>初始化方式</td>
+<td>需要遍历对象所有属性，递归定义</td>
+<td>直接代理整个对象，访问到嵌套对象时再懒代理</td>
+</tr>
+<tr>
+<td>兼容性</td>
+<td>IE9+</td>
+<td>不支持 IE，且无法 polyfill</td>
+</tr>
+<tr>
+<td>性能</td>
+<td>初始化开销大，访问时 getter&#x2F;setter 开销小</td>
+<td>初始化开销小，每次访问有 trap 开销</td>
+</tr>
+<tr>
+<td>典型应用</td>
+<td>Vue2 响应式</td>
+<td>Vue3 响应式</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="关键区别详解"><a href="#关键区别详解" class="headerlink" title="关键区别详解"></a>关键区别详解</h2><h3 id="1-拦截范围不同"><a href="#1-拦截范围不同" class="headerlink" title="1. 拦截范围不同"></a>1. 拦截范围不同</h3><p><code>Object.defineProperty</code> 只能劫持<strong>已经存在的属性</strong>：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> obj = &#123; <span class="hljs-attr">a</span>: <span class="hljs-number">1</span> &#125;;<br><br><span class="hljs-title class_">Object</span>.<span class="hljs-title function_">defineProperty</span>(obj, <span class="hljs-string">&quot;a&quot;</span>, &#123;<br>  <span class="hljs-title function_">get</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;读取 a&quot;</span>);<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>  &#125;,<br>  <span class="hljs-title function_">set</span>(<span class="hljs-params">v</span>) &#123;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;设置 a&quot;</span>, v);<br>  &#125;,<br>&#125;);<br><br>obj.<span class="hljs-property">a</span>; <span class="hljs-comment">// 读取 a</span><br>obj.<span class="hljs-property">a</span> = <span class="hljs-number">2</span>; <span class="hljs-comment">// 设置 a 2</span><br><br>obj.<span class="hljs-property">b</span> = <span class="hljs-number">3</span>; <span class="hljs-comment">// 不会触发任何拦截，因为 b 没有被 defineProperty</span><br></code></pre></td></tr></table></figure>
+
+<p>如果要监听新增属性，必须手动再调用：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-title class_">Object</span>.<span class="hljs-title function_">defineProperty</span>(obj, <span class="hljs-string">&#x27;b&#x27;</span>, &#123; ... &#125;);<br></code></pre></td></tr></table></figure>
+
+<p>而 <code>Proxy</code> 代理的是整个对象：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> obj = &#123; <span class="hljs-attr">a</span>: <span class="hljs-number">1</span> &#125;;<br><br><span class="hljs-keyword">const</span> proxy = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Proxy</span>(obj, &#123;<br>  <span class="hljs-title function_">get</span>(<span class="hljs-params">target, key, receiver</span>) &#123;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;读取&quot;</span>, key);<br>    <span class="hljs-keyword">return</span> <span class="hljs-title class_">Reflect</span>.<span class="hljs-title function_">get</span>(target, key, receiver);<br>  &#125;,<br>  <span class="hljs-title function_">set</span>(<span class="hljs-params">target, key, value, receiver</span>) &#123;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;设置&quot;</span>, key, value);<br>    <span class="hljs-keyword">return</span> <span class="hljs-title class_">Reflect</span>.<span class="hljs-title function_">set</span>(target, key, value, receiver);<br>  &#125;,<br>  <span class="hljs-title function_">deleteProperty</span>(<span class="hljs-params">target, key</span>) &#123;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;删除&quot;</span>, key);<br>    <span class="hljs-keyword">return</span> <span class="hljs-title class_">Reflect</span>.<span class="hljs-title function_">deleteProperty</span>(target, key);<br>  &#125;,<br>&#125;);<br><br>proxy.<span class="hljs-property">a</span>; <span class="hljs-comment">// 读取 a</span><br>proxy.<span class="hljs-property">b</span> = <span class="hljs-number">2</span>; <span class="hljs-comment">// 设置 b 2，能监听到新增</span><br><span class="hljs-keyword">delete</span> proxy.<span class="hljs-property">a</span>; <span class="hljs-comment">// 删除 a，能监听到删除</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="2-对数组的支持不同"><a href="#2-对数组的支持不同" class="headerlink" title="2. 对数组的支持不同"></a>2. 对数组的支持不同</h3><p><code>Object.defineProperty</code> 不能直接监听数组索引变化和 <code>length</code> 变化：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> arr = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>];<br>arr[<span class="hljs-number">0</span>] = <span class="hljs-number">100</span>; <span class="hljs-comment">// 不会触发</span><br>arr.<span class="hljs-property">length</span> = <span class="hljs-number">0</span>; <span class="hljs-comment">// 不会触发</span><br></code></pre></td></tr></table></figure>
+
+<p>Vue2 为了解决这个问题，重写了数组的 7 个变更方法：<code>push</code>、<code>pop</code>、<code>shift</code>、<code>unshift</code>、<code>splice</code>、<code>sort</code>、<code>reverse</code>。</p>
+<p><code>Proxy</code> 可以直接监听：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> arr = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Proxy</span>([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>], &#123;<br>  <span class="hljs-title function_">set</span>(<span class="hljs-params">target, key, value, receiver</span>) &#123;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;设置&quot;</span>, key, value);<br>    <span class="hljs-keyword">return</span> <span class="hljs-title class_">Reflect</span>.<span class="hljs-title function_">set</span>(target, key, value, receiver);<br>  &#125;,<br>&#125;);<br><br>arr[<span class="hljs-number">0</span>] = <span class="hljs-number">100</span>; <span class="hljs-comment">// 设置 0 100</span><br>arr.<span class="hljs-property">length</span> = <span class="hljs-number">0</span>; <span class="hljs-comment">// 设置 length 0</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="3-初始化与性能"><a href="#3-初始化与性能" class="headerlink" title="3. 初始化与性能"></a>3. 初始化与性能</h3><p><code>Object.defineProperty</code> 需要<strong>递归遍历对象的所有属性</strong>，逐个转换成 getter&#x2F;setter。如果对象层级很深，初始化开销很大。</p>
+<p><code>Proxy</code> 不需要遍历，直接代理整个对象。只有访问到某个嵌套对象时，才需要递归代理（懒代理）。所以 Vue3 初始化更快。</p>
+<p>但 <code>Proxy</code> 每次属性访问都要走 trap，有一定运行时开销。现代 JS 引擎优化后差距不大。</p>
+<hr>
+<h3 id="4-兼容性"><a href="#4-兼容性" class="headerlink" title="4. 兼容性"></a>4. 兼容性</h3><ul>
+<li><code>Object.defineProperty</code>：IE9+ 支持，兼容性好。</li>
+<li><code>Proxy</code>：IE 完全不支持，且<strong>无法 polyfill</strong>。因为 Proxy 拦截的是语言层面的基本操作，无法用 ES5 模拟。</li>
+</ul>
+<p>所以如果项目需要兼容 IE，只能用 <code>Object.defineProperty</code>。</p>
+<hr>
+<h2 id="代码对比：简单响应式"><a href="#代码对比：简单响应式" class="headerlink" title="代码对比：简单响应式"></a>代码对比：简单响应式</h2><p><strong>Object.defineProperty 实现：</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">observe</span>(<span class="hljs-params">obj</span>) &#123;<br>  <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">keys</span>(obj).<span class="hljs-title function_">forEach</span>(<span class="hljs-function">(<span class="hljs-params">key</span>) =&gt;</span> &#123;<br>    <span class="hljs-keyword">let</span> val = obj[key];<br>    <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">defineProperty</span>(obj, key, &#123;<br>      <span class="hljs-title function_">get</span>(<span class="hljs-params"></span>) &#123;<br>        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;get&quot;</span>, key);<br>        <span class="hljs-keyword">return</span> val;<br>      &#125;,<br>      <span class="hljs-title function_">set</span>(<span class="hljs-params">newVal</span>) &#123;<br>        <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;set&quot;</span>, key, newVal);<br>        val = newVal;<br>      &#125;,<br>    &#125;);<br>  &#125;);<br>&#125;<br><br><span class="hljs-keyword">const</span> data = &#123; <span class="hljs-attr">a</span>: <span class="hljs-number">1</span> &#125;;<br><span class="hljs-title function_">observe</span>(data);<br><br>data.<span class="hljs-property">a</span>; <span class="hljs-comment">// get a</span><br>data.<span class="hljs-property">a</span> = <span class="hljs-number">2</span>; <span class="hljs-comment">// set a 2</span><br>data.<span class="hljs-property">b</span> = <span class="hljs-number">3</span>; <span class="hljs-comment">// 无输出，新增属性监听不到</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>Proxy 实现：</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> data = &#123; <span class="hljs-attr">a</span>: <span class="hljs-number">1</span> &#125;;<br><br><span class="hljs-keyword">const</span> proxy = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Proxy</span>(data, &#123;<br>  <span class="hljs-title function_">get</span>(<span class="hljs-params">target, key, receiver</span>) &#123;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;get&quot;</span>, key);<br>    <span class="hljs-keyword">return</span> <span class="hljs-title class_">Reflect</span>.<span class="hljs-title function_">get</span>(target, key, receiver);<br>  &#125;,<br>  <span class="hljs-title function_">set</span>(<span class="hljs-params">target, key, value, receiver</span>) &#123;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;set&quot;</span>, key, value);<br>    <span class="hljs-keyword">return</span> <span class="hljs-title class_">Reflect</span>.<span class="hljs-title function_">set</span>(target, key, value, receiver);<br>  &#125;,<br>  <span class="hljs-title function_">deleteProperty</span>(<span class="hljs-params">target, key</span>) &#123;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;delete&quot;</span>, key);<br>    <span class="hljs-keyword">return</span> <span class="hljs-title class_">Reflect</span>.<span class="hljs-title function_">deleteProperty</span>(target, key);<br>  &#125;,<br>&#125;);<br><br>proxy.<span class="hljs-property">a</span>; <span class="hljs-comment">// get a</span><br>proxy.<span class="hljs-property">a</span> = <span class="hljs-number">2</span>; <span class="hljs-comment">// set a 2</span><br>proxy.<span class="hljs-property">b</span> = <span class="hljs-number">3</span>; <span class="hljs-comment">// set b 3，能监听新增</span><br><span class="hljs-keyword">delete</span> proxy.<span class="hljs-property">a</span>; <span class="hljs-comment">// delete a，能监听删除</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="为什么说-Proxy-无法-polyfill？"><a href="#为什么说-Proxy-无法-polyfill？" class="headerlink" title="为什么说 Proxy 无法 polyfill？"></a>为什么说 Proxy 无法 polyfill？</h2><p><code>Proxy</code> 不是普通 API，它是 <strong>JS 引擎层面的元编程能力</strong>。它能拦截对象的基本操作：</p>
+<ul>
+<li>读取属性 <code>get</code></li>
+<li>设置属性 <code>set</code></li>
+<li><code>in</code> 操作符 <code>has</code></li>
+<li><code>delete</code> 删除 <code>deleteProperty</code></li>
+<li><code>Object.keys</code> <code>ownKeys</code></li>
+<li>函数调用 <code>apply</code></li>
+<li><code>new</code> 构造 <code>construct</code></li>
+<li>等等</li>
+</ul>
+<p>而 ES5 里根本没有机制去拦截这些底层操作。<br><code>Object.defineProperty</code> 只能模拟一部分 <code>get</code> &#x2F; <code>set</code>，而且必须提前知道属性名，也拦截不了 <code>in</code>、<code>delete</code>、<code>Object.keys</code>、函数调用等。</p>
+<p>所以：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// 你可以 polyfill includes</span><br><span class="hljs-keyword">if</span> (!<span class="hljs-title class_">Array</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-property">includes</span>) &#123; ... &#125;<br><br><span class="hljs-comment">// 但你没法真正 polyfill Proxy</span><br><span class="hljs-keyword">if</span> (!<span class="hljs-variable language_">window</span>.<span class="hljs-property">Proxy</span>) &#123;<br>  <span class="hljs-variable language_">window</span>.<span class="hljs-property">Proxy</span> = ???; <span class="hljs-comment">// 做不到完整模拟</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>有些库叫 <code>proxy-polyfill</code>，但它只能模拟非常有限的一部分功能，不能完整替代原生 <code>Proxy</code>。<br>所以通常说：<strong>Proxy 无法被真正 polyfill。</strong></p>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li><strong>Object.defineProperty</strong>：属性级劫持，兼容性好，但只能监听已有属性的读写，新增&#x2F;删除&#x2F;数组变化需要额外处理。Vue2 用它。</li>
+<li><strong>Proxy</strong>：对象级代理，能拦截 13 种操作，天然支持新增、删除、数组、<code>in</code>、<code>Object.keys</code> 等。功能更强，但兼容性差，无法 polyfill。Vue3 用它。</li>
+</ul>
+<p>现代项目如果没有 IE 兼容需求，优先用 <code>Proxy</code>；如果需要兼容旧浏览器，只能用 <code>Object.defineProperty</code>。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/JavaScript/" class="category-chain-item">JavaScript</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/JavaScript/" class="print-no-link">#JavaScript</a>
+      
+        <a href="/tags/Object-defineProperty/" class="print-no-link">#Object.defineProperty</a>
+      
+        <a href="/tags/Proxy/" class="print-no-link">#Proxy</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>JS Object.defineProperty和Proxy</div>
+      <div>http://example.com/2023/08/10/JavaScript/【JS】Object.defineProperty和Proxy/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年8月10日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/08/10/%E5%B0%8F%E7%A8%8B%E5%BA%8F/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%B8%8EH5%E4%B9%8B%E9%97%B4%E8%B7%B3%E8%BD%AC/" title="小程序与H5之间跳转">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">小程序与H5之间跳转</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/08/10/JavaScript/%E3%80%90JS%E3%80%91polyfill/" title="JS polyfill">
+                        <span class="hidden-mobile">JS polyfill</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

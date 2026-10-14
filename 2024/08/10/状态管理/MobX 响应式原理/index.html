@@ -1,0 +1,1103 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="MobX 响应式机制与依赖收集 一句话概括：MobX 的响应式系统是一个基于 Proxy 数据劫持的发布-订阅模型，通过全局执行上下文在运行时自动收集依赖，实现精确到属性级的变更通知，并利用批量异步更新最大化性能。  1. 响应式的核心三要素MobX 的响应式系统由三类角色协作完成： flowchart LR     subgraph Observable[&quot;① Observable（被">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MobX 响应式机制与依赖收集">
+<meta property="og:url" content="http://example.com/2024/08/10/%E7%8A%B6%E6%80%81%E7%AE%A1%E7%90%86/MobX%20%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="MobX 响应式机制与依赖收集 一句话概括：MobX 的响应式系统是一个基于 Proxy 数据劫持的发布-订阅模型，通过全局执行上下文在运行时自动收集依赖，实现精确到属性级的变更通知，并利用批量异步更新最大化性能。  1. 响应式的核心三要素MobX 的响应式系统由三类角色协作完成： flowchart LR     subgraph Observable[&quot;① Observable（被">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-08-09T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-14T14:26:02.789Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="MobX">
+<meta property="article:tag" content="Proxy">
+<meta property="article:tag" content="依赖收集">
+<meta property="article:tag" content="响应式原理">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>MobX 响应式机制与依赖收集 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">MobX 响应式机制与依赖收集</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-08-10 00:00" pubdate>
+          2024年8月10日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          25 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">MobX 响应式机制与依赖收集</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="MobX-响应式机制与依赖收集"><a href="#MobX-响应式机制与依赖收集" class="headerlink" title="MobX 响应式机制与依赖收集"></a>MobX 响应式机制与依赖收集</h1><blockquote>
+<p>一句话概括：MobX 的响应式系统是一个<strong>基于 Proxy 数据劫持的发布-订阅模型</strong>，通过<strong>全局执行上下文</strong>在运行时<strong>自动收集依赖</strong>，实现<strong>精确到属性级的变更通知</strong>，并利用<strong>批量异步更新</strong>最大化性能。</p>
+</blockquote>
+<h2 id="1-响应式的核心三要素"><a href="#1-响应式的核心三要素" class="headerlink" title="1. 响应式的核心三要素"></a>1. 响应式的核心三要素</h2><p>MobX 的响应式系统由三类角色协作完成：</p>
+<pre><code class=" mermaid">flowchart LR
+    subgraph Observable[&quot;① Observable（被观察者）&quot;]
+        O1[可观察数据]
+        O2[内部维护 observers 列表]
+    end
+
+    subgraph Reaction[&quot;② Reaction（观察者）&quot;]
+        R1[autorun / reaction / when]
+        R2[observer 组件]
+        R3[computed 计算值]
+    end
+
+    subgraph Derivation[&quot;③ Derivation（派生）&quot;]
+        D1[computed 值]
+        D2[既是观察者也是被观察者]
+    end
+
+    Observable --&gt;|读取时建立连接| Reaction
+    Reaction --&gt;|修改时通知| Observable
+    Observable --&gt;|依赖变化时| Derivation
+    Derivation --&gt;|被读取时| Reaction
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th align="left">角色</th>
+<th align="left">说明</th>
+<th align="left">示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>Observable（可观察数据）</strong></td>
+<td align="left">被 Proxy 包装的数据，内部维护 <code>observers</code> 列表</td>
+<td align="left"><code>observable({ count: 0 })</code></td>
+</tr>
+<tr>
+<td align="left"><strong>Reaction（观察者）</strong></td>
+<td align="left">监听数据变化并执行副作用的函数</td>
+<td align="left"><code>autorun</code>, <code>reaction</code>, <code>observer</code> 组件</td>
+</tr>
+<tr>
+<td align="left"><strong>Derivation（派生值）</strong></td>
+<td align="left">从状态计算出的值，既是观察者也是被观察者</td>
+<td align="left"><code>computed</code> getter</td>
+</tr>
+</tbody></table>
+<h2 id="2-依赖收集的完整流程"><a href="#2-依赖收集的完整流程" class="headerlink" title="2. 依赖收集的完整流程"></a>2. 依赖收集的完整流程</h2><h3 id="2-1-核心机制：全局执行上下文指针"><a href="#2-1-核心机制：全局执行上下文指针" class="headerlink" title="2.1 核心机制：全局执行上下文指针"></a>2.1 核心机制：全局执行上下文指针</h3><p>MobX 依赖收集的精髓在于一个<strong>全局唯一的指针</strong>：<code>globalState.trackingDerivation</code></p>
+<ul>
+<li>当 Reaction 执行时，MobX 将该 Reaction 放入这个指针。</li>
+<li>当 Observable 被读取时，检查这个指针，如果有值则建立连接。</li>
+<li>执行完毕后，立即将指针置空。</li>
+</ul>
+<pre><code class=" mermaid">sequenceDiagram
+    participant User as 开发者代码
+    participant AR as autorun 实例
+    participant Global as globalState.trackingDerivation
+    participant Proxy as Observable Proxy (Getter)
+    participant Obs as Observable.observers 列表
+
+    User-&gt;&gt;AR: ① 执行 autorun(() =&gt; &#123; ... &#125;)
+    AR-&gt;&gt;Global: ② 入栈：trackingDerivation = 该 autorun
+
+    Note over AR: ③ 开始执行回调函数
+
+    AR-&gt;&gt;Proxy: ④ 读取 store.count（触发 getter）
+    Proxy-&gt;&gt;Global: ⑤ 检查 trackingDerivation 是否为空？
+    Global--&gt;&gt;Proxy: ⑥ 不为空，返回当前 autorun
+
+    Proxy-&gt;&gt;Obs: ⑦ 双向绑定：autorun 加入 observers 列表
+    Obs--&gt;&gt;Proxy: ⑧ 绑定完成
+
+    Proxy--&gt;&gt;AR: ⑨ 返回 count 的值
+
+    Note over AR: ⑩ 回调函数执行完毕
+
+    AR-&gt;&gt;Global: ⑪ 出栈：trackingDerivation = null
+
+    Note over Global: ✅ 依赖收集完成！仅追踪实际读取的属性
+</code></pre>
+
+<h3 id="2-2-入栈与出栈的微观时序"><a href="#2-2-入栈与出栈的微观时序" class="headerlink" title="2.2 入栈与出栈的微观时序"></a>2.2 入栈与出栈的微观时序</h3><pre><code class=" mermaid">timeline
+    title 依赖收集的完整时序
+    section 执行前
+        A : globalState.trackingDerivation = null
+    section 执行中（1）
+        B : autorun 开始执行
+        B : trackingDerivation = 该 autorun
+        B : 读取 store.a → ✅ 建立连接
+    section 执行中（2）
+        C : 读取 store.b → ✅ 建立连接
+        C : 读取 store.c → ✅ 建立连接
+    section 执行后
+        D : trackingDerivation = null
+        D : 依赖收集完成！
+        D : 仅追踪 a、b、c（实际读取的）
+        D : 未读取的 d 完全不知晓
+</code></pre>
+
+<h3 id="2-3-双向绑定的数据结构"><a href="#2-3-双向绑定的数据结构" class="headerlink" title="2.3 双向绑定的数据结构"></a>2.3 双向绑定的数据结构</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// 依赖收集完成后，形成双向索引：</span><br><br><span class="hljs-comment">// 1. Observable 记住 Reaction（数据 → 观察者）</span><br>observable.<span class="hljs-property">count</span>.<span class="hljs-property">observers</span> = [autorunInstance];<br><br><span class="hljs-comment">// 2. Reaction 记住 Observable（观察者 → 数据）</span><br>autorunInstance.<span class="hljs-property">dependencies</span> = [observable.<span class="hljs-property">count</span>];<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-4-依赖的清理与重建"><a href="#2-4-依赖的清理与重建" class="headerlink" title="2.4 依赖的清理与重建"></a>2.4 依赖的清理与重建</h3><p>每次 Reaction 重新执行前，MobX 会：</p>
+<ol>
+<li><strong>清空旧依赖</strong>：遍历 <code>dependencies</code>，从每个 Observable 的 <code>observers</code> 中移除自己。</li>
+<li><strong>重新执行回调</strong>：在同步执行过程中，重新建立新的依赖连接。</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-title function_">autorun</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>  <span class="hljs-keyword">if</span> (store.<span class="hljs-property">isReady</span>) &#123;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(store.<span class="hljs-property">data</span>); <span class="hljs-comment">// 依赖 data</span><br>  &#125;<br>  <span class="hljs-comment">// 如果 isReady 为 false，data 不会被读取</span><br>&#125;);<br></code></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th align="left">执行状态</th>
+<th align="left">依赖列表</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">第一次（<code>isReady = false</code>）</td>
+<td align="left"><code>[isReady]</code></td>
+<td align="left">只追踪 isReady</td>
+</tr>
+<tr>
+<td align="left">第二次（<code>isReady = true</code>）</td>
+<td align="left"><code>[isReady, data]</code></td>
+<td align="left">data 被读取，加入追踪</td>
+</tr>
+<tr>
+<td align="left">第三次（<code>isReady = false</code>）</td>
+<td align="left"><code>[isReady]</code></td>
+<td align="left">data 不再被读取，自动移除</td>
+</tr>
+</tbody></table>
+<h2 id="3-Proxy-代理：响应式的技术根基"><a href="#3-Proxy-代理：响应式的技术根基" class="headerlink" title="3. Proxy 代理：响应式的技术根基"></a>3. Proxy 代理：响应式的技术根基</h2><h3 id="3-1-什么是-Proxy？"><a href="#3-1-什么是-Proxy？" class="headerlink" title="3.1 什么是 Proxy？"></a>3.1 什么是 Proxy？</h3><p>Proxy 是 ES6 提供的<strong>对象拦截器</strong>。对对象的所有操作（读取、修改、删除）都必须先经过 Proxy 的“门卫”函数。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">const</span> target = &#123; <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;张三&quot;</span> &#125;;<br><span class="hljs-keyword">const</span> proxy = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Proxy</span>(target, &#123;<br>  <span class="hljs-title function_">get</span>(<span class="hljs-params">obj, prop</span>) &#123;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`读取: <span class="hljs-subst">$&#123;prop&#125;</span>`</span>);<br>    <span class="hljs-keyword">return</span> obj[prop];<br>  &#125;,<br>  <span class="hljs-title function_">set</span>(<span class="hljs-params">obj, prop, value</span>) &#123;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`修改: <span class="hljs-subst">$&#123;prop&#125;</span> = <span class="hljs-subst">$&#123;value&#125;</span>`</span>);<br>    obj[prop] = value;<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>  &#125;,<br>&#125;);<br><br>proxy.<span class="hljs-property">name</span>; <span class="hljs-comment">// 控制台: 读取: name</span><br>proxy.<span class="hljs-property">name</span> = <span class="hljs-string">&quot;李四&quot;</span>; <span class="hljs-comment">// 控制台: 修改: name = 李四</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="3-2-MobX-为什么必须用-Proxy？"><a href="#3-2-MobX-为什么必须用-Proxy？" class="headerlink" title="3.2 MobX 为什么必须用 Proxy？"></a>3.2 MobX 为什么必须用 Proxy？</h3><table>
+<thead>
+<tr>
+<th align="left">对比维度</th>
+<th align="left"><code>Object.defineProperty</code>（MobX 4&#x2F;5）</th>
+<th align="left"><code>Proxy</code>（MobX 6+）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>新增属性</strong></td>
+<td align="left">❌ 无法拦截，需用 <code>set</code> 方法</td>
+<td align="left">✅ 自动拦截</td>
+</tr>
+<tr>
+<td align="left"><strong>删除属性</strong></td>
+<td align="left">❌ 无法拦截</td>
+<td align="left">✅ 可拦截 <code>deleteProperty</code></td>
+</tr>
+<tr>
+<td align="left"><strong>数组操作</strong></td>
+<td align="left">❌ 需重写数组方法</td>
+<td align="left">✅ 自动拦截索引和 <code>length</code></td>
+</tr>
+<tr>
+<td align="left"><strong>性能</strong></td>
+<td align="left">需遍历所有属性</td>
+<td align="left">懒代理，按需拦截</td>
+</tr>
+</tbody></table>
+<h3 id="3-3-在调试器中看到的-Proxy"><a href="#3-3-在调试器中看到的-Proxy" class="headerlink" title="3.3 在调试器中看到的 Proxy"></a>3.3 在调试器中看到的 Proxy</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs text">Proxy &#123; name: &quot;张三&quot;, age: 10 &#125;<br>  [[Target]]: &#123; name: &quot;张三&quot;, age: 10 &#125;   // 原始对象<br>  [[Handler]]: &#123; get: fn, set: fn, ... &#125;  // MobX 的拦截器<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-4-获取原始对象"><a href="#3-4-获取原始对象" class="headerlink" title="3.4 获取原始对象"></a>3.4 获取原始对象</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">import</span> &#123; toJS &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;mobx&quot;</span>;<br><br><span class="hljs-keyword">const</span> rawData = <span class="hljs-title function_">toJS</span>(store.<span class="hljs-property">user</span>); <span class="hljs-comment">// 递归转换为普通 JS 对象</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="4-变更通知与批量更新机制"><a href="#4-变更通知与批量更新机制" class="headerlink" title="4. 变更通知与批量更新机制"></a>4. 变更通知与批量更新机制</h2><h3 id="4-1-完整数据流全景图"><a href="#4-1-完整数据流全景图" class="headerlink" title="4.1 完整数据流全景图"></a>4.1 完整数据流全景图</h3><pre><code class=" mermaid">flowchart TD
+    Start[创建 observable 数据] --&gt; AR[创建 autorun / observer 组件]
+    AR --&gt; Execute[执行回调函数]
+    Execute --&gt; Check&#123;读取 observable 属性?&#125;
+
+    Check --&gt;|是| Getter[触发 getter 拦截]
+    Check --&gt;|否| Done[执行完毕]
+
+    Getter --&gt; Global&#123;trackingDerivation&lt;br&gt;是否有值?&#125;
+
+    Global --&gt;|有| Bind[双向绑定:&lt;br&gt;属性.observers.add(观察者)&lt;br&gt;观察者.dependencies.add(属性)]
+    Global --&gt;|无| NoBind[不建立连接&lt;br&gt;仅返回值]
+
+    Bind --&gt; Continue[继续执行下一条语句]
+    NoBind --&gt; Continue
+    Continue --&gt; Check
+
+    Done --&gt; Clear[出栈: trackingDerivation = null]
+
+    subgraph 变更阶段[&quot;--- 变更阶段（异步批量） ---&quot;]
+        Mutate[修改 observable 属性] --&gt; Setter[触发 setter 拦截]
+        Setter --&gt; Find[查找属性.observers 列表]
+        Find --&gt; Mark[标记观察者为&quot;脏&quot;]
+        Mark --&gt; Enqueue[加入待处理队列（Set 去重）]
+        Enqueue --&gt; Schedule[触发微任务调度]
+        Schedule --&gt; Batch[微任务执行：遍历队列]
+        Batch --&gt; React[观察者重新执行]
+    end
+
+    Clear -.-&gt;|后续状态变化| Mutate
+
+    style Global fill:#ff9,stroke:#333
+    style Bind fill:#9f9,stroke:#333
+    style Mark fill:#f99,stroke:#333
+    style Batch fill:#9cf,stroke:#333
+</code></pre>
+
+<h3 id="4-2-批量更新的核心机制"><a href="#4-2-批量更新的核心机制" class="headerlink" title="4.2 批量更新的核心机制"></a>4.2 批量更新的核心机制</h3><p>MobX 通过 <strong>“事务（Transaction）+ 去重队列（Set）+ 微任务（Microtask）”</strong> 实现批量更新。</p>
+<p><strong>时序对比</strong>：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs text">❌ 如果每次修改都同步执行（性能浪费）：<br>count=1 -&gt; autorun 立即执行 (耗时)<br>count=2 -&gt; autorun 立即执行 (耗时)<br>...<br>count=10 -&gt; autorun 立即执行 (耗时)<br>总耗时 = 10次执行耗时<br><br>✅ MobX 批量微任务（高效）：<br>count=1 -&gt; 标记脏，入队（队列已有? 无 → 加入）<br>count=2 -&gt; 标记脏，入队（队列已有? 有 → 跳过）<br>...<br>count=10 -&gt; 标记脏，入队（队列已有? 有 → 跳过）<br>[同步代码执行完毕]<br>[微任务轮询]<br>autorun 执行（此时 count 已经是 10）→ 执行 1 次<br>总耗时 = 1次执行耗时<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-3-事务控制（Action-的边界）"><a href="#4-3-事务控制（Action-的边界）" class="headerlink" title="4.3 事务控制（Action 的边界）"></a>4.3 事务控制（Action 的边界）</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-title function_">runInAction</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>  <span class="hljs-comment">// 🔒 事务开始</span><br>  store.<span class="hljs-property">count</span> = <span class="hljs-number">1</span>; <span class="hljs-comment">// 入队（不执行）</span><br>  store.<span class="hljs-property">count</span> = <span class="hljs-number">2</span>; <span class="hljs-comment">// 已存在，跳过</span><br>  store.<span class="hljs-property">count</span> = <span class="hljs-number">3</span>; <span class="hljs-comment">// 已存在，跳过</span><br>  <span class="hljs-comment">// 🔓 事务结束 → 触发微任务调度</span><br>&#125;);<br><span class="hljs-comment">// 微任务执行：autorun 运行 1 次，count = 3</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="5-全局指针-trackingDerivation-详解"><a href="#5-全局指针-trackingDerivation-详解" class="headerlink" title="5. 全局指针 trackingDerivation 详解"></a>5. 全局指针 trackingDerivation 详解</h2><h3 id="5-1-是什么？"><a href="#5-1-是什么？" class="headerlink" title="5.1 是什么？"></a>5.1 是什么？</h3><p><code>globalState.trackingDerivation</code> 是一个<strong>全局单例指针</strong>，指向当前正在执行的 Reaction 实例。</p>
+<h3 id="5-2-什么时候有值，什么时候为-null？"><a href="#5-2-什么时候有值，什么时候为-null？" class="headerlink" title="5.2 什么时候有值，什么时候为 null？"></a>5.2 什么时候有值，什么时候为 null？</h3><pre><code class=" mermaid">flowchart LR
+    subgraph 有值[&quot;✅ trackingDerivation 不为 null&quot;]
+        A1[observer 组件渲染函数执行中]
+        A2[autorun/reaction/when 回调执行中]
+        A3[computed getter 执行中]
+        A4[上述调用链中的 action]
+    end
+
+    subgraph 无值[&quot;❌ trackingDerivation 为 null（冷读取）&quot;]
+        B1[事件回调 onClick/onChange]
+        B2[setTimeout/Promise.then/await 之后]
+        B3[useEffect 直接读取（无 autorun）]
+        B4[普通函数/工具函数]
+        B5[action 内部（非 Reaction 调用链）]
+    end
+</code></pre>
+
+<h3 id="5-3-各场景追踪状态速查"><a href="#5-3-各场景追踪状态速查" class="headerlink" title="5.3 各场景追踪状态速查"></a>5.3 各场景追踪状态速查</h3><table>
+<thead>
+<tr>
+<th align="left">场景</th>
+<th align="left">trackingDerivation</th>
+<th align="left">是否建立依赖</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>observer</code> 组件的<strong>渲染函数</strong></td>
+<td align="left">✅ 指向组件 Reaction</td>
+<td align="left">✅ 是</td>
+</tr>
+<tr>
+<td align="left"><code>autorun</code> 回调函数<strong>同步部分</strong></td>
+<td align="left">✅ 指向自身</td>
+<td align="left">✅ 是</td>
+</tr>
+<tr>
+<td align="left"><code>computed</code> getter 执行中</td>
+<td align="left">✅ 指向自身</td>
+<td align="left">✅ 是</td>
+</tr>
+<tr>
+<td align="left"><strong>事件回调</strong>（onClick&#x2F;onChange）</td>
+<td align="left">❌ null</td>
+<td align="left">❌ 否</td>
+</tr>
+<tr>
+<td align="left"><strong>setTimeout</strong> 回调</td>
+<td align="left">❌ null</td>
+<td align="left">❌ 否</td>
+</tr>
+<tr>
+<td align="left"><strong>Promise.then</strong> &#x2F; <strong>await</strong> 之后</td>
+<td align="left">❌ null</td>
+<td align="left">❌ 否</td>
+</tr>
+<tr>
+<td align="left"><strong>useEffect</strong> 直接读取（无 autorun）</td>
+<td align="left">❌ null</td>
+<td align="left">❌ 否</td>
+</tr>
+<tr>
+<td align="left"><strong>action</strong> 内部（非 Reaction 调用链）</td>
+<td align="left">❌ null</td>
+<td align="left">❌ 否</td>
+</tr>
+</tbody></table>
+<h2 id="6-依赖追踪失效场景"><a href="#6-依赖追踪失效场景" class="headerlink" title="6. 依赖追踪失效场景"></a>6. 依赖追踪失效场景</h2><h3 id="6-1-异步回调中的追踪中断"><a href="#6-1-异步回调中的追踪中断" class="headerlink" title="6.1 异步回调中的追踪中断"></a>6.1 异步回调中的追踪中断</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// ❌ 错误：await 之后的依赖不会被追踪</span><br><span class="hljs-title function_">autorun</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(store.<span class="hljs-property">count</span>); <span class="hljs-comment">// ✅ 同步部分被追踪</span><br><br>  <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(store.<span class="hljs-property">count</span>); <span class="hljs-comment">// ❌ 异步回调中，不会被追踪</span><br>  &#125;, <span class="hljs-number">1000</span>);<br><br>  <span class="hljs-title function_">fetch</span>(<span class="hljs-string">&quot;/api&quot;</span>).<span class="hljs-title function_">then</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(store.<span class="hljs-property">count</span>); <span class="hljs-comment">// ❌ Promise 回调中，不会被追踪</span><br>  &#125;);<br>&#125;);<br><br><span class="hljs-comment">// ✅ 正确：在 action 中修改状态，让 autorun 读取</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Store</span> &#123;<br>  data = <span class="hljs-literal">null</span>;<br>  <span class="hljs-keyword">async</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">&quot;/api&quot;</span>);<br>    <span class="hljs-title function_">runInAction</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>      <span class="hljs-variable language_">this</span>.<span class="hljs-property">data</span> = res.<span class="hljs-property">data</span>; <span class="hljs-comment">// 修改 observable</span><br>    &#125;);<br>  &#125;<br>&#125;<br><span class="hljs-comment">// autorun 读取 this.data，自动响应</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="6-2-为什么异步回调中不能建立依赖？"><a href="#6-2-为什么异步回调中不能建立依赖？" class="headerlink" title="6.2 为什么异步回调中不能建立依赖？"></a>6.2 为什么异步回调中不能建立依赖？</h3><ol>
+<li><strong>防止幽灵依赖</strong>：异步回调执行时，原始的 <code>autorun</code> 早已执行完毕并出栈。</li>
+<li><strong>避免内存泄漏</strong>：如果异步回调建立了依赖，回调函数会被永久挂在 <code>observers</code> 列表中。</li>
+<li><strong>防止死循环</strong>：避免在 Action 中读取数据时意外建立依赖，导致修改时再次触发自身。</li>
+</ol>
+<h2 id="7-computed-的懒执行与挂起"><a href="#7-computed-的懒执行与挂起" class="headerlink" title="7. computed 的懒执行与挂起"></a>7. computed 的懒执行与挂起</h2><h3 id="7-1-状态机"><a href="#7-1-状态机" class="headerlink" title="7.1 状态机"></a>7.1 状态机</h3><pre><code class=" mermaid">stateDiagram-v2
+    [*] --&gt; 挂起_Suspended: 创建 computed，无观察者
+
+    挂起_Suspended --&gt; 追踪_Tracking: 被 autorun/组件 读取
+
+    追踪_Tracking --&gt; 最新_UpToDate: 依赖未变化，返回缓存
+
+    最新_UpToDate --&gt; 脏_Stale: 依赖的 observable 发生变化
+
+    脏_Stale --&gt; 追踪_Tracking: 被读取时重新计算
+
+    追踪_Tracking --&gt; 挂起_Suspended: 所有观察者销毁（observers 为空）
+
+    note right of 挂起_Suspended
+        不监听任何上游数据
+        不占用内存资源
+    end note
+
+    note right of 追踪_Tracking
+        有观察者在使用
+        监听上游变化
+        正常缓存
+    end note
+
+    note right of 脏_Stale
+        缓存已失效
+        等待下次读取时重新计算
+    end note
+</code></pre>
+
+<h3 id="7-2-有观察者-vs-无观察者"><a href="#7-2-有观察者-vs-无观察者" class="headerlink" title="7.2 有观察者 vs 无观察者"></a>7.2 有观察者 vs 无观察者</h3><pre><code class=" mermaid">flowchart LR
+    subgraph 有观察者[&quot;✅ 有观察者（在 autorun 内读取）&quot;]
+        A1[computed 被读取] --&gt; A2[检查 observers 列表]
+        A2 --&gt; A3[有 autorun 在列表中]
+        A3 --&gt; A4[激活：监听上游变化]
+        A4 --&gt; A5[上游变化 → 缓存失效 → 重新计算]
+        A5 --&gt; A6[多次读取 → 直接返回缓存]
+    end
+
+    subgraph 无观察者[&quot;❌ 无观察者（在 autorun 外读取）&quot;]
+        B1[computed 被读取] --&gt; B2[检查 observers 列表]
+        B2 --&gt; B3[列表为空]
+        B3 --&gt; B4[挂起：不监听上游]
+        B4 --&gt; B5[上游变化 → 不知道，无反应]
+        B5 --&gt; B6[多次读取 → 每次都重新计算]
+    end
+</code></pre>
+
+<h2 id="8-核心原则与调试建议"><a href="#8-核心原则与调试建议" class="headerlink" title="8. 核心原则与调试建议"></a>8. 核心原则与调试建议</h2><h3 id="8-1-响应式核心原则"><a href="#8-1-响应式核心原则" class="headerlink" title="8.1 响应式核心原则"></a>8.1 响应式核心原则</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs text">🔴 原则一：依赖收集是同步的<br>   → 异步回调中无法建立依赖<br><br>🟡 原则二：修改是异步批量处理的<br>   → 连续修改 10 次，autorun 只执行 1 次<br><br>🟢 原则三：computed 是懒执行的<br>   → 没人读就不计算，有人读才计算并缓存<br><br>🔵 原则四：追踪精确到属性级别<br>   → 只追踪实际被读取的属性，不扫描整个对象<br></code></pre></td></tr></table></figure>
+
+<h3 id="8-2-调试技巧"><a href="#8-2-调试技巧" class="headerlink" title="8.2 调试技巧"></a>8.2 调试技巧</h3><table>
+<thead>
+<tr>
+<th align="left">问题</th>
+<th align="left">调试方法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">状态变了但 UI 不更新</td>
+<td align="left">检查是否在 <code>observer</code> 组件中读取？是否在异步回调中读取？</td>
+</tr>
+<tr>
+<td align="left">computed 每次重新计算</td>
+<td align="left">检查是否有 Reaction 在使用它？若无，设置 <code>keepAlive: true</code></td>
+</tr>
+<tr>
+<td align="left">想查看当前依赖</td>
+<td align="left">使用 <code>MobX</code> 的 <code>trace()</code> 方法</td>
+</tr>
+<tr>
+<td align="left">想查看原始数据</td>
+<td align="left">使用 <code>toJS(store)</code> 转换</td>
+</tr>
+<tr>
+<td align="left">开发模式严格检查</td>
+<td align="left">配置 <code>computedRequiresReaction: true</code>，在非响应式上下文中访问会报错</td>
+</tr>
+</tbody></table>
+<h3 id="8-3-快速排查清单"><a href="#8-3-快速排查清单" class="headerlink" title="8.3 快速排查清单"></a>8.3 快速排查清单</h3><table>
+<thead>
+<tr>
+<th align="left">现象</th>
+<th align="left">可能原因</th>
+<th align="left">解决方案</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">依赖变了，computed 不更新</td>
+<td align="left">依赖了非 observable 数据</td>
+<td align="left">将依赖转为 observable</td>
+</tr>
+<tr>
+<td align="left">每次读取都重新计算</td>
+<td align="left">无 Reaction 在使用</td>
+<td align="left">配置 <code>keepAlive: true</code></td>
+</tr>
+<tr>
+<td align="left">组件无限重渲染</td>
+<td align="left">computed 返回新对象引用</td>
+<td align="left">返回原始值或配置深度比较</td>
+</tr>
+<tr>
+<td align="left">await 后的依赖不追踪</td>
+<td align="left">异步中断追踪</td>
+<td align="left">将异步逻辑移至 action</td>
+</tr>
+<tr>
+<td align="left">事件回调中读取不更新</td>
+<td align="left">非响应式上下文</td>
+<td align="left">在组件渲染函数或 autorun 中读取</td>
+</tr>
+</tbody></table>
+<h2 id="9-术语表"><a href="#9-术语表" class="headerlink" title="9. 术语表"></a>9. 术语表</h2><table>
+<thead>
+<tr>
+<th align="left">术语</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>Observable</strong></td>
+<td align="left">可观察数据，通过 Proxy 包装，内部维护 <code>observers</code> 列表</td>
+</tr>
+<tr>
+<td align="left"><strong>Reaction</strong></td>
+<td align="left">观察者，如 <code>autorun</code>、<code>reaction</code>、<code>observer</code> 组件</td>
+</tr>
+<tr>
+<td align="left"><strong>Derivation</strong></td>
+<td align="left">派生值，即 <code>computed</code>，既是观察者也是被观察者</td>
+</tr>
+<tr>
+<td align="left"><strong>trackingDerivation</strong></td>
+<td align="left">全局指针，指向当前正在执行的 Reaction</td>
+</tr>
+<tr>
+<td align="left"><strong>observers</strong></td>
+<td align="left">每个 Observable 内部维护的观察者列表</td>
+</tr>
+<tr>
+<td align="left"><strong>dependencies</strong></td>
+<td align="left">每个 Reaction 内部维护的依赖列表</td>
+</tr>
+<tr>
+<td align="left"><strong>Proxy</strong></td>
+<td align="left">ES6 代理，MobX 用于拦截 get&#x2F;set 操作</td>
+</tr>
+<tr>
+<td align="left"><strong>批量更新</strong></td>
+<td align="left">MobX 通过事务 + 去重队列 + 微任务实现</td>
+</tr>
+<tr>
+<td align="left"><strong>懒执行</strong></td>
+<td align="left">computed 只在被读取时计算</td>
+</tr>
+<tr>
+<td align="left"><strong>自动挂起</strong></td>
+<td align="left">无观察者时 computed 自动取消上游监听</td>
+</tr>
+</tbody></table>
+<h2 id="💡-记忆口诀"><a href="#💡-记忆口诀" class="headerlink" title="💡 记忆口诀"></a>💡 记忆口诀</h2><blockquote>
+<p><strong>读取时收集依赖，修改时批量通知；</strong><br><strong>Proxy 拦截 get&#x2F;set，微任务压扁更新；</strong><br><strong>computed 懒算又缓存，无观察者就挂起；</strong><br><strong>异步回调不追踪，action 里改状态。</strong></p>
+</blockquote>
+<blockquote>
+<p>核心就三句话：<strong>读时收集，改时通知，批量执行。</strong></p>
+</blockquote>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%8A%B6%E6%80%81%E7%AE%A1%E7%90%86/" class="category-chain-item">状态管理</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%8A%B6%E6%80%81%E7%AE%A1%E7%90%86/MobX/" class="category-chain-item">MobX</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8E%9F%E7%90%86/" class="print-no-link">#响应式原理</a>
+      
+        <a href="/tags/Proxy/" class="print-no-link">#Proxy</a>
+      
+        <a href="/tags/MobX/" class="print-no-link">#MobX</a>
+      
+        <a href="/tags/%E4%BE%9D%E8%B5%96%E6%94%B6%E9%9B%86/" class="print-no-link">#依赖收集</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>MobX 响应式机制与依赖收集</div>
+      <div>http://example.com/2024/08/10/状态管理/MobX 响应式原理/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年8月10日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/08/10/React/React%20Hook%EF%BC%9A%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" title="React Hook：性能优化Hook">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">React Hook：性能优化Hook</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/08/10/%E7%8A%B6%E6%80%81%E7%AE%A1%E7%90%86/MobX%20%E4%B8%AD%E7%9A%84%E5%BC%82%E6%AD%A5%E6%93%8D%E4%BD%9C/" title="MobX 中的异步操作">
+                        <span class="hidden-mobile">MobX 中的异步操作</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

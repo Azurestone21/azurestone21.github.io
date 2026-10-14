@@ -1,0 +1,766 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="HTML 基础超文本标记语言（HyperText Markup Language，简称：HTML）是一种用于创建网页的标准标记语言。 HTML , HTML 4.01的上一个版本诞生于 1999 年。 HTML文档的后缀名：.html 或 .htm  标记语言是一套标记标签 (markup tag)  1234567891011&lt;!DOCTYPE html&gt;&lt;html&gt;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HTML 基础">
+<meta property="og:url" content="http://example.com/2024/12/01/HTML/HTML%20%E5%9F%BA%E7%A1%80/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="HTML 基础超文本标记语言（HyperText Markup Language，简称：HTML）是一种用于创建网页的标准标记语言。 HTML , HTML 4.01的上一个版本诞生于 1999 年。 HTML文档的后缀名：.html 或 .htm  标记语言是一套标记标签 (markup tag)  1234567891011&lt;!DOCTYPE html&gt;&lt;html&gt;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260909130144946.jpg">
+<meta property="article:published_time" content="2024-12-01T15:42:32.000Z">
+<meta property="article:modified_time" content="2026-10-14T14:26:02.470Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="HTML">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260909130144946.jpg">
+  
+  
+  
+  <title>HTML 基础 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">HTML 基础</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-12-01 23:42" pubdate>
+          2024年12月1日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          15 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">HTML 基础</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="HTML-基础"><a href="#HTML-基础" class="headerlink" title="HTML 基础"></a>HTML 基础</h1><p><strong>超文本标记语言</strong>（HyperText Markup Language，简称：HTML）是一种用于创建网页的标准<strong>标记语言</strong>。</p>
+<p>HTML , HTML 4.01的上一个版本诞生于 1999 年。</p>
+<p>HTML文档的后缀名：<strong>.html</strong> 或 <strong>.htm</strong></p>
+<blockquote>
+<p>标记语言是一套<strong>标记标签</strong> (markup tag)</p>
+</blockquote>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-meta">&lt;!DOCTYPE <span class="hljs-keyword">html</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">charset</span>=<span class="hljs-string">&quot;utf-8&quot;</span> /&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>菜鸟教程(runoob.com)<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span><br>  <span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>我的第一个标题<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>我的第一个段落。<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span><br>  <span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260909130144946.jpg" srcset="/img/loading.gif" lazyload></p>
+<h2 id="HTML标签"><a href="#HTML标签" class="headerlink" title="HTML标签"></a>HTML标签</h2><h3 id="块标签"><a href="#块标签" class="headerlink" title="块标签"></a>块标签</h3><p><code>h1~h6</code>、<code>p</code>、<code>div</code>、<code>ul</code>、<code>ol</code>、<code>li</code>、<code>dl</code>、<code>dt</code>、<code>dd</code>、<code>form</code>、<code>table</code></p>
+<p><strong>特点</strong></p>
+<ol>
+<li>独占一行。</li>
+<li>可以设置高度（默认是父级的100%）、宽度、外边距、内边距。</li>
+</ol>
+<h3 id="行内标签"><a href="#行内标签" class="headerlink" title="行内标签"></a>行内标签</h3><p><code>a</code>、<code>span</code>、<code>em</code>、<code>strong</code>、<code>b</code>、<code>i</code>、<code>u</code>、<code>label</code>、<code>br</code>、<code>img</code>、<code>input</code>、<code>textarea</code></p>
+<p><strong>特点</strong></p>
+<ol>
+<li>一行可以显示多个。</li>
+<li>设置宽高无效，宽度是内容的宽度。</li>
+<li>行内元素只能容纳文本或其他行内元素。</li>
+</ol>
+<h3 id="行内块标签"><a href="#行内块标签" class="headerlink" title="行内块标签"></a>行内块标签</h3><p>img、input、textarea、td</p>
+<p><strong>特点</strong></p>
+<ol>
+<li>一行可以显示多个，之间会有空白缝隙。</li>
+<li>默认宽度就是它本身内容的宽度。</li>
+<li>可以设置高度、宽度、外边距、内边距。</li>
+</ol>
+<h3 id="自闭合标签"><a href="#自闭合标签" class="headerlink" title="自闭合标签"></a>自闭合标签</h3><p><code>input</code>、<code>meta</code>、<code>link</code>、<code>br</code>、<code>hr</code>、<code>img</code></p>
+<p>样式标签</p>
+<ul>
+<li><code>&lt;style&gt;</code></li>
+<li><code>&lt;link&gt;</code>：引用外部css文件</li>
+</ul>
+<h3 id="meta"><a href="#meta" class="headerlink" title="meta"></a>meta</h3><p>作用：定义 HTML 文档的元数据，可以包含文档的字符集、视口设置、作者、页面描述、关键字等</p>
+<p>属性</p>
+<ul>
+<li>viewport<ul>
+<li>是网页实现响应式的工具，可以控制视口大小和缩放</li>
+<li>可以适配不同屏幕尺寸，例如设置 width&#x3D;device-width，initial-scale&#x3D;1</li>
+</ul>
+</li>
+</ul>
+<h3 id="iframe"><a href="#iframe" class="headerlink" title="iframe"></a>iframe</h3><p>内嵌框架。可以在同一个浏览器窗口中显示多个页面。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">iframe</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;URL&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">iframe</span>&gt;</span> // URL指向不同的网页<br></code></pre></td></tr></table></figure>
+
+<h2 id="HTML5"><a href="#HTML5" class="headerlink" title="HTML5"></a>HTML5</h2><p>HTML5 是 HTML 的最新版本，由万维网联盟（W3C）在 2014 年完成制订。目的是在移动设备上支持多媒体。</p>
+<p>HTML5 仍处于完善之中。</p>
+<h3 id="新特性"><a href="#新特性" class="headerlink" title="新特性"></a><strong>新特性</strong></h3><ol>
+<li>语义化元素：<code>article</code>、<code>footer</code>、<code>header</code>、<code>nav</code>、<code>section</code></li>
+<li>多媒体元素：<code>video</code>、<code>audio</code></li>
+<li>绘画元素：<code>canvas</code></li>
+<li>表单控件：<code>calendar</code>、<code>date</code>、<code>time</code>、<code>email</code>、<code>url</code>、<code>search</code></li>
+<li>完全支持 CSS3</li>
+<li>对本地离线存储的更好的支持</li>
+</ol>
+<p><strong>语义化标签相对于 div 的优点</strong></p>
+<ol>
+<li>增强可读性</li>
+<li>便于搜索引擎（SEO）</li>
+</ol>
+<h3 id=""><a href="#" class="headerlink" title="&lt;!DOCTYPE html&gt;"></a><code>&lt;!DOCTYPE html&gt;</code></h3><p><code>&lt;!DOCTYPE html&gt;</code> 不是一个 html 标签，是一个标记语言的<strong>文档类型声明</strong>，告诉浏览器当面的 HTML 是什么版本编写的，声明必须位于 HTML5 文档中的第一行。</p>
+<p><code> &lt;!DOCTYPE html&gt;</code> 是 HTML5 的声明，HTML5 之前的版本需要引用 DTD（文档类型定义）</p>
+<h3 id="Canvas"><a href="#Canvas" class="headerlink" title="Canvas"></a>Canvas</h3><p>canvas 标签用来定义图形容器，但必须使用脚本来绘制图形。</p>
+<p>canvas 是一个二维网格。</p>
+<ol>
+<li>使用 <code>&lt;canvas&gt;</code>，需要设置 <strong>id、width 和 height</strong>。id 用于脚本引用，<strong>width 和 height</strong> 属性定义的画布的大小。</li>
+<li>JS 通过 id 获取canvas元素</li>
+<li>getContext 创建 context 对象</li>
+<li>使用 context 对象的方法进行绘画（moveTo、lineTo、fillText）</li>
+</ol>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">canvas</span></span><br><span class="hljs-tag">  <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;myCanvas&quot;</span></span><br><span class="hljs-tag">  <span class="hljs-attr">width</span>=<span class="hljs-string">&quot;200&quot;</span></span><br><span class="hljs-tag">  <span class="hljs-attr">height</span>=<span class="hljs-string">&quot;100&quot;</span></span><br><span class="hljs-tag">  <span class="hljs-attr">style</span>=<span class="hljs-string">&quot;border:1px solid #000000;&quot;</span></span><br><span class="hljs-tag">&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">var</span> c = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">getElementById</span>(<span class="hljs-string">&quot;myCanvas&quot;</span>);<br><span class="hljs-keyword">var</span> ctx = c.<span class="hljs-title function_">getContext</span>(<span class="hljs-string">&quot;2d&quot;</span>);<br>ctx.<span class="hljs-property">fillStyle</span> = <span class="hljs-string">&quot;#FF0000&quot;</span>;<br>ctx.<span class="hljs-title function_">fillRect</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">150</span>, <span class="hljs-number">75</span>);<br></code></pre></td></tr></table></figure>
+
+<h3 id="SVG"><a href="#SVG" class="headerlink" title="SVG"></a>SVG</h3><p>HTML5 支持内联 SVG。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">svg</span> <span class="hljs-attr">xmlns</span>=<span class="hljs-string">&quot;http://www.w3.org/2000/svg&quot;</span> <span class="hljs-attr">version</span>=<span class="hljs-string">&quot;1.1&quot;</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">circle</span> <span class="hljs-attr">cx</span>=<span class="hljs-string">&quot;100&quot;</span> <span class="hljs-attr">cy</span>=<span class="hljs-string">&quot;50&quot;</span> <span class="hljs-attr">r</span>=<span class="hljs-string">&quot;40&quot;</span> <span class="hljs-attr">stroke</span>=<span class="hljs-string">&quot;black&quot;</span> <span class="hljs-attr">stroke-width</span>=<span class="hljs-string">&quot;2&quot;</span> <span class="hljs-attr">fill</span>=<span class="hljs-string">&quot;red&quot;</span> /&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">svg</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="Geolocation"><a href="#Geolocation" class="headerlink" title="Geolocation"></a>Geolocation</h3><p>用于定位用户的位置。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">if</span> (<span class="hljs-string">&quot;geolocation&quot;</span> <span class="hljs-keyword">in</span> navigator) &#123;<br>  <span class="hljs-comment">// console.log(&#x27;浏览器支持位置服务&#x27;);</span><br>  navigator.<span class="hljs-property">geolocation</span>.<span class="hljs-title function_">getCurrentPosition</span>(<br>    <span class="hljs-function">(<span class="hljs-params">position</span>) =&gt;</span> &#123;<br>      <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;位置服务已开启&quot;</span>, position);<br>    &#125;,<br>    <span class="hljs-function">(<span class="hljs-params">error</span>) =&gt;</span> &#123;<br>      <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;位置服务开启失败&quot;</span>, error, error.<span class="hljs-property">code</span>);<br>      <span class="hljs-keyword">switch</span> (error.<span class="hljs-property">code</span>) &#123;<br>        <span class="hljs-keyword">case</span> error.<span class="hljs-property">PERMISSION_DENIED</span>:<br>          x.<span class="hljs-property">innerHTML</span> = <span class="hljs-string">&quot;用户拒绝对获取地理位置的请求。&quot;</span>;<br>          <span class="hljs-keyword">break</span>;<br>        <span class="hljs-keyword">case</span> error.<span class="hljs-property">POSITION_UNAVAILABLE</span>:<br>          x.<span class="hljs-property">innerHTML</span> = <span class="hljs-string">&quot;位置信息是不可用的。&quot;</span>;<br>          <span class="hljs-keyword">break</span>;<br>        <span class="hljs-keyword">case</span> error.<span class="hljs-property">TIMEOUT</span>:<br>          x.<span class="hljs-property">innerHTML</span> = <span class="hljs-string">&quot;请求用户地理位置超时。&quot;</span>;<br>          <span class="hljs-keyword">break</span>;<br>        <span class="hljs-keyword">case</span> error.<span class="hljs-property">UNKNOWN_ERROR</span>:<br>          x.<span class="hljs-property">innerHTML</span> = <span class="hljs-string">&quot;未知错误。&quot;</span>;<br>          <span class="hljs-keyword">break</span>;<br>      &#125;<br>    &#125;,<br>    &#123;<br>      <span class="hljs-attr">enableHighAccuracy</span>: <span class="hljs-literal">true</span>, <span class="hljs-comment">// 位置是否精确获取</span><br>      <span class="hljs-attr">timeout</span>: <span class="hljs-number">3500</span>, <span class="hljs-comment">// 获取位置允许的最长时间</span><br>    &#125;,<br>  );<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="Web-存储"><a href="#Web-存储" class="headerlink" title="Web 存储"></a>Web 存储</h3><ul>
+<li><p><code>localStorage</code> - 用于长久保存整个网站的数据，保存的数据没有过期时间，直到手动去除。</p>
+</li>
+<li><p><code>sessionStorage</code> - 用于临时保存同一窗口(或标签页)的数据，在关闭窗口或标签页之后将会删除这些数据。</p>
+</li>
+<li><p><code>localStorage</code> 和 <code>sessionStorage</code>可使用的API都相同。</p>
+</li>
+<li><p>保存数据：<code>localStorage.setItem(key,value)</code></p>
+</li>
+<li><p>读取数据：<code>localStorage.getItem(key)</code></p>
+</li>
+<li><p>删除单个数据：<code>localStorage.removeItem(key)</code></p>
+</li>
+<li><p>删除所有数据：<code>localStorage.clear()</code></p>
+</li>
+<li><p>得到某个索引的key：<code>localStorage.key(index)</code></p>
+</li>
+</ul>
+<h3 id="WebSocket"><a href="#WebSocket" class="headerlink" title="WebSocket"></a>WebSocket</h3><blockquote>
+<p>现状：为了实现推送技术，所用的技术都是 Ajax 轮询。<strong>轮询</strong>是在特定的的时间间隔（如每1秒），由浏览器对服务器发出HTTP请求，然后由服务器返回最新的数据给客户端的浏览器。</p>
+</blockquote>
+<p><strong>WebSocket</strong> 是 HTML5 开始提供的一种在单个 TCP 连接上进行<strong>全双工通讯的协议</strong>。</p>
+<p>在 WebSocket API 中，浏览器和服务器只需要完成一次握手，两者之间就直接可以创建<strong>持久性</strong>的连接，并进行<strong>双向数据传输</strong>，允许服务端主动向客户端推送数据。</p>
+<p><strong>优点</strong>：节省服务器资源和带宽，并且能够更实时地进行通讯。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">WebSocketTest</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-keyword">if</span> (<span class="hljs-string">&quot;WebSocket&quot;</span> <span class="hljs-keyword">in</span> <span class="hljs-variable language_">window</span>) &#123;<br>    <span class="hljs-comment">// 浏览器支持 WebSocket</span><br><br>    <span class="hljs-comment">// 打开一个 web socket</span><br>    <span class="hljs-keyword">var</span> ws = <span class="hljs-keyword">new</span> <span class="hljs-title class_">WebSocket</span>(<span class="hljs-string">&quot;ws://localhost:9998/echo&quot;</span>);<br><br>    ws.<span class="hljs-property">onopen</span> = <span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) &#123;<br>      <span class="hljs-comment">// Web Socket 已连接上，使用 send() 方法发送数据</span><br>      ws.<span class="hljs-title function_">send</span>(<span class="hljs-string">&quot;发送数据&quot;</span>);<br>    &#125;;<br><br>    ws.<span class="hljs-property">onmessage</span> = <span class="hljs-keyword">function</span> (<span class="hljs-params">evt</span>) &#123;<br>      <span class="hljs-keyword">var</span> received_msg = evt.<span class="hljs-property">data</span>;<br>      <span class="hljs-comment">// 数据已接收</span><br>    &#125;;<br><br>    ws.<span class="hljs-property">onclose</span> = <span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) &#123;<br>      <span class="hljs-comment">// 关闭 websocket</span><br>    &#125;;<br>  &#125; <span class="hljs-keyword">else</span> &#123;<br>    <span class="hljs-comment">// 浏览器不支持 WebSocket</span><br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>WebSocket 协议本质上是一个基于 TCP 的协议。</p>
+<p>建立一个 WebSocket 连接，客户端浏览器首先要向服务器发起一个 HTTP 请求，这个请求和通常的 HTTP 请求不同，包含了一些附加头信息，其中附加头信息”Upgrade: WebSocket”表明这是一个申请协议升级的 HTTP 请求，服务器端解析这些附加的头信息然后产生应答信息返回给客户端，客户端和服务器端的 WebSocket 连接就建立起来了，双方就可以通过这个连接通道自由的传递信息，并且这个连接会持续存在直到客户端或者服务器端的某一方主动的关闭连接。</p>
+<h2 id="XHTML"><a href="#XHTML" class="headerlink" title="XHTML"></a>XHTML</h2><p>XHTML 指的是可扩展超文本标记语言，以 XML 应用的方式定义的 HTML。</p>
+<p>XHTML 是2001年1月发布的 W3C 推荐标准，所有主流浏览器都支持</p>
+<p>XHTML 与 HTML 4.01 几乎是相同的，比HTML更严格更纯净。</p>
+<h3 id="XHTML-和-HTML-的区别"><a href="#XHTML-和-HTML-的区别" class="headerlink" title="XHTML 和 HTML 的区别"></a>XHTML 和 HTML 的区别</h3><p><strong>文档结构</strong></p>
+<ul>
+<li>XHTML DOCTYPE 是<em>强制性的</em></li>
+<li><code>&lt;html&gt;</code> 中的 XML namespace 属性是<em>强制性的</em></li>
+<li><code>&lt;html&gt;</code>、<code>&lt;head&gt;</code>、<code>title&gt;</code> 以及 <code>&lt;body&gt;</code> 也是<em>强制性的</em></li>
+</ul>
+<p><strong>元素语法</strong></p>
+<ul>
+<li>XHTML 元素必须<em>正确嵌套</em></li>
+<li>XHTML 元素必须始终<em>关闭</em></li>
+<li>XHTML 元素必须<em>小写</em></li>
+<li>XHTML 文档必须有<em>一个根元素</em></li>
+</ul>
+<p><strong>属性语法</strong></p>
+<ul>
+<li>XHTML 属性必须使用<em>小写</em></li>
+<li>XHTML 属性值必须用<em>引号包围</em></li>
+<li>XHTML 属性最小化也是<em>禁止的</em></li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%89%8D%E7%AB%AF/" class="category-chain-item">前端</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/HTML/" class="print-no-link">#HTML</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>HTML 基础</div>
+      <div>http://example.com/2024/12/01/HTML/HTML 基础/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年12月1日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/12/02/JavaScript/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%BC%96%E7%A8%8B/" title="面向对象编程">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">面向对象编程</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/12/01/React/%E3%80%90React%E3%80%91%E9%AB%98%E9%98%B6%E7%BB%84%E4%BB%B6/" title="React 高阶组件（HOC）">
+                        <span class="hidden-mobile">React 高阶组件（HOC）</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

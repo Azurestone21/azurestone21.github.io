@@ -1,0 +1,1277 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="深入理解 React Fiber：可中断渲染、双缓存与 Commit 阶段 本文从 Fiber 的数据结构讲起，串联节点生成、双缓存、两阶段渲染、flags 副作用标记，以及真实 DOM 的修改时机，帮你建立一套完整的 Fiber 心智模型。  React 16 引入 Fiber 之前，React 的协调器是 Stack Reconciler。它递归遍历虚拟 DOM，整个过程同步且不可中断。一旦更">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【React】深入理解 React Fiber">
+<meta property="og:url" content="http://example.com/2025/12/10/React/%E3%80%90React%E3%80%91%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%20React%20Fiber/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="深入理解 React Fiber：可中断渲染、双缓存与 Commit 阶段 本文从 Fiber 的数据结构讲起，串联节点生成、双缓存、两阶段渲染、flags 副作用标记，以及真实 DOM 的修改时机，帮你建立一套完整的 Fiber 心智模型。  React 16 引入 Fiber 之前，React 的协调器是 Stack Reconciler。它递归遍历虚拟 DOM，整个过程同步且不可中断。一旦更">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-12-09T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-14T15:07:47.789Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="Fiber">
+<meta property="article:tag" content="React">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>【React】深入理解 React Fiber - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">【React】深入理解 React Fiber</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-10 00:00" pubdate>
+          2025年12月10日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          46 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">【React】深入理解 React Fiber</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="深入理解-React-Fiber：可中断渲染、双缓存与-Commit-阶段"><a href="#深入理解-React-Fiber：可中断渲染、双缓存与-Commit-阶段" class="headerlink" title="深入理解 React Fiber：可中断渲染、双缓存与 Commit 阶段"></a>深入理解 React Fiber：可中断渲染、双缓存与 Commit 阶段</h1><blockquote>
+<p>本文从 Fiber 的数据结构讲起，串联节点生成、双缓存、两阶段渲染、flags 副作用标记，以及真实 DOM 的修改时机，帮你建立一套完整的 Fiber 心智模型。</p>
+</blockquote>
+<p>React 16 引入 Fiber 之前，React 的协调器是 Stack Reconciler。它递归遍历虚拟 DOM，整个过程同步且不可中断。一旦更新开始，主线程就会被一直占用，组件树稍微大一点，页面就容易卡顿、输入延迟。</p>
+<p>Fiber 的出现就是为了解决这个问题：<strong>把大任务拆成小任务，让更新能暂停、能恢复、能按优先级执行。</strong></p>
+<hr>
+<h2 id="一、Fiber-是什么"><a href="#一、Fiber-是什么" class="headerlink" title="一、Fiber 是什么"></a>一、Fiber 是什么</h2><p>Fiber 不只是一个数据结构，它包含三层含义：</p>
+<ol>
+<li><strong>数据结构</strong>：每个 React Element 对应一个 Fiber 节点，用链表连接成树。</li>
+<li><strong>工作单元</strong>：每个 Fiber 节点是一个可执行、可中断的工作单元。</li>
+<li><strong>调度架构</strong>：配合 Scheduler 和 Lane 优先级模型，让更新可中断、可恢复、可插队。</li>
+</ol>
+<p>React 15 及以前用递归同步执行，问题很明显：</p>
+<ul>
+<li>递归调用栈一旦开始，不能中断；</li>
+<li>组件树深时，render 长时间占用主线程；</li>
+<li>浏览器页面卡顿、输入延迟，导致掉帧；</li>
+<li>高优先级更新无法插队。</li>
+</ul>
+<p>Fiber 的目标就是：<strong>把大任务拆成小任务，能暂停、能恢复、能按优先级执行。</strong></p>
+<h3 id="Fiber-与-React-Element-的区别"><a href="#Fiber-与-React-Element-的区别" class="headerlink" title="Fiber 与 React Element 的区别"></a>Fiber 与 React Element 的区别</h3><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>React Element</th>
+<th>Fiber</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>本质</td>
+<td>不可变的 UI 描述</td>
+<td>可变的工作单元 + 状态容器</td>
+</tr>
+<tr>
+<td>生命周期</td>
+<td>每次 render 重新创建</td>
+<td>可复用，跨多次 render 存在</td>
+</tr>
+<tr>
+<td>内容</td>
+<td>type、props、key</td>
+<td>状态、副作用、优先级、DOM 引用、链表指针</td>
+</tr>
+<tr>
+<td>作用</td>
+<td>描述“UI 应该是什么样”</td>
+<td>决定“怎么更新、何时更新”</td>
+</tr>
+</tbody></table>
+<p>React Element 只是描述，不能调度、不能保存状态、不能标记副作用。Fiber 才是真正参与更新流程的工作单元。</p>
+<hr>
+<h2 id="二、Fiber-节点是怎么生成的"><a href="#二、Fiber-节点是怎么生成的" class="headerlink" title="二、Fiber 节点是怎么生成的"></a>二、Fiber 节点是怎么生成的</h2><p>Fiber 节点不是凭空产生的，它由 <strong>ReactElement 在 Render 阶段转化而来</strong>。</p>
+<p>比如你写：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs jsx">&lt;<span class="hljs-title class_">App</span>&gt;<br>  <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>hello<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br>&lt;/<span class="hljs-title class_">App</span>&gt;<br></code></pre></td></tr></table></figure>
+
+<p>编译后变成：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-title class_">React</span>.<span class="hljs-title function_">createElement</span>(<span class="hljs-title class_">App</span>, <span class="hljs-literal">null</span>, <span class="hljs-title class_">React</span>.<span class="hljs-title function_">createElement</span>(<span class="hljs-string">&quot;div&quot;</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">&quot;hello&quot;</span>));<br></code></pre></td></tr></table></figure>
+
+<p><code>React.createElement</code> 返回的 ReactElement 只是一个普通对象：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs js">&#123;<br>  <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;div&#x27;</span>,<br>  <span class="hljs-attr">key</span>: <span class="hljs-literal">null</span>,<br>  <span class="hljs-attr">props</span>: &#123; <span class="hljs-attr">children</span>: <span class="hljs-string">&#x27;hello&#x27;</span> &#125;,<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>它不能调度、不能保存状态、不能标记副作用，所以需要转成 Fiber。</p>
+<p>生成时机在 Render 阶段的 <code>beginWork</code>。React 会根据当前 Fiber 的 <code>tag</code> 走不同分支：</p>
+<ul>
+<li><code>HostRoot</code> → <code>updateHostRoot</code></li>
+<li><code>FunctionComponent</code> → <code>updateFunctionComponent</code></li>
+<li><code>ClassComponent</code> → <code>updateClassComponent</code></li>
+<li><code>HostComponent</code> → <code>updateHostComponent</code></li>
+</ul>
+<p>这些函数最终都会调用 <code>reconcileChildren</code>，处理子节点。</p>
+<p>核心创建函数包括：</p>
+<ul>
+<li><code>createFiberFromElement</code></li>
+<li><code>createFiberFromTypeAndProps</code></li>
+<li><code>createFiberFromFragment</code></li>
+<li><code>createFiberFromText</code></li>
+<li><code>createFiberFromPortal</code></li>
+</ul>
+<p>简化版 <code>createFiberFromElement</code>：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">createFiberFromElement</span>(<span class="hljs-params">element, mode, lanes</span>) &#123;<br>  <span class="hljs-keyword">const</span> &#123; type, key, props &#125; = element;<br>  <span class="hljs-keyword">let</span> fiberTag;<br><br>  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> type === <span class="hljs-string">&quot;function&quot;</span>) &#123;<br>    fiberTag = <span class="hljs-title function_">shouldConstruct</span>(type) ? <span class="hljs-title class_">ClassComponent</span> : <span class="hljs-title class_">FunctionComponent</span>;<br>  &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> type === <span class="hljs-string">&quot;string&quot;</span>) &#123;<br>    fiberTag = <span class="hljs-title class_">HostComponent</span>;<br>  &#125; <span class="hljs-keyword">else</span> &#123;<br>    <span class="hljs-keyword">switch</span> (type) &#123;<br>      <span class="hljs-keyword">case</span> <span class="hljs-attr">REACT_FRAGMENT_TYPE</span>:<br>        fiberTag = <span class="hljs-title class_">Fragment</span>;<br>        <span class="hljs-keyword">break</span>;<br>      <span class="hljs-keyword">case</span> <span class="hljs-attr">REACT_PORTAL_TYPE</span>:<br>        fiberTag = <span class="hljs-title class_">HostPortal</span>;<br>        <span class="hljs-keyword">break</span>;<br>    &#125;<br>  &#125;<br><br>  <span class="hljs-keyword">const</span> fiber = <span class="hljs-title function_">createFiber</span>(fiberTag, props, key, mode);<br>  fiber.<span class="hljs-property">elementType</span> = type;<br>  fiber.<span class="hljs-property">type</span> = type;<br>  fiber.<span class="hljs-property">lanes</span> = lanes;<br>  <span class="hljs-keyword">return</span> fiber;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>底层就是 <code>new FiberNode(...)</code>，得到一个普通 JS 对象。</p>
+<h3 id="初次挂载-vs-更新"><a href="#初次挂载-vs-更新" class="headerlink" title="初次挂载 vs 更新"></a>初次挂载 vs 更新</h3><ul>
+<li><strong>初次挂载</strong>：没有 current 树，所有 Fiber 都是新建的。</li>
+<li><strong>更新时</strong>：先 Diff，能复用则 <code>useFiber</code> 克隆，不能则新建。</li>
+</ul>
+<p>复用逻辑简化：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">while</span> (child !== <span class="hljs-literal">null</span>) &#123;<br>  <span class="hljs-keyword">if</span> (child.<span class="hljs-property">key</span> === key) &#123;<br>    <span class="hljs-keyword">if</span> (child.<span class="hljs-property">elementType</span> === element.<span class="hljs-property">type</span>) &#123;<br>      <span class="hljs-keyword">const</span> existing = <span class="hljs-title function_">useFiber</span>(child, element.<span class="hljs-property">props</span>);<br>      existing.<span class="hljs-property">return</span> = returnFiber;<br>      <span class="hljs-keyword">return</span> existing;<br>    &#125;<br>    <span class="hljs-title function_">deleteChild</span>(returnFiber, child);<br>    <span class="hljs-keyword">break</span>;<br>  &#125; <span class="hljs-keyword">else</span> &#123;<br>    <span class="hljs-title function_">deleteChild</span>(returnFiber, child);<br>  &#125;<br>  child = child.<span class="hljs-property">sibling</span>;<br>&#125;<br><br><span class="hljs-keyword">const</span> created = <span class="hljs-title function_">createFiberFromElement</span>(element, returnFiber.<span class="hljs-property">mode</span>, lanes);<br>created.<span class="hljs-property">return</span> = returnFiber;<br><span class="hljs-keyword">return</span> created;<br></code></pre></td></tr></table></figure>
+
+<p><code>useFiber</code> 内部调用 <code>createWorkInProgress</code>，尽量复用 <code>alternate</code>，或基于 current 克隆。</p>
+<blockquote>
+<p>一句话：Fiber 节点是 React 在协调阶段，根据 ReactElement 和旧 Fiber 树，通过 <code>createFiberFromElement</code> &#x2F; <code>useFiber</code> 等函数创建或复用出来的、带有优先级和副作用标记的工作单元。</p>
+</blockquote>
+<hr>
+<h2 id="三、Fiber-的数据结构"><a href="#三、Fiber-的数据结构" class="headerlink" title="三、Fiber 的数据结构"></a>三、Fiber 的数据结构</h2><p>一个 Fiber 节点本质上就是一个 JS 对象，关键字段如下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs js">&#123;<br>  <span class="hljs-comment">// 身份标识</span><br>  tag,              <span class="hljs-comment">// 节点类型：FunctionComponent / ClassComponent / HostComponent 等</span><br>  key,              <span class="hljs-comment">// diff 唯一标识</span><br>  type,             <span class="hljs-comment">// 组件函数/类 或 DOM 标签名</span><br>  stateNode,        <span class="hljs-comment">// 真实 DOM 或类组件实例；函数组件为 null</span><br><br>  <span class="hljs-comment">// 树结构指针</span><br>  <span class="hljs-keyword">return</span>,           <span class="hljs-comment">// 父 Fiber</span><br>  child,            <span class="hljs-comment">// 第一个子 Fiber</span><br>  sibling,          <span class="hljs-comment">// 下一个兄弟 Fiber</span><br><br>  <span class="hljs-comment">// 状态</span><br>  pendingProps,     <span class="hljs-comment">// 新 props</span><br>  memoizedProps,    <span class="hljs-comment">// 上次渲染的 props</span><br>  memoizedState,    <span class="hljs-comment">// 函数组件 Hooks 链表 / 类组件 state</span><br>  updateQueue,      <span class="hljs-comment">// 更新队列</span><br><br>  <span class="hljs-comment">// 副作用</span><br>  flags,            <span class="hljs-comment">// Placement / Update / Deletion 等</span><br>  subtreeFlags,     <span class="hljs-comment">// 子树副作用标记</span><br><br>  <span class="hljs-comment">// 调度</span><br>  lanes,            <span class="hljs-comment">// 当前 Fiber 待处理的更新优先级集合</span><br>  childLanes,       <span class="hljs-comment">// 子树待处理的更新优先级集合</span><br><br>  <span class="hljs-comment">// 双缓存</span><br>  alternate         <span class="hljs-comment">// 指向另一棵树的对应节点</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="三根指针的意义"><a href="#三根指针的意义" class="headerlink" title="三根指针的意义"></a>三根指针的意义</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs text">return   → 父节点<br>child    → 第一个子节点<br>sibling  → 下一个兄弟节点<br></code></pre></td></tr></table></figure>
+
+<p>这三根指针把树变成了链表树，遍历不再依赖 JS 调用栈。当前处理到哪个节点保存在全局 <code>workInProgress</code>，所以能暂停、恢复。这是 Fiber 可中断的结构基础。</p>
+<hr>
+<h2 id="四、flags-与-subtreeFlags"><a href="#四、flags-与-subtreeFlags" class="headerlink" title="四、flags 与 subtreeFlags"></a>四、flags 与 subtreeFlags</h2><h3 id="flags-是什么"><a href="#flags-是什么" class="headerlink" title="flags 是什么"></a>flags 是什么</h3><p>flags 是 Render 阶段给 Commit 阶段留下的<strong>施工清单</strong>。</p>
+<p>Render 阶段只负责标记“哪些节点要做什么操作”，Commit 阶段才根据 flags 去真正执行 DOM 操作。</p>
+<p>常见 flags：</p>
+<table>
+<thead>
+<tr>
+<th>flag</th>
+<th>含义</th>
+<th>Commit 阶段的操作</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Placement</code></td>
+<td>新节点插入，或节点移动</td>
+<td><code>appendChild</code> &#x2F; <code>insertBefore</code></td>
+</tr>
+<tr>
+<td><code>Update</code></td>
+<td>属性或文本更新</td>
+<td>更新 DOM 属性 &#x2F; 文本</td>
+</tr>
+<tr>
+<td><code>Deletion</code></td>
+<td>节点删除</td>
+<td><code>removeChild</code>，卸载组件</td>
+</tr>
+<tr>
+<td><code>ChildDeletion</code></td>
+<td>子节点删除</td>
+<td>处理<code>deletions</code> 数组</td>
+</tr>
+<tr>
+<td><code>Passive</code></td>
+<td>useEffect 需要执行</td>
+<td>异步调度<code>flushPassiveEffects</code></td>
+</tr>
+<tr>
+<td><code>Layout</code></td>
+<td>useLayoutEffect 需要执行</td>
+<td>Layout 阶段同步执行</td>
+</tr>
+<tr>
+<td><code>Ref</code></td>
+<td>ref 需要更新</td>
+<td>Layout 阶段绑定&#x2F;解绑 ref</td>
+</tr>
+<tr>
+<td><code>Snapshot</code></td>
+<td>getSnapshotBeforeUpdate</td>
+<td>Before Mutation 阶段执行</td>
+</tr>
+<tr>
+<td><code>ContentReset</code></td>
+<td>文本内容重置</td>
+<td>清空文本节点</td>
+</tr>
+</tbody></table>
+<p>flags 用位运算组合，一个 Fiber 可以同时有多个：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js">fiber.<span class="hljs-property">flags</span> = <span class="hljs-title class_">Placement</span> | <span class="hljs-title class_">Update</span>;<br></code></pre></td></tr></table></figure>
+
+<h3 id="flags-在哪里被打上"><a href="#flags-在哪里被打上" class="headerlink" title="flags 在哪里被打上"></a>flags 在哪里被打上</h3><p>主要在 Render 阶段的 <code>beginWork</code> 和 <code>completeWork</code> 中。</p>
+<p><code>beginWork</code> 中根据 diff 结果打 flags：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// 新增节点</span><br>workInProgress.<span class="hljs-property">flags</span> |= <span class="hljs-title class_">Placement</span>;<br><br><span class="hljs-comment">// 属性变化</span><br>workInProgress.<span class="hljs-property">flags</span> |= <span class="hljs-title class_">Update</span>;<br><br><span class="hljs-comment">// 删除节点</span><br>workInProgress.<span class="hljs-property">flags</span> |= <span class="hljs-title class_">ChildDeletion</span>;<br></code></pre></td></tr></table></figure>
+
+<p><code>completeWork</code> 中创建 DOM 实例并处理 props 变化：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">if</span> (current !== <span class="hljs-literal">null</span> &amp;&amp; workInProgress.<span class="hljs-property">stateNode</span> != <span class="hljs-literal">null</span>) &#123;<br>  <span class="hljs-title function_">updateHostComponent</span>(current, workInProgress, type, newProps);<br>  <span class="hljs-keyword">if</span> (current.<span class="hljs-property">memoizedProps</span> !== newProps) &#123;<br>    workInProgress.<span class="hljs-property">flags</span> |= <span class="hljs-title class_">Update</span>;<br>  &#125;<br>&#125; <span class="hljs-keyword">else</span> &#123;<br>  <span class="hljs-keyword">const</span> instance = <span class="hljs-title function_">createInstance</span>(type, newProps, ...);<br>  workInProgress.<span class="hljs-property">stateNode</span> = instance;<br>  <span class="hljs-keyword">if</span> (workInProgress.<span class="hljs-property">child</span> !== <span class="hljs-literal">null</span>) &#123;<br>    workInProgress.<span class="hljs-property">flags</span> |= <span class="hljs-title class_">Placement</span>;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="subtreeFlags：子树汇总"><a href="#subtreeFlags：子树汇总" class="headerlink" title="subtreeFlags：子树汇总"></a>subtreeFlags：子树汇总</h3><ul>
+<li><code>flags</code>：当前节点自身的副作用。</li>
+<li><code>subtreeFlags</code>：当前节点<strong>子树中</strong>所有副作用的汇总。</li>
+</ul>
+<p>在 <code>completeWork</code> 中向上冒泡：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">bubbleProperties</span>(<span class="hljs-params">completedWork</span>) &#123;<br>  <span class="hljs-keyword">let</span> subtreeFlags = <span class="hljs-title class_">NoFlags</span>;<br>  <span class="hljs-keyword">let</span> child = completedWork.<span class="hljs-property">child</span>;<br><br>  <span class="hljs-keyword">while</span> (child !== <span class="hljs-literal">null</span>) &#123;<br>    subtreeFlags |= child.<span class="hljs-property">subtreeFlags</span>;<br>    subtreeFlags |= child.<span class="hljs-property">flags</span>;<br>    child = child.<span class="hljs-property">sibling</span>;<br>  &#125;<br><br>  completedWork.<span class="hljs-property">subtreeFlags</span> |= subtreeFlags;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>Commit 阶段遍历时，如果某个节点的 <code>subtreeFlags === NoFlags</code>，说明整棵子树都没有副作用，可以直接跳过。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">if</span> (finishedWork.<span class="hljs-property">subtreeFlags</span> === <span class="hljs-title class_">NoFlags</span> &amp;&amp; finishedWork.<span class="hljs-property">flags</span> === <span class="hljs-title class_">NoFlags</span>) &#123;<br>  <span class="hljs-keyword">return</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="为什么用-flags-而不是-effect-list"><a href="#为什么用-flags-而不是-effect-list" class="headerlink" title="为什么用 flags 而不是 effect list"></a>为什么用 flags 而不是 effect list</h3><p>React 17 之前用 <code>effect list</code>，把所有有副作用的 Fiber 串成链表，Commit 阶段只遍历这个链表。缺点是：</p>
+<ul>
+<li>需要额外维护链表指针；</li>
+<li>并发模式下难以处理中断和重建；</li>
+<li>无法高效支持 <code>subtreeFlags</code> 的跳过优化。</li>
+</ul>
+<p>React 17 之后改用 <code>flags</code> + <code>subtreeFlags</code>：</p>
+<ul>
+<li>信息直接挂在 Fiber 上，不需要额外链表；</li>
+<li>可以配合 <code>subtreeFlags</code> 跳过无副作用子树；</li>
+<li>更适合并发模式的中断和恢复。</li>
+</ul>
+<h3 id="Commit-阶段怎么用-flags"><a href="#Commit-阶段怎么用-flags" class="headerlink" title="Commit 阶段怎么用 flags"></a>Commit 阶段怎么用 flags</h3><p>Mutation 子阶段遍历 Fiber 树：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">commitMutationEffects</span>(<span class="hljs-params">root, finishedWork, lanes</span>) &#123;<br>  <span class="hljs-keyword">const</span> flags = finishedWork.<span class="hljs-property">flags</span>;<br><br>  <span class="hljs-keyword">if</span> (flags &amp; <span class="hljs-title class_">Placement</span>) &#123;<br>    <span class="hljs-title function_">commitPlacement</span>(finishedWork);<br>    finishedWork.<span class="hljs-property">flags</span> &amp;= ~<span class="hljs-title class_">Placement</span>;<br>  &#125;<br><br>  <span class="hljs-keyword">if</span> (flags &amp; <span class="hljs-title class_">Update</span>) &#123;<br>    <span class="hljs-title function_">commitWork</span>(finishedWork);<br>    finishedWork.<span class="hljs-property">flags</span> &amp;= ~<span class="hljs-title class_">Update</span>;<br>  &#125;<br><br>  <span class="hljs-keyword">if</span> (flags &amp; <span class="hljs-title class_">Deletion</span>) &#123;<br>    <span class="hljs-title function_">commitDeletion</span>(finishedWork);<br>  &#125;<br><br>  <span class="hljs-keyword">let</span> child = finishedWork.<span class="hljs-property">child</span>;<br>  <span class="hljs-keyword">while</span> (child !== <span class="hljs-literal">null</span>) &#123;<br>    <span class="hljs-title function_">commitMutationEffects</span>(root, child, lanes);<br>    child = child.<span class="hljs-property">sibling</span>;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>flags 是 Render 阶段留给 Commit 阶段的施工清单。Render 只算不改，把“哪些节点要插入、更新、删除”标记在 flags 上；Commit 遍历这些 flags，真正执行 DOM 操作。</p>
+</blockquote>
+<hr>
+<h2 id="五、双缓存机制"><a href="#五、双缓存机制" class="headerlink" title="五、双缓存机制"></a>五、双缓存机制</h2><h3 id="current-与-workInProgress"><a href="#current-与-workInProgress" class="headerlink" title="current 与 workInProgress"></a>current 与 workInProgress</h3><p>React 内存中同时存在两棵 Fiber 树：</p>
+<ul>
+<li><strong>current 树</strong>：屏幕上正在显示的 UI。</li>
+<li><strong>workInProgress 树</strong>：内存中正在构建的新 UI。</li>
+</ul>
+<p>两棵树的对应节点通过 <code>alternate</code> 互相指向。</p>
+<p>工作流程：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs text">1. 更新触发，在 WIP 树上协调、diff、打 flags<br>2. Commit 阶段把变化应用到真实 DOM<br>3. root.current = finishedWork，WIP 变 current<br></code></pre></td></tr></table></figure>
+
+<h3 id="alternate-是双向对称的"><a href="#alternate-是双向对称的" class="headerlink" title="alternate 是双向对称的"></a>alternate 是双向对称的</h3><p>两棵树确实互相指向：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs text">A1.alternate === A2<br>A2.alternate === A1<br></code></pre></td></tr></table></figure>
+
+<p>但要区分两个东西：</p>
+<ul>
+<li><code>root.current</code>：根节点上的指针，表示“哪棵树是当前树”。</li>
+<li><code>fiber.alternate</code>：每个节点上的指针，表示“另一棵树里的对应节点”。</li>
+</ul>
+<p>交换的是前者，后者保持不变。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js">root.<span class="hljs-property">current</span> = <span class="hljs-variable constant_">A2</span>; <span class="hljs-comment">// A2 成为 current</span><br></code></pre></td></tr></table></figure>
+
+<p>交换后：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs text">A1.alternate === A2<br>A2.alternate === A1   // 没变<br></code></pre></td></tr></table></figure>
+
+<p>为什么不用处理？因为 <code>alternate</code> 是对称的、无方向的，它不关心谁是 current，只关心“我的另一半是谁”。</p>
+<p>下一次更新时，<code>createWorkInProgress</code> 会拿 <code>current.alternate</code> 作为新的 workInProgress 容器：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">let</span> workInProgress = current.<span class="hljs-property">alternate</span>;<br><span class="hljs-keyword">if</span> (workInProgress === <span class="hljs-literal">null</span>) &#123;<br>  workInProgress = <span class="hljs-title function_">createFiber</span>(...);<br>  workInProgress.<span class="hljs-property">alternate</span> = current;<br>  current.<span class="hljs-property">alternate</span> = workInProgress;<br>&#125; <span class="hljs-keyword">else</span> &#123;<br>  workInProgress.<span class="hljs-property">pendingProps</span> = pendingProps;<br>  workInProgress.<span class="hljs-property">flags</span> = <span class="hljs-title class_">NoFlags</span>;<br>  <span class="hljs-comment">// ...</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>角色会反转：</p>
+<table>
+<thead>
+<tr>
+<th>时刻</th>
+<th>root.current</th>
+<th>current.alternate</th>
+<th>角色</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>初始</td>
+<td>A1</td>
+<td>A2</td>
+<td>A1 是 current</td>
+</tr>
+<tr>
+<td>Commit 交换后</td>
+<td>A2</td>
+<td>A1</td>
+<td>A2 是 current，A1 空闲</td>
+</tr>
+<tr>
+<td>下次 Render</td>
+<td>A2</td>
+<td>A1</td>
+<td>A1 被复用为 WIP</td>
+</tr>
+<tr>
+<td>再 Commit 交换后</td>
+<td>A1</td>
+<td>A2</td>
+<td>A1 又是 current</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><code>alternate</code> 始终是 A1 ↔ A2，从不变；<code>root.current</code> 在两棵树之间来回切换。</p>
+</blockquote>
+<h3 id="首次渲染只有一棵树"><a href="#首次渲染只有一棵树" class="headerlink" title="首次渲染只有一棵树"></a>首次渲染只有一棵树</h3><p>首次渲染不是两棵树都提前建好。</p>
+<p>起点 <code>createRoot</code>：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> root = <span class="hljs-keyword">new</span> <span class="hljs-title class_">FiberRootNode</span>(...);<br><span class="hljs-keyword">const</span> uninitializedFiber = <span class="hljs-title function_">createHostRootFiber</span>(...);<br>root.<span class="hljs-property">current</span> = uninitializedFiber;<br>uninitializedFiber.<span class="hljs-property">stateNode</span> = root;<br></code></pre></td></tr></table></figure>
+
+<p>此时：</p>
+<ul>
+<li><code>root.current</code> 指向 HostRootFiber，只是一个根节点，不是完整树。</li>
+<li><code>HostRootFiber.alternate === null</code>。</li>
+</ul>
+<p>Render 阶段从 <code>root.current</code> 出发，调用 <code>createWorkInProgress</code>：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">let</span> workInProgress = current.<span class="hljs-property">alternate</span>;<br><span class="hljs-keyword">if</span> (workInProgress === <span class="hljs-literal">null</span>) &#123;<br>  workInProgress = <span class="hljs-title function_">createFiber</span>(...);<br>  workInProgress.<span class="hljs-property">alternate</span> = current;<br>  current.<span class="hljs-property">alternate</span> = workInProgress;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>首次渲染时 <code>current.alternate === null</code>，所以新建 WIP 根节点，并建立互相指向。然后 <code>beginWork</code> 逐层新建子 Fiber。</p>
+<p>所以：</p>
+<ul>
+<li>current 树：只有 HostRootFiber 一个节点。</li>
+<li>WIP 树：完整组件树。</li>
+<li>子节点没有 alternate。</li>
+</ul>
+<p>Commit 交换后：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js">root.<span class="hljs-property">current</span> = finishedWork;<br></code></pre></td></tr></table></figure>
+
+<p>此时才有完整的 current 树。子节点的 alternate 要等到第一次更新时才建立。</p>
+<table>
+<thead>
+<tr>
+<th>时刻</th>
+<th>current 树</th>
+<th>WIP 树</th>
+<th>alternate</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>createRoot</td>
+<td>只有 HostRootFiber</td>
+<td>不存在</td>
+<td>无</td>
+</tr>
+<tr>
+<td>Render 开始</td>
+<td>只有 HostRootFiber</td>
+<td>新建根副本</td>
+<td>根节点互相指向</td>
+</tr>
+<tr>
+<td>Render 进行中</td>
+<td>只有 HostRootFiber</td>
+<td>逐层新建子 Fiber</td>
+<td>子节点无 alternate</td>
+</tr>
+<tr>
+<td>Render 完成</td>
+<td>只有 HostRootFiber</td>
+<td>完整树</td>
+<td>只有根节点有 alternate</td>
+</tr>
+<tr>
+<td>Commit 交换后</td>
+<td>完整树</td>
+<td>只有根节点</td>
+<td>根节点仍互相指向</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>首次渲染只有 WIP 树被完整构建，current 树只是一个空根节点；Commit 交换后，WIP 树才成为完整的 current 树，双缓存从下一次更新才开始真正交替复用。</p>
+</blockquote>
+<h3 id="首次渲染后，备用的-WIP-树只有根节点"><a href="#首次渲染后，备用的-WIP-树只有根节点" class="headerlink" title="首次渲染后，备用的 WIP 树只有根节点"></a>首次渲染后，备用的 WIP 树只有根节点</h3><p>首次渲染 Commit 后：</p>
+<ul>
+<li><strong>current 树</strong>：完整组件树。</li>
+<li><strong>备用的 WIP 树</strong>：只有根节点，没有子节点。</li>
+</ul>
+<p>因为首次渲染时，current 树从未被完整构建过。初始的 current 树只是一个占位的 HostRootFiber。Render 阶段所有子节点都新建在 WIP 树上，没有对应的 current 子节点可以复用。所以旧 current 树自然没有子节点。</p>
+<p>第一次更新时，React 从新的 <code>root.current</code>（完整树）出发：</p>
+<ul>
+<li><strong>根节点</strong>：<code>current.alternate</code> 已存在，直接复用。</li>
+<li><strong>子节点</strong>：<code>current.child.alternate === null</code>，走新建分支，创建 WIP 子节点并建立 <code>alternate</code>。</li>
+</ul>
+<p>从第二次更新开始，子节点的 <code>alternate</code> 都已存在，才真正进入“两棵完整树交替复用”的状态。</p>
+<hr>
+<h2 id="六、每次渲染都会重新构建-WIP-吗"><a href="#六、每次渲染都会重新构建-WIP-吗" class="headerlink" title="六、每次渲染都会重新构建 WIP 吗"></a>六、每次渲染都会重新构建 WIP 吗</h2><p>答案是分层的：</p>
+<blockquote>
+<p><strong>每次更新都会进入 Render 阶段，都会从 <code>root.current</code> 出发构建 WIP 树。但“构建”不等于“全部新建”——绝大多数节点是复用 <code>alternate</code> 的。</strong></p>
+</blockquote>
+<p><code>createWorkInProgress</code> 的逻辑决定了大部分节点是复用的：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">let</span> workInProgress = current.<span class="hljs-property">alternate</span>;<br><span class="hljs-keyword">if</span> (workInProgress === <span class="hljs-literal">null</span>) &#123;<br>  <span class="hljs-comment">// 没有 alternate，新建</span><br>  workInProgress = <span class="hljs-title function_">createFiber</span>(...);<br>  workInProgress.<span class="hljs-property">alternate</span> = current;<br>  current.<span class="hljs-property">alternate</span> = workInProgress;<br>&#125; <span class="hljs-keyword">else</span> &#123;<br>  <span class="hljs-comment">// 有 alternate，复用</span><br>  workInProgress.<span class="hljs-property">pendingProps</span> = pendingProps;<br>  workInProgress.<span class="hljs-property">flags</span> = <span class="hljs-title class_">NoFlags</span>;<br>  workInProgress.<span class="hljs-property">subtreeFlags</span> = <span class="hljs-title class_">NoFlags</span>;<br>  workInProgress.<span class="hljs-property">deletions</span> = <span class="hljs-literal">null</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>真正新建的情况：</p>
+<table>
+<thead>
+<tr>
+<th>情况</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>首次渲染</td>
+<td>整棵 WIP 树全部新建</td>
+</tr>
+<tr>
+<td>第一次更新</td>
+<td>所有子节点新建（因为首次渲染后子节点没有 alternate）</td>
+</tr>
+<tr>
+<td>第二次更新起</td>
+<td>大部分节点复用，只有新增、type&#x2F;key 改变等才新建</td>
+</tr>
+</tbody></table>
+<h3 id="bailout：连-WIP-都不建"><a href="#bailout：连-WIP-都不建" class="headerlink" title="bailout：连 WIP 都不建"></a>bailout：连 WIP 都不建</h3><p>在 <code>beginWork</code> 里：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">if</span> (current !== <span class="hljs-literal">null</span> &amp;&amp; !<span class="hljs-title function_">includesSomeLane</span>(renderLanes, updateLanes)) &#123;<br>  <span class="hljs-keyword">if</span> ((current.<span class="hljs-property">childLanes</span> &amp; renderLanes) === <span class="hljs-title class_">NoLanes</span>) &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>  &#125;<br>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">bailoutOnAlreadyFinishedWork</span>(current, workInProgress, renderLanes);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>如果某个 Fiber 的 <code>childLanes</code> 不包含当前 renderLanes，说明子树没有任何更新需要处理，整棵子树被跳过，不会构建对应的 WIP 子节点。</p>
+<h3 id="并发模式下-WIP-可能被丢弃重建"><a href="#并发模式下-WIP-可能被丢弃重建" class="headerlink" title="并发模式下 WIP 可能被丢弃重建"></a>并发模式下 WIP 可能被丢弃重建</h3><p>React 18 并发模式下：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs text">低优先级更新开始构建 WIP<br>  ↓<br>构建到一半，时间片用完，暂停<br>  ↓<br>高优先级更新插入<br>  ↓<br>丢弃当前 WIP，重新从 root.current 构建<br>  ↓<br>处理完高优先级，再重新处理低优先级<br></code></pre></td></tr></table></figure>
+
+<p>所以更准确的说法是：</p>
+<blockquote>
+<p>每次尝试渲染都会构建 WIP，但 WIP 可能被中断、丢弃、重建。</p>
+</blockquote>
+<hr>
+<h2 id="七、更新时-WIP-是怎么创建的，怎么-diff"><a href="#七、更新时-WIP-是怎么创建的，怎么-diff" class="headerlink" title="七、更新时 WIP 是怎么创建的，怎么 diff"></a>七、更新时 WIP 是怎么创建的，怎么 diff</h2><p>这是理解 Fiber 时最容易卡住的地方。核心答案：</p>
+<blockquote>
+<p><strong>WIP 树不是 diff 的输入，而是 diff 的产物。diff 的双方是“新的 ReactElement”和“current 子 Fiber 节点”。</strong></p>
+</blockquote>
+<h3 id="常见误解"><a href="#常见误解" class="headerlink" title="常见误解"></a>常见误解</h3><p>很多人以为更新流程是：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">先基于 current 创建完整 WIP 树 → 再对比两棵树 → 找出差异<br></code></pre></td></tr></table></figure>
+
+<p>不是这样。真实流程是：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs text">组件执行 render 得到新的 ReactElement<br>  ↓<br>拿 ReactElement 和 current.child（旧 Fiber）做 diff<br>  ↓<br>根据 diff 结果，决定：<br>  ├─ 复用旧 Fiber → 克隆为 WIP<br>  └─ 不能复用 → 新建 WIP<br>  ↓<br>WIP 树在 diff 过程中被“边对比边构建”出来<br></code></pre></td></tr></table></figure>
+
+<h3 id="diff-在比什么"><a href="#diff-在比什么" class="headerlink" title="diff 在比什么"></a>diff 在比什么</h3><p>diff 发生在 <code>reconcileChildren</code> 里：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">reconcileChildren</span>(<span class="hljs-params">current, workInProgress, nextChildren, renderLanes</span>) &#123;<br>  <span class="hljs-keyword">if</span> (current === <span class="hljs-literal">null</span>) &#123;<br>    <span class="hljs-comment">// 首次挂载：不处理 alternate，不标记副作用</span><br>    workInProgress.<span class="hljs-property">child</span> = <span class="hljs-title function_">mountChildFibers</span>(<br>      workInProgress,<br>      <span class="hljs-literal">null</span>,<br>      nextChildren,<br>      renderLanes,<br>    );<br>  &#125; <span class="hljs-keyword">else</span> &#123;<br>    <span class="hljs-comment">// 更新：Diff，复用或新建，建立 alternate</span><br>    workInProgress.<span class="hljs-property">child</span> = <span class="hljs-title function_">reconcileChildFibers</span>(<br>      workInProgress,<br>      current.<span class="hljs-property">child</span>, <span class="hljs-comment">// ← 旧的 current 子 Fiber</span><br>      nextChildren, <span class="hljs-comment">// ← 组件 render 返回的新 ReactElement</span><br>      renderLanes,<br>    );<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>注意两个参数：</p>
+<ul>
+<li><code>current.child</code>：<strong>旧的 Fiber 节点</strong>，代表上一次渲染的结果。</li>
+<li><code>nextChildren</code>：<strong>新的 ReactElement</strong>，代表这次 render 想要的 UI。</li>
+</ul>
+<p>diff 就是拿这两个比。ReactElement 上有 <code>type</code> 和 <code>key</code>，Fiber 上也有 <code>elementType</code> 和 <code>key</code>，React 通过这两者判断能否复用：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">if</span> (child.<span class="hljs-property">key</span> === element.<span class="hljs-property">key</span> &amp;&amp; child.<span class="hljs-property">elementType</span> === element.<span class="hljs-property">type</span>) &#123;<br>  <span class="hljs-comment">// 可以复用</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="具体例子"><a href="#具体例子" class="headerlink" title="具体例子"></a>具体例子</h3><p>假设组件：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">function</span> <span class="hljs-title function_">App</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-keyword">const</span> [count, setCount] = <span class="hljs-title function_">useState</span>(<span class="hljs-number">0</span>);<br>  <span class="hljs-keyword">return</span> (<br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">span</span>&gt;</span>count: &#123;count&#125;<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span></span><br><span class="language-xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br>  );<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>首次渲染后，current 树：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs text">HostRoot<br>  └─ App (memoizedState: &#123;count: 0&#125;)<br>       └─ div<br>            └─ span<br>                 └─ text &quot;count: 0&quot;<br></code></pre></td></tr></table></figure>
+
+<p>点击按钮，count 变成 1，触发更新。</p>
+<ol>
+<li><strong>处理根节点</strong>：<code>createWorkInProgress(root.current)</code> → 复用旧的 HostRootFiber。</li>
+<li><strong>beginWork(App)</strong>：执行 <code>App()</code>，<code>useState</code> 返回 <code>count = 1</code>，组件返回新的 ReactElement。</li>
+<li><strong>reconcileChildren</strong>：拿新 element 和 <code>currentApp.child</code> 对比。<code>div</code> 的 type&#x2F;key 匹配，复用。</li>
+<li><strong>useFiber(currentDiv)</strong> → <code>createWorkInProgress(currentDiv)</code>。第一次更新时 <code>currentDiv.alternate === null</code>，新建 WIP div，建立 alternate。</li>
+<li><strong>继续向下</strong>：span 同样处理，文本节点 diff 后发现内容从 <code>&quot;count: 0&quot;</code> 变成 <code>&quot;count: 1&quot;</code>，标记 <code>Update</code> flag。</li>
+<li><strong>completeWork</strong>：向上冒泡 subtreeFlags。</li>
+<li><strong>Commit</strong>：Mutation 阶段发现 text 有 Update，执行 <code>commitTextUpdate</code>，真实 DOM 文本被改成 <code>&quot;count: 1&quot;</code>。</li>
+</ol>
+<h3 id="WIP-节点的“一样”和“不一样”"><a href="#WIP-节点的“一样”和“不一样”" class="headerlink" title="WIP 节点的“一样”和“不一样”"></a>WIP 节点的“一样”和“不一样”</h3><p>WIP 节点确实从 current 克隆了很多东西，但关键字段不一样：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>current Fiber</th>
+<th>WIP Fiber</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>memoizedProps</code></td>
+<td>上次渲染的 props</td>
+<td>保留旧值，供对比</td>
+</tr>
+<tr>
+<td><code>pendingProps</code></td>
+<td>——</td>
+<td>新的 props</td>
+</tr>
+<tr>
+<td><code>memoizedState</code></td>
+<td>上次的 state</td>
+<td>保留旧值</td>
+</tr>
+<tr>
+<td><code>updateQueue</code></td>
+<td>旧更新队列</td>
+<td>新的更新队列</td>
+</tr>
+<tr>
+<td><code>child</code></td>
+<td>旧子节点</td>
+<td>先复制，再被 diff 结果覆盖</td>
+</tr>
+<tr>
+<td><code>flags</code></td>
+<td>旧的副作用标记</td>
+<td>重置为 NoFlags，重新标记</td>
+</tr>
+<tr>
+<td><code>alternate</code></td>
+<td>指向 WIP</td>
+<td>指向 current</td>
+</tr>
+</tbody></table>
+<p>“一样”指的是 Fiber 节点的树形结构、<code>type</code>、<code>key</code>、<code>stateNode</code> 这些身份信息。<br>“不一样”指的是 <code>pendingProps</code>、<code>updateQueue</code>、<code>flags</code>、<code>memoizedState</code> 这些会因为新更新而变化的数据。</p>
+<blockquote>
+<p>WIP 节点的“壳”是从 current 克隆的，但“内容”来自新的 render 结果。diff 不是两棵 Fiber 树对比，而是新的 ReactElement 和 current 子 Fiber 对比。WIP 树是 diff 的产物，不是 diff 的输入。</p>
+</blockquote>
+<hr>
+<h2 id="八、第一次更新时，alternate-是怎么建立的"><a href="#八、第一次更新时，alternate-是怎么建立的" class="headerlink" title="八、第一次更新时，alternate 是怎么建立的"></a>八、第一次更新时，alternate 是怎么建立的</h2><p>首次渲染完成后，current 树的所有子节点都没有 <code>alternate</code>。</p>
+<p>第一次更新时，React 才在 Diff 过程中逐个为子节点创建 WIP 副本，并建立双向 <code>alternate</code> 关系。</p>
+<p>以 <code>App</code> 为例，<code>reconcileSingleElement</code> 匹配成功后调用 <code>useFiber</code>：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">useFiber</span>(<span class="hljs-params">fiber, pendingProps</span>) &#123;<br>  <span class="hljs-keyword">const</span> clone = <span class="hljs-title function_">createWorkInProgress</span>(fiber, pendingProps);<br>  clone.<span class="hljs-property">index</span> = <span class="hljs-number">0</span>;<br>  clone.<span class="hljs-property">sibling</span> = <span class="hljs-literal">null</span>;<br>  <span class="hljs-keyword">return</span> clone;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><code>createWorkInProgress</code> 内部：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">createWorkInProgress</span>(<span class="hljs-params">current, pendingProps</span>) &#123;<br>  <span class="hljs-keyword">let</span> workInProgress = current.<span class="hljs-property">alternate</span>;<br><br>  <span class="hljs-keyword">if</span> (workInProgress === <span class="hljs-literal">null</span>) &#123;<br>    <span class="hljs-comment">// ★ 第一次更新时走这里</span><br>    workInProgress = <span class="hljs-title function_">createFiber</span>(<br>      current.<span class="hljs-property">tag</span>,<br>      pendingProps,<br>      current.<span class="hljs-property">key</span>,<br>      current.<span class="hljs-property">mode</span>,<br>    );<br>    workInProgress.<span class="hljs-property">elementType</span> = current.<span class="hljs-property">elementType</span>;<br>    workInProgress.<span class="hljs-property">type</span> = current.<span class="hljs-property">type</span>;<br>    workInProgress.<span class="hljs-property">stateNode</span> = current.<span class="hljs-property">stateNode</span>;<br><br>    <span class="hljs-comment">// ★ 建立双向 alternate</span><br>    workInProgress.<span class="hljs-property">alternate</span> = current;<br>    current.<span class="hljs-property">alternate</span> = workInProgress;<br>  &#125; <span class="hljs-keyword">else</span> &#123;<br>    <span class="hljs-comment">// 已有 alternate，复用</span><br>    workInProgress.<span class="hljs-property">pendingProps</span> = pendingProps;<br>    workInProgress.<span class="hljs-property">flags</span> = <span class="hljs-title class_">NoFlags</span>;<br>  &#125;<br><br>  workInProgress.<span class="hljs-property">child</span> = current.<span class="hljs-property">child</span>;<br>  workInProgress.<span class="hljs-property">memoizedProps</span> = current.<span class="hljs-property">memoizedProps</span>;<br>  workInProgress.<span class="hljs-property">memoizedState</span> = current.<span class="hljs-property">memoizedState</span>;<br>  workInProgress.<span class="hljs-property">updateQueue</span> = current.<span class="hljs-property">updateQueue</span>;<br><br>  <span class="hljs-keyword">return</span> workInProgress;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>因为 <code>App</code> 的 <code>current.alternate</code> 是 <code>null</code>，所以：</p>
+<ol>
+<li>新建一个 WIP App Fiber；</li>
+<li>复制 <code>elementType</code>、<code>type</code>、<code>stateNode</code>；</li>
+<li>建立双向指向：<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs js">workInProgress.<span class="hljs-property">alternate</span> = current;<br>current.<span class="hljs-property">alternate</span> = workInProgress;<br></code></pre></td></tr></table></figure></li>
+<li>复制 <code>child</code>、<code>memoizedProps</code>、<code>memoizedState</code> 等状态。</li>
+</ol>
+<p>接着 <code>beginWork</code> 进入 WIP App，继续对 <code>div</code>、<code>text</code> 做同样处理，逐个建立 <code>alternate</code>。</p>
+<table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>根节点</th>
+<th>子节点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>首次渲染</td>
+<td>current.alternate 为 null，新建 WIP 根并建立 alternate</td>
+<td>alternate 全为 null，全部新建</td>
+</tr>
+<tr>
+<td>第一次更新</td>
+<td>根有 alternate，直接复用</td>
+<td>alternate 为 null，新建 WIP 并建立 alternate</td>
+</tr>
+<tr>
+<td>第二次更新</td>
+<td>根有 alternate，直接复用</td>
+<td>子节点已有 alternate，直接复用</td>
+</tr>
+</tbody></table>
+<p>从第二次更新开始，子节点的 <code>alternate</code> 都已存在，<code>createWorkInProgress</code> 走 else 分支，直接复用旧 WIP 节点。</p>
+<hr>
+<h2 id="九、两阶段渲染"><a href="#九、两阶段渲染" class="headerlink" title="九、两阶段渲染"></a>九、两阶段渲染</h2><h3 id="整体流程"><a href="#整体流程" class="headerlink" title="整体流程"></a>整体流程</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs text">触发更新<br>  ↓<br>调度（Scheduler + Lane）<br>  ↓<br>Render 阶段：可中断，构建 WIP 树，diff，打 flags<br>  ↓<br>Commit 阶段：同步不可中断，操作真实 DOM，执行生命周期<br>  ↓<br>切换 current<br></code></pre></td></tr></table></figure>
+
+<h3 id="Render-阶段"><a href="#Render-阶段" class="headerlink" title="Render 阶段"></a>Render 阶段</h3><p>核心任务：构建 workInProgress 树，做 diff，打 flags。<strong>不碰真实 DOM。</strong></p>
+<p>工作循环：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs text">workLoopConcurrent<br>  → performUnitOfWork<br>      → beginWork：向下走<br>          对比新旧 Element，创建/复用 Fiber，打 flags<br>          有 child 就继续 child<br>      → completeWork：向上走<br>          子节点处理完后执行<br>          创建/更新 DOM，收集 subtreeFlags<br>          有 sibling 就处理 sibling，否则 return 到父级<br>  → shouldYield() 检查是否让出主线程<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><code>beginWork</code>：处理当前 Fiber，执行组件 render，diff 子节点。</li>
+<li><code>completeWork</code>：创建&#x2F;更新 DOM 实例，把子 DOM 挂到父 DOM 下，向上冒泡 <code>subtreeFlags</code>。</li>
+<li>每处理完一个 Fiber，检查 <code>shouldYield()</code>，时间片用完就暂停。</li>
+</ul>
+<p>注意：<code>completeWork</code> 里会调用 <code>createInstance</code> 创建 DOM 实例，但<strong>不挂载到页面</strong>，只是存在于内存中，挂在 Fiber 的 <code>stateNode</code> 上。</p>
+<h3 id="Commit-阶段"><a href="#Commit-阶段" class="headerlink" title="Commit 阶段"></a>Commit 阶段</h3><p>核心任务：根据 flags 真正操作真实 DOM，同步不可中断。</p>
+<p>三个子阶段：</p>
+<table>
+<thead>
+<tr>
+<th>子阶段</th>
+<th>做什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>before mutation</td>
+<td><code>getSnapshotBeforeUpdate</code></td>
+</tr>
+<tr>
+<td>mutation</td>
+<td>DOM 增删改移，<code>componentWillUnmount</code>，清理 ref</td>
+</tr>
+<tr>
+<td>layout</td>
+<td><code>componentDidMount</code>、<code>componentDidUpdate</code>、<code>useLayoutEffect</code>、绑定 ref</td>
+</tr>
+</tbody></table>
+<p>完成后：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js">root.<span class="hljs-property">current</span> = finishedWork; <span class="hljs-comment">// WIP 变 current</span><br></code></pre></td></tr></table></figure>
+
+<p><code>useEffect</code> 在 commit 后异步调度，不阻塞浏览器绘制。</p>
+<hr>
+<h2 id="十、真实-DOM-到底在哪个阶段修改"><a href="#十、真实-DOM-到底在哪个阶段修改" class="headerlink" title="十、真实 DOM 到底在哪个阶段修改"></a>十、真实 DOM 到底在哪个阶段修改</h2><p>一个常见误解：<code>completeWork</code> 里创建了 DOM，是不是就改了真实 DOM？</p>
+<p>不是。</p>
+<ul>
+<li><strong>Render 阶段</strong>：<code>completeWork</code> 调用 <code>createInstance</code> 创建 DOM 实例，但不挂载。它只是内存中的实例，不在文档里。</li>
+<li><strong>Commit 阶段</strong>：真正修改真实 DOM。</li>
+</ul>
+<p>Commit 三个子阶段的 DOM 操作：</p>
+<table>
+<thead>
+<tr>
+<th>子阶段</th>
+<th>DOM 操作</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>before mutation</td>
+<td>不碰 DOM</td>
+</tr>
+<tr>
+<td>mutation</td>
+<td><code>commitPlacement</code> 插入、<code>commitWork</code> 更新、<code>commitDeletion</code> 删除</td>
+</tr>
+<tr>
+<td>layout</td>
+<td>DOM 已改完，执行生命周期、ref</td>
+</tr>
+</tbody></table>
+<p>对应源码：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">commitMutationEffects</span>(<span class="hljs-params">root, finishedWork, lanes</span>) &#123;<br>  <span class="hljs-keyword">if</span> (flags &amp; <span class="hljs-title class_">Placement</span>) <span class="hljs-title function_">commitPlacement</span>(finishedWork);<br>  <span class="hljs-keyword">if</span> (flags &amp; <span class="hljs-title class_">Update</span>) <span class="hljs-title function_">commitWork</span>(finishedWork);<br>  <span class="hljs-keyword">if</span> (flags &amp; <span class="hljs-title class_">Deletion</span>) <span class="hljs-title function_">commitDeletion</span>(...);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>为什么这样设计？</p>
+<p>因为 Render 阶段可能被暂停、恢复、甚至丢弃重来。如果在这个阶段改真实 DOM，一旦任务被中断或丢弃，页面就会处于不一致的中间状态，用户会看到闪烁或错乱。</p>
+<p>Commit 阶段同步、一气呵成，只有在这里改 DOM，才能保证用户看到的是要么旧状态，要么新状态，不会看到中间态。</p>
+<h3 id="为什么-render-可中断，commit-不可中断"><a href="#为什么-render-可中断，commit-不可中断" class="headerlink" title="为什么 render 可中断，commit 不可中断"></a>为什么 render 可中断，commit 不可中断</h3><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>render</th>
+<th>commit</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>做什么</td>
+<td>计算、diff、打 flags</td>
+<td>操作真实 DOM、执行生命周期</td>
+</tr>
+<tr>
+<td>是否碰 DOM</td>
+<td>不碰</td>
+<td>碰</td>
+</tr>
+<tr>
+<td>能否中断</td>
+<td>能</td>
+<td>不能</td>
+</tr>
+<tr>
+<td>中断后果</td>
+<td>丢弃 WIP，重新 render</td>
+<td>UI 不一致、状态错乱、无法回滚</td>
+</tr>
+<tr>
+<td>本质</td>
+<td>草稿，可重来</td>
+<td>发布，必须原子</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>render 只算不改，算错可重来；commit 要改真实 DOM，改到一半无法回滚，必须一次性保证 UI 一致。</p>
+</blockquote>
+<hr>
+<h2 id="十一、完整串联：从更新到-UI-更新"><a href="#十一、完整串联：从更新到-UI-更新" class="headerlink" title="十一、完整串联：从更新到 UI 更新"></a>十一、完整串联：从更新到 UI 更新</h2><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs text">触发更新（setState / useState）<br>  ↓<br>调度（Scheduler + Lane 分配优先级）<br>  ↓<br>Render 阶段（可中断）<br>  ├─ createWorkInProgress：基于 current.alternate 创建/复用 WIP 根<br>  ├─ beginWork：从根向下<br>  │    ├─ 执行组件 render，得到 ReactElement<br>  │    ├─ reconcileChildren：拿新 ReactElement 和 current.child 做 diff<br>  │    │    ├─ 能复用 → useFiber → createWorkInProgress<br>  │    │    │    ├─ 有 alternate → 复用<br>  │    │    │    └─ 无 alternate → 新建 + 建立 alternate<br>  │    │    └─ 不能复用 → createFiberFromElement → new FiberNode + Placement<br>  │    ├─ 打 flags（Placement / Update / Deletion）<br>  │    ├─ childLanes 不匹配 → bailout 跳过子树<br>  │    └─ 有 child 继续向下<br>  ├─ completeWork：从底向上<br>  │    ├─ createInstance 创建 DOM（未挂载）<br>  │    ├─ bubbleProperties 向上冒泡 subtreeFlags<br>  │    └─ 有 sibling 处理 sibling，否则 return 到父级<br>  └─ shouldYield() 检查是否让出主线程<br>  ↓<br>  WIP 树构建完成，flags 全部就绪<br>  ↓<br>Commit 阶段（同步不可中断）<br>  ├─ Before Mutation：getSnapshotBeforeUpdate<br>  ├─ Mutation：遍历 flags，执行 Placement / Update / Deletion<br>  ├─ Layout：componentDidMount/Update、useLayoutEffect、ref<br>  └─ root.current = finishedWork   ★ WIP 变 current<br>  ↓<br>  useEffect 异步调度（Passive flags）<br>  ↓<br>  浏览器绘制<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="十二、常见问题"><a href="#十二、常见问题" class="headerlink" title="十二、常见问题"></a>十二、常见问题</h2><p><strong>Fiber 节点怎么生成？</strong><br>Render 阶段 <code>beginWork</code> 中，由 <code>createFiberFromElement</code> &#x2F; <code>useFiber</code> 创建或复用。</p>
+<p><strong>每次渲染都会重新构建 WIP 吗？</strong><br>每次更新都会进入 Render 阶段并尝试构建 WIP，但大部分节点通过 <code>alternate</code> 复用，只有新增、无法复用的节点才新建。bailout 会跳过无更新的子树。</p>
+<p><strong>更新时 WIP 是根据 current 创建的吗？怎么 diff？</strong><br>WIP 的“壳”从 current 克隆，但“内容”来自新的 render 结果。diff 是新的 ReactElement 和 current 子 Fiber 对比，不是两棵 Fiber 树对比。WIP 树是 diff 的产物。</p>
+<p><strong>第一次更新时 alternate 怎么建立？</strong><br>在 <code>reconcileChildren</code> → <code>reconcileSingleElement</code> → <code>useFiber</code> → <code>createWorkInProgress</code> 中，因为 <code>current.alternate === null</code>，走新建分支，创建 WIP 副本，复制状态，然后手动建立双向指向。</p>
+<p><strong>真实 DOM 何时修改？</strong><br>Commit 阶段的 Mutation 子阶段。</p>
+<p><strong><code>completeWork</code> 创建的 DOM 挂载了吗？</strong><br>没有，只是内存中的实例，Mutation 阶段才挂载。</p>
+<p><strong>current 和 WIP 如何切换？</strong><br><code>root.current = finishedWork</code>。</p>
+<p><strong>交换后 alternate 要处理吗？</strong><br>不用，alternate 是对称无方向的，始终互相指向。</p>
+<p><strong>首次渲染是两棵树吗？</strong><br>不是，current 树只有根节点，WIP 树逐层构建。首次渲染后，备用的 WIP 树只有根节点，没有子节点。</p>
+<p><strong>子节点什么时候有 alternate？</strong><br>第一次更新时建立。</p>
+<p><strong>双缓存什么时候真正生效？</strong><br>从第二次更新开始，两棵完整树交替复用。</p>
+<p><strong>flags 有什么用？</strong><br>Render 阶段给 Commit 阶段留的施工清单，标记哪些节点要插入、更新、删除。<code>subtreeFlags</code> 用于快速跳过无副作用的子树。</p>
+<p><strong>为什么 render 可中断？</strong><br>链表遍历 + 全局 workInProgress + shouldYield。</p>
+<p><strong>为什么 commit 不可中断？</strong><br>改真实 DOM 无法回滚，必须原子。</p>
+<hr>
+<h2 id="十三、总结"><a href="#十三、总结" class="headerlink" title="十三、总结"></a>十三、总结</h2><p>Fiber 把渲染拆成可中断的工作单元。</p>
+<p>Render 阶段只算不改，在内存中构建 WIP 树，通过 diff 新的 ReactElement 和 current 子 Fiber 决定复用还是新建，并打上 flags；Commit 阶段同步改真实 DOM，根据 flags 执行对应操作，最后交换 <code>root.current</code>，让 WIP 树成为新的 current 树。</p>
+<p>两棵树通过 <code>alternate</code> 双向指向，交替复用。首次渲染只完整构建一棵树，第一次更新为子节点建立 alternate，第二次更新起才真正双树交替。</p>
+<p>理解这条主线，再去看 React 的并发特性、Suspense、useTransition，就会清晰很多。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/React/" class="category-chain-item">React</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/React/" class="print-no-link">#React</a>
+      
+        <a href="/tags/Fiber/" class="print-no-link">#Fiber</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>【React】深入理解 React Fiber</div>
+      <div>http://example.com/2025/12/10/React/【React】深入理解 React Fiber/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年12月10日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/12/28/%E6%A1%8C%E9%9D%A2%E7%AB%AF/Electron%E5%85%A5%E9%97%A8/" title="Electron入门">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Electron入门</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/11/10/%E5%89%8D%E7%AB%AF/%E3%80%90%E5%BE%AE%E5%89%8D%E7%AB%AF%E3%80%91MicroApp%20%E5%85%A5%E9%97%A8%E5%AE%9E%E8%B7%B5/" title="【微前端】MicroApp 入门实践">
+                        <span class="hidden-mobile">【微前端】MicroApp 入门实践</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

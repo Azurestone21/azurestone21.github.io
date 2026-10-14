@@ -1,0 +1,739 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="移动端300ms延迟一、原因根源：双击缩放（Double Tap to Zoom）早期移动端浏览器（iOS Safari 首开先河）为了判断用户是单击还是双击缩放，在收到第一次 click 后会等待约 300ms：  如果 300ms 内没有第二次点击 → 判定为单击，触发 click 如果 300ms 内来了第二次点击 → 判定为双击，执行页面缩放，不触发 click  所以 click 事件被">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【移动端】移动端300ms延迟">
+<meta property="og:url" content="http://example.com/2024/06/01/%E7%A7%BB%E5%8A%A8%E7%AB%AF/%E7%A7%BB%E5%8A%A8%E7%AB%AF300ms%E5%BB%B6%E8%BF%9F/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="移动端300ms延迟一、原因根源：双击缩放（Double Tap to Zoom）早期移动端浏览器（iOS Safari 首开先河）为了判断用户是单击还是双击缩放，在收到第一次 click 后会等待约 300ms：  如果 300ms 内没有第二次点击 → 判定为单击，触发 click 如果 300ms 内来了第二次点击 → 判定为双击，执行页面缩放，不触发 click  所以 click 事件被">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-06-01T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-14T14:26:02.815Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="移动端">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>【移动端】移动端300ms延迟 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">【移动端】移动端300ms延迟</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-06-01 10:00" pubdate>
+          2024年6月1日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          10 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">【移动端】移动端300ms延迟</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="移动端300ms延迟"><a href="#移动端300ms延迟" class="headerlink" title="移动端300ms延迟"></a>移动端300ms延迟</h1><h2 id="一、原因"><a href="#一、原因" class="headerlink" title="一、原因"></a>一、原因</h2><h3 id="根源：双击缩放（Double-Tap-to-Zoom）"><a href="#根源：双击缩放（Double-Tap-to-Zoom）" class="headerlink" title="根源：双击缩放（Double Tap to Zoom）"></a>根源：双击缩放（Double Tap to Zoom）</h3><p>早期移动端浏览器（iOS Safari 首开先河）为了判断用户是<strong>单击</strong>还是<strong>双击缩放</strong>，在收到第一次 <code>click</code> 后会等待约 <strong>300ms</strong>：</p>
+<ul>
+<li>如果 300ms 内没有第二次点击 → 判定为单击，触发 <code>click</code></li>
+<li>如果 300ms 内来了第二次点击 → 判定为双击，执行页面缩放，不触发 <code>click</code></li>
+</ul>
+<p>所以 <code>click</code> 事件被延迟了 300ms 才触发。</p>
+<h3 id="为什么是-300ms？"><a href="#为什么是-300ms？" class="headerlink" title="为什么是 300ms？"></a>为什么是 300ms？</h3><p>这是苹果当年定的经验值，接近人类双击的时间间隔上限。后来 Android 等浏览器也跟随了这个行为。</p>
+<h3 id="触发条件"><a href="#触发条件" class="headerlink" title="触发条件"></a>触发条件</h3><ul>
+<li>页面<strong>允许缩放</strong>（viewport 里没有禁用缩放，或有 <code>user-scalable=yes</code>）</li>
+<li>浏览器认为该区域可能触发双击缩放</li>
+</ul>
+<p>如果页面明确禁止缩放，浏览器就无需等待判断，300ms 延时自然消失。</p>
+<hr>
+<h2 id="二、处理方法"><a href="#二、处理方法" class="headerlink" title="二、处理方法"></a>二、处理方法</h2><h3 id="方案-1：禁用缩放（最简单，但有副作用）"><a href="#方案-1：禁用缩放（最简单，但有副作用）" class="headerlink" title="方案 1：禁用缩放（最简单，但有副作用）"></a>方案 1：禁用缩放（最简单，但有副作用）</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">meta</span></span><br><span class="hljs-tag">  <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;viewport&quot;</span></span><br><span class="hljs-tag">  <span class="hljs-attr">content</span>=<span class="hljs-string">&quot;width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no&quot;</span></span><br><span class="hljs-tag">/&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>原理：告诉浏览器页面不可缩放，无需等待双击判断。</p>
+<p>优点：一行搞定。<br>缺点：<strong>牺牲了用户缩放能力，无障碍性差</strong>，iOS 10+ 后 Safari 对 <code>user-scalable=no</code> 的支持也变弱了。</p>
+<h3 id="方案-2：CSS-touch-action（现代推荐）"><a href="#方案-2：CSS-touch-action（现代推荐）" class="headerlink" title="方案 2：CSS touch-action（现代推荐）"></a>方案 2：CSS <code>touch-action</code>（现代推荐）</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-comment">/* 只禁止双击缩放，保留其他手势 */</span><br><span class="hljs-selector-tag">button</span>,<br><span class="hljs-selector-tag">a</span>,<br><span class="hljs-selector-class">.clickable</span> &#123;<br>  <span class="hljs-attribute">touch-action</span>: manipulation;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>原理：<code>touch-action: manipulation</code> 告诉浏览器该元素只允许平移和缩放手势，<strong>禁止双击缩放</strong>，从而消除 300ms 延时。</p>
+<p>优点：不影响页面整体缩放，精准作用于可点击元素，兼容性好（现代浏览器均支持）。<br>缺点：老安卓（Android 4.x 以下）不支持。</p>
+<h3 id="方案-3：FastClick-库（历史方案）"><a href="#方案-3：FastClick-库（历史方案）" class="headerlink" title="方案 3：FastClick 库（历史方案）"></a>方案 3：FastClick 库（历史方案）</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">import</span> <span class="hljs-title class_">FastClick</span> <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;fastclick&quot;</span>;<br><span class="hljs-title class_">FastClick</span>.<span class="hljs-title function_">attach</span>(<span class="hljs-variable language_">document</span>.<span class="hljs-property">body</span>);<br></code></pre></td></tr></table></figure>
+
+<p>原理：监听 <code>touchend</code> 事件，在检测到是点击（而非滑动）时，<strong>手动立即触发一次 <code>click</code></strong>，并阻止浏览器 300ms 后原生触发的 <code>click</code>，避免重复。</p>
+<p>优点：曾经兼容性最好，覆盖老设备。<br>缺点：</p>
+<ul>
+<li>已停止维护（作者推荐用 <code>touch-action</code>）</li>
+<li>可能引发“点透”问题（touch 事件穿透到下层元素）</li>
+<li>增加体积和复杂度</li>
+</ul>
+<h3 id="方案-4：用-touch-事件代替-click"><a href="#方案-4：用-touch-事件代替-click" class="headerlink" title="方案 4：用 touch 事件代替 click"></a>方案 4：用 touch 事件代替 click</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs js">element.<span class="hljs-title function_">addEventListener</span>(<span class="hljs-string">&quot;touchend&quot;</span>, <span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> &#123;<br>  e.<span class="hljs-title function_">preventDefault</span>();<br>  <span class="hljs-comment">// 处理点击逻辑</span><br>&#125;);<br></code></pre></td></tr></table></figure>
+
+<p>原理：<code>touchend</code> 没有 300ms 延时，直接响应。</p>
+<p>缺点：</p>
+<ul>
+<li>需要自己区分点击和滑动（否则滑动时也会误触发）</li>
+<li><code>preventDefault</code> 可能影响滚动等行为</li>
+<li>代码侵入性强，不推荐大范围使用</li>
+</ul>
+<h3 id="方案-5：指针事件-pointerdown"><a href="#方案-5：指针事件-pointerdown" class="headerlink" title="方案 5：指针事件 pointerdown"></a>方案 5：指针事件 <code>pointerdown</code></h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js">element.<span class="hljs-title function_">addEventListener</span>(<span class="hljs-string">&quot;pointerdown&quot;</span>, handler);<br></code></pre></td></tr></table></figure>
+
+<p><code>pointerdown</code> 触发时机早，无延时，且统一了鼠标&#x2F;触摸&#x2F;触控笔。但同样需要处理滑动误触。</p>
+<hr>
+<h2 id="三、方案对比与选型"><a href="#三、方案对比与选型" class="headerlink" title="三、方案对比与选型"></a>三、方案对比与选型</h2><table>
+<thead>
+<tr>
+<th>方案</th>
+<th>原理</th>
+<th>兼容性</th>
+<th>副作用</th>
+<th>推荐度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>禁用缩放</td>
+<td>让浏览器无需判断</td>
+<td>好</td>
+<td>牺牲缩放、无障碍差</td>
+<td>中</td>
+</tr>
+<tr>
+<td><code>touch-action: manipulation</code></td>
+<td>禁止双击缩放</td>
+<td>现代浏览器好</td>
+<td>几乎无</td>
+<td>⭐ 首选</td>
+</tr>
+<tr>
+<td>FastClick</td>
+<td>手动触发 click</td>
+<td>极好（含老设备）</td>
+<td>点透、已停维护</td>
+<td>仅老项目</td>
+</tr>
+<tr>
+<td>touchend</td>
+<td>绕过 click</td>
+<td>好</td>
+<td>需处理滑动、侵入强</td>
+<td>特定场景</td>
+</tr>
+<tr>
+<td>pointerdown</td>
+<td>更早触发</td>
+<td>现代浏览器</td>
+<td>需处理滑动</td>
+<td>特定场景</td>
+</tr>
+</tbody></table>
+<p><strong>当前最佳实践</strong>：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-comment">/* 全局给可点击元素加 */</span><br><span class="hljs-selector-tag">a</span>,<br><span class="hljs-selector-tag">button</span>,<br><span class="hljs-selector-tag">input</span>,<br><span class="hljs-selector-tag">select</span>,<br><span class="hljs-selector-tag">textarea</span>,<br><span class="hljs-selector-attr">[role=<span class="hljs-string">&quot;button&quot;</span>]</span> &#123;<br>  <span class="hljs-attribute">touch-action</span>: manipulation;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>如果还要兼容很老的安卓设备，可以再叠加 FastClick 兜底。</p>
+<hr>
+<h2 id="四、延伸：300ms-延时还存在吗？"><a href="#四、延伸：300ms-延时还存在吗？" class="headerlink" title="四、延伸：300ms 延时还存在吗？"></a>四、延伸：300ms 延时还存在吗？</h2><ul>
+<li><strong>iOS Safari</strong>：iOS 9.3 后，如果 viewport 设置了 <code>width=device-width</code>，即使不禁用缩放，也不再强制 300ms 延时（苹果优化了判断逻辑）。</li>
+<li><strong>Chrome for Android</strong>：Chrome 32+ 在 viewport 设置 <code>width=device-width</code> 时已移除 300ms 延时。</li>
+<li><strong>现代浏览器</strong>：只要 viewport 合理（<code>width=device-width</code>），300ms 延时基本已消失。</li>
+</ul>
+<p>所以现在这个问题更多是<strong>历史遗留 + 老设备兼容</strong>，新项目通常只需加 <code>touch-action: manipulation</code> 即可，不必再引入 FastClick。</p>
+<hr>
+<h2 id="五、常见坑点"><a href="#五、常见坑点" class="headerlink" title="五、常见坑点"></a>五、常见坑点</h2><ol>
+<li><strong>FastClick 的“点透”</strong>：touch 事件触发后，浏览器还会派发一次 click 到下层元素，导致“穿透点击”。解决：<code>e.preventDefault()</code> 或延迟显示下层元素。</li>
+<li><strong><code>user-scalable=no</code> 在 iOS 10+ 失效</strong>：Safari 出于无障碍考虑不再完全遵守，需配合 <code>touch-action</code>。</li>
+<li><strong><code>touch-action</code> 要加在具体可点击元素上</strong>，加在 <code>body</code> 上部分浏览器不生效。</li>
+<li><strong>不要全局用 <code>touchend</code> 替代 click</strong>，会破坏表单、链接等原生行为。</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%A7%BB%E5%8A%A8%E7%AB%AF/" class="category-chain-item">移动端</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%A7%BB%E5%8A%A8%E7%AB%AF/" class="print-no-link">#移动端</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>【移动端】移动端300ms延迟</div>
+      <div>http://example.com/2024/06/01/移动端/移动端300ms延迟/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年6月1日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/06/01/TypeScript/TS%20%E5%86%85%E7%BD%AE%E5%B7%A5%E5%85%B7%E7%B1%BB%E5%9E%8B/" title="TS 内置工具类型">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">TS 内置工具类型</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/06/01/%E7%A7%BB%E5%8A%A8%E7%AB%AF/%E7%A7%BB%E5%8A%A8%E7%AB%AF%E9%80%82%E9%85%8D/" title="【移动端】移动端适配">
+                        <span class="hidden-mobile">【移动端】移动端适配</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

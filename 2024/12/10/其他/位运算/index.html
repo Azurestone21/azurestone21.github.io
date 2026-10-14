@@ -1,0 +1,789 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="位运算1. 二进制与补码基础位运算直接对整数的二进制位进行操作。理解位运算，首先要懂二进制和补码。 1.1 二进制表示以 8 位为例： 1235  &#x3D; 0000 01013  &#x3D; 0000 0011-5 &#x3D; 1111 1011   &#x2F;&#x2F; 补码表示  每个位从右往左依次是 (2^0, 2^1, 2^2, \dots)。 例如： 1231101 &#x3D; 1×2³ + 1×2² + 0×2¹ + 1×2⁰">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【位运算】">
+<meta property="og:url" content="http://example.com/2024/12/10/%E5%85%B6%E4%BB%96/%E4%BD%8D%E8%BF%90%E7%AE%97/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="位运算1. 二进制与补码基础位运算直接对整数的二进制位进行操作。理解位运算，首先要懂二进制和补码。 1.1 二进制表示以 8 位为例： 1235  &#x3D; 0000 01013  &#x3D; 0000 0011-5 &#x3D; 1111 1011   &#x2F;&#x2F; 补码表示  每个位从右往左依次是 (2^0, 2^1, 2^2, \dots)。 例如： 1231101 &#x3D; 1×2³ + 1×2² + 0×2¹ + 1×2⁰">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-12-09T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-14T14:26:02.615Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="位运算">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>【位运算】 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">【位运算】</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-12-10 00:00" pubdate>
+          2024年12月10日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          11 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">【位运算】</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="位运算"><a href="#位运算" class="headerlink" title="位运算"></a>位运算</h1><h2 id="1-二进制与补码基础"><a href="#1-二进制与补码基础" class="headerlink" title="1. 二进制与补码基础"></a>1. 二进制与补码基础</h2><p>位运算直接对整数的<strong>二进制位</strong>进行操作。理解位运算，首先要懂二进制和补码。</p>
+<h3 id="1-1-二进制表示"><a href="#1-1-二进制表示" class="headerlink" title="1.1 二进制表示"></a>1.1 二进制表示</h3><p>以 8 位为例：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs text">5  = 0000 0101<br>3  = 0000 0011<br>-5 = 1111 1011   // 补码表示<br></code></pre></td></tr></table></figure>
+
+<p>每个位从右往左依次是 (2^0, 2^1, 2^2, \dots)。</p>
+<p>例如：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs text">1101 = 1×2³ + 1×2² + 0×2¹ + 1×2⁰<br>     = 8 + 4 + 0 + 1<br>     = 13<br></code></pre></td></tr></table></figure>
+
+<h3 id="1-2-补码"><a href="#1-2-补码" class="headerlink" title="1.2 补码"></a>1.2 补码</h3><p>计算机中有符号整数通常用<strong>补码</strong>表示：</p>
+<ul>
+<li>正数：正常二进制。</li>
+<li>负数：对应正数<strong>取反加一</strong>。</li>
+<li>最高位是符号位：0 表示正，1 表示负。</li>
+</ul>
+<p>8 位有符号整数范围：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">-128 ~ 127<br></code></pre></td></tr></table></figure>
+
+<p>32 位 <code>int</code> 范围：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">-2^31 ~ 2^31 - 1<br></code></pre></td></tr></table></figure>
+
+<p>以 8 位下的 <code>-5</code> 为例：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs text">5 的二进制： 0000 0101<br>取反：       1111 1010<br>加 1：       1111 1011<br></code></pre></td></tr></table></figure>
+
+<p>所以：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">-5 的 8 位补码 = 1111 1011<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="2-常见位运算符"><a href="#2-常见位运算符" class="headerlink" title="2. 常见位运算符"></a>2. 常见位运算符</h2><table>
+<thead>
+<tr>
+<th>运算符</th>
+<th>名称</th>
+<th>规则</th>
+<th>例子</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>&amp;</code></td>
+<td>按位与</td>
+<td>都为 1 才为 1</td>
+<td><code>5 &amp; 3 = 1</code></td>
+</tr>
+<tr>
+<td><code>|</code></td>
+<td>按位或</td>
+<td>有一个 1 就为 1</td>
+<td><code>5 | 3 = 7</code></td>
+</tr>
+<tr>
+<td><code>^</code></td>
+<td>按位异或</td>
+<td>不同为 1，相同为 0</td>
+<td><code>5 ^ 3 = 6</code></td>
+</tr>
+<tr>
+<td><code>~</code></td>
+<td>按位取反</td>
+<td>0 变 1，1 变 0</td>
+<td><code>~5 = -6</code></td>
+</tr>
+<tr>
+<td><code>&lt;&lt;</code></td>
+<td>左移</td>
+<td>右边补 0，通常等于乘<code>2^n</code></td>
+<td><code>5 &lt;&lt; 1 = 10</code></td>
+</tr>
+<tr>
+<td><code>&gt;&gt;</code></td>
+<td>右移</td>
+<td>左边补符号位，通常等于除<code>2^n</code></td>
+<td><code>5 &gt;&gt; 1 = 2</code></td>
+</tr>
+<tr>
+<td><code>&gt;&gt;&gt;</code></td>
+<td>无符号右移</td>
+<td>左边补 0</td>
+<td>Java&#x2F;JS 有</td>
+</tr>
+</tbody></table>
+<h3 id="运算示例"><a href="#运算示例" class="headerlink" title="运算示例"></a>运算示例</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs text">5 = 0101<br>3 = 0011<br><br>5 &amp; 3 = 0001 = 1<br>5 | 3 = 0111 = 7<br>5 ^ 3 = 0110 = 6<br>~5    = ...11111010 = -6<br>5 &lt;&lt; 1 = 1010 = 10<br>5 &gt;&gt; 1 = 0010 = 2<br></code></pre></td></tr></table></figure>
+
+<p>注意：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">~x = -x - 1<br></code></pre></td></tr></table></figure>
+
+<p>例如 <code>~5 = -6</code>，<code>~0 = -1</code>。</p>
+<hr>
+<h2 id="3-如何计算一个数的二进制"><a href="#3-如何计算一个数的二进制" class="headerlink" title="3. 如何计算一个数的二进制"></a>3. 如何计算一个数的二进制</h2><h3 id="3-1-正数：除-2-取余法"><a href="#3-1-正数：除-2-取余法" class="headerlink" title="3.1 正数：除 2 取余法"></a>3.1 正数：除 2 取余法</h3><p>以 <code>13</code> 为例：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs text">13 ÷ 2 = 6  余 1<br> 6 ÷ 2 = 3  余 0<br> 3 ÷ 2 = 1  余 1<br> 1 ÷ 2 = 0  余 1<br></code></pre></td></tr></table></figure>
+
+<p>把余数从下往上读：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">13 = 1101<br></code></pre></td></tr></table></figure>
+
+<p>如果要求固定 8 位，补前导零：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">13 = 0000 1101<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-2-从高位到低位判断"><a href="#3-2-从高位到低位判断" class="headerlink" title="3.2 从高位到低位判断"></a>3.2 从高位到低位判断</h3><p>以 <code>13</code> 为例：</p>
+<ul>
+<li>8 够减：写 1，剩 5</li>
+<li>4 够减：写 1，剩 1</li>
+<li>2 不够：写 0</li>
+<li>1 够减：写 1</li>
+</ul>
+<p>结果：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">1101<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-3-负数：补码"><a href="#3-3-负数：补码" class="headerlink" title="3.3 负数：补码"></a>3.3 负数：补码</h3><p>以 8 位下的 <code>-5</code> 为例：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs text">5 的二进制： 0000 0101<br>取反：       1111 1010<br>加 1：       1111 1011<br></code></pre></td></tr></table></figure>
+
+<p>所以：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">-5 的 8 位补码 = 1111 1011<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-4-编程实现"><a href="#3-4-编程实现" class="headerlink" title="3.4 编程实现"></a>3.4 编程实现</h3><h4 id="JavaScript"><a href="#JavaScript" class="headerlink" title="JavaScript"></a>JavaScript</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// 输出二进制，width 默认 32</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">toBinary</span>(<span class="hljs-params">n, width = <span class="hljs-number">32</span></span>) &#123;<br>  <span class="hljs-keyword">if</span> (width === <span class="hljs-number">32</span>) &#123;<br>    <span class="hljs-keyword">return</span> (n &gt;&gt;&gt; <span class="hljs-number">0</span>).<span class="hljs-title function_">toString</span>(<span class="hljs-number">2</span>).<span class="hljs-title function_">padStart</span>(<span class="hljs-number">32</span>, <span class="hljs-string">&quot;0&quot;</span>);<br>  &#125;<br>  <span class="hljs-keyword">const</span> mask = <span class="hljs-number">2</span> ** width - <span class="hljs-number">1</span>;<br>  <span class="hljs-keyword">return</span> (n &amp; mask).<span class="hljs-title function_">toString</span>(<span class="hljs-number">2</span>).<span class="hljs-title function_">padStart</span>(width, <span class="hljs-string">&quot;0&quot;</span>);<br>&#125;<br><br><span class="hljs-comment">// 每 4 位加空格打印</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">printBits</span>(<span class="hljs-params">n, width = <span class="hljs-number">32</span></span>) &#123;<br>  <span class="hljs-keyword">const</span> s = <span class="hljs-title function_">toBinary</span>(n, width);<br>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(s.<span class="hljs-title function_">replace</span>(<span class="hljs-regexp">/(.&#123;4&#125;)/g</span>, <span class="hljs-string">&quot;$1 &quot;</span>).<span class="hljs-title function_">trim</span>());<br>&#125;<br><br><span class="hljs-comment">// 测试</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">toBinary</span>(<span class="hljs-number">13</span>, <span class="hljs-number">8</span>)); <span class="hljs-comment">// 00001101</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">toBinary</span>(-<span class="hljs-number">5</span>, <span class="hljs-number">8</span>)); <span class="hljs-comment">// 11111011</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">toBinary</span>(-<span class="hljs-number">5</span>, <span class="hljs-number">32</span>)); <span class="hljs-comment">// 11111111111111111111111111111011</span><br><br><span class="hljs-title function_">printBits</span>(<span class="hljs-number">13</span>, <span class="hljs-number">8</span>); <span class="hljs-comment">// 0000 1101</span><br><span class="hljs-title function_">printBits</span>(-<span class="hljs-number">5</span>, <span class="hljs-number">8</span>); <span class="hljs-comment">// 1111 1011</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="通用方法：逐位检查"><a href="#通用方法：逐位检查" class="headerlink" title="通用方法：逐位检查"></a>通用方法：逐位检查</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">31</span>; i &gt;= <span class="hljs-number">0</span>; i--) &#123;<br>    <span class="hljs-type">int</span> bit = (n &gt;&gt; i) &amp; <span class="hljs-number">1</span>;<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%d&quot;</span>, bit);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="4-常用位运算技巧"><a href="#4-常用位运算技巧" class="headerlink" title="4. 常用位运算技巧"></a>4. 常用位运算技巧</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// 取第 i 位</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">getBit</span>(<span class="hljs-params">x, i</span>) &#123;<br>  <span class="hljs-keyword">return</span> (x &gt;&gt; i) &amp; <span class="hljs-number">1</span>;<br>&#125;<br><br><span class="hljs-comment">// 第 i 位设为 1</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">setBit</span>(<span class="hljs-params">x, i</span>) &#123;<br>  <span class="hljs-keyword">return</span> x | (<span class="hljs-number">1</span> &lt;&lt; i);<br>&#125;<br><br><span class="hljs-comment">// 第 i 位清 0</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">clearBit</span>(<span class="hljs-params">x, i</span>) &#123;<br>  <span class="hljs-keyword">return</span> x &amp; ~(<span class="hljs-number">1</span> &lt;&lt; i);<br>&#125;<br><br><span class="hljs-comment">// 第 i 位翻转</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">toggleBit</span>(<span class="hljs-params">x, i</span>) &#123;<br>  <span class="hljs-keyword">return</span> x ^ (<span class="hljs-number">1</span> &lt;&lt; i);<br>&#125;<br><br><span class="hljs-comment">// 判断奇偶</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">isOdd</span>(<span class="hljs-params">x</span>) &#123;<br>  <span class="hljs-keyword">return</span> (x &amp; <span class="hljs-number">1</span>) === <span class="hljs-number">1</span>;<br>&#125;<br><br><span class="hljs-comment">// lowbit：取出最低位的 1</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">lowbit</span>(<span class="hljs-params">x</span>) &#123;<br>  <span class="hljs-keyword">return</span> x &amp; -x;<br>&#125;<br><br><span class="hljs-comment">// 清除最低位的 1</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">clearLowestBit</span>(<span class="hljs-params">x</span>) &#123;<br>  <span class="hljs-keyword">return</span> x &amp; (x - <span class="hljs-number">1</span>);<br>&#125;<br><br><span class="hljs-comment">// 判断是不是 2 的幂</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">isPowerOfTwo</span>(<span class="hljs-params">x</span>) &#123;<br>  <span class="hljs-keyword">return</span> x &gt; <span class="hljs-number">0</span> &amp;&amp; (x &amp; (x - <span class="hljs-number">1</span>)) === <span class="hljs-number">0</span>;<br>&#125;<br><br><span class="hljs-comment">// 统计二进制中 1 的个数</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">countBits</span>(<span class="hljs-params">x</span>) &#123;<br>  <span class="hljs-keyword">let</span> count = <span class="hljs-number">0</span>;<br>  <span class="hljs-keyword">while</span> (x) &#123;<br>    x &amp;= x - <span class="hljs-number">1</span>;<br>    count++;<br>  &#125;<br>  <span class="hljs-keyword">return</span> count;<br>&#125;<br><br><span class="hljs-comment">// 用 lowbit 统计 1 的个数</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">countBitsByLowbit</span>(<span class="hljs-params">x</span>) &#123;<br>  <span class="hljs-keyword">let</span> count = <span class="hljs-number">0</span>;<br>  <span class="hljs-keyword">while</span> (x) &#123;<br>    x -= x &amp; -x;<br>    count++;<br>  &#125;<br>  <span class="hljs-keyword">return</span> count;<br>&#125;<br><br><span class="hljs-comment">// 异或找唯一出现一次的数</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">findSingleNumber</span>(<span class="hljs-params">nums</span>) &#123;<br>  <span class="hljs-keyword">let</span> ans = <span class="hljs-number">0</span>;<br>  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> n <span class="hljs-keyword">of</span> nums) ans ^= n;<br>  <span class="hljs-keyword">return</span> ans;<br>&#125;<br><br><span class="hljs-comment">// 位运算交换两个数，仅演示，a 和 b 应不同</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">swap</span>(<span class="hljs-params">a, b</span>) &#123;<br>  a ^= b;<br>  b ^= a;<br>  a ^= b;<br>  <span class="hljs-keyword">return</span> [a, b];<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>例如：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-number">5</span> &amp; <span class="hljs-number">3</span>); <span class="hljs-comment">// 1</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-number">5</span> | <span class="hljs-number">3</span>); <span class="hljs-comment">// 7</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-number">5</span> ^ <span class="hljs-number">3</span>); <span class="hljs-comment">// 6</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(~<span class="hljs-number">5</span>); <span class="hljs-comment">// -6</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-number">5</span> &lt;&lt; <span class="hljs-number">1</span>); <span class="hljs-comment">// 10</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-number">5</span> &gt;&gt; <span class="hljs-number">1</span>); <span class="hljs-comment">// 2</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(-<span class="hljs-number">5</span> &gt;&gt;&gt; <span class="hljs-number">1</span>); <span class="hljs-comment">// 2147483645</span><br><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">lowbit</span>(<span class="hljs-number">12</span>)); <span class="hljs-comment">// 4</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">lowbit</span>(<span class="hljs-number">10</span>)); <span class="hljs-comment">// 2</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">lowbit</span>(<span class="hljs-number">7</span>)); <span class="hljs-comment">// 1</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">lowbit</span>(<span class="hljs-number">8</span>)); <span class="hljs-comment">// 8</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">lowbit</span>(<span class="hljs-number">0</span>)); <span class="hljs-comment">// 0</span><br><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">countBits</span>(<span class="hljs-number">12</span>)); <span class="hljs-comment">// 2</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">isPowerOfTwo</span>(<span class="hljs-number">16</span>)); <span class="hljs-comment">// true</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">isPowerOfTwo</span>(<span class="hljs-number">18</span>)); <span class="hljs-comment">// false</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="5-注意事项与语言差异"><a href="#5-注意事项与语言差异" class="headerlink" title="5. 注意事项与语言差异"></a>5. 注意事项与语言差异</h2><h3 id="5-1-加括号"><a href="#5-1-加括号" class="headerlink" title="5.1 加括号"></a>5.1 加括号</h3><p>很多语言里 <code>==</code> 优先级高于 <code>&amp;</code>，不要写：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">if</span> (x &amp; <span class="hljs-number">1</span> == <span class="hljs-number">0</span>)<br></code></pre></td></tr></table></figure>
+
+<p>要写：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">if</span> ((x &amp; <span class="hljs-number">1</span>) == <span class="hljs-number">0</span>)<br></code></pre></td></tr></table></figure>
+
+<h3 id="5-2-右移分算术右移和逻辑右移"><a href="#5-2-右移分算术右移和逻辑右移" class="headerlink" title="5.2 右移分算术右移和逻辑右移"></a>5.2 右移分算术右移和逻辑右移</h3><ul>
+<li><code>&gt;&gt;</code>：有符号数通常左边补符号位。</li>
+<li><code>&gt;&gt;&gt;</code>：左边补 0，Java&#x2F;JS 有。</li>
+<li>C&#x2F;C++ 中有符号右移行为与实现有关。</li>
+</ul>
+<h3 id="5-3-左移可能溢出"><a href="#5-3-左移可能溢出" class="headerlink" title="5.3 左移可能溢出"></a>5.3 左移可能溢出</h3><p>有符号左移溢出在 C&#x2F;C++ 中可能是未定义行为，工程中注意类型和范围。</p>
+<h3 id="5-4-语言差异"><a href="#5-4-语言差异" class="headerlink" title="5.4 语言差异"></a>5.4 语言差异</h3><ul>
+<li><strong>Java</strong>：<code>int</code> 32 位，<code>long</code> 64 位，有 <code>&gt;&gt;&gt;</code>。</li>
+<li><strong>C&#x2F;C++</strong>：依赖平台，注意有符号&#x2F;无符号。</li>
+<li><strong>Python</strong>：整数无限精度，<code>~x = -x - 1</code>，没有固定位宽。</li>
+<li><strong>JavaScript</strong>：位运算按 32 位有符号处理。</li>
+</ul>
+<h3 id="5-5-lowbit-的注意事项"><a href="#5-5-lowbit-的注意事项" class="headerlink" title="5.5 lowbit 的注意事项"></a>5.5 lowbit 的注意事项</h3><ul>
+<li><code>x &amp; -x</code> 通常用于正数。</li>
+<li>在 C&#x2F;C++ 中，对有符号整数取负可能溢出，比如 <code>INT_MIN</code> 的 <code>-x</code> 是未定义行为，所以一般用于正整数索引。</li>
+<li>Python 中整数是无限精度，但 <code>12 &amp; -12</code> 仍然会得到 <code>4</code>。</li>
+<li><code>x = 0</code> 时，<code>lowbit = 0</code>，循环里要避免死循环。</li>
+</ul>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>位运算的核心是：</p>
+<ul>
+<li><strong>掩码</strong>：<code>1 &lt;&lt; i</code></li>
+<li><strong>与 <code>&amp;</code></strong>：取位</li>
+<li><strong>或 <code>|</code></strong>：置位</li>
+<li><strong>异或 <code>^</code></strong>：翻转、消重</li>
+<li><strong>移位 <code>&lt;&lt; &gt;&gt;</code></strong>：移动</li>
+<li><strong>补码</strong>：理解负数</li>
+<li><strong>lowbit</strong>：<code>x &amp; -x</code>，取出最低位的 1</li>
+</ul>
+<p>一句话：<strong>位运算就是用二进制视角操作整数，而 <code>lowbit</code> 是位运算里的“最小单位提取器”。</strong></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%85%B6%E4%BB%96/" class="category-chain-item">其他</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E4%BD%8D%E8%BF%90%E7%AE%97/" class="print-no-link">#位运算</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>【位运算】</div>
+      <div>http://example.com/2024/12/10/其他/位运算/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年12月10日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/12/11/JavaScript/%E5%8C%85%E7%AE%A1%E7%90%86%E5%99%A8%E5%AF%B9%E6%AF%94/" title="包管理器对比">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">包管理器对比</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/12/10/Vue/%E3%80%90Vue%E3%80%91scoped%20%E6%A0%B7%E5%BC%8F%E4%BD%9C%E7%94%A8%E5%9F%9F/" title="scoped 样式作用域">
+                        <span class="hidden-mobile">scoped 样式作用域</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

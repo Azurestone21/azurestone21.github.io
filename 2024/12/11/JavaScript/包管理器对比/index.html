@@ -1,0 +1,1039 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="包管理器对比一、基础概念：什么是包管理器？包管理器是自动化处理项目依赖（第三方库、工具、框架）安装、升级、移除和版本管理的工具。在 JavaScript&#x2F;Node.js 生态中，它解决了“复用他人代码”和“管理复杂依赖树”两大核心问题。 核心职责：  依赖解析：根据 package.json 中的声明，计算出需要安装哪些包以及具体版本。 下载与存储：从 npm 仓库（或其他 regist">
+<meta property="og:type" content="article">
+<meta property="og:title" content="包管理器对比">
+<meta property="og:url" content="http://example.com/2024/12/11/JavaScript/%E5%8C%85%E7%AE%A1%E7%90%86%E5%99%A8%E5%AF%B9%E6%AF%94/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="包管理器对比一、基础概念：什么是包管理器？包管理器是自动化处理项目依赖（第三方库、工具、框架）安装、升级、移除和版本管理的工具。在 JavaScript&#x2F;Node.js 生态中，它解决了“复用他人代码”和“管理复杂依赖树”两大核心问题。 核心职责：  依赖解析：根据 package.json 中的声明，计算出需要安装哪些包以及具体版本。 下载与存储：从 npm 仓库（或其他 regist">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-12-10T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-14T14:52:30.537Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="包管理器">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>包管理器对比 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">包管理器对比</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-12-11 00:00" pubdate>
+          2024年12月11日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          30 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">包管理器对比</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="包管理器对比"><a href="#包管理器对比" class="headerlink" title="包管理器对比"></a>包管理器对比</h1><h2 id="一、基础概念：什么是包管理器？"><a href="#一、基础概念：什么是包管理器？" class="headerlink" title="一、基础概念：什么是包管理器？"></a>一、基础概念：什么是包管理器？</h2><p>包管理器是自动化处理项目依赖（第三方库、工具、框架）安装、升级、移除和版本管理的工具。在 JavaScript&#x2F;Node.js 生态中，它解决了“复用他人代码”和“管理复杂依赖树”两大核心问题。</p>
+<p><strong>核心职责</strong>：</p>
+<ul>
+<li><strong>依赖解析</strong>：根据 <code>package.json</code> 中的声明，计算出需要安装哪些包以及具体版本。</li>
+<li><strong>下载与存储</strong>：从 npm 仓库（或其他 registry）下载包文件到本地。</li>
+<li><strong>构建依赖结构</strong>：将下载的包按照特定规则组织在 <code>node_modules</code> 目录中。</li>
+<li><strong>版本锁定</strong>：通过锁文件（<code>lockfile</code>）确保在不同环境下安装完全一致的依赖版本。</li>
+</ul>
+<hr>
+<h2 id="二、npm-的历史演进：从-v2-到-v3-的关键转折"><a href="#二、npm-的历史演进：从-v2-到-v3-的关键转折" class="headerlink" title="二、npm 的历史演进：从 v2 到 v3+ 的关键转折"></a>二、npm 的历史演进：从 v2 到 v3+ 的关键转折</h2><h3 id="1-npm-v2-——-严格的嵌套结构（逻辑正确，物理失败）"><a href="#1-npm-v2-——-严格的嵌套结构（逻辑正确，物理失败）" class="headerlink" title="1. npm v2 —— 严格的嵌套结构（逻辑正确，物理失败）"></a>1. npm v2 —— 严格的嵌套结构（逻辑正确，物理失败）</h3><p><strong>核心机制</strong>：完全按照依赖树的原始结构嵌套安装。</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs nix">项目根目录<span class="hljs-symbol">/</span><br>└── node_modules<span class="hljs-symbol">/</span><br>    └── A<span class="hljs-symbol">/</span>                    <span class="hljs-comment"># 项目直接依赖 A</span><br>        └── node_modules<span class="hljs-symbol">/</span><br>            └── B<span class="hljs-symbol">/</span>            <span class="hljs-comment"># A 依赖 B，B 被装在 A 的内部</span><br>                └── node_modules<span class="hljs-symbol">/</span><br>                    └── C<span class="hljs-symbol">/</span>    <span class="hljs-comment"># B 依赖 C，继续嵌套...</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>优点（逻辑正确）</strong>：</p>
+<ul>
+<li>✅ 依赖完全隔离，环境纯净。</li>
+<li>✅ <strong>“幽灵依赖”不存在</strong>：项目中直接 <code>require(&#39;B&#39;)</code> 会因路径不匹配而<strong>立即报错</strong>，强制开发者显式声明所有直接依赖。</li>
+<li>✅ 每个包拥有自己的独立依赖副本，版本冲突风险低。</li>
+</ul>
+<p><strong>致命缺点（物理极限）</strong>：</p>
+<ul>
+<li>❌ <strong>Windows 路径地狱</strong>：深层嵌套（如超过 10 层）会导致文件路径超过 Windows 260 字符限制，造成安装失败或无法删除 <code>node_modules</code>。</li>
+<li>❌ <strong>灾难性的磁盘冗余</strong>：同一依赖的相同版本在不同父包下会被<strong>多次完整复制</strong>。例如，项目同时依赖 A 和 C，而 A 和 C 都依赖 B，则 B 会存在两份。大型项目中 <code>lodash</code> 或 <code>core-js</code> 可能被重复安装几十次。</li>
+<li>❌ <strong>安装速度极慢</strong>：需要复制海量细碎小文件（机械硬盘时代尤其明显），安装一个中型项目可能需要 5-10 分钟。</li>
+</ul>
+<h3 id="2-npm-v3-——-扁平化提升（物理胜利，逻辑埋雷）"><a href="#2-npm-v3-——-扁平化提升（物理胜利，逻辑埋雷）" class="headerlink" title="2. npm v3+ —— 扁平化提升（物理胜利，逻辑埋雷）"></a>2. npm v3+ —— 扁平化提升（物理胜利，逻辑埋雷）</h3><p><strong>改进措施</strong>：引入<strong>扁平化（Hoisting &#x2F; 提升）算法</strong>，尽可能将所有依赖<strong>拍平</strong>到顶层的 <code>node_modules</code> 根目录。</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs nix">项目根目录<span class="hljs-symbol">/</span><br>└── node_modules<span class="hljs-symbol">/</span><br>    ├── A<span class="hljs-symbol">/</span>                    <span class="hljs-comment"># 项目直接依赖</span><br>    ├── B<span class="hljs-symbol">/</span>                    <span class="hljs-comment"># A 的依赖 B 被提升到顶层</span><br>    └── C<span class="hljs-symbol">/</span>                    <span class="hljs-comment"># B 的依赖 C 也被提升到顶层</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>解决的问题（物理胜利）</strong>：</p>
+<ul>
+<li>✅ <strong>根治路径问题</strong>：目录层级从十几层骤降至 2-3 层，Windows 路径限制不再成为障碍。</li>
+<li>✅ <strong>节省磁盘空间</strong>：相同版本的依赖在项目中只保留一份，项目体积减少 30%-50%。</li>
+<li>✅ <strong>提升安装速度</strong>：文件复制数量大幅减少，配合缓存机制，安装效率成倍提升。</li>
+</ul>
+<p><strong>引入的新问题（逻辑埋雷）</strong>：</p>
+<ul>
+<li>❌ <strong>“幽灵依赖（Phantom Dependency）”</strong>：项目代码可以引用未被 <code>package.json</code> 声明的依赖（因为被其他包提升到了顶层）。这导致项目在不同环境下可能因“幽灵依赖”缺失而崩溃。</li>
+<li>❌ <strong>依赖不透明</strong>：开发者无法直观判断哪些依赖是直接声明的，哪些是被意外提升上来的，维护成本增加。</li>
+</ul>
+<blockquote>
+<p><strong>核心洞察</strong>：npm v3 的升级是一场 <strong>“用逻辑严谨性换取工程可行性”</strong> 的无奈之举。v2 虽“逻辑正确”，但无法支撑现代前端工程的物理需求（路径、空间、速度）。</p>
+</blockquote>
+<hr>
+<h2 id="三、核心痛点深度解析：幽灵依赖"><a href="#三、核心痛点深度解析：幽灵依赖" class="headerlink" title="三、核心痛点深度解析：幽灵依赖"></a>三、核心痛点深度解析：幽灵依赖</h2><h3 id="1-什么是幽灵依赖？"><a href="#1-什么是幽灵依赖？" class="headerlink" title="1. 什么是幽灵依赖？"></a>1. 什么是幽灵依赖？</h3><p><strong>定义</strong>：在代码中引用了一个包，但该包<strong>并未在 <code>package.json</code> 中显式声明</strong>。代码之所以能运行，是因为它被其他依赖“提升”到了顶层 <code>node_modules</code> 中，恰好被 Node.js 的模块查找机制找到了。</p>
+<p><strong>示例</strong>：</p>
+<ul>
+<li>项目 <code>package.json</code> 只声明了 <code>&quot;express&quot;: &quot;^4.0.0&quot;</code>。</li>
+<li>Express 内部依赖 <code>&quot;accepts&quot;: &quot;^1.3.5&quot;</code>。</li>
+<li>安装时，<code>accepts</code> 被提升到顶层 <code>node_modules</code>。</li>
+<li>开发者在代码中写 <code>require(&#39;accepts&#39;)</code> —— 运行成功！但 <code>package.json</code> 中并没有 <code>accepts</code>。</li>
+</ul>
+<h3 id="2-幽灵依赖是如何产生的？"><a href="#2-幽灵依赖是如何产生的？" class="headerlink" title="2. 幽灵依赖是如何产生的？"></a>2. 幽灵依赖是如何产生的？</h3><p><strong>根本原因</strong>：npm v3+ &#x2F; Yarn 的<strong>扁平化提升策略</strong> + <strong>Node.js 的模块查找机制</strong>（向上级目录递归查找 <code>node_modules</code>）。</p>
+<p><strong>触发条件</strong>：</p>
+<ol>
+<li>主依赖（如 Express）的间接依赖（如 accepts）<strong>被提升到顶层</strong>。</li>
+<li>该间接依赖与项目没有版本冲突。</li>
+<li>开发者在代码中直接引用了该间接依赖。</li>
+</ol>
+<h3 id="3-为什么说幽灵依赖危害极大？"><a href="#3-为什么说幽灵依赖危害极大？" class="headerlink" title="3. 为什么说幽灵依赖危害极大？"></a>3. 为什么说幽灵依赖危害极大？</h3><ul>
+<li>❌ <strong>项目不独立</strong>：在新机器上，若主依赖升级后不再依赖 accepts，或换了其他包，代码会立即崩溃（<code>Cannot find module</code>）。</li>
+<li>❌ <strong>版本不受控</strong>：使用的版本完全由主依赖的间接依赖决定，开发者无法主动管理。</li>
+<li>❌ <strong>隐藏技术债</strong>：团队成员误以为某包已安装，实际上依赖清单缺失，给后续维护埋下深坑。</li>
+</ul>
+<h3 id="4-为什么-v2-没有幽灵依赖，v3-却有？"><a href="#4-为什么-v2-没有幽灵依赖，v3-却有？" class="headerlink" title="4. 为什么 v2 没有幽灵依赖，v3 却有？"></a>4. 为什么 v2 没有幽灵依赖，v3 却有？</h3><ul>
+<li><strong>v2（嵌套）</strong>：<code>accepts</code> 藏在 <code>node_modules/express/node_modules/accepts/</code> 中，Node.js 从项目根目录查找时，在顶层 <code>node_modules</code> 找不到，直接报错。</li>
+<li><strong>v3（扁平化）</strong>：<code>accepts</code> 被提升到顶层 <code>node_modules</code>，Node.js 成功找到，代码运行——幽灵诞生。</li>
+</ul>
+<h3 id="5-如何根治幽灵依赖？"><a href="#5-如何根治幽灵依赖？" class="headerlink" title="5. 如何根治幽灵依赖？"></a>5. 如何根治幽灵依赖？</h3><ul>
+<li><strong>最佳实践</strong>：<strong>谁使用，谁声明</strong>。如果代码中直接引用了某个包，必须手动执行 <code>npm install &lt;包名&gt;</code> 将其写入 <code>package.json</code>。</li>
+<li><strong>工具方案</strong>：使用 <strong>pnpm</strong>，它通过严格的依赖结构从根本上杜绝了幽灵依赖的可能性。</li>
+</ul>
+<hr>
+<h2 id="四、npm-v2-vs-v3：核心对比总结"><a href="#四、npm-v2-vs-v3：核心对比总结" class="headerlink" title="四、npm v2 vs v3：核心对比总结"></a>四、npm v2 vs v3：核心对比总结</h2><table>
+<thead>
+<tr>
+<th align="left">对比维度</th>
+<th align="left"><strong>npm v2（嵌套）</strong></th>
+<th align="left"><strong>npm v3+ &#x2F; Yarn（扁平化）</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>目录结构</strong></td>
+<td align="left">严格嵌套，按依赖树层级存放</td>
+<td align="left">尽可能扁平化，依赖提升到顶层</td>
+</tr>
+<tr>
+<td align="left"><strong>模块查找</strong></td>
+<td align="left">严格隔离，找不到即报错</td>
+<td align="left">可能在顶层找到未声明的依赖</td>
+</tr>
+<tr>
+<td align="left"><strong>幽灵依赖</strong></td>
+<td align="left">✅<strong>不存在</strong></td>
+<td align="left">❌<strong>普遍存在</strong></td>
+</tr>
+<tr>
+<td align="left"><strong>Windows路径限制</strong></td>
+<td align="left">❌ 频繁触发，导致安装失败</td>
+<td align="left">✅ 彻底解决</td>
+</tr>
+<tr>
+<td align="left"><strong>磁盘占用</strong></td>
+<td align="left">❌ 巨大，依赖重复存储</td>
+<td align="left">✅ 节省 30%-50% 空间</td>
+</tr>
+<tr>
+<td align="left"><strong>安装速度</strong></td>
+<td align="left">❌ 极慢，复制大量文件</td>
+<td align="left">✅ 大幅提升</td>
+</tr>
+<tr>
+<td align="left"><strong>逻辑严谨性</strong></td>
+<td align="left">✅ 高</td>
+<td align="left">❌ 低</td>
+</tr>
+<tr>
+<td align="left"><strong>工程可用性</strong></td>
+<td align="left">❌ 无法支撑大型项目</td>
+<td align="left">✅ 满足现代工程需求</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="五、三大主流工具横评：npm、Yarn、pnpm"><a href="#五、三大主流工具横评：npm、Yarn、pnpm" class="headerlink" title="五、三大主流工具横评：npm、Yarn、pnpm"></a>五、三大主流工具横评：npm、Yarn、pnpm</h2><h3 id="1-各工具核心机制对比"><a href="#1-各工具核心机制对比" class="headerlink" title="1. 各工具核心机制对比"></a>1. 各工具核心机制对比</h3><table>
+<thead>
+<tr>
+<th align="left">特性</th>
+<th align="left"><strong>npm</strong></th>
+<th align="left"><strong>Yarn</strong></th>
+<th align="left"><strong>pnpm</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>依赖存储机制</strong></td>
+<td align="left">扁平化<code>node_modules</code>，每个项目<strong>复制一份完整依赖</strong></td>
+<td align="left">扁平化<code>node_modules</code>（v1），<strong>PnP</strong> 模式（v2+）可抛弃 <code>node_modules</code></td>
+<td align="left"><strong>全局存储 + 硬链接</strong>，所有版本只存一份</td>
+</tr>
+<tr>
+<td align="left"><strong>磁盘效率</strong></td>
+<td align="left">较差（多项目重复存储）</td>
+<td align="left">v1 同 npm，v2+ PnP 极优</td>
+<td align="left"><strong>最优</strong>（节省 50%-80% 空间）</td>
+</tr>
+<tr>
+<td align="left"><strong>幽灵依赖</strong></td>
+<td align="left">❌ 存在（扁平化导致）</td>
+<td align="left">❌ 存在（v1）&#x2F; ✅ 不存在（v2+ PnP）</td>
+<td align="left">✅<strong>不存在</strong>（严格隔离）</td>
+</tr>
+<tr>
+<td align="left"><strong>安装速度</strong></td>
+<td align="left">已大幅提升，但仍慢于 pnpm</td>
+<td align="left">早期领先，PnP 模式极快</td>
+<td align="left"><strong>最快</strong>（硬链接 + 全局缓存）</td>
+</tr>
+<tr>
+<td align="left"><strong>Monorepo 支持</strong></td>
+<td align="left">v7+ 原生支持，仍在演进</td>
+<td align="left"><strong>成熟</strong>（Workspaces 功能强大）</td>
+<td align="left"><strong>最佳</strong>（内置 Workspace，性能优异）</td>
+</tr>
+<tr>
+<td align="left"><strong>生态兼容性</strong></td>
+<td align="left">✅<strong>最广</strong>（官方标配，零门槛）</td>
+<td align="left">v1 兼容性好，v2+ PnP 有风险</td>
+<td align="left">✅ 良好（个别老旧工具需适配）</td>
+</tr>
+<tr>
+<td align="left"><strong>版本锁定</strong></td>
+<td align="left"><code>package-lock.json</code></td>
+<td align="left"><code>yarn.lock</code></td>
+<td align="left"><code>pnpm-lock.yaml</code></td>
+</tr>
+<tr>
+<td align="left"><strong>创新特性</strong></td>
+<td align="left">稳健演进</td>
+<td align="left">PnP、Zero-Installs（v2+）</td>
+<td align="left">内容寻址存储、硬链接</td>
+</tr>
+</tbody></table>
+<h3 id="2-pnpm-深度剖析：为什么是终极方案？"><a href="#2-pnpm-深度剖析：为什么是终极方案？" class="headerlink" title="2. pnpm 深度剖析：为什么是终极方案？"></a>2. pnpm 深度剖析：为什么是终极方案？</h3><p><strong>核心机制</strong>：<strong>内容寻址存储 + 硬链接 + 符号链接</strong>。</p>
+<p><strong>存储逻辑</strong>：</p>
+<ul>
+<li>所有依赖包在全局存储（<code>~/.pnpm-store</code>）中只保存一份（基于文件内容哈希寻址）。</li>
+<li>各项目通过<strong>硬链接</strong>引用全局存储中的文件，项目自身的 <code>node_modules</code> 体积几乎为 KB 级别。</li>
+<li>不同版本的同名包：全局存储中物理存储两份（不同哈希），但所有项目共享，不会重复复制。</li>
+</ul>
+<p><strong>极致优化示例</strong>：</p>
+<ul>
+<li>使用 npm：100 个项目 × 10MB（依赖体积）&#x3D; <strong>1000MB</strong>（1GB）。</li>
+<li>使用 pnpm：全局存储 <strong>20MB</strong>（两个版本各 10MB）+ 每个项目 KB 级的链接文件 ≈ <strong>20MB + KB 级</strong>。</li>
+<li>若两个版本仅有 1% 的文件不同，pnpm 甚至只存两份不同文件，而不是两个完整包，效率更极致。</li>
+</ul>
+<p><strong>优势总结</strong>：</p>
+<ul>
+<li>✅ <strong>极致的磁盘效率</strong>：多项目共享全局存储，物理空间占用接近理论最小值。</li>
+<li>✅ <strong>严格的依赖隔离</strong>：顶层 <code>node_modules</code> 只包含 <code>package.json</code> 声明的依赖，<strong>从根源杜绝幽灵依赖</strong>。</li>
+<li>✅ <strong>极快的安装速度</strong>：得益于硬链接（无需复制文件）和全局缓存，速度通常比 npm 快 2-3 倍。</li>
+<li>✅ <strong>一流的 Monorepo 支持</strong>：内置 Workspace 功能，性能优异，工具链成熟（如 <code>pnpm run</code> 并行执行）。</li>
+</ul>
+<h3 id="3-Yarn-深度剖析：创新者与双版本"><a href="#3-Yarn-深度剖析：创新者与双版本" class="headerlink" title="3. Yarn 深度剖析：创新者与双版本"></a>3. Yarn 深度剖析：创新者与双版本</h3><p><strong>Yarn 1.x (Classic)</strong>：</p>
+<ul>
+<li>本质上是对 npm v3 的“增强版”：并行下载、更好的缓存机制、更可靠的 <code>yarn.lock</code>。</li>
+<li><strong>同样存在幽灵依赖问题</strong>（扁平化导致）。</li>
+<li>目前已进入维护模式，<strong>不推荐新项目使用</strong>。</li>
+</ul>
+<p><strong>Yarn 2+ (Berry)</strong>：</p>
+<ul>
+<li>激进引入 <strong>PnP (Plug’n’Play)</strong> 模式：彻底抛弃 <code>node_modules</code>，通过映射表让 Node.js 直接找到依赖。</li>
+<li>安装几乎瞬间完成，彻底解决幽灵依赖和磁盘浪费。</li>
+<li><strong>风险</strong>：改变了 Node.js 默认的模块解析规则，部分老旧或非标准 npm 包可能不兼容（“踩坑”风险较高）。</li>
+<li><strong>定位</strong>：适合追求极致性能且有能力应对兼容性问题的团队。</li>
+</ul>
+<h3 id="4-npm-的优势与现状"><a href="#4-npm-的优势与现状" class="headerlink" title="4. npm 的优势与现状"></a>4. npm 的优势与现状</h3><p><strong>不可替代的优势</strong>：</p>
+<ul>
+<li>✅ <strong>官方默认</strong>：安装 Node.js 后即开即用，零学习成本。</li>
+<li>✅ <strong>生态最广</strong>：拥有最庞大的用户群体，几乎所有 npm 包都能在 npm 下无障碍运行。</li>
+<li>✅ <strong>持续进化</strong>：从 v5+ 起性能大幅提升，v7+ 原生支持 Workspace，已不再是“慢”的代名词。</li>
+</ul>
+<p><strong>主要劣势</strong>：</p>
+<ul>
+<li>❌ 磁盘占用较高（每个项目复制一份依赖）。</li>
+<li>❌ 幽灵依赖问题依然存在（扁平化结构决定）。</li>
+</ul>
+<hr>
+<h2 id="六、对比总结表（完整版）"><a href="#六、对比总结表（完整版）" class="headerlink" title="六、对比总结表（完整版）"></a>六、对比总结表（完整版）</h2><table>
+<thead>
+<tr>
+<th align="left">对比维度</th>
+<th align="left"><strong>npm v2</strong></th>
+<th align="left"><strong>npm v3+</strong></th>
+<th align="left"><strong>Yarn 1.x</strong></th>
+<th align="left"><strong>Yarn 2+ (PnP)</strong></th>
+<th align="left"><strong>pnpm</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>诞生时间</strong></td>
+<td align="left">2010（随 Node.js 发布）</td>
+<td align="left">2016（v3）</td>
+<td align="left">2016</td>
+<td align="left">2020（v2）</td>
+<td align="left">2017</td>
+</tr>
+<tr>
+<td align="left"><strong>安装速度</strong></td>
+<td align="left">极慢</td>
+<td align="left">较快</td>
+<td align="left">快</td>
+<td align="left"><strong>极快</strong></td>
+<td align="left"><strong>极快</strong></td>
+</tr>
+<tr>
+<td align="left"><strong>磁盘占用</strong></td>
+<td align="left">极高</td>
+<td align="left">较高</td>
+<td align="left">较高</td>
+<td align="left"><strong>极低</strong></td>
+<td align="left"><strong>极低</strong></td>
+</tr>
+<tr>
+<td align="left"><strong>幽灵依赖</strong></td>
+<td align="left">✅ 不存在</td>
+<td align="left">❌ 存在</td>
+<td align="left">❌ 存在</td>
+<td align="left">✅ 不存在</td>
+<td align="left">✅ 不存在</td>
+</tr>
+<tr>
+<td align="left"><strong>路径地狱</strong></td>
+<td align="left">❌ 存在</td>
+<td align="left">✅ 解决</td>
+<td align="left">✅ 解决</td>
+<td align="left">✅ 解决</td>
+<td align="left">✅ 解决</td>
+</tr>
+<tr>
+<td align="left"><strong>Monorepo 支持</strong></td>
+<td align="left">不支持</td>
+<td align="left">v7+ 基础支持</td>
+<td align="left">成熟</td>
+<td align="left">成熟</td>
+<td align="left"><strong>最佳</strong></td>
+</tr>
+<tr>
+<td align="left"><strong>生态兼容性</strong></td>
+<td align="left">最优</td>
+<td align="left">最优</td>
+<td align="left">良好</td>
+<td align="left">有风险</td>
+<td align="left">良好</td>
+</tr>
+<tr>
+<td align="left"><strong>学习成本</strong></td>
+<td align="left">零</td>
+<td align="left">零</td>
+<td align="left">低</td>
+<td align="left">中</td>
+<td align="left">低</td>
+</tr>
+<tr>
+<td align="left"><strong>当前推荐度</strong></td>
+<td align="left">❌ 不推荐</td>
+<td align="left">✅ 稳妥选择</td>
+<td align="left">❌ 不推荐（维护模式）</td>
+<td align="left">⚠️ 选型需评估</td>
+<td align="left">✅<strong>强烈推荐</strong></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="七、选型建议：如何做出正确选择？"><a href="#七、选型建议：如何做出正确选择？" class="headerlink" title="七、选型建议：如何做出正确选择？"></a>七、选型建议：如何做出正确选择？</h2><h3 id="📌-针对不同场景的推荐"><a href="#📌-针对不同场景的推荐" class="headerlink" title="📌 针对不同场景的推荐"></a>📌 针对不同场景的推荐</h3><table>
+<thead>
+<tr>
+<th align="left">场景</th>
+<th align="left">首选</th>
+<th align="left">备选</th>
+<th align="left">理由</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>新项目（中小型）</strong></td>
+<td align="left"><strong>pnpm</strong></td>
+<td align="left">npm</td>
+<td align="left">pnpm 性能优异、磁盘高效、杜绝幽灵依赖，几乎没有缺点。</td>
+</tr>
+<tr>
+<td align="left"><strong>大型 Monorepo</strong></td>
+<td align="left"><strong>pnpm</strong></td>
+<td align="left">Yarn 1.x</td>
+<td align="left">pnpm 内置 Workspace 性能最佳，且依赖隔离严格，适合多包协作。</td>
+</tr>
+<tr>
+<td align="left"><strong>编写公共 npm 包</strong></td>
+<td align="left"><strong>npm</strong></td>
+<td align="left">pnpm</td>
+<td align="left">确保最大兼容性，降低贡献者门槛（无需额外安装工具）。</td>
+</tr>
+<tr>
+<td align="left"><strong>团队深度使用 Yarn 且无痛点</strong></td>
+<td align="left">继续用 Yarn 1.x</td>
+<td align="left">pnpm</td>
+<td align="left">保持现有工作流稳定，不必为了“新”而新。</td>
+</tr>
+<tr>
+<td align="left"><strong>追求极致性能 &amp; 有精力应对兼容性</strong></td>
+<td align="left"><strong>Yarn 2+ (PnP)</strong></td>
+<td align="left">pnpm</td>
+<td align="left">体验前沿技术，但需评估生态风险。</td>
+</tr>
+<tr>
+<td align="left"><strong>CI&#x2F;CD 环境（磁盘敏感）</strong></td>
+<td align="left"><strong>pnpm</strong></td>
+<td align="left">Yarn 2+</td>
+<td align="left">磁盘占用最低，安装速度最快，大幅节约 CI 成本。</td>
+</tr>
+</tbody></table>
+<h3 id="📌-核心决策原则"><a href="#📌-核心决策原则" class="headerlink" title="📌 核心决策原则"></a>📌 核心决策原则</h3><ol>
+<li><strong>默认选择 pnpm</strong>：截至 2026 年，对于绝大多数新项目，pnpm 是综合体验最佳、最值得推荐的选择。</li>
+<li><strong>兼容性优先时选 npm</strong>：若团队技术栈较旧，或需要发布通用 npm 包，npm 的生态兼容性无可匹敌。</li>
+<li><strong>不要盲目追新</strong>：Yarn 2+ PnP 虽先进，但生态兼容性风险需仔细评估，不建议生产环境“梭哈”。</li>
+<li><strong>锁文件一致性</strong>：无论选哪个，务必提交锁文件（<code>package-lock.json</code> &#x2F; <code>yarn.lock</code> &#x2F; <code>pnpm-lock.yaml</code>）到版本库，确保依赖一致性。</li>
+</ol>
+<hr>
+<h2 id="八、关键概念速查表"><a href="#八、关键概念速查表" class="headerlink" title="八、关键概念速查表"></a>八、关键概念速查表</h2><table>
+<thead>
+<tr>
+<th align="left">概念</th>
+<th align="left">含义</th>
+<th align="left">产生原因</th>
+<th align="left">影响</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>扁平化（Hoisting）</strong></td>
+<td align="left">将依赖树尽可能“拍平”到顶层<code>node_modules</code></td>
+<td align="left">解决 v2 的路径过长和磁盘冗余问题</td>
+<td align="left">提升了性能，但引入了幽灵依赖</td>
+</tr>
+<tr>
+<td align="left"><strong>幽灵依赖</strong></td>
+<td align="left">代码引用未在<code>package.json</code> 中声明的包</td>
+<td align="left">扁平化导致间接依赖被提升到顶层</td>
+<td align="left">项目健壮性下降，环境依赖不稳定</td>
+</tr>
+<tr>
+<td align="left"><strong>硬链接</strong></td>
+<td align="left">多个文件指针指向同一份物理数据</td>
+<td align="left">pnpm 的核心存储机制</td>
+<td align="left">极省磁盘空间，多项目共享依赖</td>
+</tr>
+<tr>
+<td align="left"><strong>内容寻址存储</strong></td>
+<td align="left">根据文件内容哈希值存储，相同内容只存一份</td>
+<td align="left">pnpm 的存储策略</td>
+<td align="left">最大化复用，避免重复存储</td>
+</tr>
+<tr>
+<td align="left"><strong>PnP (Plug’n’Play)</strong></td>
+<td align="left">通过映射表直接定位依赖，无需<code>node_modules</code></td>
+<td align="left">Yarn 2+ 的创新模式</td>
+<td align="left">极速安装，完全隔离，但有兼容性风险</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="九、常见问题-FAQ"><a href="#九、常见问题-FAQ" class="headerlink" title="九、常见问题 FAQ"></a>九、常见问题 FAQ</h2><p><strong>Q1：为什么 npm 不直接修复幽灵依赖？</strong><br>A：幽灵依赖是扁平化策略的“副产品”。若取消扁平化，将回到 v2 的路径地狱和磁盘冗余问题，得不偿失。npm 团队通过 <code>package-lock.json</code> 和 <code>npm audit</code> 等工具间接缓解，但无法根治。</p>
+<p><strong>Q2：pnpm 会完全替代 npm 吗？</strong><br>A：短期内不会。npm 作为官方默认工具，拥有最庞大的用户基础。但 pnpm 在性能和健壮性上的优势正使其市场份额快速增长，尤其在大型项目和专业团队中。</p>
+<p><strong>Q3：Yarn 和 pnpm 哪个更好？</strong><br>A：从综合体验和风险可控性来看，<strong>pnpm 更适合绝大多数团队</strong>。Yarn 2+ PnP 虽然前沿，但生态兼容性问题需要额外精力处理。若团队对 Yarn 1.x 已有深度依赖，可继续使用，但新项目建议优先考虑 pnpm。</p>
+<p><strong>Q4：如何从 npm&#x2F;Yarn 迁移到 pnpm？</strong><br>A：删除 <code>node_modules</code> 和锁文件，执行 <code>pnpm install</code> 即可。pnpm 兼容 npm 的 <code>package.json</code> 格式，迁移成本极低。需要注意检查是否有“幽灵依赖”（pnpm 会直接报错，这正是其价值所在），然后逐一安装缺失的包。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%8C%85%E7%AE%A1%E7%90%86%E5%99%A8/" class="category-chain-item">包管理器</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%8C%85%E7%AE%A1%E7%90%86%E5%99%A8/" class="print-no-link">#包管理器</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>包管理器对比</div>
+      <div>http://example.com/2024/12/11/JavaScript/包管理器对比/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年12月11日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/12/11/JavaScript/%E3%80%90JS%E3%80%91Object%E5%92%8CMap%E7%9A%84%E5%8C%BA%E5%88%AB/" title="【JS】Object和Map的区别">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">【JS】Object和Map的区别</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/12/10/%E5%85%B6%E4%BB%96/%E4%BD%8D%E8%BF%90%E7%AE%97/" title="【位运算】">
+                        <span class="hidden-mobile">【位运算】</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

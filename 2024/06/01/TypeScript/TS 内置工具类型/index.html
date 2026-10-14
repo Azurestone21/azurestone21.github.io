@@ -1,0 +1,814 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="TS 内置工具类型快捷查看表   类型 作用    Partial 全部可选   Required 全部必填   Readonly 全部只读   Pick&lt;T, K&gt; 挑选属性   Omit&lt;T, K&gt; 排除属性   Record&lt;K, V&gt; 构造键值类型   Exclude&lt;T, U&gt; 从 T 中排除 U   Extract&lt;T, U&gt;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TS 内置工具类型">
+<meta property="og:url" content="http://example.com/2024/06/01/TypeScript/TS%20%E5%86%85%E7%BD%AE%E5%B7%A5%E5%85%B7%E7%B1%BB%E5%9E%8B/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="TS 内置工具类型快捷查看表   类型 作用    Partial 全部可选   Required 全部必填   Readonly 全部只读   Pick&lt;T, K&gt; 挑选属性   Omit&lt;T, K&gt; 排除属性   Record&lt;K, V&gt; 构造键值类型   Exclude&lt;T, U&gt; 从 T 中排除 U   Extract&lt;T, U&gt;">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-06-01T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-14T14:26:02.570Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="TypeScript">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>TS 内置工具类型 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">TS 内置工具类型</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-06-01 10:00" pubdate>
+          2024年6月1日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          11 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">TS 内置工具类型</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="TS-内置工具类型"><a href="#TS-内置工具类型" class="headerlink" title="TS 内置工具类型"></a>TS 内置工具类型</h1><h2 id="快捷查看表"><a href="#快捷查看表" class="headerlink" title="快捷查看表"></a>快捷查看表</h2><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Partial<T></t></td>
+<td>全部可选</td>
+</tr>
+<tr>
+<td>Required<T></t></td>
+<td>全部必填</td>
+</tr>
+<tr>
+<td>Readonly<T></t></td>
+<td>全部只读</td>
+</tr>
+<tr>
+<td>Pick&lt;T, K&gt;</td>
+<td>挑选属性</td>
+</tr>
+<tr>
+<td>Omit&lt;T, K&gt;</td>
+<td>排除属性</td>
+</tr>
+<tr>
+<td>Record&lt;K, V&gt;</td>
+<td>构造键值类型</td>
+</tr>
+<tr>
+<td>Exclude&lt;T, U&gt;</td>
+<td>从 T 中排除 U</td>
+</tr>
+<tr>
+<td>Extract&lt;T, U&gt;</td>
+<td>提取 T 中属于 U 的类型</td>
+</tr>
+<tr>
+<td>NonNullable<T></t></td>
+<td>去掉 null &#x2F; undefined</td>
+</tr>
+<tr>
+<td>ReturnType<T></t></td>
+<td>函数返回值类型</td>
+</tr>
+<tr>
+<td>Parameters<T></t></td>
+<td>函数参数元组</td>
+</tr>
+<tr>
+<td>InstanceType<T></t></td>
+<td>构造函数实例类型</td>
+</tr>
+<tr>
+<td>Awaited<T></t></td>
+<td>解包 Promise</td>
+</tr>
+</tbody></table>
+<p>下面用具体例子逐个说明 TypeScript 内置工具类型的用法和效果。</p>
+<h2 id="准备一个基础类型"><a href="#准备一个基础类型" class="headerlink" title="准备一个基础类型"></a>准备一个基础类型</h2><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">User</span> &#123;<br>  <span class="hljs-attr">id</span>: <span class="hljs-built_in">number</span>;<br>  <span class="hljs-attr">name</span>: <span class="hljs-built_in">string</span>;<br>  <span class="hljs-attr">age</span>: <span class="hljs-built_in">number</span>;<br>  <span class="hljs-attr">email</span>?: <span class="hljs-built_in">string</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="一、属性修饰类"><a href="#一、属性修饰类" class="headerlink" title="一、属性修饰类"></a>一、属性修饰类</h2><h3 id="1-Partial-—-全部变可选"><a href="#1-Partial-—-全部变可选" class="headerlink" title="1. Partial&lt;T&gt; — 全部变可选"></a>1. <code>Partial&lt;T&gt;</code> — 全部变可选</h3><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">type</span> <span class="hljs-title class_">PartialUser</span> = <span class="hljs-title class_">Partial</span>&lt;<span class="hljs-title class_">User</span>&gt;;<br><span class="hljs-comment">// &#123;</span><br><span class="hljs-comment">//   id?: number;</span><br><span class="hljs-comment">//   name?: string;</span><br><span class="hljs-comment">//   age?: number;</span><br><span class="hljs-comment">//   email?: string;</span><br><span class="hljs-comment">// &#125;</span><br><br><span class="hljs-keyword">const</span> <span class="hljs-attr">u</span>: <span class="hljs-title class_">PartialUser</span> = &#123; <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;Tom&quot;</span> &#125;; <span class="hljs-comment">// 只传一个字段也合法</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>场景</strong>：更新用户信息时，只传要改的字段。</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">function</span> <span class="hljs-title function_">updateUser</span>(<span class="hljs-params"><span class="hljs-attr">id</span>: <span class="hljs-built_in">number</span>, <span class="hljs-attr">patch</span>: <span class="hljs-title class_">Partial</span>&lt;<span class="hljs-title class_">User</span>&gt;</span>) &#123;<br>  <span class="hljs-comment">// ...</span><br>&#125;<br><span class="hljs-title function_">updateUser</span>(<span class="hljs-number">1</span>, &#123; <span class="hljs-attr">age</span>: <span class="hljs-number">20</span> &#125;);<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="2-Required-—-全部变必填"><a href="#2-Required-—-全部变必填" class="headerlink" title="2. Required&lt;T&gt; — 全部变必填"></a>2. <code>Required&lt;T&gt;</code> — 全部变必填</h3><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">type</span> <span class="hljs-title class_">RequiredUser</span> = <span class="hljs-title class_">Required</span>&lt;<span class="hljs-title class_">User</span>&gt;;<br><span class="hljs-comment">// &#123;</span><br><span class="hljs-comment">//   id: number;</span><br><span class="hljs-comment">//   name: string;</span><br><span class="hljs-comment">//   age: number;</span><br><span class="hljs-comment">//   email: string;  // 可选变必填</span><br><span class="hljs-comment">// &#125;</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>场景</strong>：表单提交前校验，确保所有字段都填了。</p>
+<hr>
+<h3 id="3-Readonly-—-全部变只读"><a href="#3-Readonly-—-全部变只读" class="headerlink" title="3. Readonly&lt;T&gt; — 全部变只读"></a>3. <code>Readonly&lt;T&gt;</code> — 全部变只读</h3><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">type</span> <span class="hljs-title class_">ReadonlyUser</span> = <span class="hljs-title class_">Readonly</span>&lt;<span class="hljs-title class_">User</span>&gt;;<br><br><span class="hljs-keyword">const</span> <span class="hljs-attr">u</span>: <span class="hljs-title class_">ReadonlyUser</span> = &#123; <span class="hljs-attr">id</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;Tom&quot;</span>, <span class="hljs-attr">age</span>: <span class="hljs-number">20</span> &#125;;<br>u.<span class="hljs-property">name</span> = <span class="hljs-string">&quot;Jerry&quot;</span>; <span class="hljs-comment">// ❌ 报错：Cannot assign to &#x27;name&#x27; because it is a read-only property</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>场景</strong>：配置对象、常量对象。</p>
+<hr>
+<h2 id="二、属性筛选类"><a href="#二、属性筛选类" class="headerlink" title="二、属性筛选类"></a>二、属性筛选类</h2><h3 id="4-Pick-—-挑选部分属性"><a href="#4-Pick-—-挑选部分属性" class="headerlink" title="4. Pick&lt;T, K&gt; — 挑选部分属性"></a>4. <code>Pick&lt;T, K&gt;</code> — 挑选部分属性</h3><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">type</span> <span class="hljs-title class_">UserPreview</span> = <span class="hljs-title class_">Pick</span>&lt;<span class="hljs-title class_">User</span>, <span class="hljs-string">&quot;id&quot;</span> | <span class="hljs-string">&quot;name&quot;</span>&gt;;<br><span class="hljs-comment">// &#123;</span><br><span class="hljs-comment">//   id: number;</span><br><span class="hljs-comment">//   name: string;</span><br><span class="hljs-comment">// &#125;</span><br><br><span class="hljs-keyword">const</span> <span class="hljs-attr">p</span>: <span class="hljs-title class_">UserPreview</span> = &#123; <span class="hljs-attr">id</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;Tom&quot;</span> &#125;;<br></code></pre></td></tr></table></figure>
+
+<p><strong>场景</strong>：列表页只展示部分字段。</p>
+<hr>
+<h3 id="5-Omit-—-排除部分属性"><a href="#5-Omit-—-排除部分属性" class="headerlink" title="5. Omit&lt;T, K&gt; — 排除部分属性"></a>5. <code>Omit&lt;T, K&gt;</code> — 排除部分属性</h3><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">type</span> <span class="hljs-title class_">UserWithoutEmail</span> = <span class="hljs-title class_">Omit</span>&lt;<span class="hljs-title class_">User</span>, <span class="hljs-string">&quot;email&quot;</span>&gt;;<br><span class="hljs-comment">// &#123;</span><br><span class="hljs-comment">//   id: number;</span><br><span class="hljs-comment">//   name: string;</span><br><span class="hljs-comment">//   age: number;</span><br><span class="hljs-comment">// &#125;</span><br><br><span class="hljs-comment">// 常见用法：创建时不需要 id</span><br><span class="hljs-keyword">type</span> <span class="hljs-title class_">CreateUser</span> = <span class="hljs-title class_">Omit</span>&lt;<span class="hljs-title class_">User</span>, <span class="hljs-string">&quot;id&quot;</span>&gt;;<br><span class="hljs-keyword">const</span> <span class="hljs-attr">newUser</span>: <span class="hljs-title class_">CreateUser</span> = &#123; <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;Tom&quot;</span>, <span class="hljs-attr">age</span>: <span class="hljs-number">20</span> &#125;;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="6-Record-—-构造键值对类型"><a href="#6-Record-—-构造键值对类型" class="headerlink" title="6. Record&lt;K, V&gt; — 构造键值对类型"></a>6. <code>Record&lt;K, V&gt;</code> — 构造键值对类型</h3><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">type</span> <span class="hljs-title class_">Role</span> = <span class="hljs-string">&quot;admin&quot;</span> | <span class="hljs-string">&quot;user&quot;</span> | <span class="hljs-string">&quot;guest&quot;</span>;<br><br><span class="hljs-keyword">type</span> <span class="hljs-title class_">RolePermission</span> = <span class="hljs-title class_">Record</span>&lt;<span class="hljs-title class_">Role</span>, <span class="hljs-built_in">string</span>[]&gt;;<br><span class="hljs-comment">// &#123;</span><br><span class="hljs-comment">//   admin: string[];</span><br><span class="hljs-comment">//   user: string[];</span><br><span class="hljs-comment">//   guest: string[];</span><br><span class="hljs-comment">// &#125;</span><br><br><span class="hljs-keyword">const</span> <span class="hljs-attr">permissions</span>: <span class="hljs-title class_">RolePermission</span> = &#123;<br>  <span class="hljs-attr">admin</span>: [<span class="hljs-string">&quot;read&quot;</span>, <span class="hljs-string">&quot;write&quot;</span>, <span class="hljs-string">&quot;delete&quot;</span>],<br>  <span class="hljs-attr">user</span>: [<span class="hljs-string">&quot;read&quot;</span>, <span class="hljs-string">&quot;write&quot;</span>],<br>  <span class="hljs-attr">guest</span>: [<span class="hljs-string">&quot;read&quot;</span>],<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<p><strong>场景</strong>：枚举映射、字典。</p>
+<hr>
+<h2 id="三、联合类型操作"><a href="#三、联合类型操作" class="headerlink" title="三、联合类型操作"></a>三、联合类型操作</h2><h3 id="7-Exclude-—-从-T-中排除-U"><a href="#7-Exclude-—-从-T-中排除-U" class="headerlink" title="7. Exclude&lt;T, U&gt; — 从 T 中排除 U"></a>7. <code>Exclude&lt;T, U&gt;</code> — 从 T 中排除 U</h3><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">type</span> <span class="hljs-variable constant_">T1</span> = <span class="hljs-title class_">Exclude</span>&lt;<span class="hljs-string">&quot;a&quot;</span> | <span class="hljs-string">&quot;b&quot;</span> | <span class="hljs-string">&quot;c&quot;</span>, <span class="hljs-string">&quot;a&quot;</span>&gt;; <span class="hljs-comment">// &quot;b&quot; | &quot;c&quot;</span><br><span class="hljs-keyword">type</span> <span class="hljs-variable constant_">T2</span> = <span class="hljs-title class_">Exclude</span>&lt;<span class="hljs-built_in">string</span> | <span class="hljs-built_in">number</span> | <span class="hljs-built_in">boolean</span>, <span class="hljs-built_in">boolean</span>&gt;; <span class="hljs-comment">// string | number</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>场景</strong>：从联合类型中移除某些字面量。</p>
+<hr>
+<h3 id="8-Extract-—-从-T-中提取属于-U-的"><a href="#8-Extract-—-从-T-中提取属于-U-的" class="headerlink" title="8. Extract&lt;T, U&gt; — 从 T 中提取属于 U 的"></a>8. <code>Extract&lt;T, U&gt;</code> — 从 T 中提取属于 U 的</h3><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">type</span> <span class="hljs-variable constant_">T1</span> = <span class="hljs-title class_">Extract</span>&lt;<span class="hljs-string">&quot;a&quot;</span> | <span class="hljs-string">&quot;b&quot;</span> | <span class="hljs-string">&quot;c&quot;</span>, <span class="hljs-string">&quot;a&quot;</span> | <span class="hljs-string">&quot;b&quot;</span>&gt;; <span class="hljs-comment">// &quot;a&quot; | &quot;b&quot;</span><br><span class="hljs-keyword">type</span> <span class="hljs-variable constant_">T2</span> = <span class="hljs-title class_">Extract</span>&lt;<span class="hljs-built_in">string</span> | <span class="hljs-built_in">number</span> | (<span class="hljs-function">() =&gt;</span> <span class="hljs-built_in">void</span>), <span class="hljs-title class_">Function</span>&gt;; <span class="hljs-comment">// () =&gt; void</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>对比记忆</strong>：</p>
+<ul>
+<li><code>Exclude</code> &#x3D; 减集（排除）</li>
+<li><code>Extract</code> &#x3D; 交集（提取）</li>
+</ul>
+<hr>
+<h3 id="9-NonNullable-—-去掉-null-和-undefined"><a href="#9-NonNullable-—-去掉-null-和-undefined" class="headerlink" title="9. NonNullable&lt;T&gt; — 去掉 null 和 undefined"></a>9. <code>NonNullable&lt;T&gt;</code> — 去掉 null 和 undefined</h3><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">type</span> <span class="hljs-variable constant_">T1</span> = <span class="hljs-title class_">NonNullable</span>&lt;<span class="hljs-built_in">string</span> | <span class="hljs-literal">null</span> | <span class="hljs-literal">undefined</span>&gt;; <span class="hljs-comment">// string</span><br><span class="hljs-keyword">type</span> <span class="hljs-variable constant_">T2</span> = <span class="hljs-title class_">NonNullable</span>&lt;<span class="hljs-title class_">User</span> | <span class="hljs-literal">null</span>&gt;; <span class="hljs-comment">// User</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>场景</strong>：类型收窄后使用。</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">function</span> <span class="hljs-title function_">fn</span>(<span class="hljs-params"><span class="hljs-attr">v</span>: <span class="hljs-built_in">string</span> | <span class="hljs-literal">null</span></span>) &#123;<br>  <span class="hljs-keyword">const</span> <span class="hljs-attr">s</span>: <span class="hljs-title class_">NonNullable</span>&lt;<span class="hljs-keyword">typeof</span> v&gt; = v!; <span class="hljs-comment">// string</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="四、函数相关"><a href="#四、函数相关" class="headerlink" title="四、函数相关"></a>四、函数相关</h2><h3 id="10-ReturnType-—-获取函数返回值类型"><a href="#10-ReturnType-—-获取函数返回值类型" class="headerlink" title="10. ReturnType&lt;T&gt; — 获取函数返回值类型"></a>10. <code>ReturnType&lt;T&gt;</code> — 获取函数返回值类型</h3><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">function</span> <span class="hljs-title function_">getUser</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-keyword">return</span> &#123; <span class="hljs-attr">id</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;Tom&quot;</span> &#125;;<br>&#125;<br><br><span class="hljs-keyword">type</span> <span class="hljs-title class_">UserType</span> = <span class="hljs-title class_">ReturnType</span>&lt;<span class="hljs-keyword">typeof</span> getUser&gt;;<br><span class="hljs-comment">// &#123; id: number; name: string &#125;</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>场景</strong>：不手动写接口，直接复用函数返回类型。</p>
+<hr>
+<h3 id="11-Parameters-—-获取函数参数元组"><a href="#11-Parameters-—-获取函数参数元组" class="headerlink" title="11. Parameters&lt;T&gt; — 获取函数参数元组"></a>11. <code>Parameters&lt;T&gt;</code> — 获取函数参数元组</h3><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">function</span> <span class="hljs-title function_">createUser</span>(<span class="hljs-params"><span class="hljs-attr">name</span>: <span class="hljs-built_in">string</span>, <span class="hljs-attr">age</span>: <span class="hljs-built_in">number</span></span>) &#123;&#125;<br><br><span class="hljs-keyword">type</span> <span class="hljs-title class_">Params</span> = <span class="hljs-title class_">Parameters</span>&lt;<span class="hljs-keyword">typeof</span> createUser&gt;;<br><span class="hljs-comment">// [name: string, age: number]</span><br><br><span class="hljs-keyword">const</span> <span class="hljs-attr">args</span>: <span class="hljs-title class_">Params</span> = [<span class="hljs-string">&quot;Tom&quot;</span>, <span class="hljs-number">20</span>];<br><span class="hljs-title function_">createUser</span>(...args);<br></code></pre></td></tr></table></figure>
+
+<p><strong>场景</strong>：包装函数、高阶函数。</p>
+<hr>
+<h3 id="12-ConstructorParameters-—-获取构造函数参数"><a href="#12-ConstructorParameters-—-获取构造函数参数" class="headerlink" title="12. ConstructorParameters&lt;T&gt; — 获取构造函数参数"></a>12. <code>ConstructorParameters&lt;T&gt;</code> — 获取构造函数参数</h3><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Person</span> &#123;<br>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params"></span><br><span class="hljs-params">    <span class="hljs-keyword">public</span> <span class="hljs-attr">name</span>: <span class="hljs-built_in">string</span>,</span><br><span class="hljs-params">    <span class="hljs-keyword">public</span> <span class="hljs-attr">age</span>: <span class="hljs-built_in">number</span>,</span><br><span class="hljs-params">  </span>) &#123;&#125;<br>&#125;<br><br><span class="hljs-keyword">type</span> <span class="hljs-title class_">CtorParams</span> = <span class="hljs-title class_">ConstructorParameters</span>&lt;<span class="hljs-keyword">typeof</span> <span class="hljs-title class_">Person</span>&gt;;<br><span class="hljs-comment">// [name: string, age: number]</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="五、类相关"><a href="#五、类相关" class="headerlink" title="五、类相关"></a>五、类相关</h2><h3 id="13-InstanceType-—-获取构造函数实例类型"><a href="#13-InstanceType-—-获取构造函数实例类型" class="headerlink" title="13. InstanceType&lt;T&gt; — 获取构造函数实例类型"></a>13. <code>InstanceType&lt;T&gt;</code> — 获取构造函数实例类型</h3><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Person</span> &#123;<br>  name = <span class="hljs-string">&quot;Tom&quot;</span>;<br>  <span class="hljs-title function_">greet</span>(<span class="hljs-params"></span>) &#123;&#125;<br>&#125;<br><br><span class="hljs-keyword">type</span> <span class="hljs-title class_">PersonInstance</span> = <span class="hljs-title class_">InstanceType</span>&lt;<span class="hljs-keyword">typeof</span> <span class="hljs-title class_">Person</span>&gt;;<br><span class="hljs-comment">// Person</span><br><br><span class="hljs-keyword">const</span> <span class="hljs-attr">p</span>: <span class="hljs-title class_">PersonInstance</span> = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Person</span>();<br></code></pre></td></tr></table></figure>
+
+<p><strong>场景</strong>：泛型工厂函数。</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">function</span> create&lt;T <span class="hljs-keyword">extends</span> <span class="hljs-title function_">new</span> (...<span class="hljs-attr">args</span>: <span class="hljs-built_in">any</span>[]) =&gt; <span class="hljs-built_in">any</span>&gt;(<br>  <span class="hljs-title class_">Ctor</span>: T,<br>): <span class="hljs-title class_">InstanceType</span>&lt;T&gt; &#123;<br>  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Ctor</span>();<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="六、异步相关"><a href="#六、异步相关" class="headerlink" title="六、异步相关"></a>六、异步相关</h2><h3 id="14-Awaited-—-解包-Promise"><a href="#14-Awaited-—-解包-Promise" class="headerlink" title="14. Awaited&lt;T&gt; — 解包 Promise"></a>14. <code>Awaited&lt;T&gt;</code> — 解包 Promise</h3><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">type</span> <span class="hljs-variable constant_">T1</span> = <span class="hljs-title class_">Awaited</span>&lt;<span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">string</span>&gt;&gt;; <span class="hljs-comment">// string</span><br><span class="hljs-keyword">type</span> <span class="hljs-variable constant_">T2</span> = <span class="hljs-title class_">Awaited</span>&lt;<span class="hljs-title class_">Promise</span>&lt;<span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">number</span>&gt;&gt;&gt;; <span class="hljs-comment">// number</span><br><span class="hljs-keyword">type</span> <span class="hljs-variable constant_">T3</span> = <span class="hljs-title class_">Awaited</span>&lt;<span class="hljs-built_in">string</span>&gt;; <span class="hljs-comment">// string</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>场景</strong>：给异步函数返回值标注类型。</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">fetchUser</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-keyword">return</span> &#123; <span class="hljs-attr">id</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;Tom&quot;</span> &#125;;<br>&#125;<br><br><span class="hljs-keyword">type</span> <span class="hljs-title class_">User</span> = <span class="hljs-title class_">Awaited</span>&lt;<span class="hljs-title class_">ReturnType</span>&lt;<span class="hljs-keyword">typeof</span> fetchUser&gt;&gt;;<br><span class="hljs-comment">// &#123; id: number; name: string &#125;</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="七、大小写转换（TS-4-1-）"><a href="#七、大小写转换（TS-4-1-）" class="headerlink" title="七、大小写转换（TS 4.1+）"></a>七、大小写转换（TS 4.1+）</h2><h3 id="15-Uppercase-Lowercase-Capitalize-Uncapitalize"><a href="#15-Uppercase-Lowercase-Capitalize-Uncapitalize" class="headerlink" title="15. Uppercase &#x2F; Lowercase &#x2F; Capitalize &#x2F; Uncapitalize"></a>15. <code>Uppercase</code> &#x2F; <code>Lowercase</code> &#x2F; <code>Capitalize</code> &#x2F; <code>Uncapitalize</code></h3><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">type</span> <span class="hljs-variable constant_">T1</span> = <span class="hljs-title class_">Uppercase</span>&lt;<span class="hljs-string">&quot;hello&quot;</span>&gt;; <span class="hljs-comment">// &quot;HELLO&quot;</span><br><span class="hljs-keyword">type</span> <span class="hljs-variable constant_">T2</span> = <span class="hljs-title class_">Lowercase</span>&lt;<span class="hljs-string">&quot;HELLO&quot;</span>&gt;; <span class="hljs-comment">// &quot;hello&quot;</span><br><span class="hljs-keyword">type</span> <span class="hljs-variable constant_">T3</span> = <span class="hljs-title class_">Capitalize</span>&lt;<span class="hljs-string">&quot;hello&quot;</span>&gt;; <span class="hljs-comment">// &quot;Hello&quot;</span><br><span class="hljs-keyword">type</span> <span class="hljs-variable constant_">T4</span> = <span class="hljs-title class_">Uncapitalize</span>&lt;<span class="hljs-string">&quot;Hello&quot;</span>&gt;; <span class="hljs-comment">// &quot;hello&quot;</span><br><br><span class="hljs-comment">// 组合使用：生成事件处理函数名</span><br><span class="hljs-keyword">type</span> <span class="hljs-title class_">Event</span> = <span class="hljs-string">&quot;click&quot;</span> | <span class="hljs-string">&quot;change&quot;</span>;<br><span class="hljs-keyword">type</span> <span class="hljs-title class_">Handler</span> = <span class="hljs-string">`on<span class="hljs-subst">$&#123;Capitalize&lt;Event&gt;&#125;</span>`</span>;<br><span class="hljs-comment">// &quot;onClick&quot; | &quot;onChange&quot;</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="八、综合实战例子"><a href="#八、综合实战例子" class="headerlink" title="八、综合实战例子"></a>八、综合实战例子</h2><h3 id="从-API-响应生成表单类型"><a href="#从-API-响应生成表单类型" class="headerlink" title="从 API 响应生成表单类型"></a>从 API 响应生成表单类型</h3><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">interface</span> <span class="hljs-title class_">ApiUser</span> &#123;<br>  <span class="hljs-attr">id</span>: <span class="hljs-built_in">number</span>;<br>  <span class="hljs-attr">name</span>: <span class="hljs-built_in">string</span>;<br>  <span class="hljs-attr">email</span>: <span class="hljs-built_in">string</span>;<br>  <span class="hljs-attr">createdAt</span>: <span class="hljs-built_in">string</span>;<br>&#125;<br><br><span class="hljs-comment">// 表单类型：去掉 id 和 createdAt，全部可选</span><br><span class="hljs-keyword">type</span> <span class="hljs-title class_">UserForm</span> = <span class="hljs-title class_">Partial</span>&lt;<span class="hljs-title class_">Omit</span>&lt;<span class="hljs-title class_">ApiUser</span>, <span class="hljs-string">&quot;id&quot;</span> | <span class="hljs-string">&quot;createdAt&quot;</span>&gt;&gt;;<br><span class="hljs-comment">// &#123;</span><br><span class="hljs-comment">//   name?: string;</span><br><span class="hljs-comment">//   email?: string;</span><br><span class="hljs-comment">// &#125;</span><br><br><span class="hljs-comment">// 列表项类型：只保留部分</span><br><span class="hljs-keyword">type</span> <span class="hljs-title class_">UserListItem</span> = <span class="hljs-title class_">Pick</span>&lt;<span class="hljs-title class_">ApiUser</span>, <span class="hljs-string">&quot;id&quot;</span> | <span class="hljs-string">&quot;name&quot;</span>&gt;;<br><br><span class="hljs-comment">// 映射类型：id -&gt; User</span><br><span class="hljs-keyword">type</span> <span class="hljs-title class_">UserMap</span> = <span class="hljs-title class_">Record</span>&lt;<span class="hljs-built_in">number</span>, <span class="hljs-title class_">ApiUser</span>&gt;;<br></code></pre></td></tr></table></figure>
+
+<h3 id="提取函数类型"><a href="#提取函数类型" class="headerlink" title="提取函数类型"></a>提取函数类型</h3><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">const</span> actions = &#123;<br>  <span class="hljs-attr">add</span>: <span class="hljs-function">(<span class="hljs-params"><span class="hljs-attr">a</span>: <span class="hljs-built_in">number</span>, <span class="hljs-attr">b</span>: <span class="hljs-built_in">number</span></span>) =&gt;</span> a + b,<br>  <span class="hljs-attr">log</span>: <span class="hljs-function">(<span class="hljs-params"><span class="hljs-attr">msg</span>: <span class="hljs-built_in">string</span></span>) =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(msg),<br>&#125;;<br><br><span class="hljs-keyword">type</span> <span class="hljs-title class_">Actions</span> = <span class="hljs-keyword">typeof</span> actions;<br><span class="hljs-keyword">type</span> <span class="hljs-title class_">AddReturn</span> = <span class="hljs-title class_">ReturnType</span>&lt;<span class="hljs-title class_">Actions</span>[<span class="hljs-string">&quot;add&quot;</span>]&gt;; <span class="hljs-comment">// number</span><br><span class="hljs-keyword">type</span> <span class="hljs-title class_">LogParams</span> = <span class="hljs-title class_">Parameters</span>&lt;<span class="hljs-title class_">Actions</span>[<span class="hljs-string">&quot;log&quot;</span>]&gt;; <span class="hljs-comment">// [msg: string]</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="记忆口诀"><a href="#记忆口诀" class="headerlink" title="记忆口诀"></a>记忆口诀</h2><table>
+<thead>
+<tr>
+<th>分类</th>
+<th>工具类型</th>
+<th>关键词</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>修饰</td>
+<td><code>Partial</code> <code>Required</code> <code>Readonly</code></td>
+<td>可选 &#x2F; 必填 &#x2F; 只读</td>
+</tr>
+<tr>
+<td>筛选</td>
+<td><code>Pick</code> <code>Omit</code> <code>Record</code></td>
+<td>挑 &#x2F; 排 &#x2F; 建</td>
+</tr>
+<tr>
+<td>联合</td>
+<td><code>Exclude</code> <code>Extract</code> <code>NonNullable</code></td>
+<td>减 &#x2F; 交 &#x2F; 去空</td>
+</tr>
+<tr>
+<td>函数</td>
+<td><code>ReturnType</code> <code>Parameters</code> <code>ConstructorParameters</code></td>
+<td>返回 &#x2F; 参数</td>
+</tr>
+<tr>
+<td>类</td>
+<td><code>InstanceType</code></td>
+<td>实例</td>
+</tr>
+<tr>
+<td>异步</td>
+<td><code>Awaited</code></td>
+<td>解包</td>
+</tr>
+<tr>
+<td>字符串</td>
+<td><code>Uppercase</code> <code>Lowercase</code> <code>Capitalize</code> <code>Uncapitalize</code></td>
+<td>大小写</td>
+</tr>
+</tbody></table>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/TypeScript/" class="category-chain-item">TypeScript</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/TypeScript/" class="print-no-link">#TypeScript</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>TS 内置工具类型</div>
+      <div>http://example.com/2024/06/01/TypeScript/TS 内置工具类型/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年6月1日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/06/01/React/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%20React%20%E9%97%AD%E5%8C%85/" title="深入理解 React 闭包">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">深入理解 React 闭包</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/06/01/%E7%A7%BB%E5%8A%A8%E7%AB%AF/%E7%A7%BB%E5%8A%A8%E7%AB%AF300ms%E5%BB%B6%E8%BF%9F/" title="【移动端】移动端300ms延迟">
+                        <span class="hidden-mobile">【移动端】移动端300ms延迟</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

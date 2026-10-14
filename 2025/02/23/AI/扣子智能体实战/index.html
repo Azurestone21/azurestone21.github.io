@@ -19,12 +19,12 @@
   <meta name="author" content="Azure">
   <meta name="keywords" content="">
   
-    <meta name="description" content="提示词提示词分类 系统提示词 定义：大模型角色定位 + 回复逻辑 位置：在Agent的“人设与回复逻辑”中设置 作用：持续影响整个会话的响应模式   用户提示词 定义：用户直接提出的具体指令或问题 位置：在对话框中输入 作用：指导模型执行特定任务    插件插件 &#x3D; 一个工具集（Tool Set），内部包含一个或多个工具（Tool &#x2F; API）。 创建插件 以查询天气为例">
+    <meta name="description" content="扣子智能体实战提示词提示词分类 系统提示词 定义：大模型角色定位 + 回复逻辑 位置：在Agent的“人设与回复逻辑”中设置 作用：持续影响整个会话的响应模式   用户提示词 定义：用户直接提出的具体指令或问题 位置：在对话框中输入 作用：指导模型执行特定任务    插件插件 &#x3D; 一个工具集（Tool Set），内部包含一个或多个工具（Tool &#x2F; API）。 创建插件 以查询">
 <meta property="og:type" content="article">
 <meta property="og:title" content="扣子智能体实战">
 <meta property="og:url" content="http://example.com/2025/02/23/AI/%E6%89%A3%E5%AD%90%E6%99%BA%E8%83%BD%E4%BD%93%E5%AE%9E%E6%88%98/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="提示词提示词分类 系统提示词 定义：大模型角色定位 + 回复逻辑 位置：在Agent的“人设与回复逻辑”中设置 作用：持续影响整个会话的响应模式   用户提示词 定义：用户直接提出的具体指令或问题 位置：在对话框中输入 作用：指导模型执行特定任务    插件插件 &#x3D; 一个工具集（Tool Set），内部包含一个或多个工具（Tool &#x2F; API）。 创建插件 以查询天气为例">
+<meta property="og:description" content="扣子智能体实战提示词提示词分类 系统提示词 定义：大模型角色定位 + 回复逻辑 位置：在Agent的“人设与回复逻辑”中设置 作用：持续影响整个会话的响应模式   用户提示词 定义：用户直接提出的具体指令或问题 位置：在对话框中输入 作用：指导模型执行特定任务    插件插件 &#x3D; 一个工具集（Tool Set），内部包含一个或多个工具（Tool &#x2F; API）。 创建插件 以查询">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260324220817496.png">
 <meta property="og:image" content="https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260324221103343.png">
@@ -42,10 +42,10 @@
 <meta property="og:image" content="https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260325001304808.png">
 <meta property="og:image" content="https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260325001327522.png">
 <meta property="article:published_time" content="2025-02-23T02:00:00.000Z">
-<meta property="article:modified_time" content="2026-03-24T16:17:37.905Z">
+<meta property="article:modified_time" content="2026-10-14T14:27:12.069Z">
 <meta property="article:author" content="Azure">
+<meta property="article:tag" content="Agent">
 <meta property="article:tag" content="扣子">
-<meta property="article:tag" content="智能体">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260324220817496.png">
   
@@ -240,7 +240,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.5k 字
+          1.6k 字
         
       </span>
     
@@ -293,7 +293,7 @@
             
               <div class="markdown-body">
                 
-                <h2 id="提示词"><a href="#提示词" class="headerlink" title="提示词"></a>提示词</h2><h3 id="提示词分类"><a href="#提示词分类" class="headerlink" title="提示词分类"></a>提示词分类</h3><ul>
+                <h1 id="扣子智能体实战"><a href="#扣子智能体实战" class="headerlink" title="扣子智能体实战"></a>扣子智能体实战</h1><h2 id="提示词"><a href="#提示词" class="headerlink" title="提示词"></a>提示词</h2><h3 id="提示词分类"><a href="#提示词分类" class="headerlink" title="提示词分类"></a>提示词分类</h3><ul>
 <li><strong>系统提示词</strong><ul>
 <li>定义：大模型角色定位 + 回复逻辑</li>
 <li>位置：在Agent的“人设与回复逻辑”中设置</li>
@@ -405,6 +405,10 @@
 <p>预览：</p>
 <p><img src="https://azurestone21.oss-cn-guangzhou.aliyuncs.com/blogs/20260325001327522.png" srcset="/img/loading.gif" lazyload></p>
 <h3 id="发布-1"><a href="#发布-1" class="headerlink" title="发布"></a>发布</h3><p>点击右上角 “发布” 按钮。</p>
+<h3 id="使用工作流"><a href="#使用工作流" class="headerlink" title="使用工作流"></a>使用工作流</h3><ol>
+<li>进入智能体 -&gt; 编排 -&gt; 工作流 -&gt; 选择创建好的工作流。</li>
+<li>对话框发送“获取科技新闻”，会自动调用工作流，获取科技新闻，并按配置的要求格式输出。</li>
+</ol>
 
                 
               </div>
@@ -440,7 +444,7 @@
       
         <a href="/tags/%E6%89%A3%E5%AD%90/" class="print-no-link">#扣子</a>
       
-        <a href="/tags/%E6%99%BA%E8%83%BD%E4%BD%93/" class="print-no-link">#智能体</a>
+        <a href="/tags/Agent/" class="print-no-link">#Agent</a>
       
     </div>
   
@@ -497,9 +501,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2025/02/23/AI/AI%20Agent%E6%98%AF%E4%BB%80%E4%B9%88/" title="AI Agent是什么">
+                      <a href="/2025/02/23/AI/OpenAI%E5%BA%93/" title="OpenAI库">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">AI Agent是什么</span>
+                        <span class="hidden-mobile">OpenAI库</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -507,8 +511,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/11/14/%E6%9C%8D%E5%8A%A1%E5%99%A8/%E4%BC%A0%E8%BE%93%E6%96%87%E4%BB%B6/" title="传输文件">
-                        <span class="hidden-mobile">传输文件</span>
+                      <a href="/2025/01/03/AI/RAG%20%E6%A3%80%E7%B4%A2%E6%A8%A1%E5%BC%8F/" title="RAG 检索模式">
+                        <span class="hidden-mobile">RAG 检索模式</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

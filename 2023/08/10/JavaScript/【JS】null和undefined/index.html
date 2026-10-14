@@ -1,0 +1,757 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="【JS】null和undefined核心区别：undefined 是”系统没给值”，null 是”你主动给了个空值”。 一、本质区别   维度 undefined null    含义 未定义、缺失 空值、有意置空   类型 &quot;undefined&quot; &quot;object&quot;（历史 bug）   转数字 NaN 0   转布尔 false false   转字符串 &amp;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【JS】null和undefined">
+<meta property="og:url" content="http://example.com/2023/08/10/JavaScript/%E3%80%90JS%E3%80%91null%E5%92%8Cundefined/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="【JS】null和undefined核心区别：undefined 是”系统没给值”，null 是”你主动给了个空值”。 一、本质区别   维度 undefined null    含义 未定义、缺失 空值、有意置空   类型 &quot;undefined&quot; &quot;object&quot;（历史 bug）   转数字 NaN 0   转布尔 false false   转字符串 &amp;">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-08-10T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-14T14:33:58.335Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="undefined">
+<meta property="article:tag" content="void 0">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>【JS】null和undefined - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">【JS】null和undefined</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-08-10 10:00" pubdate>
+          2023年8月10日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          10 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">【JS】null和undefined</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="【JS】null和undefined"><a href="#【JS】null和undefined" class="headerlink" title="【JS】null和undefined"></a>【JS】null和undefined</h1><p>核心区别：<strong><code>undefined</code> 是”系统没给值”，<code>null</code> 是”你主动给了个空值”</strong>。</p>
+<h2 id="一、本质区别"><a href="#一、本质区别" class="headerlink" title="一、本质区别"></a>一、本质区别</h2><table>
+<thead>
+<tr>
+<th>维度</th>
+<th><code>undefined</code></th>
+<th><code>null</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>含义</td>
+<td>未定义、缺失</td>
+<td>空值、有意置空</td>
+</tr>
+<tr>
+<td>类型</td>
+<td><code>&quot;undefined&quot;</code></td>
+<td><code>&quot;object&quot;</code>（历史 bug）</td>
+</tr>
+<tr>
+<td>转数字</td>
+<td><code>NaN</code></td>
+<td><code>0</code></td>
+</tr>
+<tr>
+<td>转布尔</td>
+<td><code>false</code></td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td>转字符串</td>
+<td><code>&quot;undefined&quot;</code></td>
+<td><code>&quot;null&quot;</code></td>
+</tr>
+<tr>
+<td>是否关键字</td>
+<td>不是（是全局属性，老代码可被赋值）</td>
+<td>是（保留字，不能被赋值）</td>
+</tr>
+<tr>
+<td><code>JSON.stringify</code></td>
+<td>对象里会被忽略</td>
+<td>保留为<code>null</code></td>
+</tr>
+</tbody></table>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">typeof</span> <span class="hljs-literal">undefined</span>; <span class="hljs-comment">// &quot;undefined&quot;</span><br><span class="hljs-keyword">typeof</span> <span class="hljs-literal">null</span>; <span class="hljs-comment">// &quot;object&quot;  ← 著名的历史遗留</span><br><br><span class="hljs-title class_">Number</span>(<span class="hljs-literal">undefined</span>); <span class="hljs-comment">// NaN</span><br><span class="hljs-title class_">Number</span>(<span class="hljs-literal">null</span>); <span class="hljs-comment">// 0</span><br><br><span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(&#123; <span class="hljs-attr">a</span>: <span class="hljs-literal">undefined</span>, <span class="hljs-attr">b</span>: <span class="hljs-literal">null</span> &#125;); <span class="hljs-comment">// &#x27;&#123;&quot;b&quot;:null&#125;&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<p><code>typeof null === &quot;object&quot;</code> 是 1995 年实现时的 bug，因为 JS 最初用低位标记类型，<code>null</code> 的全 0 表示被误判为对象。这个 bug 因为兼容性永远修不掉了。</p>
+<h2 id="二、什么时候会出现-undefined"><a href="#二、什么时候会出现-undefined" class="headerlink" title="二、什么时候会出现 undefined"></a>二、什么时候会出现 <code>undefined</code></h2><p><code>undefined</code> 基本是<strong>系统自动产生</strong>的，常见场景：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">let</span> a; <span class="hljs-comment">// 声明未赋值</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(a); <span class="hljs-comment">// undefined</span><br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">f</span>(<span class="hljs-params">x</span>) &#123;<br>  <span class="hljs-keyword">return</span> x;<br>&#125;<br><span class="hljs-title function_">f</span>(); <span class="hljs-comment">// 实参没传，x 是 undefined</span><br><br><span class="hljs-keyword">const</span> obj = &#123;&#125;;<br>obj.<span class="hljs-property">missing</span>; <span class="hljs-comment">// 访问不存在的属性</span><br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">g</span>(<span class="hljs-params"></span>) &#123;&#125; <span class="hljs-comment">// 没有 return</span><br><span class="hljs-title function_">g</span>(); <span class="hljs-comment">// undefined</span><br><br>[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>][<span class="hljs-number">10</span>]; <span class="hljs-comment">// 越界访问</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="三、什么时候主动用-null"><a href="#三、什么时候主动用-null" class="headerlink" title="三、什么时候主动用 null"></a>三、什么时候主动用 <code>null</code></h2><p><code>null</code> 是<strong>人为主动表达”这里故意是空的”</strong>。典型场景：</p>
+<h3 id="1-表示”有意置空”的初始值"><a href="#1-表示”有意置空”的初始值" class="headerlink" title="1. 表示”有意置空”的初始值"></a>1. 表示”有意置空”的初始值</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// 想表达&quot;这个变量将来会放对象，但现在还没有&quot;</span><br><span class="hljs-keyword">let</span> currentUser = <span class="hljs-literal">null</span>;<br><br><span class="hljs-comment">// 对比：let currentUser; 语义是&quot;还没定义&quot;，不够明确</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="2-释放引用，帮助-GC"><a href="#2-释放引用，帮助-GC" class="headerlink" title="2. 释放引用，帮助 GC"></a>2. 释放引用，帮助 GC</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">let</span> bigData = <span class="hljs-title function_">loadHugeData</span>();<br><span class="hljs-comment">// 用完了，主动断开引用</span><br>bigData = <span class="hljs-literal">null</span>;<br></code></pre></td></tr></table></figure>
+
+<p>虽然现代 GC 对这种情况不一定需要手动置 <code>null</code>，但在长生命周期对象（如缓存、全局单例）里，主动置 <code>null</code> 是明确释放意图的好习惯。</p>
+<h3 id="3-函数返回值表示”没有结果”"><a href="#3-函数返回值表示”没有结果”" class="headerlink" title="3. 函数返回值表示”没有结果”"></a>3. 函数返回值表示”没有结果”</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">findUser</span>(<span class="hljs-params">id</span>) &#123;<br>  <span class="hljs-keyword">const</span> user = db.<span class="hljs-title function_">find</span>(id);<br>  <span class="hljs-keyword">return</span> user ?? <span class="hljs-literal">null</span>; <span class="hljs-comment">// 明确：找不到就是 null，不是 undefined</span><br>&#125;<br><br><span class="hljs-comment">// 对比：如果返回 undefined，调用方可能分不清</span><br><span class="hljs-comment">// 是&quot;没找到&quot;还是&quot;函数忘了 return&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="4-DOM-API-约定"><a href="#4-DOM-API-约定" class="headerlink" title="4. DOM &#x2F; API 约定"></a>4. DOM &#x2F; API 约定</h3><p>很多 Web API 用 <code>null</code> 表示”无”：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-variable language_">document</span>.<span class="hljs-title function_">getElementById</span>(<span class="hljs-string">&quot;nope&quot;</span>); <span class="hljs-comment">// null</span><br><span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">parse</span>(<span class="hljs-string">&quot;null&quot;</span>); <span class="hljs-comment">// null</span><br><span class="hljs-comment">// 正则匹配失败</span><br><span class="hljs-string">&quot;abc&quot;</span>.<span class="hljs-title function_">match</span>(<span class="hljs-regexp">/z/</span>); <span class="hljs-comment">// null</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="5-作为占位，配合可选链-空值合并"><a href="#5-作为占位，配合可选链-空值合并" class="headerlink" title="5. 作为占位，配合可选链 &#x2F; 空值合并"></a>5. 作为占位，配合可选链 &#x2F; 空值合并</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> config = &#123;<br>  <span class="hljs-attr">timeout</span>: <span class="hljs-literal">null</span>, <span class="hljs-comment">// 明确&quot;不设置超时&quot;</span><br>&#125;;<br><br><span class="hljs-keyword">const</span> t = config.<span class="hljs-property">timeout</span> ?? <span class="hljs-number">3000</span>; <span class="hljs-comment">// null 会走默认值</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="四、null-vs-undefined-在判断时的坑"><a href="#四、null-vs-undefined-在判断时的坑" class="headerlink" title="四、null vs undefined 在判断时的坑"></a>四、<code>null</code> vs <code>undefined</code> 在判断时的坑</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-literal">null</span> == <span class="hljs-literal">undefined</span>; <span class="hljs-comment">// true（宽松相等，两者互相相等）</span><br><span class="hljs-literal">null</span> === <span class="hljs-literal">undefined</span>; <span class="hljs-comment">// false</span><br><br><span class="hljs-comment">// 判断&quot;空&quot;的常见写法</span><br><span class="hljs-keyword">if</span> (x == <span class="hljs-literal">null</span>) &#123;<br>&#125; <span class="hljs-comment">// 同时覆盖 null 和 undefined（推荐）</span><br><span class="hljs-keyword">if</span> (x === <span class="hljs-literal">null</span> || x === <span class="hljs-literal">undefined</span>) &#123;<br>&#125; <span class="hljs-comment">// 等价，啰嗦</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>空值合并 <code>??</code></strong> 只对 <code>null</code>&#x2F;<code>undefined</code> 生效：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-number">0</span> ?? <span class="hljs-string">&quot;default&quot;</span>; <span class="hljs-comment">// 0     （?? 不会把 0 当空）</span><br><span class="hljs-string">&quot;&quot;</span> ?? <span class="hljs-string">&quot;default&quot;</span>; <span class="hljs-comment">// &#x27;&#x27;    （也不会把空字符串当空）</span><br><span class="hljs-literal">null</span> ?? <span class="hljs-string">&quot;default&quot;</span>; <span class="hljs-comment">// &#x27;default&#x27;</span><br><span class="hljs-literal">undefined</span> ?? <span class="hljs-string">&quot;default&quot;</span>; <span class="hljs-comment">// &#x27;default&#x27;</span><br><br><span class="hljs-comment">// 对比 ||：会把 0、&#x27;&#x27;、false 都当空</span><br><span class="hljs-number">0</span> || <span class="hljs-string">&quot;default&quot;</span>; <span class="hljs-comment">// &#x27;default&#x27;  ← 常常是 bug</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="五、void-0"><a href="#五、void-0" class="headerlink" title="五、void 0"></a>五、<code>void 0</code></h2><h3 id="1-为什么会有-void-0"><a href="#1-为什么会有-void-0" class="headerlink" title="1. 为什么会有 void 0"></a>1. 为什么会有 <code>void 0</code></h3><p>在 ES5 之前，<code>undefined</code> 只是全局对象的一个普通属性，<code>undefined</code> 不是保留字，可以被改写：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// 老浏览器 / 非严格模式</span><br><span class="hljs-literal">undefined</span> = <span class="hljs-number">123</span>;<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-literal">undefined</span>); <span class="hljs-comment">// 123（污染了！）</span><br><br><span class="hljs-comment">// 局部作用域里更危险</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">f</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-keyword">var</span> <span class="hljs-literal">undefined</span> = <span class="hljs-string">&quot;oops&quot;</span>;<br>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-literal">undefined</span>); <span class="hljs-comment">// &#x27;oops&#x27;</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这意味着用 <code>undefined</code> 做判断并不可靠。</p>
+<h3 id="2-void-0-的作用"><a href="#2-void-0-的作用" class="headerlink" title="2. void 0 的作用"></a>2. <code>void 0</code> 的作用</h3><p><strong><code>void</code> 是一个运算符，不可被覆盖，它对任意表达式求值后永远返回真正的 <code>undefined</code>。</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">void</span> <span class="hljs-number">0</span>; <span class="hljs-comment">// undefined</span><br><span class="hljs-keyword">void</span> <span class="hljs-string">&quot;abc&quot;</span>; <span class="hljs-comment">// undefined</span><br><span class="hljs-title function_">void</span> (<span class="hljs-number">1</span> + <span class="hljs-number">1</span>); <span class="hljs-comment">// undefined</span><br><span class="hljs-keyword">void</span> <span class="hljs-number">0</span> === <span class="hljs-literal">undefined</span>; <span class="hljs-comment">// true</span><br></code></pre></td></tr></table></figure>
+
+<p>因为 <code>void</code> 是关键字，不能被覆盖，所以 <code>void 0</code> 是 <strong>保证拿到真 <code>undefined</code> 的安全写法</strong> 。压缩工具（如 UglifyJS）也喜欢用它，因为 <code>void 0</code> 比 <code>undefined</code> 少 3 个字符。</p>
+<h3 id="3-现在还需要吗？"><a href="#3-现在还需要吗？" class="headerlink" title="3. 现在还需要吗？"></a>3. 现在还需要吗？</h3><ol>
+<li>现代环境 <code>undefined</code> 已只读，直接用即可；</li>
+<li><code>void 0</code> 主要出现在压缩产物里。</li>
+<li>另一用途：<code>&lt;a href=&quot;javascript:void(0)&quot;&gt;</code> 阻止跳转。</li>
+</ol>
+<h2 id="六、TypeScript-中的-null-undefined"><a href="#六、TypeScript-中的-null-undefined" class="headerlink" title="六、TypeScript 中的 null&#x2F;undefined"></a>六、TypeScript 中的 null&#x2F;undefined</h2><p><strong>不开 <code>strictNullChecks</code></strong>：TS 把 <code>null</code>&#x2F;<code>undefined</code> 当作 <strong>所有类型的子类型</strong> ，可以赋给任何类型。这基本等于没检查。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs TypeScript"><span class="hljs-keyword">let</span> <span class="hljs-attr">s</span>: <span class="hljs-built_in">string</span> = <span class="hljs-literal">null</span>;      <span class="hljs-comment">// OK</span><br><span class="hljs-keyword">let</span> <span class="hljs-attr">n</span>: <span class="hljs-built_in">number</span> = <span class="hljs-literal">undefined</span>; <span class="hljs-comment">// OK</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>开启 <code>strictNullChecks</code> 后</strong>（<code>strict: true</code> 包含）：</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">let</span> <span class="hljs-attr">s</span>: <span class="hljs-built_in">string</span> = <span class="hljs-literal">null</span>; <span class="hljs-comment">// ❌</span><br><span class="hljs-keyword">let</span> <span class="hljs-attr">s</span>: <span class="hljs-built_in">string</span> | <span class="hljs-literal">null</span> = <span class="hljs-literal">null</span>; <span class="hljs-comment">// ✅</span><br><span class="hljs-keyword">interface</span> <span class="hljs-title class_">User</span> &#123;<br>  <span class="hljs-attr">age</span>?: <span class="hljs-built_in">number</span>;<br>&#125; <span class="hljs-comment">// age: number | undefined</span><br></code></pre></td></tr></table></figure>
+
+<p>编译器强制处理空值：</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">if</span> (user) &#123;<br>  user.<span class="hljs-property">name</span>;<br>&#125; <span class="hljs-comment">// 类型收窄</span><br>user?.<span class="hljs-property">name</span>; <span class="hljs-comment">// 可选链</span><br>user!.<span class="hljs-property">name</span>; <span class="hljs-comment">// 非空断言（慎用）</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>约定分工</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>未初始化 &#x2F; 可选属性 &#x2F; 参数没传</td>
+<td><code>undefined</code></td>
+</tr>
+<tr>
+<td>查不到结果 &#x2F; API 无数据</td>
+<td><code>null</code></td>
+</tr>
+</tbody></table>
+<p><code>exactOptionalPropertyTypes</code>（TS 4.4+）：<code>?</code> 属性只能省略，不能显式写 <code>undefined</code>。</p>
+<h2 id="七、实践建议"><a href="#七、实践建议" class="headerlink" title="七、实践建议"></a>七、实践建议</h2><ol>
+<li><strong>不要给变量显式赋 <code>undefined</code></strong>。想表达”空”，用 <code>null</code>；<code>undefined</code> 留给系统自动产生。</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">let</span> a = <span class="hljs-literal">undefined</span>; <span class="hljs-comment">// ❌ 反模式</span><br><span class="hljs-keyword">let</span> a = <span class="hljs-literal">null</span>; <span class="hljs-comment">// ✅ 想表达空就用 null</span><br></code></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><strong>API &#x2F; 函数返回值统一约定</strong>：要么统一用 <code>null</code> 表示”无结果”，要么统一用 <code>undefined</code>，别混。</li>
+<li><strong>判断空值用 <code>== null</code></strong>（同时覆盖两者），或用 <code>??</code>。</li>
+<li><strong>默认参数只对 <code>undefined</code> 生效</strong>：</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">f</span>(<span class="hljs-params">x = <span class="hljs-number">1</span></span>) &#123;<br>  <span class="hljs-keyword">return</span> x;<br>&#125;<br><span class="hljs-title function_">f</span>(<span class="hljs-literal">undefined</span>); <span class="hljs-comment">// 1</span><br><span class="hljs-title function_">f</span>(<span class="hljs-literal">null</span>); <span class="hljs-comment">// null  ← null 不会触发默认值</span><br></code></pre></td></tr></table></figure>
+
+<p>这是很多人踩的坑：传 <code>null</code> 不会用默认值。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/JavaScript/" class="category-chain-item">JavaScript</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/undefined/" class="print-no-link">#undefined</a>
+      
+        <a href="/tags/void-0/" class="print-no-link">#void 0</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>【JS】null和undefined</div>
+      <div>http://example.com/2023/08/10/JavaScript/【JS】null和undefined/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年8月10日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/08/10/JavaScript/%E3%80%90JS%E3%80%91let%EF%BC%8Cconst%E5%92%8Cvar/" title="【JS】let，const和var">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">【JS】let，const和var</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/08/10/%E7%8A%B6%E6%80%81%E7%AE%A1%E7%90%86/MobX%20%E6%A0%B8%E5%BF%83%EF%BC%9A%E8%A7%82%E5%AF%9F%E8%80%85%EF%BC%88Observers%EF%BC%89/" title="MobX 核心：观察者（Observers）">
+                        <span class="hidden-mobile">MobX 核心：观察者（Observers）</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

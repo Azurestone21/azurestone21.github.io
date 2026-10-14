@@ -1,0 +1,946 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="AST 抽象语法树1. AST 是什么AST（Abstract Syntax Tree，抽象语法树） 是源代码语法结构的一种树状表示。 编译器、解释器、Lint 工具、格式化工具、IDE 等，通常都会先把代码解析成 AST，再进行分析、转换或生成代码。 核心流程： 1源代码 → 词法分析 → 语法分析 → AST → 语义分析&#x2F;优化&#x2F;转换 → 代码生成&#x2F;执行  特点：  树形结构：每个节点代表程序">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AST 抽象语法树">
+<meta property="og:url" content="http://example.com/2024/12/01/JavaScript/AST%20%E6%8A%BD%E8%B1%A1%E8%AF%AD%E6%B3%95%E6%A0%91/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="AST 抽象语法树1. AST 是什么AST（Abstract Syntax Tree，抽象语法树） 是源代码语法结构的一种树状表示。 编译器、解释器、Lint 工具、格式化工具、IDE 等，通常都会先把代码解析成 AST，再进行分析、转换或生成代码。 核心流程： 1源代码 → 词法分析 → 语法分析 → AST → 语义分析&#x2F;优化&#x2F;转换 → 代码生成&#x2F;执行  特点：  树形结构：每个节点代表程序">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-11-30T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-14T14:26:02.475Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="AST">
+<meta property="article:tag" content="JavaScript">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>AST 抽象语法树 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">AST 抽象语法树</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-12-01 00:00" pubdate>
+          2024年12月1日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          12 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">AST 抽象语法树</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="AST-抽象语法树"><a href="#AST-抽象语法树" class="headerlink" title="AST 抽象语法树"></a>AST 抽象语法树</h1><h2 id="1-AST-是什么"><a href="#1-AST-是什么" class="headerlink" title="1. AST 是什么"></a>1. AST 是什么</h2><p><strong>AST（Abstract Syntax Tree，抽象语法树）</strong> 是源代码语法结构的一种树状表示。</p>
+<p>编译器、解释器、Lint 工具、格式化工具、IDE 等，通常都会先把代码解析成 AST，再进行分析、转换或生成代码。</p>
+<p>核心流程：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">源代码 → 词法分析 → 语法分析 → AST → 语义分析/优化/转换 → 代码生成/执行<br></code></pre></td></tr></table></figure>
+
+<p>特点：</p>
+<ul>
+<li><strong>树形结构</strong>：每个节点代表程序里的一个结构。</li>
+<li><strong>抽象</strong>：忽略空格、换行、注释、分号、括号等不影响语义的细节。</li>
+<li><strong>保留语义</strong>：保留运算符优先级、嵌套关系、声明与表达式关系等。</li>
+<li><strong>可遍历、可修改、可生成代码</strong>。</li>
+<li><strong>由解析器生成</strong>：如 Acorn、Babel、TypeScript Compiler。</li>
+</ul>
+<hr>
+<h2 id="2-AST-vs-CST"><a href="#2-AST-vs-CST" class="headerlink" title="2. AST vs CST"></a>2. AST vs CST</h2><table>
+<thead>
+<tr>
+<th>对比项</th>
+<th>AST 抽象语法树</th>
+<th>CST 具体语法树</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>保留内容</td>
+<td>只保留语义相关结构</td>
+<td>保留所有 token</td>
+</tr>
+<tr>
+<td>是否包含空格&#x2F;注释</td>
+<td>通常不包含</td>
+<td>包含</td>
+</tr>
+<tr>
+<td>用途</td>
+<td>分析、转换、代码生成</td>
+<td>格式化、语法高亮、精确还原</td>
+</tr>
+<tr>
+<td>简洁度</td>
+<td>更简洁</td>
+<td>更冗长</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="3-JavaScript-中的-AST"><a href="#3-JavaScript-中的-AST" class="headerlink" title="3. JavaScript 中的 AST"></a>3. JavaScript 中的 AST</h2><p>JavaScript 生态最常用的 AST 规范是 <strong>ESTree</strong>。</p>
+<p>常见变体：</p>
+<ul>
+<li><strong>ESTree</strong>：Acorn、Espree 等使用。</li>
+<li><strong>Babel AST</strong>：Babel 使用，和 ESTree 相似但不完全一样。</li>
+<li><strong>TypeScript AST</strong>：TypeScript Compiler API 使用。</li>
+</ul>
+<p>JavaScript AST 通常由普通对象组成，可以序列化成 JSON。每个节点都有一个 <code>type</code> 字段表示节点类型。</p>
+<p>常见字段：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs js">&#123;<br>  <span class="hljs-attr">type</span>: <span class="hljs-string">&quot;Identifier&quot;</span>,<br>  <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;x&quot;</span>,<br>  <span class="hljs-attr">start</span>: <span class="hljs-number">4</span>,<br>  <span class="hljs-attr">end</span>: <span class="hljs-number">5</span>,<br>  <span class="hljs-attr">loc</span>: &#123; ... &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><code>type</code>：节点类型。</li>
+<li><code>start</code> &#x2F; <code>end</code>：在源码中的位置。</li>
+<li><code>loc</code>：行列位置信息。</li>
+<li>其他字段：子节点、名称、值、操作符等。</li>
+</ul>
+<hr>
+<h2 id="4-示例：let-x-1-2"><a href="#4-示例：let-x-1-2" class="headerlink" title="4. 示例：let x = 1 + 2;"></a>4. 示例：<code>let x = 1 + 2;</code></h2><p>源码：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">let</span> x = <span class="hljs-number">1</span> + <span class="hljs-number">2</span>;<br></code></pre></td></tr></table></figure>
+
+<p>ESTree 简化 AST：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Program&quot;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;sourceType&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;script&quot;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;body&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><br>    <span class="hljs-punctuation">&#123;</span><br>      <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;VariableDeclaration&quot;</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">&quot;kind&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;let&quot;</span><span class="hljs-punctuation">,</span><br>      <span class="hljs-attr">&quot;declarations&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><br>        <span class="hljs-punctuation">&#123;</span><br>          <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;VariableDeclarator&quot;</span><span class="hljs-punctuation">,</span><br>          <span class="hljs-attr">&quot;id&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>            <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Identifier&quot;</span><span class="hljs-punctuation">,</span><br>            <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;x&quot;</span><br>          <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br>          <span class="hljs-attr">&quot;init&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>            <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;BinaryExpression&quot;</span><span class="hljs-punctuation">,</span><br>            <span class="hljs-attr">&quot;operator&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;+&quot;</span><span class="hljs-punctuation">,</span><br>            <span class="hljs-attr">&quot;left&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>              <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Literal&quot;</span><span class="hljs-punctuation">,</span><br>              <span class="hljs-attr">&quot;value&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1</span><span class="hljs-punctuation">,</span><br>              <span class="hljs-attr">&quot;raw&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;1&quot;</span><br>            <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br>            <span class="hljs-attr">&quot;right&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>              <span class="hljs-attr">&quot;type&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;Literal&quot;</span><span class="hljs-punctuation">,</span><br>              <span class="hljs-attr">&quot;value&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-number">2</span><span class="hljs-punctuation">,</span><br>              <span class="hljs-attr">&quot;raw&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;2&quot;</span><br>            <span class="hljs-punctuation">&#125;</span><br>          <span class="hljs-punctuation">&#125;</span><br>        <span class="hljs-punctuation">&#125;</span><br>      <span class="hljs-punctuation">]</span><br>    <span class="hljs-punctuation">&#125;</span><br>  <span class="hljs-punctuation">]</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+<p>树形理解：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs text">Program<br>  VariableDeclaration kind=&quot;let&quot;<br>    VariableDeclarator<br>      id: Identifier name=&quot;x&quot;<br>      init: BinaryExpression operator=&quot;+&quot;<br>        left: Literal value=1<br>        right: Literal value=2<br></code></pre></td></tr></table></figure>
+
+<p>含义：声明变量 <code>x</code>，初始化值为加法表达式，左操作数 <code>1</code>，右操作数 <code>2</code>。</p>
+<hr>
+<h2 id="5-常见-JavaScript-AST-节点"><a href="#5-常见-JavaScript-AST-节点" class="headerlink" title="5. 常见 JavaScript AST 节点"></a>5. 常见 JavaScript AST 节点</h2><h3 id="语句类"><a href="#语句类" class="headerlink" title="语句类"></a>语句类</h3><table>
+<thead>
+<tr>
+<th>节点</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Program</code></td>
+<td>根节点</td>
+</tr>
+<tr>
+<td><code>VariableDeclaration</code></td>
+<td>变量声明，如<code>let x = 1</code></td>
+</tr>
+<tr>
+<td><code>FunctionDeclaration</code></td>
+<td>函数声明</td>
+</tr>
+<tr>
+<td><code>ReturnStatement</code></td>
+<td><code>return</code></td>
+</tr>
+<tr>
+<td><code>IfStatement</code></td>
+<td><code>if</code></td>
+</tr>
+<tr>
+<td><code>ForStatement</code></td>
+<td><code>for</code></td>
+</tr>
+<tr>
+<td><code>BlockStatement</code></td>
+<td><code>{ ... }</code></td>
+</tr>
+<tr>
+<td><code>ExpressionStatement</code></td>
+<td>表达式语句</td>
+</tr>
+</tbody></table>
+<h3 id="表达式类"><a href="#表达式类" class="headerlink" title="表达式类"></a>表达式类</h3><table>
+<thead>
+<tr>
+<th>节点</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Identifier</code></td>
+<td>标识符，如变量名<code>x</code></td>
+</tr>
+<tr>
+<td><code>Literal</code></td>
+<td>字面量，如<code>1</code>、<code>&quot;hello&quot;</code>、<code>true</code></td>
+</tr>
+<tr>
+<td><code>BinaryExpression</code></td>
+<td>二元运算，如<code>a + b</code></td>
+</tr>
+<tr>
+<td><code>LogicalExpression</code></td>
+<td>逻辑运算，如<code>a &amp;&amp; b</code></td>
+</tr>
+<tr>
+<td><code>UnaryExpression</code></td>
+<td>一元运算，如<code>!a</code></td>
+</tr>
+<tr>
+<td><code>AssignmentExpression</code></td>
+<td>赋值，如<code>x = 1</code></td>
+</tr>
+<tr>
+<td><code>CallExpression</code></td>
+<td>函数调用，如<code>fn()</code></td>
+</tr>
+<tr>
+<td><code>MemberExpression</code></td>
+<td>成员访问，如<code>obj.name</code></td>
+</tr>
+<tr>
+<td><code>ObjectExpression</code></td>
+<td>对象字面量</td>
+</tr>
+<tr>
+<td><code>ArrayExpression</code></td>
+<td>数组字面量</td>
+</tr>
+<tr>
+<td><code>ArrowFunctionExpression</code></td>
+<td>箭头函数</td>
+</tr>
+<tr>
+<td><code>ConditionalExpression</code></td>
+<td>三元表达式</td>
+</tr>
+</tbody></table>
+<h3 id="模块类"><a href="#模块类" class="headerlink" title="模块类"></a>模块类</h3><table>
+<thead>
+<tr>
+<th>节点</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ImportDeclaration</code></td>
+<td><code>import</code></td>
+</tr>
+<tr>
+<td><code>ExportNamedDeclaration</code></td>
+<td>命名导出</td>
+</tr>
+<tr>
+<td><code>ExportDefaultDeclaration</code></td>
+<td>默认导出</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="6-函数-AST-示例"><a href="#6-函数-AST-示例" class="headerlink" title="6. 函数 AST 示例"></a>6. 函数 AST 示例</h2><p>源码：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">add</span>(<span class="hljs-params">a, b</span>) &#123;<br>  <span class="hljs-keyword">return</span> a + b;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>简化结构：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs text">FunctionDeclaration<br>  id: Identifier name=&quot;add&quot;<br>  params:<br>    Identifier name=&quot;a&quot;<br>    Identifier name=&quot;b&quot;<br>  body: BlockStatement<br>    body:<br>      ReturnStatement<br>        argument: BinaryExpression operator=&quot;+&quot;<br>          left: Identifier name=&quot;a&quot;<br>          right: Identifier name=&quot;b&quot;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="7-常用解析器"><a href="#7-常用解析器" class="headerlink" title="7. 常用解析器"></a>7. 常用解析器</h2><table>
+<thead>
+<tr>
+<th>工具</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>acorn</code></td>
+<td>轻量、快速，输出 ESTree</td>
+</tr>
+<tr>
+<td><code>espree</code></td>
+<td>ESLint 使用，输出 ESTree</td>
+</tr>
+<tr>
+<td><code>@babel/parser</code></td>
+<td>Babel 使用，输出 Babel AST</td>
+</tr>
+<tr>
+<td>TypeScript Compiler API</td>
+<td>TypeScript 自己的 AST</td>
+</tr>
+<tr>
+<td><code>esprima</code></td>
+<td>早期常用 ESTree 解析器</td>
+</tr>
+</tbody></table>
+<p>Acorn 示例：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> acorn = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;acorn&quot;</span>);<br><br><span class="hljs-keyword">const</span> ast = acorn.<span class="hljs-title function_">parse</span>(<span class="hljs-string">&quot;let x = 1 + 2;&quot;</span>, &#123;<br>  <span class="hljs-attr">ecmaVersion</span>: <span class="hljs-number">2020</span>,<br>&#125;);<br><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(ast.<span class="hljs-property">body</span>[<span class="hljs-number">0</span>].<span class="hljs-property">type</span>); <span class="hljs-comment">// VariableDeclaration</span><br></code></pre></td></tr></table></figure>
+
+<p>Babel 示例：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> parser = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;@babel/parser&quot;</span>);<br><br><span class="hljs-keyword">const</span> ast = parser.<span class="hljs-title function_">parse</span>(<span class="hljs-string">&quot;let x = 1 + 2;&quot;</span>);<br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(ast.<span class="hljs-property">type</span>); <span class="hljs-comment">// File</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(ast.<span class="hljs-property">program</span>.<span class="hljs-property">type</span>); <span class="hljs-comment">// Program</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="8-遍历与转换-AST"><a href="#8-遍历与转换-AST" class="headerlink" title="8. 遍历与转换 AST"></a>8. 遍历与转换 AST</h2><p>Babel 生态典型流程：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">解析 → 遍历 → 转换 → 生成代码<br></code></pre></td></tr></table></figure>
+
+<p>示例：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> parser = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;@babel/parser&quot;</span>);<br><span class="hljs-keyword">const</span> traverse = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;@babel/traverse&quot;</span>).<span class="hljs-property">default</span>;<br><span class="hljs-keyword">const</span> generate = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;@babel/generator&quot;</span>).<span class="hljs-property">default</span>;<br><span class="hljs-keyword">const</span> t = <span class="hljs-built_in">require</span>(<span class="hljs-string">&quot;@babel/types&quot;</span>);<br><br><span class="hljs-keyword">const</span> ast = parser.<span class="hljs-title function_">parse</span>(<span class="hljs-string">&quot;let x = 1 + 2;&quot;</span>);<br><br><span class="hljs-title function_">traverse</span>(ast, &#123;<br>  <span class="hljs-title class_">BinaryExpression</span>(path) &#123;<br>    <span class="hljs-keyword">if</span> (path.<span class="hljs-property">node</span>.<span class="hljs-property">operator</span> === <span class="hljs-string">&quot;+&quot;</span>) &#123;<br>      path.<span class="hljs-title function_">replaceWith</span>(t.<span class="hljs-title function_">numericLiteral</span>(<span class="hljs-number">3</span>));<br>    &#125;<br>  &#125;,<br>&#125;);<br><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title function_">generate</span>(ast).<span class="hljs-property">code</span>);<br><span class="hljs-comment">// let x = 3;</span><br></code></pre></td></tr></table></figure>
+
+<p>关键点：</p>
+<ul>
+<li><code>parser.parse</code>：源码转 AST。</li>
+<li><code>traverse</code>：按节点类型访问 AST。</li>
+<li><code>path.node</code>：当前节点。</li>
+<li><code>path.replaceWith</code>：替换节点。</li>
+<li><code>generate</code>：AST 再生成代码。</li>
+</ul>
+<p>常见操作：</p>
+<ul>
+<li>查找节点</li>
+<li>替换节点</li>
+<li>插入节点</li>
+<li>删除节点</li>
+<li>读取节点属性</li>
+</ul>
+<hr>
+<h2 id="9-AST-常见用途"><a href="#9-AST-常见用途" class="headerlink" title="9. AST 常见用途"></a>9. AST 常见用途</h2><ul>
+<li><strong>Babel</strong>：ES6+ 转 ES5。</li>
+<li><strong>ESLint</strong>：静态检查代码规则。</li>
+<li><strong>Prettier</strong>：格式化代码。</li>
+<li><strong>jscodeshift &#x2F; recast</strong>：批量重构代码。</li>
+<li><strong>IDE</strong>：补全、跳转、重构、高亮。</li>
+<li><strong>打包工具</strong>：分析模块依赖。</li>
+<li><strong>代码压缩 &#x2F; 混淆</strong>。</li>
+<li><strong>TypeScript</strong>：类型检查、编译。</li>
+</ul>
+<hr>
+<h2 id="10-注意事项"><a href="#10-注意事项" class="headerlink" title="10. 注意事项"></a>10. 注意事项</h2><h3 id="Babel-AST-和-ESTree-不完全一样"><a href="#Babel-AST-和-ESTree-不完全一样" class="headerlink" title="Babel AST 和 ESTree 不完全一样"></a>Babel AST 和 ESTree 不完全一样</h3><table>
+<thead>
+<tr>
+<th>内容</th>
+<th>ESTree &#x2F; Acorn &#x2F; Espree</th>
+<th>Babel</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>根节点</td>
+<td><code>Program</code></td>
+<td><code>File</code> → <code>Program</code></td>
+</tr>
+<tr>
+<td>数字字面量</td>
+<td><code>Literal</code></td>
+<td><code>NumericLiteral</code></td>
+</tr>
+<tr>
+<td>字符串字面量</td>
+<td><code>Literal</code></td>
+<td><code>StringLiteral</code></td>
+</tr>
+<tr>
+<td>布尔字面量</td>
+<td><code>Literal</code></td>
+<td><code>BooleanLiteral</code></td>
+</tr>
+</tbody></table>
+<p>写工具前，要先确认用的是哪套 AST。</p>
+<h3 id="其他注意点"><a href="#其他注意点" class="headerlink" title="其他注意点"></a>其他注意点</h3><ul>
+<li>AST 节点通常包含位置信息，但不同解析器字段可能不同。</li>
+<li>注释通常不在主 AST 中，需要额外配置或单独收集。</li>
+<li><code>sourceType</code> 区分 <code>script</code> 和 <code>module</code>。</li>
+<li>解析器需要设置 <code>ecmaVersion</code>，否则可能不支持新语法。</li>
+<li>直接字符串替换不安全，AST 转换更可靠。</li>
+<li>修改 AST 后，需要重新生成代码。</li>
+</ul>
+<hr>
+<h2 id="11-在线工具"><a href="#11-在线工具" class="headerlink" title="11. 在线工具"></a>11. 在线工具</h2><p><strong>AST Explorer</strong><br><a target="_blank" rel="noopener" href="https://astexplorer.net/">https://astexplorer.net</a></p>
+<p>可以选择不同解析器，实时查看 JavaScript、TypeScript、Babel、ESTree 等 AST 结构。</p>
+<hr>
+<h2 id="12-其他含义"><a href="#12-其他含义" class="headerlink" title="12. 其他含义"></a>12. 其他含义</h2><p>如果在医学检验中看到 <strong>AST</strong>，通常指 <strong>谷草转氨酶</strong>，是一种肝功能相关指标。</p>
+<hr>
+<h2 id="13-速查总结"><a href="#13-速查总结" class="headerlink" title="13. 速查总结"></a>13. 速查总结</h2><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs text">AST = 抽象语法树<br>作用 = 表示代码结构，用于分析、转换、生成代码<br>JavaScript 规范 = ESTree<br>常见解析器 = Acorn、Espree、@babel/parser、TypeScript Compiler<br>常见操作 = 解析、遍历、修改、生成<br>常见工具 = Babel、ESLint、Prettier、jscodeshift<br>在线查看 = AST Explorer<br>注意 = Babel AST ≠ ESTree，节点类型可能不同<br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/JavaScript/" class="category-chain-item">JavaScript</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/JavaScript/" class="print-no-link">#JavaScript</a>
+      
+        <a href="/tags/AST/" class="print-no-link">#AST</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>AST 抽象语法树</div>
+      <div>http://example.com/2024/12/01/JavaScript/AST 抽象语法树/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年12月1日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/12/01/JavaScript/Babel/" title="Babel">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Babel</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/11/14/%E6%9C%8D%E5%8A%A1%E7%AB%AF/Windows%E5%90%91Linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%BC%A0%E8%BE%93%E6%96%87%E4%BB%B6/" title="Windows向Linux服务器传输文件">
+                        <span class="hidden-mobile">Windows向Linux服务器传输文件</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

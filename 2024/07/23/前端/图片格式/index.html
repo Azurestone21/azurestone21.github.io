@@ -1,0 +1,881 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="图片格式 以下为优化补充版，修正了部分过时或不严谨表述，并补全“图片 Base64”部分。  一、位图与矢量图 位图：由像素组成，放大会失真。常见：JPEG、PNG、WebP、BMP、GIF。 矢量图：由数学路径描述，放大缩小不失真。典型：SVG。   二、常见图片格式   格式 压缩 透明 动画 特点 适用场景    JPEG 有损 不支持 不支持 文件较小，色彩丰富 照片、复杂图像   PNG">
+<meta property="og:type" content="article">
+<meta property="og:title" content="图片格式">
+<meta property="og:url" content="http://example.com/2024/07/23/%E5%89%8D%E7%AB%AF/%E5%9B%BE%E7%89%87%E6%A0%BC%E5%BC%8F/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="图片格式 以下为优化补充版，修正了部分过时或不严谨表述，并补全“图片 Base64”部分。  一、位图与矢量图 位图：由像素组成，放大会失真。常见：JPEG、PNG、WebP、BMP、GIF。 矢量图：由数学路径描述，放大缩小不失真。典型：SVG。   二、常见图片格式   格式 压缩 透明 动画 特点 适用场景    JPEG 有损 不支持 不支持 文件较小，色彩丰富 照片、复杂图像   PNG">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-07-22T16:57:20.000Z">
+<meta property="article:modified_time" content="2026-10-14T14:26:02.688Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="图片格式">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>图片格式 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">图片格式</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-07-23 00:57" pubdate>
+          2024年7月23日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          18 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">图片格式</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="图片格式"><a href="#图片格式" class="headerlink" title="图片格式"></a>图片格式</h1><blockquote>
+<p>以下为优化补充版，修正了部分过时或不严谨表述，并补全“图片 Base64”部分。</p>
+</blockquote>
+<h2 id="一、位图与矢量图"><a href="#一、位图与矢量图" class="headerlink" title="一、位图与矢量图"></a>一、位图与矢量图</h2><ul>
+<li><strong>位图</strong>：由像素组成，放大会失真。常见：JPEG、PNG、WebP、BMP、GIF。</li>
+<li><strong>矢量图</strong>：由数学路径描述，放大缩小不失真。典型：SVG。</li>
+</ul>
+<hr>
+<h2 id="二、常见图片格式"><a href="#二、常见图片格式" class="headerlink" title="二、常见图片格式"></a>二、常见图片格式</h2><table>
+<thead>
+<tr>
+<th>格式</th>
+<th>压缩</th>
+<th>透明</th>
+<th>动画</th>
+<th>特点</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>JPEG</td>
+<td>有损</td>
+<td>不支持</td>
+<td>不支持</td>
+<td>文件较小，色彩丰富</td>
+<td>照片、复杂图像</td>
+</tr>
+<tr>
+<td>PNG</td>
+<td>无损</td>
+<td>支持</td>
+<td>不支持</td>
+<td>质量高，体积较大</td>
+<td>图标、截图、透明图</td>
+</tr>
+<tr>
+<td>WebP</td>
+<td>有损&#x2F;无损</td>
+<td>支持</td>
+<td>支持</td>
+<td>体积小，现代浏览器支持好</td>
+<td>网页图片、透明图、动图</td>
+</tr>
+<tr>
+<td>BMP</td>
+<td>通常无压缩</td>
+<td>部分支持</td>
+<td>不支持</td>
+<td>文件很大</td>
+<td>Windows 内部、临时图</td>
+</tr>
+<tr>
+<td>GIF</td>
+<td>无损 LZW，但限 256 色</td>
+<td>支持布尔透明</td>
+<td>支持</td>
+<td>适合简单动画</td>
+<td>表情包、简单动图</td>
+</tr>
+<tr>
+<td>SVG</td>
+<td>矢量</td>
+<td>支持</td>
+<td>支持</td>
+<td>可缩放、可编辑、可脚本化</td>
+<td>Logo、图标、图表、地图</td>
+</tr>
+</tbody></table>
+<h3 id="1-JPEG-JPG"><a href="#1-JPEG-JPG" class="headerlink" title="1. JPEG&#x2F;JPG"></a>1. JPEG&#x2F;JPG</h3><ul>
+<li><strong>有损压缩</strong>点阵图，适合存储照片。</li>
+<li>不适合线框图、企业 Logo、文字等需要高清晰度的图片。</li>
+<li>不支持透明、半透明背景。</li>
+<li>文件相对较小，但压缩过度会出现块状噪点。</li>
+<li>支持渐进式 JPEG，可先模糊后清晰加载。</li>
+</ul>
+<blockquote>
+<p>JPEG：正式名称，也是制定该标准的组织名“Joint Photographic Experts Group”的缩写。<br>JPG：只是 JPEG 格式常见的文件扩展名，通常被认为是缩写版。<br>为什么会有两个名字？<br>早期 Windows &#x2F; DOS 系统对文件扩展名有 3 个字符限制，.jpeg 有 4 个字符，所以被缩短成 .jpg。后来这个习惯沿用下来，.jpg 反而更常见。</p>
+</blockquote>
+<h3 id="2-PNG"><a href="#2-PNG" class="headerlink" title="2. PNG"></a>2. PNG</h3><ul>
+<li><strong>无损压缩</strong>点阵图，分为 PNG-8 和 PNG-24。</li>
+<li>PNG-8：索引色，最多 256 色，通常支持透明背景，不支持半透明。</li>
+<li>PNG-24：直接色，文件比 BMP 小；带 alpha 通道时通常称 PNG-32，支持透明和半透明。</li>
+<li>适合图标、图形、截图、需要透明度的场景。</li>
+<li>相比 JPEG，文件通常更大。</li>
+</ul>
+<h3 id="3-WebP"><a href="#3-WebP" class="headerlink" title="3. WebP"></a>3. WebP</h3><ul>
+<li>由 Google 开发，目标是加快图片加载速度。</li>
+<li>支持<strong>有损和无损压缩</strong>，支持透明、半透明和动画。</li>
+<li>相同质量下，WebP 通常比 PNG 小约 26%，比 JPEG 小约 25%～35%。</li>
+<li>现代浏览器支持较好：Chrome、Edge、Firefox、Opera、Safari 14+ 等。</li>
+<li>老版本浏览器可能需要回退到 JPEG&#x2F;PNG。</li>
+</ul>
+<h3 id="4-BMP"><a href="#4-BMP" class="headerlink" title="4. BMP"></a>4. BMP</h3><ul>
+<li>无损，支持索引色和直接色。</li>
+<li>通常<strong>不压缩</strong>，因此文件很大。</li>
+<li>适合 Windows 内部使用，不适合网页直接使用。</li>
+</ul>
+<h3 id="5-GIF"><a href="#5-GIF" class="headerlink" title="5. GIF"></a>5. GIF</h3><ul>
+<li>无损 LZW 压缩，采用索引色，最多 8bit &#x2F; 256 色。</li>
+<li>支持透明和动画。</li>
+<li>适合简单动画、表情包，但色彩丰富图片会失真。</li>
+<li>文件相对较小，但动画帧多时体积会变大。</li>
+</ul>
+<h3 id="6-SVG"><a href="#6-SVG" class="headerlink" title="6. SVG"></a>6. SVG</h3><p><strong>SVG：可伸缩矢量图形，Scalable Vector Graphics</strong>，使用 XML 定义图形，是 W3C 标准。</p>
+<p>特点：</p>
+<ul>
+<li>基于路径的矢量图形，放大缩小不失真。</li>
+<li>任意分辨率下保持清晰，适合响应式设计。</li>
+<li>可通过文本编辑器创建和修改。</li>
+<li>可被搜索、索引、脚本化或压缩。</li>
+<li>可嵌入 HTML5。</li>
+<li>可与 JavaScript 结合，实现动画和交互。</li>
+<li>大多数现代浏览器都支持。</li>
+</ul>
+<p>基础结构：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">svg</span> <span class="hljs-attr">width</span>=<span class="hljs-string">&quot;200&quot;</span> <span class="hljs-attr">height</span>=<span class="hljs-string">&quot;200&quot;</span> <span class="hljs-attr">xmlns</span>=<span class="hljs-string">&quot;http://www.w3.org/2000/svg&quot;</span>&gt;</span><br>  <span class="hljs-comment">&lt;!-- SVG 图形内容 --&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">svg</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：XML 注释不能写在标签属性中间。</p>
+</blockquote>
+<h3 id="7-其他现代格式"><a href="#7-其他现代格式" class="headerlink" title="7. 其他现代格式"></a>7. 其他现代格式</h3><ul>
+<li><strong>AVIF</strong>：压缩率很高，支持透明和动画，但兼容性略逊于 WebP。</li>
+<li><strong>HEIF&#x2F;HEIC</strong>：苹果设备常用，网页兼容性一般。</li>
+<li><strong>ICO</strong>：网站图标 favicon 常用。</li>
+</ul>
+<hr>
+<h2 id="三、使用场景与兼容性"><a href="#三、使用场景与兼容性" class="headerlink" title="三、使用场景与兼容性"></a>三、使用场景与兼容性</h2><h3 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h3><ul>
+<li>GIF：适合动画和低色彩需求场景。</li>
+<li>JPEG：适合照片存储。</li>
+<li>PNG：适合需要透明度的图标和图形。</li>
+<li>SVG：适合高清晰度矢量图形、Logo、图表。</li>
+<li>WebP：适合需要减少数据传输量的网页图片。</li>
+<li>AVIF：适合追求极致压缩且可接受兼容性回退的场景。</li>
+</ul>
+<h3 id="兼容性回退示例"><a href="#兼容性回退示例" class="headerlink" title="兼容性回退示例"></a>兼容性回退示例</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">picture</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">source</span> <span class="hljs-attr">srcset</span>=<span class="hljs-string">&quot;image.avif&quot;</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;image/avif&quot;</span> /&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">source</span> <span class="hljs-attr">srcset</span>=<span class="hljs-string">&quot;image.webp&quot;</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;image/webp&quot;</span> /&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">img</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;image.jpg&quot;</span> <span class="hljs-attr">alt</span>=<span class="hljs-string">&quot;示例图片&quot;</span> /&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">picture</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="四、字体图标"><a href="#四、字体图标" class="headerlink" title="四、字体图标"></a>四、字体图标</h2><p>字体图标本质上是字体，把图标做成字体文件，通过 <code>@font-face</code> 引入。</p>
+<h3 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h3><ul>
+<li>可放大缩小、更换颜色。</li>
+<li>体积小、请求少、加载快、复用性高。</li>
+<li>缺点：颜色不丰富，通常只能是单色；多色需用 CSS 渐变文字或改用 SVG。</li>
+<li>可访问性较差，建议配合 <code>aria-hidden</code> 或 <code>aria-label</code>。</li>
+</ul>
+<h3 id="使用示例"><a href="#使用示例" class="headerlink" title="使用示例"></a>使用示例</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-comment">/* iconfont.css */</span><br><span class="hljs-keyword">@font-face</span> &#123;<br>  <span class="hljs-attribute">font-family</span>: <span class="hljs-string">&quot;iconfont&quot;</span>;<br>  <span class="hljs-attribute">src</span>:<br>    <span class="hljs-built_in">url</span>(<span class="hljs-string">&quot;https://at.alicdn.com/t/c/font_4274847_zf7ebw72yoq.woff2?t=1723531668226&quot;</span>)<br>      <span class="hljs-built_in">format</span>(<span class="hljs-string">&quot;woff2&quot;</span>),<br>    <span class="hljs-built_in">url</span>(<span class="hljs-string">&quot;https://at.alicdn.com/t/c/font_4274847_zf7ebw72yoq.woff?t=1723531668226&quot;</span>)<br>      <span class="hljs-built_in">format</span>(<span class="hljs-string">&quot;woff&quot;</span>),<br>    <span class="hljs-built_in">url</span>(<span class="hljs-string">&quot;https://at.alicdn.com/t/c/font_4274847_zf7ebw72yoq.ttf?t=1723531668226&quot;</span>)<br>      <span class="hljs-built_in">format</span>(<span class="hljs-string">&quot;truetype&quot;</span>),<br>    <span class="hljs-built_in">url</span>(<span class="hljs-string">&quot;https://at.alicdn.com/t/c/font_4274847_zf7ebw72yoq.svg?t=1723531668226#iconfont&quot;</span>)<br>      <span class="hljs-built_in">format</span>(<span class="hljs-string">&quot;svg&quot;</span>);<br>  <span class="hljs-attribute">font-weight</span>: normal;<br>  <span class="hljs-attribute">font-style</span>: normal;<br>  <span class="hljs-attribute">font-display</span>: swap;<br>&#125;<br><br><span class="hljs-selector-class">.iconfont</span> &#123;<br>  <span class="hljs-attribute">font-family</span>: <span class="hljs-string">&quot;iconfont&quot;</span> <span class="hljs-meta">!important</span>;<br>  <span class="hljs-attribute">font-size</span>: <span class="hljs-number">16px</span>;<br>  <span class="hljs-attribute">font-style</span>: normal;<br>  <span class="hljs-attribute">line-height</span>: <span class="hljs-number">1</span>;<br>  -webkit-<span class="hljs-attribute">font-smoothing</span>: antialiased;<br>  -moz-osx-<span class="hljs-attribute">font-smoothing</span>: grayscale;<br>&#125;<br><br><span class="hljs-selector-class">.icon-arrow-left</span><span class="hljs-selector-pseudo">::before</span> &#123;<br>  <span class="hljs-attribute">content</span>: <span class="hljs-string">&quot;\e6ea&quot;</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">i</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;iconfont icon-arrow-left&quot;</span> <span class="hljs-attr">aria-hidden</span>=<span class="hljs-string">&quot;true&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">i</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>或直接使用 Unicode：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;iconfont&quot;</span> <span class="hljs-attr">aria-hidden</span>=<span class="hljs-string">&quot;true&quot;</span>&gt;</span><span class="hljs-symbol">&amp;#xe6ea;</span><span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="font-face"><a href="#font-face" class="headerlink" title="@font-face"></a>@font-face</h3><p><code>@font-face</code> 用于指定自定义字体，可从远程服务器或本地安装字体加载。</p>
+<ul>
+<li><code>local()</code>：从本地查找指定字体名称。</li>
+<li><code>url()</code>：从远程服务器加载字体。</li>
+<li>浏览器按 <code>src</code> 顺序尝试，通常优先 <code>woff2</code>。</li>
+</ul>
+<p>常见字体格式：</p>
+<ul>
+<li><code>woff2</code>：体积最小，现代浏览器首选。</li>
+<li><code>woff</code>：兼容性较好。</li>
+<li><code>ttf</code> &#x2F; <code>otf</code>：常见，但体积较大。</li>
+<li><code>eot</code>：旧 IE。</li>
+<li><code>svg</code>：旧 iOS。</li>
+</ul>
+<h3 id="字体图标原理"><a href="#字体图标原理" class="headerlink" title="字体图标原理"></a>字体图标原理</h3><ol>
+<li>制作 SVG 格式图标。</li>
+<li>使用 FontCreator 等软件导入字体文件，并设置 Unicode 编码。</li>
+<li>生成兼容浏览器的字体文件：ttf、otf、woff、eot、svg。</li>
+<li>通过 CSS <code>@font-face</code> 导入字体，设置公共样式。</li>
+<li>将 icon 名称与 Unicode 编码一一对应。</li>
+</ol>
+<h3 id="字体图标-vs-SVG-图标"><a href="#字体图标-vs-SVG-图标" class="headerlink" title="字体图标 vs SVG 图标"></a>字体图标 vs SVG 图标</h3><ul>
+<li>字体图标：单色、CSS 控制方便、兼容性好；多色困难、可访问性弱。</li>
+<li>SVG 图标：支持多色、精细、可访问、可动画；需要合理管理体积和请求。</li>
+<li>现代项目更推荐 SVG Symbol Sprite 或组件化 SVG。</li>
+</ul>
+<hr>
+<h2 id="五、Base64"><a href="#五、Base64" class="headerlink" title="五、Base64"></a>五、Base64</h2><p>Base64 不是图片格式，而是一种<strong>编码方式</strong>。它把二进制图片编码成字符串，直接嵌入 HTML、CSS 或 JS 中，形式是 Data URI。</p>
+<h3 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">data:[&lt;mediatype&gt;][;charset=&lt;charset&gt;][;base64],&lt;data&gt;<br></code></pre></td></tr></table></figure>
+
+<p>示例：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">img</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA...&quot;</span> <span class="hljs-attr">alt</span>=<span class="hljs-string">&quot;小图标&quot;</span> /&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>CSS 背景：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-selector-class">.icon</span> &#123;<br>  <span class="hljs-attribute">background-image</span>: <span class="hljs-built_in">url</span>(<span class="hljs-string">&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA...&quot;</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>SVG 可以直接 URL 编码，不一定用 Base64：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-selector-class">.icon</span> &#123;<br>  <span class="hljs-attribute">background-image</span>: <span class="hljs-built_in">url</span>(<span class="hljs-string">&quot;data:image/svg+xml,%3Csvg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; viewBox=&#x27;0 0 24 24&#x27;%3E%3Cpath d=&#x27;...&#x27;/%3E%3C/svg%3E&quot;</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ul>
+<li>减少 HTTP 请求。</li>
+<li>适合小图标、小背景图。</li>
+<li>适合单文件 HTML、邮件模板。</li>
+<li>图片不会因路径问题丢失。</li>
+</ul>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ul>
+<li>Base64 后体积约增大 <strong>33%</strong>。</li>
+<li>不能单独缓存，修改图片需重新构建 CSS&#x2F;HTML。</li>
+<li>增大 HTML&#x2F;CSS 体积，可能阻塞解析和渲染。</li>
+<li>可读性差，维护困难。</li>
+<li>旧 IE 对 Data URI 有 32KB 限制。</li>
+<li>大图内联会严重拖慢首屏。</li>
+</ul>
+<h3 id="使用建议"><a href="#使用建议" class="headerlink" title="使用建议"></a>使用建议</h3><ul>
+<li>只内联小于 <strong>5~10KB</strong> 的小图。</li>
+<li>大图使用独立文件 + CDN + 缓存。</li>
+<li>HTTP&#x2F;2 下请求开销降低，不必过度内联。</li>
+<li>构建工具可自动处理：<ul>
+<li>Webpack：<code>asset modules</code></li>
+<li>Vite：<code>assetsInlineLimit</code></li>
+</ul>
+</li>
+<li>注意 MIME 类型正确：<ul>
+<li>PNG：<code>image/png</code></li>
+<li>JPEG：<code>image/jpeg</code></li>
+<li>SVG：<code>image/svg+xml</code></li>
+<li>WebP：<code>image/webp</code></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="六、图片优化清单"><a href="#六、图片优化清单" class="headerlink" title="六、图片优化清单"></a>六、图片优化清单</h2><ol>
+<li>选对格式：<ul>
+<li>照片：JPEG &#x2F; WebP &#x2F; AVIF</li>
+<li>透明图：PNG &#x2F; WebP &#x2F; SVG</li>
+<li>图标&#x2F;Logo：SVG 优先</li>
+<li>动画：WebP &#x2F; GIF &#x2F; 视频</li>
+</ul>
+</li>
+<li>压缩图片：TinyPNG、Squoosh、ImageMagick。</li>
+<li>按显示尺寸输出，避免大图缩小用。</li>
+<li>响应式图片：<code>srcset</code>、<code>sizes</code>、<code>picture</code>。</li>
+<li>懒加载：<code>loading=&quot;lazy&quot;</code>。</li>
+<li>异步解码：<code>decoding=&quot;async&quot;</code>。</li>
+<li>使用 CDN 和缓存策略。</li>
+<li>小图才考虑 Base64，大图不要内联。</li>
+<li>图标优先 SVG 或字体图标，减少图片请求。</li>
+</ol>
+<hr>
+<h2 id="七、快速选择"><a href="#七、快速选择" class="headerlink" title="七、快速选择"></a>七、快速选择</h2><ul>
+<li>要照片、体积小：JPEG &#x2F; WebP &#x2F; AVIF</li>
+<li>要透明、高质量：PNG &#x2F; WebP</li>
+<li>要矢量、可缩放：SVG</li>
+<li>要简单动画：GIF &#x2F; WebP</li>
+<li>要小图内联：Base64，但控制在 5～10KB 内</li>
+<li>要单色图标：字体图标或 SVG</li>
+<li>要多色图标：SVG 优先</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%89%8D%E7%AB%AF/" class="category-chain-item">前端</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%9B%BE%E7%89%87%E6%A0%BC%E5%BC%8F/" class="print-no-link">#图片格式</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>图片格式</div>
+      <div>http://example.com/2024/07/23/前端/图片格式/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年7月23日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/07/23/%E5%89%8D%E7%AB%AF/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" title="正则表达式">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">正则表达式</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/07/23/%E6%8A%80%E6%9C%AF%E6%95%99%E7%A8%8B/Android%20Studio%20%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8/" title="Android Studio 安装与使用">
+                        <span class="hidden-mobile">Android Studio 安装与使用</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

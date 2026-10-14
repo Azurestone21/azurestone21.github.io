@@ -1,0 +1,785 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="【Vue】ref和reactive ref 适合基本类型，通过 .value 访问。reactive 适合对象&#x2F;数组，直接访问属性。两者底层都基于 Proxy，但 ref 对基本类型做了包装。   一、ref1. 基本用法123456789101112131415161718&lt;script setup&gt;import &#123; ref &#125; from &quot;v">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Vue】ref和reactive">
+<meta property="og:url" content="http://example.com/2024/12/01/Vue/%E3%80%90Vue%E3%80%91ref%E5%92%8Creactive/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="【Vue】ref和reactive ref 适合基本类型，通过 .value 访问。reactive 适合对象&#x2F;数组，直接访问属性。两者底层都基于 Proxy，但 ref 对基本类型做了包装。   一、ref1. 基本用法123456789101112131415161718&lt;script setup&gt;import &#123; ref &#125; from &quot;v">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-11-30T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-14T14:26:02.584Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="Vue">
+<meta property="article:tag" content="reactive">
+<meta property="article:tag" content="ref">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>【Vue】ref和reactive - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">【Vue】ref和reactive</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-12-01 00:00" pubdate>
+          2024年12月1日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          14 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">【Vue】ref和reactive</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="【Vue】ref和reactive"><a href="#【Vue】ref和reactive" class="headerlink" title="【Vue】ref和reactive"></a>【Vue】ref和reactive</h1><blockquote>
+<p><strong><code>ref</code> 适合基本类型，通过 <code>.value</code> 访问。</strong><br><strong><code>reactive</code> 适合对象&#x2F;数组，直接访问属性。</strong><br>两者底层都基于 Proxy，但 <code>ref</code> 对基本类型做了包装。</p>
+</blockquote>
+<hr>
+<h2 id="一、ref"><a href="#一、ref" class="headerlink" title="一、ref"></a>一、<code>ref</code></h2><h3 id="1-基本用法"><a href="#1-基本用法" class="headerlink" title="1. 基本用法"></a>1. 基本用法</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs vue">&lt;script setup&gt;<br>import &#123; ref &#125; from &quot;vue&quot;;<br><br>const count = ref(0);<br>const name = ref(&quot;Vue&quot;);<br>const user = ref(&#123; age: 18 &#125;);<br><br>console.log(count.value); // 0<br>count.value++; // 修改<br>console.log(user.value.age); // 18<br>&lt;/script&gt;<br><br>&lt;template&gt;<br>  &lt;!-- 模板中自动解包，不需要 .value --&gt;<br>  &lt;p&gt;&#123;&#123; count &#125;&#125;&lt;/p&gt;<br>  &lt;p&gt;&#123;&#123; name &#125;&#125;&lt;/p&gt;<br>  &lt;p&gt;&#123;&#123; user.age &#125;&#125;&lt;/p&gt;<br>&lt;/template&gt;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-特点"><a href="#2-特点" class="headerlink" title="2. 特点"></a>2. 特点</h3><ul>
+<li>可以包装<strong>任意类型</strong>：基本类型、对象、数组。</li>
+<li>在 JS 中必须通过 <code>.value</code> 读写。</li>
+<li>在模板中<strong>自动解包</strong>，直接写 <code>count</code> 即可。</li>
+<li>如果传入对象，<code>ref</code> 内部会调用 <code>reactive</code> 将其转为响应式代理。</li>
+<li>返回的是一个 <code>RefImpl</code> 对象，有 <code>.value</code> 属性。</li>
+<li>支持替换整个值：<code>count.value = 10</code>、<code>user.value = { age: 20 }</code>。</li>
+</ul>
+<h3 id="3-常用相关-API"><a href="#3-常用相关-API" class="headerlink" title="3. 常用相关 API"></a>3. 常用相关 API</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">import</span> &#123; isRef, unref, toRef, toRefs &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;vue&quot;</span>;<br><br><span class="hljs-title function_">isRef</span>(count); <span class="hljs-comment">// true，判断是否为 ref</span><br><span class="hljs-title function_">unref</span>(count); <span class="hljs-comment">// 0，如果是 ref 返回 .value，否则原样返回</span><br><span class="hljs-title function_">toRef</span>(obj, <span class="hljs-string">&quot;key&quot;</span>); <span class="hljs-comment">// 将 reactive 对象的某个属性转为 ref</span><br><span class="hljs-title function_">toRefs</span>(obj); <span class="hljs-comment">// 将 reactive 对象的所有属性转为 ref 对象</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="二、reactive"><a href="#二、reactive" class="headerlink" title="二、reactive"></a>二、<code>reactive</code></h2><h3 id="1-基本用法-1"><a href="#1-基本用法-1" class="headerlink" title="1. 基本用法"></a>1. 基本用法</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs vue">&lt;script setup&gt;<br>import &#123; reactive &#125; from &quot;vue&quot;;<br><br>const state = reactive(&#123;<br>  count: 0,<br>  name: &quot;Vue&quot;,<br>  list: [1, 2, 3],<br>&#125;);<br><br>console.log(state.count); // 0<br>state.count++; // 直接修改<br>state.list.push(4); // 数组方法可用<br>&lt;/script&gt;<br><br>&lt;template&gt;<br>  &lt;p&gt;&#123;&#123; state.count &#125;&#125;&lt;/p&gt;<br>  &lt;p&gt;&#123;&#123; state.name &#125;&#125;&lt;/p&gt;<br>&lt;/template&gt;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-特点-1"><a href="#2-特点-1" class="headerlink" title="2. 特点"></a>2. 特点</h3><ul>
+<li>只能用于<strong>对象类型</strong>：对象、数组、Map、Set 等。不能用于基本类型。</li>
+<li>返回一个 <strong>Proxy 代理对象</strong>，直接访问和修改属性。</li>
+<li>默认是<strong>深层响应式</strong>：嵌套对象也会被代理。</li>
+<li>不需要 <code>.value</code>。</li>
+<li><strong>不能替换整个对象</strong>，否则会丢失响应性：</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">let</span> state = <span class="hljs-title function_">reactive</span>(&#123; <span class="hljs-attr">count</span>: <span class="hljs-number">0</span> &#125;);<br>state = &#123; <span class="hljs-attr">count</span>: <span class="hljs-number">1</span> &#125;; <span class="hljs-comment">// ❌ 失去响应性，模板不会更新</span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>解构会<strong>丢失响应性</strong>：</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> state = <span class="hljs-title function_">reactive</span>(&#123; <span class="hljs-attr">count</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;Vue&quot;</span> &#125;);<br><span class="hljs-keyword">const</span> &#123; count &#125; = state; <span class="hljs-comment">// ❌ count 是普通数字，不再响应</span><br></code></pre></td></tr></table></figure>
+
+<p>需要用 <code>toRefs</code> 解决：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">import</span> &#123; toRefs &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;vue&quot;</span>;<br><span class="hljs-keyword">const</span> state = <span class="hljs-title function_">reactive</span>(&#123; <span class="hljs-attr">count</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;Vue&quot;</span> &#125;);<br><span class="hljs-keyword">const</span> &#123; count, name &#125; = <span class="hljs-title function_">toRefs</span>(state); <span class="hljs-comment">// ✅ 都是 ref</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="三、核心区别对比"><a href="#三、核心区别对比" class="headerlink" title="三、核心区别对比"></a>三、核心区别对比</h2><table>
+<thead>
+<tr>
+<th align="left">对比项</th>
+<th align="left"><code>ref</code></th>
+<th align="left"><code>reactive</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">适用类型</td>
+<td align="left">任意类型，尤其基本类型</td>
+<td align="left">对象、数组、Map、Set 等</td>
+</tr>
+<tr>
+<td align="left">访问方式</td>
+<td align="left">JS 中<code>.value</code>，模板自动解包</td>
+<td align="left">直接访问属性</td>
+</tr>
+<tr>
+<td align="left">返回值</td>
+<td align="left"><code>RefImpl</code> 对象</td>
+<td align="left">Proxy 代理对象</td>
+</tr>
+<tr>
+<td align="left">替换整个值</td>
+<td align="left">支持，<code>ref.value = newVal</code></td>
+<td align="left">不支持，会丢失响应性</td>
+</tr>
+<tr>
+<td align="left">解构</td>
+<td align="left">解构包含 ref 的对象，属性仍是 ref，保留响应性</td>
+<td align="left">直接解构会丢失响应性，需<code>toRefs</code></td>
+</tr>
+<tr>
+<td align="left">深层响应式</td>
+<td align="left">传入对象时内部用<code>reactive</code> 包装</td>
+<td align="left">默认深层响应式</td>
+</tr>
+<tr>
+<td align="left">模板解包</td>
+<td align="left">顶层 ref 自动解包</td>
+<td align="left">不需要解包</td>
+</tr>
+<tr>
+<td align="left">类型推导</td>
+<td align="left">对基本类型友好</td>
+<td align="left">对对象类型友好</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="四、如何选择？"><a href="#四、如何选择？" class="headerlink" title="四、如何选择？"></a>四、如何选择？</h2><h3 id="推荐用法"><a href="#推荐用法" class="headerlink" title="推荐用法"></a>推荐用法</h3><ul>
+<li><strong>基本类型</strong>（string、number、boolean）→ 用 <code>ref</code>。</li>
+<li><strong>对象或数组</strong> → <code>reactive</code> 或 <code>ref</code> 都可以。</li>
+<li><strong>需要整体替换</strong> → 用 <code>ref</code>。</li>
+<li><strong>组合式函数返回值</strong> → 推荐用 <code>ref</code>，方便解构和传递。</li>
+<li><strong>复杂表单、状态对象</strong> → <code>reactive</code> 写起来更简洁。</li>
+</ul>
+<h3 id="实际项目中常见的两种风格"><a href="#实际项目中常见的两种风格" class="headerlink" title="实际项目中常见的两种风格"></a>实际项目中常见的两种风格</h3><p><strong>风格一：统一用 <code>ref</code></strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> count = <span class="hljs-title function_">ref</span>(<span class="hljs-number">0</span>);<br><span class="hljs-keyword">const</span> user = <span class="hljs-title function_">ref</span>(&#123; <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;Vue&quot;</span> &#125;);<br><span class="hljs-keyword">const</span> list = <span class="hljs-title function_">ref</span>([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>]);<br></code></pre></td></tr></table></figure>
+
+<p>优点：一致性好，解构不丢响应性，方便传递。<br>缺点：到处写 <code>.value</code>。</p>
+<p><strong>风格二：基本类型用 <code>ref</code>，对象用 <code>reactive</code></strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> count = <span class="hljs-title function_">ref</span>(<span class="hljs-number">0</span>);<br><span class="hljs-keyword">const</span> state = <span class="hljs-title function_">reactive</span>(&#123;<br>  <span class="hljs-attr">user</span>: &#123; <span class="hljs-attr">name</span>: <span class="hljs-string">&quot;Vue&quot;</span> &#125;,<br>  <span class="hljs-attr">list</span>: [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>],<br>&#125;);<br></code></pre></td></tr></table></figure>
+
+<p>优点：对象访问简洁。<br>缺点：解构需注意 <code>toRefs</code>。</p>
+<hr>
+<h2 id="五、常见坑与注意事项"><a href="#五、常见坑与注意事项" class="headerlink" title="五、常见坑与注意事项"></a>五、常见坑与注意事项</h2><h3 id="1-reactive-解构丢失响应性"><a href="#1-reactive-解构丢失响应性" class="headerlink" title="1. reactive 解构丢失响应性"></a>1. <code>reactive</code> 解构丢失响应性</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> state = <span class="hljs-title function_">reactive</span>(&#123; <span class="hljs-attr">count</span>: <span class="hljs-number">0</span> &#125;);<br><span class="hljs-keyword">const</span> &#123; count &#125; = state; <span class="hljs-comment">// ❌ 普通数字</span><br></code></pre></td></tr></table></figure>
+
+<p>解决：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> &#123; count &#125; = <span class="hljs-title function_">toRefs</span>(state); <span class="hljs-comment">// ✅ ref</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="2-reactive-不能用于基本类型"><a href="#2-reactive-不能用于基本类型" class="headerlink" title="2. reactive 不能用于基本类型"></a>2. <code>reactive</code> 不能用于基本类型</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> count = <span class="hljs-title function_">reactive</span>(<span class="hljs-number">0</span>); <span class="hljs-comment">// ❌ 无效</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="3-reactive-替换整个对象会失去响应性"><a href="#3-reactive-替换整个对象会失去响应性" class="headerlink" title="3. reactive 替换整个对象会失去响应性"></a>3. <code>reactive</code> 替换整个对象会失去响应性</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">let</span> state = <span class="hljs-title function_">reactive</span>(&#123; <span class="hljs-attr">count</span>: <span class="hljs-number">0</span> &#125;);<br>state = &#123; <span class="hljs-attr">count</span>: <span class="hljs-number">1</span> &#125;; <span class="hljs-comment">// ❌</span><br></code></pre></td></tr></table></figure>
+
+<p>应该修改属性，或用 <code>ref</code>：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> state = <span class="hljs-title function_">ref</span>(&#123; <span class="hljs-attr">count</span>: <span class="hljs-number">0</span> &#125;);<br>state.<span class="hljs-property">value</span> = &#123; <span class="hljs-attr">count</span>: <span class="hljs-number">1</span> &#125;; <span class="hljs-comment">// ✅</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="4-ref-在模板中自动解包，但嵌套对象中不会"><a href="#4-ref-在模板中自动解包，但嵌套对象中不会" class="headerlink" title="4. ref 在模板中自动解包，但嵌套对象中不会"></a>4. <code>ref</code> 在模板中自动解包，但嵌套对象中不会</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> obj = &#123; <span class="hljs-attr">count</span>: <span class="hljs-title function_">ref</span>(<span class="hljs-number">0</span>) &#125;;<br></code></pre></td></tr></table></figure>
+
+<p>模板中：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs html">&#123;&#123; obj.count &#125;&#125;<br><span class="hljs-comment">&lt;!-- 显示 [object Object]，不会自动解包 --&gt;</span><br>&#123;&#123; obj.count.value &#125;&#125;<br><span class="hljs-comment">&lt;!-- 正确 --&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>只有<strong>顶层 ref</strong> 才会在模板中自动解包。</p>
+<h3 id="5-ref-对象解构的响应性丢失"><a href="#5-ref-对象解构的响应性丢失" class="headerlink" title="5. ref 对象解构的响应性丢失"></a>5. <code>ref</code> 对象解构的响应性丢失</h3><h4 id="情况一：解构-ref-value-→-得到普通值，丢失响应性"><a href="#情况一：解构-ref-value-→-得到普通值，丢失响应性" class="headerlink" title="情况一：解构 ref.value → 得到普通值，丢失响应性"></a>情况一：解构 ref.value → 得到普通值，丢失响应性</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> user = <span class="hljs-title function_">ref</span>(&#123; <span class="hljs-attr">age</span>: <span class="hljs-number">18</span> &#125;);<br><span class="hljs-keyword">const</span> &#123; age &#125; = user.<span class="hljs-property">value</span>; <span class="hljs-comment">// ❌ age 是普通数字 18</span><br></code></pre></td></tr></table></figure>
+
+<p>之后 <code>user.value.age = 20</code>，<code>age</code> 不会更新。</p>
+<p>因为 <code>user.value</code> 是一个 <strong>reactive 代理对象</strong>，它的属性 <code>age</code> 是普通数字，不是 ref。<br>所以解构出来就是普通数字，丢失响应性。</p>
+<p><strong>正确做法：</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">import</span> &#123; toRefs, toRef, computed &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;vue&quot;</span>;<br><br><span class="hljs-comment">// 方法一：toRefs</span><br><span class="hljs-keyword">const</span> &#123; age &#125; = <span class="hljs-title function_">toRefs</span>(user.<span class="hljs-property">value</span>); <span class="hljs-comment">// ✅ age 是 ref</span><br><br><span class="hljs-comment">// 方法二：toRef</span><br><span class="hljs-keyword">const</span> age = <span class="hljs-title function_">toRef</span>(user.<span class="hljs-property">value</span>, <span class="hljs-string">&quot;age&quot;</span>); <span class="hljs-comment">// ✅</span><br><br><span class="hljs-comment">// 方法三：computed（可应对整体替换）</span><br><span class="hljs-keyword">const</span> age = <span class="hljs-title function_">computed</span>(<span class="hljs-function">() =&gt;</span> user.<span class="hljs-property">value</span>.<span class="hljs-property">age</span>); <span class="hljs-comment">// ✅</span><br></code></pre></td></tr></table></figure>
+
+<p>注意：<code>toRefs(user.value)</code> 绑定的是当前对象，如果之后 <code>user.value = { age: 20 }</code>，旧的 <code>age</code> 不会更新；<code>computed</code> 则可以。</p>
+<h4 id="情况二：解构包含-ref-的普通对象-→-得到-ref，保留响应性"><a href="#情况二：解构包含-ref-的普通对象-→-得到-ref，保留响应性" class="headerlink" title="情况二：解构包含 ref 的普通对象 → 得到 ref，保留响应性"></a>情况二：解构包含 ref 的普通对象 → 得到 ref，保留响应性</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> count = <span class="hljs-title function_">ref</span>(<span class="hljs-number">0</span>);<br><span class="hljs-keyword">const</span> obj = &#123; count &#125;; <span class="hljs-comment">// obj.count 是 ref</span><br><span class="hljs-keyword">const</span> &#123; <span class="hljs-attr">count</span>: c &#125; = obj; <span class="hljs-comment">// c 是 ref，保留响应性</span><br><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(c.<span class="hljs-property">value</span>); <span class="hljs-comment">// 0</span><br></code></pre></td></tr></table></figure>
+
+<p>这里解构的是<strong>包含 ref 的普通对象</strong>，属性值本身就是 ref，所以解构出来还是 ref。</p>
+<h4 id="情况三：解构-ref-的-value-属性-→-得到普通值，丢失响应性"><a href="#情况三：解构-ref-的-value-属性-→-得到普通值，丢失响应性" class="headerlink" title="情况三：解构 ref 的 .value 属性 → 得到普通值，丢失响应性"></a>情况三：解构 <code>ref</code> 的 <code>.value</code> 属性 → 得到普通值，丢失响应性</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> count = <span class="hljs-title function_">ref</span>(<span class="hljs-number">0</span>);<br><span class="hljs-keyword">const</span> &#123; value &#125; = count; <span class="hljs-comment">// ❌ value 是普通数字 0</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="6-浅层响应式"><a href="#6-浅层响应式" class="headerlink" title="6. 浅层响应式"></a>6. 浅层响应式</h3><p>如果不需要深层响应，可以用：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">import</span> &#123; shallowRef, shallowReactive &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;vue&quot;</span>;<br><br><span class="hljs-keyword">const</span> state = <span class="hljs-title function_">shallowReactive</span>(&#123; <span class="hljs-attr">nested</span>: &#123; <span class="hljs-attr">count</span>: <span class="hljs-number">0</span> &#125; &#125;);<br><span class="hljs-comment">// 只有顶层属性响应，nested.count 变化不会触发更新</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="六、总结"><a href="#六、总结" class="headerlink" title="六、总结"></a>六、总结</h2><ul>
+<li><code>ref</code>：包装任意值，<code>.value</code> 访问，模板自动解包，适合基本类型和需要替换整体的场景。</li>
+<li><code>reactive</code>：代理对象，直接访问属性，适合复杂对象，但解构和替换要注意。</li>
+<li>两者可以配合使用：<code>reactive</code> 中嵌套 <code>ref</code>，Vue 会自动解包（在 reactive 对象中，ref 作为属性时会被自动解包）。</li>
+<li>选择哪种取决于团队规范和具体场景，没有绝对优劣，但理解它们的差异能避免响应性丢失的坑。</li>
+</ul>
+<blockquote>
+<p>快速记忆：<br><strong>基本类型用 <code>ref</code>，对象数组用 <code>reactive</code>；要替换整体用 <code>ref</code>，要解构用 <code>toRefs</code>。</strong><br><strong><code>const { age } = user.value</code> 会丢失响应性，要用 <code>toRefs</code>、<code>toRef</code> 或 <code>computed</code>。</strong></p>
+</blockquote>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Vue/" class="category-chain-item">Vue</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/ref/" class="print-no-link">#ref</a>
+      
+        <a href="/tags/Vue/" class="print-no-link">#Vue</a>
+      
+        <a href="/tags/reactive/" class="print-no-link">#reactive</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>【Vue】ref和reactive</div>
+      <div>http://example.com/2024/12/01/Vue/【Vue】ref和reactive/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年12月1日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/12/01/Vue/%E3%80%90Vue%E3%80%91%E5%8D%95%E5%90%91%E7%BB%91%E5%AE%9A%E5%92%8C%E5%8F%8C%E5%90%91%E7%BB%91%E5%AE%9A/" title="Vue 单向绑定和双向绑定">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Vue 单向绑定和双向绑定</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/12/01/Vue/%E3%80%90Vue%E3%80%91%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" title="Vue 生命周期">
+                        <span class="hidden-mobile">Vue 生命周期</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

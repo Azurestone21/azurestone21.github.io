@@ -1,0 +1,819 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="npm 插件发布指南一、先厘清几个关键概念   概念 含义    &quot;private&quot;: true npm 的禁止发布开关。设置后执行 npm publish 会直接报错 EPRIVATE，无法发布到任何 registry。   私有 registry 上的私有包 指发布到 Verdaccio、GitHub Packages 等私有仓库的包。要发布，private 必须为 fal">
+<meta property="og:type" content="article">
+<meta property="og:title" content="npm插件发布指南">
+<meta property="og:url" content="http://example.com/2023/08/01/%E5%89%8D%E7%AB%AF/npm%E6%8F%92%E4%BB%B6%E5%8F%91%E5%B8%83%E6%8C%87%E5%8D%97/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="npm 插件发布指南一、先厘清几个关键概念   概念 含义    &quot;private&quot;: true npm 的禁止发布开关。设置后执行 npm publish 会直接报错 EPRIVATE，无法发布到任何 registry。   私有 registry 上的私有包 指发布到 Verdaccio、GitHub Packages 等私有仓库的包。要发布，private 必须为 fal">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-08-01T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-14T14:26:02.618Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="npm">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>npm插件发布指南 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">npm插件发布指南</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-08-01 10:00" pubdate>
+          2023年8月1日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          11 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">npm插件发布指南</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="npm-插件发布指南"><a href="#npm-插件发布指南" class="headerlink" title="npm 插件发布指南"></a>npm 插件发布指南</h1><h2 id="一、先厘清几个关键概念"><a href="#一、先厘清几个关键概念" class="headerlink" title="一、先厘清几个关键概念"></a>一、先厘清几个关键概念</h2><table>
+<thead>
+<tr>
+<th>概念</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>&quot;private&quot;: true</code></td>
+<td>npm 的<strong>禁止发布开关</strong>。设置后执行 <code>npm publish</code> 会直接报错 <code>EPRIVATE</code>，无法发布到任何 registry。</td>
+</tr>
+<tr>
+<td>私有 registry 上的私有包</td>
+<td>指发布到 Verdaccio、GitHub Packages 等私有仓库的包。要发布，<code>private</code> 必须为 <code>false</code> 或删除。</td>
+</tr>
+<tr>
+<td><code>--access public</code></td>
+<td>只对<strong>scoped 包</strong>（如 <code>@scope/pkg</code>）有意义，用于将包设为公开。非 scoped 包默认就是公开。</td>
+</tr>
+<tr>
+<td><code>npm pack --dry-run</code></td>
+<td>只预览即将打包的文件，<strong>不生成 <code>.tgz</code></strong>，也不上传。</td>
+</tr>
+<tr>
+<td><code>npm publish</code></td>
+<td>自动打包当前目录并上传，<strong>不需要先手动 <code>npm pack</code></strong>。</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="二、发布前准备"><a href="#二、发布前准备" class="headerlink" title="二、发布前准备"></a>二、发布前准备</h2><h3 id="1-登录-npm"><a href="#1-登录-npm" class="headerlink" title="1. 登录 npm"></a>1. 登录 npm</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">npm login<br></code></pre></td></tr></table></figure>
+
+<p>按提示输入用户名、密码、邮箱。如果开启 2FA，还需输入一次性验证码。</p>
+<h3 id="2-初始化项目"><a href="#2-初始化项目" class="headerlink" title="2. 初始化项目"></a>2. 初始化项目</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">npm init<br></code></pre></td></tr></table></figure>
+
+<p>按提示填写信息，或手动编辑 <code>package.json</code>。</p>
+<h3 id="3-配置-package-json"><a href="#3-配置-package-json" class="headerlink" title="3. 配置 package.json"></a>3. 配置 <code>package.json</code></h3><p>关键字段：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;my-plugin&quot;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;version&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;1.0.0&quot;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;main&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;dist/index.js&quot;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;types&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;dist/index.d.ts&quot;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;files&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">&quot;dist&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;README.md&quot;</span><span class="hljs-punctuation">,</span> <span class="hljs-string">&quot;LICENSE&quot;</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;scripts&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;build&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;tsc&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;prepublishOnly&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;npm run build&quot;</span><br>  <span class="hljs-punctuation">&#125;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;publishConfig&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;access&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;public&quot;</span><br>  <span class="hljs-punctuation">&#125;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+<p>说明：</p>
+<ul>
+<li><code>name</code>：包名，必须唯一。可用 <code>npm view &lt;包名&gt;</code> 检查是否被占用。</li>
+<li><code>version</code>：遵循语义化版本 <code>主版本.次版本.修订号</code>。</li>
+<li><code>main</code>：入口文件。</li>
+<li><code>types</code>：TypeScript 类型声明入口。</li>
+<li><code>files</code>：<strong>白名单</strong>，只发布这里列出的文件和目录。不设置可能导致源码、测试文件、敏感配置被上传。</li>
+<li><code>prepublishOnly</code>：发布前自动执行构建。</li>
+<li><code>publishConfig.access</code>：可替代命令行 <code>--access public</code>。</li>
+</ul>
+<h3 id="4-确保-private-不为-true"><a href="#4-确保-private-不为-true" class="headerlink" title="4. 确保 private 不为 true"></a>4. 确保 <code>private</code> 不为 <code>true</code></h3><p>要发布，必须删除 <code>&quot;private&quot;: true</code> 或改为 <code>&quot;private&quot;: false</code>。</p>
+<hr>
+<h2 id="三、检查即将发布的文件"><a href="#三、检查即将发布的文件" class="headerlink" title="三、检查即将发布的文件"></a>三、检查即将发布的文件</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">npm pack --dry-run<br></code></pre></td></tr></table></figure>
+
+<p>终端会列出所有将被打包的文件。仔细核对，确保没有 <code>.env</code>、密钥、测试文件等敏感或多余内容。</p>
+<p>如果想看 JSON 格式：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">npm pack --dry-run --json<br></code></pre></td></tr></table></figure>
+
+<p>如果想跳过构建脚本：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">npm pack --dry-run --ignore-scripts<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p><code>npm pack --dry-run</code> 只预览，不会生成 <code>.tgz</code> 文件。</p>
+</blockquote>
+<hr>
+<h2 id="四、发布到公共-npm"><a href="#四、发布到公共-npm" class="headerlink" title="四、发布到公共 npm"></a>四、发布到公共 npm</h2><h3 id="非-Scoped-包（如-my-plugin）"><a href="#非-Scoped-包（如-my-plugin）" class="headerlink" title="非 Scoped 包（如 my-plugin）"></a>非 Scoped 包（如 <code>my-plugin</code>）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">npm publish<br></code></pre></td></tr></table></figure>
+
+<p>非 scoped 包默认公开，<code>--access public</code> 可加可不加，效果相同。</p>
+<h3 id="Scoped-包（如-yourname-my-plugin）"><a href="#Scoped-包（如-yourname-my-plugin）" class="headerlink" title="Scoped 包（如 @yourname/my-plugin）"></a>Scoped 包（如 <code>@yourname/my-plugin</code>）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">npm publish --access public<br></code></pre></td></tr></table></figure>
+
+<p>Scoped 包默认是 restricted（私有）。免费账户不设置 <code>--access public</code> 会发布失败；付费账户会发布为私有包。要发布公共包，<strong>必须</strong>加 <code>--access public</code>。</p>
+<p>也可以在 <code>package.json</code> 中配置，避免每次输入：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;publishConfig&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;access&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;public&quot;</span><br>  <span class="hljs-punctuation">&#125;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="五、发布到私有-Registry"><a href="#五、发布到私有-Registry" class="headerlink" title="五、发布到私有 Registry"></a>五、发布到私有 Registry</h2><h3 id="通用前提"><a href="#通用前提" class="headerlink" title="通用前提"></a>通用前提</h3><ul>
+<li>移除或设置 <code>&quot;private&quot;: false</code>。</li>
+<li>配置 registry 地址和认证信息。</li>
+</ul>
+<h3 id="方式一：Verdaccio（自建轻量级）"><a href="#方式一：Verdaccio（自建轻量级）" class="headerlink" title="方式一：Verdaccio（自建轻量级）"></a>方式一：Verdaccio（自建轻量级）</h3><ol>
+<li>配置 <code>.npmrc</code>：</li>
+</ol>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">registry</span>=http://your-verdaccio-server:<span class="hljs-number">4873</span>/<br></code></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>创建用户并登录：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">npm adduser --registry=http://your-verdaccio-server:4873/<br></code></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>发布：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">npm publish<br></code></pre></td></tr></table></figure>
+
+<h3 id="方式二：GitHub-Packages"><a href="#方式二：GitHub-Packages" class="headerlink" title="方式二：GitHub Packages"></a>方式二：GitHub Packages</h3><ol>
+<li><code>package.json</code> 中设置：</li>
+</ol>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;@your-username/my-package&quot;</span><span class="hljs-punctuation">,</span><br>  <span class="hljs-attr">&quot;publishConfig&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;registry&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;https://npm.pkg.github.com/&quot;</span><br>  <span class="hljs-punctuation">&#125;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>项目根目录 <code>.npmrc</code>：</li>
+</ol>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs less"><span class="hljs-variable">@your-username:</span>registry=<span class="hljs-attribute">https</span>:<span class="hljs-comment">//npm.pkg.github.com/</span><br><span class="hljs-comment">//npm.pkg.github.com/:_authToken=$&#123;GITHUB_TOKEN&#125;</span><br></code></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>发布：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">npm publish<br></code></pre></td></tr></table></figure>
+
+<h3 id="方式三：GitLab-Package-Registry"><a href="#方式三：GitLab-Package-Registry" class="headerlink" title="方式三：GitLab Package Registry"></a>方式三：GitLab Package Registry</h3><p><code>.npmrc</code>：</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs less"><span class="hljs-variable">@your-scope:</span>registry=<span class="hljs-attribute">https</span>:<span class="hljs-comment">//gitlab.example.com/api/v4/projects/&lt;project_id&gt;/packages/npm/</span><br><span class="hljs-comment">//gitlab.example.com/api/v4/projects/&lt;project_id&gt;/packages/npm/:_authToken=$&#123;NPM_TOKEN&#125;</span><br></code></pre></td></tr></table></figure>
+
+<p>然后：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">npm publish<br></code></pre></td></tr></table></figure>
+
+<h3 id="方式四：Nexus-Artifactory"><a href="#方式四：Nexus-Artifactory" class="headerlink" title="方式四：Nexus &#x2F; Artifactory"></a>方式四：Nexus &#x2F; Artifactory</h3><p>Nexus 示例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">npm config <span class="hljs-built_in">set</span> registry <span class="hljs-string">&quot;http://your-nexus:8081/repository/npm-private/&quot;</span><br>npm login --registry=http://your-nexus:8081/repository/npm-private/<br>npm publish --registry=http://your-nexus:8081/repository/npm-private/<br></code></pre></td></tr></table></figure>
+
+<p>Artifactory 类似，在 <code>.npmrc</code> 中配置 registry 地址即可。</p>
+<hr>
+<h2 id="六、版本更新与重新发布"><a href="#六、版本更新与重新发布" class="headerlink" title="六、版本更新与重新发布"></a>六、版本更新与重新发布</h2><h3 id="更新版本号"><a href="#更新版本号" class="headerlink" title="更新版本号"></a>更新版本号</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">npm version patch   <span class="hljs-comment"># 1.2.3 -&gt; 1.2.4</span><br>npm version minor   <span class="hljs-comment"># 1.2.3 -&gt; 1.3.0</span><br>npm version major   <span class="hljs-comment"># 1.2.3 -&gt; 2.0.0</span><br></code></pre></td></tr></table></figure>
+
+<p><code>npm version</code> 会自动修改 <code>package.json</code> 中的 <code>version</code>，同时更新 <code>package-lock.json</code>（如果存在）。默认还会创建 Git 提交并打标签。</p>
+<p>如果只想改版本号，不产生 Git 提交和标签：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">npm version patch --no-git-tag-version<br></code></pre></td></tr></table></figure>
+
+<h3 id="重新发布"><a href="#重新发布" class="headerlink" title="重新发布"></a>重新发布</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">npm publish<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="七、团队内部使用但不发布到-Registry"><a href="#七、团队内部使用但不发布到-Registry" class="headerlink" title="七、团队内部使用但不发布到 Registry"></a>七、团队内部使用但不发布到 Registry</h2><p>如果只是内部使用，不想发布到任何 registry，可以保留 <code>&quot;private&quot;: true</code>，然后通过以下方式使用：</p>
+<h3 id="1-npm-link（本地实时调试）"><a href="#1-npm-link（本地实时调试）" class="headerlink" title="1. npm link（本地实时调试）"></a>1. <code>npm link</code>（本地实时调试）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 在私有包目录</span><br>npm <span class="hljs-built_in">link</span><br><br><span class="hljs-comment"># 在使用方项目目录</span><br>npm <span class="hljs-built_in">link</span> my-private-package<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-npm-pack-生成-tarball-分发"><a href="#2-npm-pack-生成-tarball-分发" class="headerlink" title="2. npm pack 生成 tarball 分发"></a>2. <code>npm pack</code> 生成 tarball 分发</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 在私有包目录</span><br>npm pack<br><span class="hljs-comment"># 生成 my-private-package-1.0.0.tgz</span><br><br><span class="hljs-comment"># 使用方安装</span><br>npm install /path/to/my-private-package-1.0.0.tgz<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-通过-Git-仓库安装"><a href="#3-通过-Git-仓库安装" class="headerlink" title="3. 通过 Git 仓库安装"></a>3. 通过 Git 仓库安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">npm install git+https://your-git-repo.git<br>npm install git+https://your-git-repo.git#v1.0.0<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="八、常见错误与处理"><a href="#八、常见错误与处理" class="headerlink" title="八、常见错误与处理"></a>八、常见错误与处理</h2><table>
+<thead>
+<tr>
+<th>错误码</th>
+<th>原因</th>
+<th>解决</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>EPRIVATE</code></td>
+<td><code>package.json</code> 中有 <code>&quot;private&quot;: true</code></td>
+<td>删除或改为<code>&quot;private&quot;: false</code></td>
+</tr>
+<tr>
+<td><code>E402</code></td>
+<td>Scoped 包未加<code>--access public</code>，且账户无权创建私有包</td>
+<td>加<code>--access public</code></td>
+</tr>
+<tr>
+<td><code>403 Forbidden</code></td>
+<td>包名已被占用，或无权限发布</td>
+<td>更换唯一包名，或检查账户权限</td>
+</tr>
+<tr>
+<td><code>401 Unauthorized</code></td>
+<td>登录凭证无效</td>
+<td>重新<code>npm login</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="九、发布速查清单"><a href="#九、发布速查清单" class="headerlink" title="九、发布速查清单"></a>九、发布速查清单</h2><ol>
+<li>确认 <code>package.json</code> 中没有 <code>&quot;private&quot;: true</code>。</li>
+<li>配置 <code>files</code> 白名单，避免上传敏感文件。</li>
+<li>运行 <code>npm pack --dry-run</code> 检查打包内容。</li>
+<li>执行 <code>npm version patch/minor/major</code> 更新版本。</li>
+<li>公共包：<ul>
+<li>非 scoped：<code>npm publish</code></li>
+<li>scoped：<code>npm publish --access public</code></li>
+</ul>
+</li>
+<li>私有 registry：配置 <code>.npmrc</code> 和 <code>publishConfig</code>，登录后 <code>npm publish</code>。</li>
+<li>发布后可在 npm 或私有 registry 页面确认。</li>
+</ol>
+<hr>
+<h2 id="十、关键要点回顾"><a href="#十、关键要点回顾" class="headerlink" title="十、关键要点回顾"></a>十、关键要点回顾</h2><ul>
+<li><code>npm publish</code> 自己会打包上传，<strong>不需要先 <code>npm pack</code></strong>。</li>
+<li><code>npm pack --dry-run</code> 只预览，不生成文件。</li>
+<li><code>&quot;private&quot;: true</code> 是禁止发布，不是私有发布。</li>
+<li><code>--access public</code> 只对 scoped 包必要。</li>
+<li><code>npm version patch</code> 会改 <code>package.json</code> 的 <code>version</code>，默认还会 Git 提交和打标签。</li>
+<li>私有包发布到私有 registry，也必须移除 <code>&quot;private&quot;: true</code>。</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%89%8D%E7%AB%AF/" class="category-chain-item">前端</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/npm/" class="print-no-link">#npm</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>npm插件发布指南</div>
+      <div>http://example.com/2023/08/01/前端/npm插件发布指南/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年8月1日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/08/01/Git/Git%20%E6%92%A4%E9%94%80%E6%8F%90%E4%BA%A4/" title="Git 撤销提交">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Git 撤销提交</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/08/01/%E6%8A%80%E6%9C%AF%E6%95%99%E7%A8%8B/Vs%20Code%20%E4%BD%BF%E7%94%A8%E4%B8%8D%E4%BA%86%20npm%E3%80%81pnpm/" title="Vs Code 使用不了 npm、pnpm">
+                        <span class="hidden-mobile">Vs Code 使用不了 npm、pnpm</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

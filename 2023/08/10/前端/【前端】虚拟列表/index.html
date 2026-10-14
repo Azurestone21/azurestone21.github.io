@@ -1,0 +1,704 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="【前端】虚拟列表虚拟列表（Virtual List）是一种针对长列表渲染的性能优化技术，核心思想是只渲染可视区域内的列表项，而不是一次性渲染全部数据。 核心原理1. 基本思路假设有 10000 条数据，但容器高度只有 500px，每项高度 50px，那么可视区域最多只能显示 10 项。虚拟列表的做法是：  只渲染这 10 项（加上少量缓冲项） 用一个占位元素撑起总高度，保证滚动条正常 滚动时动态计">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【前端】虚拟列表">
+<meta property="og:url" content="http://example.com/2023/08/10/%E5%89%8D%E7%AB%AF/%E3%80%90%E5%89%8D%E7%AB%AF%E3%80%91%E8%99%9A%E6%8B%9F%E5%88%97%E8%A1%A8/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="【前端】虚拟列表虚拟列表（Virtual List）是一种针对长列表渲染的性能优化技术，核心思想是只渲染可视区域内的列表项，而不是一次性渲染全部数据。 核心原理1. 基本思路假设有 10000 条数据，但容器高度只有 500px，每项高度 50px，那么可视区域最多只能显示 10 项。虚拟列表的做法是：  只渲染这 10 项（加上少量缓冲项） 用一个占位元素撑起总高度，保证滚动条正常 滚动时动态计">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-08-09T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-14T14:34:20.597Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="原理">
+<meta property="article:tag" content="虚拟列表">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>【前端】虚拟列表 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">【前端】虚拟列表</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-08-10 00:00" pubdate>
+          2023年8月10日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          944 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          8 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">【前端】虚拟列表</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="【前端】虚拟列表"><a href="#【前端】虚拟列表" class="headerlink" title="【前端】虚拟列表"></a>【前端】虚拟列表</h1><p>虚拟列表（Virtual List）是一种针对长列表渲染的性能优化技术，核心思想是<strong>只渲染可视区域内的列表项</strong>，而不是一次性渲染全部数据。</p>
+<h2 id="核心原理"><a href="#核心原理" class="headerlink" title="核心原理"></a>核心原理</h2><h3 id="1-基本思路"><a href="#1-基本思路" class="headerlink" title="1. 基本思路"></a>1. 基本思路</h3><p>假设有 10000 条数据，但容器高度只有 500px，每项高度 50px，那么可视区域最多只能显示 10 项。虚拟列表的做法是：</p>
+<ul>
+<li>只渲染这 10 项（加上少量缓冲项）</li>
+<li>用一个占位元素撑起总高度，保证滚动条正常</li>
+<li>滚动时动态计算当前应该渲染哪些项</li>
+</ul>
+<h3 id="2-关键计算"><a href="#2-关键计算" class="headerlink" title="2. 关键计算"></a>2. 关键计算</h3><figure class="highlight arcade"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs arcade">总高度 = 数据总数 × 每项高度<br>起始索引 = Math.<span class="hljs-built_in">floor</span>(scrollTop / itemHeight)<br>结束索引 = 起始索引 + 可视区域能显示的项数<br>偏移量 = 起始索引 × itemHeight<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-结构示意"><a href="#3-结构示意" class="headerlink" title="3. 结构示意"></a>3. 结构示意</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;container&quot;</span> <span class="hljs-attr">style</span>=<span class="hljs-string">&quot;height:500px; overflow:auto&quot;</span>&gt;</span><br>  <span class="hljs-comment">&lt;!-- 撑开总高度，保证滚动条正确 --&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;phantom&quot;</span> <span class="hljs-attr">style</span>=<span class="hljs-string">&quot;height: 500000px&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br><br>  <span class="hljs-comment">&lt;!-- 真正渲染的列表项，通过 transform 定位到正确位置 --&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;list&quot;</span> <span class="hljs-attr">style</span>=<span class="hljs-string">&quot;transform: translateY(offset)&quot;</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;item&quot;</span>&gt;</span>Item 100<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;item&quot;</span>&gt;</span>Item 101<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br>    ...<br>  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="实现步骤"><a href="#实现步骤" class="headerlink" title="实现步骤"></a>实现步骤</h2><h3 id="1-固定高度的简单实现（React-示例）"><a href="#1-固定高度的简单实现（React-示例）" class="headerlink" title="1. 固定高度的简单实现（React 示例）"></a>1. 固定高度的简单实现（React 示例）</h3><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">function</span> <span class="hljs-title function_">VirtualList</span>(<span class="hljs-params">&#123; items, itemHeight, containerHeight &#125;</span>) &#123;<br>  <span class="hljs-keyword">const</span> [scrollTop, setScrollTop] = <span class="hljs-title function_">useState</span>(<span class="hljs-number">0</span>);<br><br>  <span class="hljs-keyword">const</span> totalHeight = items.<span class="hljs-property">length</span> * itemHeight;<br>  <span class="hljs-keyword">const</span> startIndex = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">floor</span>(scrollTop / itemHeight);<br>  <span class="hljs-keyword">const</span> visibleCount = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">ceil</span>(containerHeight / itemHeight);<br>  <span class="hljs-keyword">const</span> endIndex = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">min</span>(startIndex + visibleCount, items.<span class="hljs-property">length</span>);<br><br>  <span class="hljs-keyword">const</span> visibleItems = items.<span class="hljs-title function_">slice</span>(startIndex, endIndex);<br><br>  <span class="hljs-keyword">const</span> <span class="hljs-title function_">handleScroll</span> = (<span class="hljs-params">e</span>) =&gt; &#123;<br>    <span class="hljs-title function_">setScrollTop</span>(e.<span class="hljs-property">currentTarget</span>.<span class="hljs-property">scrollTop</span>);<br>  &#125;;<br><br>  <span class="hljs-keyword">return</span> (<br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span></span></span><br><span class="hljs-tag"><span class="language-xml">      <span class="hljs-attr">style</span>=<span class="hljs-string">&#123;&#123;</span> <span class="hljs-attr">height:</span> <span class="hljs-attr">containerHeight</span>, <span class="hljs-attr">overflow:</span> &quot;<span class="hljs-attr">auto</span>&quot; &#125;&#125;</span></span><br><span class="hljs-tag"><span class="language-xml">      <span class="hljs-attr">onScroll</span>=<span class="hljs-string">&#123;handleScroll&#125;</span></span></span><br><span class="hljs-tag"><span class="language-xml">    &gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">style</span>=<span class="hljs-string">&#123;&#123;</span> <span class="hljs-attr">height:</span> <span class="hljs-attr">totalHeight</span>, <span class="hljs-attr">position:</span> &quot;<span class="hljs-attr">relative</span>&quot; &#125;&#125;&gt;</span></span><br><span class="language-xml">        <span class="hljs-tag">&lt;<span class="hljs-name">div</span></span></span><br><span class="hljs-tag"><span class="language-xml">          <span class="hljs-attr">style</span>=<span class="hljs-string">&#123;&#123;</span></span></span><br><span class="hljs-tag"><span class="language-xml">            <span class="hljs-attr">position:</span> &quot;<span class="hljs-attr">absolute</span>&quot;,</span></span><br><span class="hljs-tag"><span class="language-xml">            <span class="hljs-attr">top:</span> <span class="hljs-attr">0</span>,</span></span><br><span class="hljs-tag"><span class="language-xml">            <span class="hljs-attr">transform:</span> `<span class="hljs-attr">translateY</span>($&#123;<span class="hljs-attr">startIndex</span> * <span class="hljs-attr">itemHeight</span>&#125;<span class="hljs-attr">px</span>)`,</span></span><br><span class="hljs-tag"><span class="language-xml">            <span class="hljs-attr">width:</span> &quot;<span class="hljs-attr">100</span>%&quot;,</span></span><br><span class="hljs-tag"><span class="language-xml">          &#125;&#125;</span></span><br><span class="hljs-tag"><span class="language-xml">        &gt;</span></span><br><span class="language-xml">          &#123;visibleItems.map((item, i) =&gt; (</span><br><span class="language-xml">            <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">key</span>=<span class="hljs-string">&#123;startIndex</span> + <span class="hljs-attr">i</span>&#125; <span class="hljs-attr">style</span>=<span class="hljs-string">&#123;&#123;</span> <span class="hljs-attr">height:</span> <span class="hljs-attr">itemHeight</span> &#125;&#125;&gt;</span></span><br><span class="language-xml">              &#123;item&#125;</span><br><span class="language-xml">            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="language-xml">          ))&#125;</span><br><span class="language-xml">        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="language-xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br>  );<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-加缓冲项（Buffer）"><a href="#2-加缓冲项（Buffer）" class="headerlink" title="2. 加缓冲项（Buffer）"></a>2. 加缓冲项（Buffer）</h3><p>为避免快速滚动时出现白屏，通常在可视区域上下各多渲染几项：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> buffer = <span class="hljs-number">3</span>;<br><span class="hljs-keyword">const</span> startIndex = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">max</span>(<span class="hljs-number">0</span>, <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">floor</span>(scrollTop / itemHeight) - buffer);<br><span class="hljs-keyword">const</span> endIndex = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">min</span>(<br>  items.<span class="hljs-property">length</span>,<br>  <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">ceil</span>((scrollTop + containerHeight) / itemHeight) + buffer,<br>);<br></code></pre></td></tr></table></figure>
+
+<h2 id="动态高度的处理"><a href="#动态高度的处理" class="headerlink" title="动态高度的处理"></a>动态高度的处理</h2><p>当列表项高度不固定时，实现更复杂：</p>
+<ol>
+<li><strong>预估高度 + 缓存实测高度</strong>：先假设一个高度渲染，渲染后用 <code>ResizeObserver</code> 或 <code>getBoundingClientRect</code> 测量真实高度并缓存。</li>
+<li><strong>维护位置映射表</strong>：用一个数组记录每项的 <code>top</code> 和 <code>height</code>，滚动时二分查找确定起始索引。</li>
+<li><strong>已知高度列表</strong>：如聊天记录，可维护前缀和数组快速定位。</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// 位置缓存</span><br><span class="hljs-keyword">const</span> positions = [<br>  &#123; <span class="hljs-attr">index</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">top</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">height</span>: <span class="hljs-number">50</span>, <span class="hljs-attr">bottom</span>: <span class="hljs-number">50</span> &#125;,<br>  &#123; <span class="hljs-attr">index</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">top</span>: <span class="hljs-number">50</span>, <span class="hljs-attr">height</span>: <span class="hljs-number">80</span>, <span class="hljs-attr">bottom</span>: <span class="hljs-number">130</span> &#125;,<br>  ...<br>];<br><br><span class="hljs-comment">// 二分查找起始索引</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">findStartIndex</span>(<span class="hljs-params">scrollTop</span>) &#123;<br>  <span class="hljs-keyword">let</span> lo = <span class="hljs-number">0</span>, hi = positions.<span class="hljs-property">length</span> - <span class="hljs-number">1</span>;<br>  <span class="hljs-keyword">while</span> (lo &lt; hi) &#123;<br>    <span class="hljs-keyword">const</span> mid = (lo + hi) &gt;&gt; <span class="hljs-number">1</span>;<br>    <span class="hljs-keyword">if</span> (positions[mid].<span class="hljs-property">bottom</span> &gt; scrollTop) hi = mid;<br>    <span class="hljs-keyword">else</span> lo = mid + <span class="hljs-number">1</span>;<br>  &#125;<br>  <span class="hljs-keyword">return</span> lo;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="关键技术点"><a href="#关键技术点" class="headerlink" title="关键技术点"></a>关键技术点</h2><table>
+<thead>
+<tr>
+<th>问题</th>
+<th>解决方案</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>滚动条长度不对</td>
+<td>用占位元素撑起<code>总高度</code></td>
+</tr>
+<tr>
+<td>快速滚动白屏</td>
+<td>增加 buffer 缓冲项</td>
+</tr>
+<tr>
+<td>定位不准</td>
+<td>用<code>transform: translateY</code> 而非 <code>top</code>，走 GPU 合成</td>
+</tr>
+<tr>
+<td>动态高度</td>
+<td>测量 + 缓存 + 二分查找</td>
+</tr>
+<tr>
+<td>滚动卡顿</td>
+<td>用<code>requestAnimationFrame</code> 节流</td>
+</tr>
+<tr>
+<td>内存回收</td>
+<td>只保留可视区域的 DOM 节点</td>
+</tr>
+</tbody></table>
+<h2 id="常见库"><a href="#常见库" class="headerlink" title="常见库"></a>常见库</h2><ul>
+<li><strong>react-window</strong> &#x2F; <strong>react-virtualized</strong>：React 生态经典方案</li>
+<li><strong>vue-virtual-scroller</strong>：Vue 方案</li>
+<li><strong>@tanstack&#x2F;react-virtual</strong>：轻量、支持动态高度</li>
+<li><strong>vueuse 的 useVirtualList</strong></li>
+</ul>
+<h2 id="本质总结"><a href="#本质总结" class="headerlink" title="本质总结"></a>本质总结</h2><p>虚拟列表的本质是<strong>空间换时间 + 按需渲染</strong>：</p>
+<ul>
+<li>用少量 DOM 节点模拟大量数据的效果</li>
+<li>把「渲染 10000 个节点」变成「渲染 10 个节点 + 滚动时替换」</li>
+<li>核心难点在于<strong>滚动位置与数据索引的映射</strong>，以及<strong>动态高度下的精确计算</strong></li>
+</ul>
+<p>这也是所有虚拟化技术（虚拟 DOM、虚拟表格、虚拟滚动）共通的思路：只处理当前视口需要的部分。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%89%8D%E7%AB%AF/" class="category-chain-item">前端</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E8%99%9A%E6%8B%9F%E5%88%97%E8%A1%A8/" class="print-no-link">#虚拟列表</a>
+      
+        <a href="/tags/%E5%8E%9F%E7%90%86/" class="print-no-link">#原理</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>【前端】虚拟列表</div>
+      <div>http://example.com/2023/08/10/前端/【前端】虚拟列表/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年8月10日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/08/10/%E5%89%8D%E7%AB%AF/%E3%80%90Web%E5%AE%89%E5%85%A8%E3%80%91%E5%B8%B8%E8%A7%81%E5%AE%89%E5%85%A8%E5%93%8D%E5%BA%94%E5%A4%B4/" title="常见安全响应头">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">常见安全响应头</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/08/10/%E5%89%8D%E7%AB%AF/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87/" title="性能指标">
+                        <span class="hidden-mobile">性能指标</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

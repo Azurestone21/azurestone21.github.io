@@ -1,0 +1,765 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="React Hook：性能优化Hook一、概述useMemo 和 useCallback 都是 React 提供的性能优化 Hook，用于在组件重新渲染时缓存值或函数，避免不必要的计算和引用变化。 它们不是必须使用的。React 本身渲染很快，大多数场景不需要手动优化。只有在遇到性能问题，或需要稳定引用时，才考虑使用。  注意：React 不保证缓存永久有效。出于内存等原因，React 可能丢弃之">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React Hook：性能优化Hook">
+<meta property="og:url" content="http://example.com/2024/08/10/React/React%20Hook%EF%BC%9A%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="React Hook：性能优化Hook一、概述useMemo 和 useCallback 都是 React 提供的性能优化 Hook，用于在组件重新渲染时缓存值或函数，避免不必要的计算和引用变化。 它们不是必须使用的。React 本身渲染很快，大多数场景不需要手动优化。只有在遇到性能问题，或需要稳定引用时，才考虑使用。  注意：React 不保证缓存永久有效。出于内存等原因，React 可能丢弃之">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-08-09T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-14T14:26:02.550Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="Hook">
+<meta property="article:tag" content="React">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>React Hook：性能优化Hook - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">React Hook：性能优化Hook</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-08-10 00:00" pubdate>
+          2024年8月10日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          12 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">React Hook：性能优化Hook</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="React-Hook：性能优化Hook"><a href="#React-Hook：性能优化Hook" class="headerlink" title="React Hook：性能优化Hook"></a>React Hook：性能优化Hook</h1><h2 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h2><p><code>useMemo</code> 和 <code>useCallback</code> 都是 React 提供的<strong>性能优化 Hook</strong>，用于在组件重新渲染时缓存值或函数，避免不必要的计算和引用变化。</p>
+<p>它们不是必须使用的。React 本身渲染很快，大多数场景不需要手动优化。只有在遇到性能问题，或需要稳定引用时，才考虑使用。</p>
+<blockquote>
+<p>注意：React 不保证缓存永久有效。出于内存等原因，React 可能丢弃之前缓存的值，下次渲染重新计算。</p>
+</blockquote>
+<hr>
+<h2 id="二、useMemo"><a href="#二、useMemo" class="headerlink" title="二、useMemo"></a>二、useMemo</h2><h3 id="1-作用"><a href="#1-作用" class="headerlink" title="1. 作用"></a>1. 作用</h3><p><code>useMemo</code> 用于缓存<strong>计算结果</strong>。依赖不变时，直接返回上次的计算结果；依赖变化时，重新计算。</p>
+<h3 id="2-语法"><a href="#2-语法" class="headerlink" title="2. 语法"></a>2. 语法</h3><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">const</span> memoizedValue = <span class="hljs-title function_">useMemo</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">computeExpensiveValue</span>(a, b), [a, b]);<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>第一个参数：计算函数，必须纯，不能有副作用。</li>
+<li>第二个参数：依赖数组。</li>
+<li>返回值：缓存的计算结果。</li>
+</ul>
+<h3 id="3-依赖数组行为"><a href="#3-依赖数组行为" class="headerlink" title="3. 依赖数组行为"></a>3. 依赖数组行为</h3><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-comment">// 每次渲染都重新计算</span><br><span class="hljs-title function_">useMemo</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">compute</span>(a), <span class="hljs-literal">undefined</span>);<br><br><span class="hljs-comment">// 只在挂载时计算一次</span><br><span class="hljs-title function_">useMemo</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">compute</span>(a), []);<br><br><span class="hljs-comment">// a 或 b 变化时重新计算</span><br><span class="hljs-title function_">useMemo</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">compute</span>(a, b), [a, b]);<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-适用场景"><a href="#4-适用场景" class="headerlink" title="4. 适用场景"></a>4. 适用场景</h3><ul>
+<li>昂贵计算：排序、过滤、聚合、复杂派生数据。</li>
+<li>稳定对象或数组引用：传给 <code>React.memo</code> 子组件，或作为其他 Hook 的依赖。</li>
+<li>避免因引用变化导致 <code>useEffect</code> 重复执行。</li>
+</ul>
+<h3 id="5-示例"><a href="#5-示例" class="headerlink" title="5. 示例"></a>5. 示例</h3><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">function</span> <span class="hljs-title function_">ProductList</span>(<span class="hljs-params">&#123; products &#125;</span>) &#123;<br>  <span class="hljs-keyword">const</span> visibleProducts = <span class="hljs-title function_">useMemo</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>    <span class="hljs-keyword">return</span> products.<span class="hljs-title function_">filter</span>(<span class="hljs-function">(<span class="hljs-params">p</span>) =&gt;</span> p.<span class="hljs-property">visible</span>);<br>  &#125;, [products]);<br><br>  <span class="hljs-keyword">return</span> visibleProducts.<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">p</span>) =&gt;</span> <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">ProductItem</span> <span class="hljs-attr">key</span>=<span class="hljs-string">&#123;p.id&#125;</span> <span class="hljs-attr">product</span>=<span class="hljs-string">&#123;p&#125;</span> /&gt;</span></span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="6-注意事项"><a href="#6-注意事项" class="headerlink" title="6. 注意事项"></a>6. 注意事项</h3><ul>
+<li>计算函数在<strong>渲染期间</strong>执行，不能有副作用。</li>
+<li>依赖数组必须完整，否则会使用旧值。</li>
+<li>不要缓存很便宜的计算，缓存本身也有成本。</li>
+<li>不要用 <code>useMemo</code> 替代 <code>useEffect</code>。</li>
+</ul>
+<hr>
+<h2 id="三、useCallback"><a href="#三、useCallback" class="headerlink" title="三、useCallback"></a>三、useCallback</h2><h3 id="1-作用-1"><a href="#1-作用-1" class="headerlink" title="1. 作用"></a>1. 作用</h3><p><code>useCallback</code> 用于缓存<strong>函数引用</strong>。依赖不变时，返回同一个函数；依赖变化时，返回新函数。</p>
+<h3 id="2-语法-1"><a href="#2-语法-1" class="headerlink" title="2. 语法"></a>2. 语法</h3><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">const</span> memoizedCallback = <span class="hljs-title function_">useCallback</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>  <span class="hljs-title function_">doSomething</span>(a, b);<br>&#125;, [a, b]);<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>第一个参数：要缓存的函数。</li>
+<li>第二个参数：依赖数组。</li>
+<li>返回值：缓存的函数。</li>
+</ul>
+<h3 id="3-依赖数组行为-1"><a href="#3-依赖数组行为-1" class="headerlink" title="3. 依赖数组行为"></a>3. 依赖数组行为</h3><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-comment">// 每次渲染都创建新函数</span><br><span class="hljs-title function_">useCallback</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">doSomething</span>(a), <span class="hljs-literal">undefined</span>);<br><br><span class="hljs-comment">// 只创建一次</span><br><span class="hljs-title function_">useCallback</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">doSomething</span>(a), []);<br><br><span class="hljs-comment">// a 变化时创建新函数</span><br><span class="hljs-title function_">useCallback</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">doSomething</span>(a), [a]);<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-适用场景-1"><a href="#4-适用场景-1" class="headerlink" title="4. 适用场景"></a>4. 适用场景</h3><ul>
+<li>将函数传给 <code>React.memo</code> 子组件，避免子组件因函数引用变化而重渲染。</li>
+<li>函数作为 <code>useEffect</code>、<code>useMemo</code>、其他 <code>useCallback</code> 的依赖。</li>
+<li>自定义 Hook 返回稳定函数。</li>
+</ul>
+<h3 id="5-示例-1"><a href="#5-示例-1" class="headerlink" title="5. 示例"></a>5. 示例</h3><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">const</span> <span class="hljs-title class_">Child</span> = <span class="hljs-title class_">React</span>.<span class="hljs-title function_">memo</span>(<span class="hljs-keyword">function</span> <span class="hljs-title function_">Child</span>(<span class="hljs-params">&#123; onClick &#125;</span>) &#123;<br>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;Child render&quot;</span>);<br>  <span class="hljs-keyword">return</span> <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">&#123;onClick&#125;</span>&gt;</span>点击<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span></span>;<br>&#125;);<br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">Parent</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-keyword">const</span> [count, setCount] = <span class="hljs-title function_">useState</span>(<span class="hljs-number">0</span>);<br><br>  <span class="hljs-keyword">const</span> handleClick = <span class="hljs-title function_">useCallback</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;click&quot;</span>);<br>  &#125;, []);<br><br>  <span class="hljs-keyword">return</span> (<br>    <span class="language-xml"><span class="hljs-tag">&lt;&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">&#123;()</span> =&gt;</span> setCount((c) =&gt; c + 1)&#125;&gt;父组件 &#123;count&#125;<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">Child</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">&#123;handleClick&#125;</span> /&gt;</span></span><br><span class="language-xml">    <span class="hljs-tag">&lt;/&gt;</span></span><br>  );<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>如果 <code>handleClick</code> 不用 <code>useCallback</code>，每次 <code>Parent</code> 重渲染都会创建新函数，<code>Child</code> 的 <code>React.memo</code> 浅比较失败，导致 <code>Child</code> 重新渲染。用了 <code>useCallback</code> 且依赖不变，<code>Child</code> 可以跳过重渲染。</p>
+<h3 id="6-注意事项-1"><a href="#6-注意事项-1" class="headerlink" title="6. 注意事项"></a>6. 注意事项</h3><ul>
+<li><code>useCallback</code> 只缓存函数引用，<strong>不执行函数</strong>。</li>
+<li>依赖数组必须完整，否则函数内部会捕获旧值。</li>
+<li>如果子组件没有用 <code>React.memo</code>，<code>useCallback</code> 通常不能减少子组件重渲染。</li>
+<li>不要包裹所有事件处理函数，只有明确需要稳定引用时才用。</li>
+</ul>
+<hr>
+<h2 id="四、两者关系与区别"><a href="#四、两者关系与区别" class="headerlink" title="四、两者关系与区别"></a>四、两者关系与区别</h2><h3 id="1-关系"><a href="#1-关系" class="headerlink" title="1. 关系"></a>1. 关系</h3><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-title function_">useCallback</span>(fn, deps);<br><span class="hljs-comment">// 等价于</span><br><span class="hljs-title function_">useMemo</span>(<span class="hljs-function">() =&gt;</span> fn, deps);<br></code></pre></td></tr></table></figure>
+
+<p><code>useCallback</code> 可以看作 <code>useMemo</code> 缓存函数的语法糖。</p>
+<h3 id="2-区别"><a href="#2-区别" class="headerlink" title="2. 区别"></a>2. 区别</h3><table>
+<thead>
+<tr>
+<th align="left">维度</th>
+<th align="left">useMemo</th>
+<th align="left">useCallback</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">返回值</td>
+<td align="left">任意值</td>
+<td align="left">函数</td>
+</tr>
+<tr>
+<td align="left">缓存内容</td>
+<td align="left">计算结果</td>
+<td align="left">函数引用</td>
+</tr>
+<tr>
+<td align="left">等价写法</td>
+<td align="left"><code>useMemo(() =&gt; value, deps)</code></td>
+<td align="left"><code>useMemo(() =&gt; fn, deps)</code></td>
+</tr>
+<tr>
+<td align="left">主要用途</td>
+<td align="left">昂贵计算、稳定对象&#x2F;数组引用</td>
+<td align="left">稳定函数引用</td>
+</tr>
+<tr>
+<td align="left">常见配合</td>
+<td align="left"><code>React.memo</code> 子组件、其他 Hook 依赖</td>
+<td align="left"><code>React.memo</code> 子组件、其他 Hook 依赖</td>
+</tr>
+<tr>
+<td align="left">是否执行函数</td>
+<td align="left">是，在渲染期间执行计算函数</td>
+<td align="left">否，只返回函数</td>
+</tr>
+</tbody></table>
+<h3 id="3-一句话记忆"><a href="#3-一句话记忆" class="headerlink" title="3. 一句话记忆"></a>3. 一句话记忆</h3><ul>
+<li><code>useMemo</code> 缓存<strong>值</strong>。</li>
+<li><code>useCallback</code> 缓存<strong>函数</strong>。</li>
+<li><code>useCallback(fn, deps)</code> 就是 <code>useMemo(() =&gt; fn, deps)</code>。</li>
+</ul>
+<hr>
+<h2 id="五、与-React-memo-的配合"><a href="#五、与-React-memo-的配合" class="headerlink" title="五、与 React.memo 的配合"></a>五、与 React.memo 的配合</h2><p><code>React.memo</code> 会对 props 做浅比较。如果 props 中有对象、数组或函数，父组件每次重渲染都会创建新引用，导致 <code>React.memo</code> 失效。</p>
+<p>这时需要：</p>
+<ul>
+<li>对象&#x2F;数组用 <code>useMemo</code> 稳定引用。</li>
+<li>函数用 <code>useCallback</code> 稳定引用。</li>
+</ul>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">const</span> <span class="hljs-title class_">Child</span> = <span class="hljs-title class_">React</span>.<span class="hljs-title function_">memo</span>(<span class="hljs-keyword">function</span> <span class="hljs-title function_">Child</span>(<span class="hljs-params">&#123; config, onSave &#125;</span>) &#123;<br>  <span class="hljs-comment">// ...</span><br>&#125;);<br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">Parent</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-keyword">const</span> config = <span class="hljs-title function_">useMemo</span>(<span class="hljs-function">() =&gt;</span> (&#123; <span class="hljs-attr">theme</span>: <span class="hljs-string">&quot;dark&quot;</span> &#125;), []);<br>  <span class="hljs-keyword">const</span> onSave = <span class="hljs-title function_">useCallback</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>    <span class="hljs-comment">// ...</span><br>  &#125;, []);<br><br>  <span class="hljs-keyword">return</span> <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">Child</span> <span class="hljs-attr">config</span>=<span class="hljs-string">&#123;config&#125;</span> <span class="hljs-attr">onSave</span>=<span class="hljs-string">&#123;onSave&#125;</span> /&gt;</span></span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="六、使用原则与注意事项"><a href="#六、使用原则与注意事项" class="headerlink" title="六、使用原则与注意事项"></a>六、使用原则与注意事项</h2><ol>
+<li><strong>不要过早优化</strong>：先写清晰代码，遇到性能问题再优化。</li>
+<li><strong>不要滥用</strong>：缓存有成本，依赖比较和内存都有开销。</li>
+<li><strong>依赖数组必须完整</strong>：否则会捕获旧闭包，导致 bug。</li>
+<li><strong>不要在里面做副作用</strong>：<code>useMemo</code> 在渲染期间执行，副作用应用 <code>useEffect</code>。</li>
+<li><strong>React 不保证缓存永久有效</strong>：缓存可能被丢弃，不能依赖它做语义保证。</li>
+<li><strong>没有 <code>React.memo</code> 时，<code>useCallback</code> 效果有限</strong>：父组件重渲染默认会带动子组件重渲染。</li>
+<li><strong>React Compiler</strong>：现代 React 正在通过 React Compiler 自动做记忆化，未来手动使用 <code>useMemo</code> &#x2F; <code>useCallback</code> 的场景会减少。</li>
+</ol>
+<hr>
+<h2 id="七、总结"><a href="#七、总结" class="headerlink" title="七、总结"></a>七、总结</h2><ul>
+<li><code>useMemo</code>：缓存计算结果，依赖不变时返回上次的值。</li>
+<li><code>useCallback</code>：缓存函数引用，依赖不变时返回同一个函数。</li>
+<li>两者都是性能优化手段，不是必须使用。</li>
+<li><code>useCallback(fn, deps)</code> 等价于 <code>useMemo(() =&gt; fn, deps)</code>。</li>
+<li>常见用途：配合 <code>React.memo</code>、稳定 Hook 依赖、避免昂贵计算。</li>
+<li>关键原则：<strong>先测量，再优化；需要稳定引用时才用。</strong></li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/React/" class="category-chain-item">React</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/React/" class="print-no-link">#React</a>
+      
+        <a href="/tags/Hook/" class="print-no-link">#Hook</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>React Hook：性能优化Hook</div>
+      <div>http://example.com/2024/08/10/React/React Hook：性能优化/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年8月10日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/08/10/React/React%20Hook%EF%BC%9A%E5%89%AF%E4%BD%9C%E7%94%A8/" title="React useEffect Hook">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">React useEffect Hook</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/08/10/%E7%8A%B6%E6%80%81%E7%AE%A1%E7%90%86/MobX%20%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8E%9F%E7%90%86/" title="MobX 响应式机制与依赖收集">
+                        <span class="hidden-mobile">MobX 响应式机制与依赖收集</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

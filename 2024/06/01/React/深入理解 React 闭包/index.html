@@ -1,0 +1,746 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="深入理解 React 闭包 如果你曾经写过这样的代码——定时器里的 count 永远是 0，事件监听里拿到的永远是旧 state，useEffect 里的变量像是被”冻住”了——那么你已经和 React 闭包正面撞上了。  闭包是 JavaScript 最基础也最容易被人忽略的概念之一，而在 React(尤其是 Hooks)中，它从”面试题”变成了”每天都会踩的坑”。这篇文章会从原理讲到实战，帮你">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入理解 React 闭包">
+<meta property="og:url" content="http://example.com/2024/06/01/React/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%20React%20%E9%97%AD%E5%8C%85/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="深入理解 React 闭包 如果你曾经写过这样的代码——定时器里的 count 永远是 0，事件监听里拿到的永远是旧 state，useEffect 里的变量像是被”冻住”了——那么你已经和 React 闭包正面撞上了。  闭包是 JavaScript 最基础也最容易被人忽略的概念之一，而在 React(尤其是 Hooks)中，它从”面试题”变成了”每天都会踩的坑”。这篇文章会从原理讲到实战，帮你">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-06-01T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-14T14:26:02.567Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="React">
+<meta property="article:tag" content="闭包">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>深入理解 React 闭包 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">深入理解 React 闭包</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-06-01 10:00" pubdate>
+          2024年6月1日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          15 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">深入理解 React 闭包</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="深入理解-React-闭包"><a href="#深入理解-React-闭包" class="headerlink" title="深入理解 React 闭包"></a>深入理解 React 闭包</h1><blockquote>
+<p>如果你曾经写过这样的代码——定时器里的 <code>count</code> 永远是 0，事件监听里拿到的永远是旧 state，<code>useEffect</code> 里的变量像是被”冻住”了——那么你已经和 React 闭包正面撞上了。</p>
+</blockquote>
+<p>闭包是 JavaScript 最基础也最容易被人忽略的概念之一，而在 React(尤其是 Hooks)中，它从”面试题”变成了”每天都会踩的坑”。这篇文章会从原理讲到实战，帮你把 React 闭包彻底吃透。</p>
+<hr>
+<h2 id="一、先回到-JavaScript-闭包到底是什么"><a href="#一、先回到-JavaScript-闭包到底是什么" class="headerlink" title="一、先回到 JavaScript:闭包到底是什么"></a>一、先回到 JavaScript:闭包到底是什么</h2><p>闭包(Closure)的定义很简单:</p>
+<blockquote>
+<p><strong>函数能够访问它定义时所在作用域中的变量,即使这个函数在其定义的作用域之外被执行。</strong></p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">outer</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-keyword">const</span> message = <span class="hljs-string">&quot;hello&quot;</span>;<br>  <span class="hljs-keyword">function</span> <span class="hljs-title function_">inner</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(message);<br>  &#125;<br>  <span class="hljs-keyword">return</span> inner;<br>&#125;<br><br><span class="hljs-keyword">const</span> fn = <span class="hljs-title function_">outer</span>();<br><span class="hljs-title function_">fn</span>(); <span class="hljs-comment">// &quot;hello&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p><code>outer</code> 执行完后，按理说 <code>message</code> 应该被回收了，但 <code>inner</code> 依然能访问它。这就是闭包: <strong>函数会”记住”自己被创建时的环境</strong>。</p>
+<p>关键认知：<strong>闭包捕获的不是”变量的当前值”，而是”变量本身所在的词法环境”</strong>。只不过在 React 里，每次渲染都创建了一个全新的环境，所以你看到的是”快照”。</p>
+<hr>
+<h2 id="二、React-函数组件-一个每次渲染都在重建的闭包"><a href="#二、React-函数组件-一个每次渲染都在重建的闭包" class="headerlink" title="二、React 函数组件:一个每次渲染都在重建的闭包"></a>二、React 函数组件:一个每次渲染都在重建的闭包</h2><p>React 函数组件的本质，就是一个<strong>每次渲染都会被重新调用的函数</strong>。这意味着:</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">function</span> <span class="hljs-title function_">Counter</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-keyword">const</span> [count, setCount] = <span class="hljs-title function_">useState</span>(<span class="hljs-number">0</span>);<br><br>  <span class="hljs-keyword">const</span> <span class="hljs-title function_">handleClick</span> = (<span class="hljs-params"></span>) =&gt; &#123;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(count);<br>  &#125;;<br><br>  <span class="hljs-keyword">return</span> <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">&#123;handleClick&#125;</span>&gt;</span>&#123;count&#125;<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span></span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>每一次渲染:</p>
+<ol>
+<li>调用一次 <code>Counter</code> 函数;</li>
+<li>创建一个新的作用域，<code>count</code> 是这次渲染的值;</li>
+<li>创建新的 <code>handleClick</code>，它捕获的是<strong>这次渲染的 <code>count</code></strong>;</li>
+<li>返回新的 JSX。</li>
+</ol>
+<p>所以当 <code>count</code> 从 0 变成 1 时，并不是”同一个 <code>count</code> 变了”，而是<strong>产生了一个全新的闭包</strong>，里面的 <code>count</code> 是 1。旧的闭包(捕获 0 的那个)还在被旧的事件处理器引用着，直到它被替换。</p>
+<p>理解这一点，React 中 90% 的闭包问题都能解释清楚。</p>
+<hr>
+<h2 id="三、经典陷阱-定时器里的-count-永远是-0"><a href="#三、经典陷阱-定时器里的-count-永远是-0" class="headerlink" title="三、经典陷阱:定时器里的 count 永远是 0"></a>三、经典陷阱:定时器里的 count 永远是 0</h2><p>来看一段几乎每个人都写过(或踩过)的代码:</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">function</span> <span class="hljs-title function_">Counter</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-keyword">const</span> [count, setCount] = <span class="hljs-title function_">useState</span>(<span class="hljs-number">0</span>);<br><br>  <span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>    <span class="hljs-keyword">const</span> timer = <span class="hljs-built_in">setInterval</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>      <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(count); <span class="hljs-comment">// ❌ 永远是 0</span><br>      <span class="hljs-title function_">setCount</span>(count + <span class="hljs-number">1</span>); <span class="hljs-comment">// ❌ 永远加到 1</span><br>    &#125;, <span class="hljs-number">1000</span>);<br>    <span class="hljs-keyword">return</span> <span class="hljs-function">() =&gt;</span> <span class="hljs-built_in">clearInterval</span>(timer);<br>  &#125;, []); <span class="hljs-comment">// 空依赖</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong>为什么会这样?</strong></p>
+<p><code>useEffect</code> 的依赖数组是 <code>[]</code>，意味着这个 effect <strong>只在组件挂载时执行一次</strong>。它执行时，创建了一个 <code>setInterval</code>，而这个 <code>setInterval</code> 的回调函数捕获的是<strong>首次渲染时的闭包</strong>——那个闭包里的 <code>count</code> 永远是 0。</p>
+<p>后续 <code>count</code> 确实在更新，但那是<strong>新的闭包</strong>里的事，和这个”活着的老定时器”无关。老定时器还在用它的旧快照。</p>
+<p>这就是所谓的<strong>陈旧闭包(Stale Closure)</strong>。</p>
+<hr>
+<h2 id="四、四种解决方案-对应四种思维"><a href="#四、四种解决方案-对应四种思维" class="headerlink" title="四、四种解决方案,对应四种思维"></a>四、四种解决方案,对应四种思维</h2><h3 id="方案-1-补全依赖-——-让闭包跟着重建"><a href="#方案-1-补全依赖-——-让闭包跟着重建" class="headerlink" title="方案 1:补全依赖 —— 让闭包跟着重建"></a>方案 1:补全依赖 —— 让闭包跟着重建</h3><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>  <span class="hljs-keyword">const</span> timer = <span class="hljs-built_in">setInterval</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(count);<br>  &#125;, <span class="hljs-number">1000</span>);<br>  <span class="hljs-keyword">return</span> <span class="hljs-function">() =&gt;</span> <span class="hljs-built_in">clearInterval</span>(timer);<br>&#125;, [count]); <span class="hljs-comment">// 每次 count 变化,清掉旧定时器,建新的</span><br></code></pre></td></tr></table></figure>
+
+<p>思路:<strong>依赖变了就重建闭包</strong>。缺点是频繁重建定时器，如果逻辑重，性能会有损耗。</p>
+<h3 id="方案-2-函数式更新-——-不依赖外部值"><a href="#方案-2-函数式更新-——-不依赖外部值" class="headerlink" title="方案 2:函数式更新 —— 不依赖外部值"></a>方案 2:函数式更新 —— 不依赖外部值</h3><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>  <span class="hljs-keyword">const</span> timer = <span class="hljs-built_in">setInterval</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>    <span class="hljs-title function_">setCount</span>(<span class="hljs-function">(<span class="hljs-params">prev</span>) =&gt;</span> prev + <span class="hljs-number">1</span>); <span class="hljs-comment">// 不读外部 count</span><br>  &#125;, <span class="hljs-number">1000</span>);<br>  <span class="hljs-keyword">return</span> <span class="hljs-function">() =&gt;</span> <span class="hljs-built_in">clearInterval</span>(timer);<br>&#125;, []);<br></code></pre></td></tr></table></figure>
+
+<p>思路:<strong>与其捕获旧值，不如让 React 把最新值传给你</strong>。这是最优雅的写法，也是 React 官方推荐的。</p>
+<h3 id="方案-3-useRef-——-主动读取最新值"><a href="#方案-3-useRef-——-主动读取最新值" class="headerlink" title="方案 3:useRef —— 主动读取最新值"></a>方案 3:useRef —— 主动读取最新值</h3><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">const</span> countRef = <span class="hljs-title function_">useRef</span>(count);<br>countRef.<span class="hljs-property">current</span> = count; <span class="hljs-comment">// 每次渲染同步</span><br><br><span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>  <span class="hljs-keyword">const</span> timer = <span class="hljs-built_in">setInterval</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(countRef.<span class="hljs-property">current</span>); <span class="hljs-comment">// ✅ 最新值</span><br>  &#125;, <span class="hljs-number">1000</span>);<br>  <span class="hljs-keyword">return</span> <span class="hljs-function">() =&gt;</span> <span class="hljs-built_in">clearInterval</span>(timer);<br>&#125;, []);<br></code></pre></td></tr></table></figure>
+
+<p>思路:<strong>闭包捕获的是 ref 对象的引用，而 ref 引用不变，<code>.current</code> 永远指向最新值</strong>。这是打破闭包的经典手段。</p>
+<p>但要记住:<code>ref</code> 变化不会触发重渲染，所以它只适合”读最新值”,不能用来驱动 UI。</p>
+<h3 id="方案-4-把逻辑抽到自定义-Hook"><a href="#方案-4-把逻辑抽到自定义-Hook" class="headerlink" title="方案 4:把逻辑抽到自定义 Hook"></a>方案 4:把逻辑抽到自定义 Hook</h3><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">function</span> <span class="hljs-title function_">useInterval</span>(<span class="hljs-params">callback, delay</span>) &#123;<br>  <span class="hljs-keyword">const</span> savedCallback = <span class="hljs-title function_">useRef</span>();<br><br>  <span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>    savedCallback.<span class="hljs-property">current</span> = callback; <span class="hljs-comment">// 每次渲染更新最新回调</span><br>  &#125;);<br><br>  <span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>    <span class="hljs-keyword">if</span> (delay === <span class="hljs-literal">null</span>) <span class="hljs-keyword">return</span>;<br>    <span class="hljs-keyword">const</span> id = <span class="hljs-built_in">setInterval</span>(<span class="hljs-function">() =&gt;</span> savedCallback.<span class="hljs-title function_">current</span>(), delay);<br>    <span class="hljs-keyword">return</span> <span class="hljs-function">() =&gt;</span> <span class="hljs-built_in">clearInterval</span>(id);<br>  &#125;, [delay]);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这是 Dan Abramov 的经典实现。核心思想：<strong>用 ref 保存最新回调，effect 只依赖 <code>delay</code></strong>。这样既避免了频繁重建，又能拿到最新逻辑。</p>
+<hr>
+<h2 id="五、闭包陷阱的三个高发区"><a href="#五、闭包陷阱的三个高发区" class="headerlink" title="五、闭包陷阱的三个高发区"></a>五、闭包陷阱的三个高发区</h2><h3 id="1-useEffect-依赖不完整"><a href="#1-useEffect-依赖不完整" class="headerlink" title="1. useEffect 依赖不完整"></a>1. useEffect 依赖不完整</h3><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>  <span class="hljs-title function_">doSomething</span>(value);<br>&#125;, []); <span class="hljs-comment">// 漏了 value</span><br></code></pre></td></tr></table></figure>
+
+<p>ESLint 的 <code>react-hooks/exhaustive-deps</code> 规则就是专门抓这个的，<strong>不要轻易关掉它</strong>。</p>
+<h3 id="2-异步回调-定时器、Promise、防抖"><a href="#2-异步回调-定时器、Promise、防抖" class="headerlink" title="2. 异步回调(定时器、Promise、防抖)"></a>2. 异步回调(定时器、Promise、防抖)</h3><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>  <span class="hljs-keyword">const</span> timer = <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>    <span class="hljs-title function_">fetchData</span>(query); <span class="hljs-comment">// 捕获首次渲染的 query</span><br>  &#125;, <span class="hljs-number">500</span>);<br>  <span class="hljs-keyword">return</span> <span class="hljs-function">() =&gt;</span> <span class="hljs-built_in">clearTimeout</span>(timer);<br>&#125;, []); <span class="hljs-comment">// ❌</span><br></code></pre></td></tr></table></figure>
+
+<p>防抖、节流、请求回调都是重灾区。解决思路同样是：<strong>依赖补全 &#x2F; ref 保存 &#x2F; 函数式更新</strong>。</p>
+<h3 id="3-事件监听器"><a href="#3-事件监听器" class="headerlink" title="3. 事件监听器"></a>3. 事件监听器</h3><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>  <span class="hljs-keyword">const</span> <span class="hljs-title function_">handler</span> = (<span class="hljs-params"></span>) =&gt; <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(count);<br>  <span class="hljs-variable language_">window</span>.<span class="hljs-title function_">addEventListener</span>(<span class="hljs-string">&quot;resize&quot;</span>, handler);<br>  <span class="hljs-keyword">return</span> <span class="hljs-function">() =&gt;</span> <span class="hljs-variable language_">window</span>.<span class="hljs-title function_">removeEventListener</span>(<span class="hljs-string">&quot;resize&quot;</span>, handler);<br>&#125;, []); <span class="hljs-comment">// handler 永远捕获初始 count</span><br></code></pre></td></tr></table></figure>
+
+<p>注意:这里如果不补依赖，连清理函数都拿的是旧 handler(不过 <code>removeEventListener</code> 对同一函数引用有效，这里恰好能清掉——但如果依赖变了而没重跑 effect，就会出问题)。</p>
+<hr>
+<h2 id="六、闭包与性能-useCallback-的两面性"><a href="#六、闭包与性能-useCallback-的两面性" class="headerlink" title="六、闭包与性能:useCallback 的两面性"></a>六、闭包与性能:useCallback 的两面性</h2><p>每次渲染创建新函数，会导致 <code>React.memo</code> 失效:</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">const</span> <span class="hljs-title class_">Child</span> = <span class="hljs-title class_">React</span>.<span class="hljs-title function_">memo</span>(<span class="hljs-function">(<span class="hljs-params">&#123; onClick &#125;</span>) =&gt;</span> &#123; ... &#125;);<br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">Parent</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-keyword">const</span> <span class="hljs-title function_">handleClick</span> = (<span class="hljs-params"></span>) =&gt; &#123;&#125;; <span class="hljs-comment">// 每次都是新函数</span><br>  <span class="hljs-keyword">return</span> <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">Child</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">&#123;handleClick&#125;</span> /&gt;</span></span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><code>useCallback</code> 可以缓存函数:</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">const</span> handleClick = <span class="hljs-title function_">useCallback</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>  <span class="hljs-title function_">doSomething</span>(value);<br>&#125;, [value]);<br></code></pre></td></tr></table></figure>
+
+<p><strong>但 <code>useCallback</code> 本身也受闭包影响</strong>：如果依赖写错，它缓存的函数同样会捕获旧值。所以 <code>useCallback</code> 不是”消除闭包”，而是”控制闭包何时重建”。</p>
+<p>一个常见误区是给所有函数都套 <code>useCallback</code>，结果依赖数组写得一塌糊涂，反而制造了更多陈旧闭包。<strong>按需使用</strong>才是正道。</p>
+<hr>
+<h2 id="七、一句话总结每个概念"><a href="#七、一句话总结每个概念" class="headerlink" title="七、一句话总结每个概念"></a>七、一句话总结每个概念</h2><table>
+<thead>
+<tr>
+<th>概念</th>
+<th>本质</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>函数组件</td>
+<td>每次渲染都是一个新闭包</td>
+</tr>
+<tr>
+<td>state &#x2F; props</td>
+<td>是那次渲染的”快照”</td>
+</tr>
+<tr>
+<td>依赖数组</td>
+<td>控制 effect &#x2F; 回调何时重建闭包</td>
+</tr>
+<tr>
+<td>useRef</td>
+<td>跨渲染保持引用,读取最新值的逃生舱</td>
+</tr>
+<tr>
+<td>函数式更新</td>
+<td>避开对外部值的依赖,最安全的写法</td>
+</tr>
+<tr>
+<td>useCallback</td>
+<td>缓存函数,但依赖写错同样会陈旧</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="八、结语-闭包不是敌人"><a href="#八、结语-闭包不是敌人" class="headerlink" title="八、结语:闭包不是敌人"></a>八、结语:闭包不是敌人</h2><p>很多初学者把 React 闭包当成”bug 制造机”，但其实它恰恰是 React 设计的基石。</p>
+<p><strong>函数式组件、Hooks、并发渲染全都建立在”每次渲染是一次独立快照”这个模型之上</strong>。闭包带来的”陈旧”不是缺陷，而是这个模型的自然结果——它保证了每次渲染的 UI 和逻辑是一致的、可预测的。</p>
+<p>你真正要做的不是”消除闭包”，而是学会:</p>
+<ol>
+<li><strong>补全依赖</strong>,让闭包按需重建;</li>
+<li><strong>用 ref 或函数式更新</strong>,在需要时拿到最新值;</li>
+<li><strong>理解快照模型</strong>,不再和 React 的渲染机制对抗。</li>
+</ol>
+<p>当你不再觉得 <code>count</code> 永远是 0 是”玄学”，而是能一眼看出”哦，这是 effect 只跑了一次，捕获了首次渲染的闭包”——你就真正掌握了 React。</p>
+<hr>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/React/" class="category-chain-item">React</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/React/" class="print-no-link">#React</a>
+      
+        <a href="/tags/%E9%97%AD%E5%8C%85/" class="print-no-link">#闭包</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>深入理解 React 闭包</div>
+      <div>http://example.com/2024/06/01/React/深入理解 React 闭包/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年6月1日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/06/01/CSS/%E5%BC%80%E5%8F%91%E4%B8%AD%E7%9A%84%E5%B8%B8%E7%94%A8%E6%A0%B7%E5%BC%8F/" title="【CSS】开发中的常用样式">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">【CSS】开发中的常用样式</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/06/01/TypeScript/TS%20%E5%86%85%E7%BD%AE%E5%B7%A5%E5%85%B7%E7%B1%BB%E5%9E%8B/" title="TS 内置工具类型">
+                        <span class="hidden-mobile">TS 内置工具类型</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
