@@ -227,6 +227,376 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2025/08/10/React/%E3%80%90React%E3%80%91Fiber%20%E4%B8%8E%E5%B9%B6%E5%8F%91%E7%89%B9%E6%80%A7/" target="_self">
+          【React】Fiber 与并发特性
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/08/10/React/%E3%80%90React%E3%80%91Fiber%20%E4%B8%8E%E5%B9%B6%E5%8F%91%E7%89%B9%E6%80%A7/" target="_self">
+        <div>
+          Fiber 与并发特性一、并发是什么首先要清楚：并发不是并行 。  并行 ：多线程同时执行。 并发 ：单线程下交替执行，看起来像同时进行。  二、Fiber 提供了并发的基础设施并发需要三个能力，Fiber 刚好提供了： 可中断 Fiber 用链表遍历（child &#x2F; sibling &#x2F; return），不依赖 JS 调用栈。 当前处理到哪个节点存在全局 workInProgr
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-08-10 00:00" pubdate>
+              2025-08-10
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/React/" class="category-chain-item">React</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Fiber/">#Fiber</a>
+            
+              <a href="/tags/%E5%B9%B6%E5%8F%91/">#并发</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2025/08/10/React/%E3%80%90React%E3%80%91Fiber%20%E8%B0%83%E5%BA%A6%E5%92%8C%E4%BC%98%E5%85%88%E7%BA%A7/" target="_self">
+          【React】Fiber 的调度和优先级
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/08/10/React/%E3%80%90React%E3%80%91Fiber%20%E8%B0%83%E5%BA%A6%E5%92%8C%E4%BC%98%E5%85%88%E7%BA%A7/" target="_self">
+        <div>
+          Fiber 的调度和优先级React 把更新拆成带优先级的任务，交给 Scheduler 按时间片调度。高优先级任务可以打断低优先级任务，Render 阶段可中断，Commit 阶段不可中断。优先级通过 Lane 模型表示，挂在 Fiber 的 lanes &#x2F; childLanes 上。 一、为什么需要调度没有调度时的问题：  一次更新可能构建整棵 Fiber 树，耗时长。 主线程被长时
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-08-10 00:00" pubdate>
+              2025-08-10
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/React/" class="category-chain-item">React</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Fiber/">#Fiber</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2025/08/10/React/%E3%80%90React%E3%80%91Hooks%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E8%83%BD%E6%9D%A1%E4%BB%B6%E8%B0%83%E7%94%A8/" target="_self">
+          【React】Hooks 为什么不能条件调用
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/08/10/React/%E3%80%90React%E3%80%91Hooks%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E8%83%BD%E6%9D%A1%E4%BB%B6%E8%B0%83%E7%94%A8/" target="_self">
+        <div>
+          Hooks 为什么不能条件调用 Hooks 的状态不是存在组件上，而是存在 Fiber 的 memoizedState 链表里。调用顺序就是“地址”。一旦条件调用导致顺序变化，React 就会把状态错配到别的 Hook 上。   一、Hooks 状态存在哪函数组件本身没有实例，useState 返回的 state 不能存在函数里，因为函数每次 render 都会重新执行，局部变量会丢失。 Reac
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-08-10 00:00" pubdate>
+              2025-08-10
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/React/" class="category-chain-item">React</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/React/">#React</a>
+            
+              <a href="/tags/Hook/">#Hook</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2025/08/10/TypeScript/TypeScript%20%E5%9C%A8%E5%8A%A8%E6%80%81%E9%85%8D%E7%BD%AE%E6%B8%B2%E6%9F%93%E5%9C%BA%E6%99%AF%E4%B8%AD%E7%9A%84%E7%B1%BB%E5%9E%8B%E5%AE%89%E5%85%A8%E8%AE%BE%E8%AE%A1/" target="_self">
+          TypeScript 在动态配置渲染场景中的类型安全设计
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/08/10/TypeScript/TypeScript%20%E5%9C%A8%E5%8A%A8%E6%80%81%E9%85%8D%E7%BD%AE%E6%B8%B2%E6%9F%93%E5%9C%BA%E6%99%AF%E4%B8%AD%E7%9A%84%E7%B1%BB%E5%9E%8B%E5%AE%89%E5%85%A8%E8%AE%BE%E8%AE%A1/" target="_self">
+        <div>
+          TypeScript 在动态配置渲染场景中的类型安全设计1. 背景与问题在 React 项目中，我们经常遇到“配置驱动渲染”的需求：后端返回一组配置数据，前端根据配置动态渲染不同组件。例如： 12345678// 基础配置接口export interface ICompConfigs&lt;T&gt; &#123;  id: number;  moduleType: TModuleType; //
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-08-10 00:00" pubdate>
+              2025-08-10
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/TypeScript/" class="category-chain-item">TypeScript</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/TypeScript/">#TypeScript</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2025/08/01/AI/Codex%20%E6%96%9C%E6%9D%A0%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/" target="_self">
+          Codex 斜杠命令大全
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/08/01/AI/Codex%20%E6%96%9C%E6%9D%A0%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/" target="_self">
+        <div>
+          Codex 斜杠命令大全1. 核心控制与模型管理 AI 模型、任务规划、状态监控和核心流程。    命令 功能 说明    /model 切换模型 更换当前使用的 AI 模型（如 /model gpt-4o）   /compact 压缩上下文 将对话内容总结为摘要，释放 Token 空间   /goal 设定目标 为当前会话明确一个高层次的任务目标   /plan 计划模式 进入逐步规划模式，分解
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-08-01 10:00" pubdate>
+              2025-08-01
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Codex/" class="category-chain-item">Codex</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Codex/">#Codex</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2025/08/01/AI/Codex%20%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8/" target="_self">
+          Codex 安装与使用
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/08/01/AI/Codex%20%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8/" target="_self">
+        <div>
+          安装 Codex CLI1npm install -g @openai/codex  进入 Codex12345# 进入新的 Codex 会话codex# 进入最近的会话codex resume --last  常用命令Codex 的快捷操作主要分为斜杠命令 (/) 和键盘快捷键两类，分别用于控制 Codex 本身和操作界面。 常用键盘快捷键 (TUI)这些快捷键主要用于在 Codex 的终端界面
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-08-01 00:00" pubdate>
+              2025-08-01
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Codex/" class="category-chain-item">Codex</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Codex/">#Codex</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2025/08/01/JavaScript/%E3%80%90JS%E3%80%91JS%E7%9A%84%E8%AE%A1%E6%97%B6%E5%99%A8%E7%B2%BE%E7%A1%AE%E5%90%97%EF%BC%9F/" target="_self">
           【JS】JS的计时器精确吗？
         </a>
@@ -277,6 +647,71 @@
               <a href="/tags/JavaScript/">#JavaScript</a>
             
               <a href="/tags/%E8%AE%A1%E6%97%B6%E5%99%A8/">#计时器</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2025/08/01/%E5%B0%8F%E7%A8%8B%E5%BA%8F/Taro%20%E5%A4%9A%E5%B9%B3%E5%8F%B0%E9%80%82%E9%85%8D/" target="_self">
+          Taro 多平台适配
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/08/01/%E5%B0%8F%E7%A8%8B%E5%BA%8F/Taro%20%E5%A4%9A%E5%B9%B3%E5%8F%B0%E9%80%82%E9%85%8D/" target="_self">
+        <div>
+          Taro 多平台适配一、利用Taro本身的API和组件优先使用 Taro 提供的统一 API 和组件。Taro 能抹平大部分差异。 当遇到无法统一的差异时，再考虑使用 TARO_ENV 或多端文件方案。 二、条件编译 在 js 中使用 process.env.TARO_ENV 变量判断当前环境  12345if (process.env.TARO_ENV === &#x27;miniProgram
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-08-01 00:00" pubdate>
+              2025-08-01
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%B0%8F%E7%A8%8B%E5%BA%8F/" class="category-chain-item">小程序</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Taro/">#Taro</a>
+            
+              <a href="/tags/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/">#微信小程序</a>
+            
+              <a href="/tags/%E5%A4%9A%E5%B9%B3%E5%8F%B0%E9%80%82%E9%85%8D/">#多平台适配</a>
             
           </div>
         
@@ -408,450 +843,11 @@
     </article>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2025/04/01/%E5%B0%8F%E7%A8%8B%E5%BA%8F/Taro%20%E9%95%BF%E5%88%97%E8%A1%A8%E6%B8%B2%E6%9F%93/" target="_self">
-          Taro 长列表渲染
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/04/01/%E5%B0%8F%E7%A8%8B%E5%BA%8F/Taro%20%E9%95%BF%E5%88%97%E8%A1%A8%E6%B8%B2%E6%9F%93/" target="_self">
-        <div>
-          Taro 长列表渲染一、 核心痛点总览小程序长列表卡顿的根源在于 逻辑层 ↔ 渲染层 的异步通讯机制（setData）。  通讯瓶颈：数据序列化与传输耗时。 内存瓶颈：DOM 节点过多导致渲染树庞大。 交互瓶颈：图片加载导致布局抖动（CLS）。   二、 第一层：数据通信与渲染优化（基础必答）   优化维度 核心策略 关键原理解析    数据裁剪 过滤冗余字段 接口数据往往包含几十个字段，只保留
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-04-01 18:19" pubdate>
-              2025-04-01
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E5%B0%8F%E7%A8%8B%E5%BA%8F/" class="category-chain-item">小程序</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Taro/">#Taro</a>
-            
-              <a href="/tags/%E6%B8%B2%E6%9F%93%E6%9C%BA%E5%88%B6/">#渲染机制</a>
-            
-              <a href="/tags/%E4%BC%98%E5%8C%96%E6%80%9D%E8%B7%AF/">#优化思路</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2025/02/23/AI/AI%20Agent%E6%98%AF%E4%BB%80%E4%B9%88/" target="_self">
-          AI Agent是什么
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/02/23/AI/AI%20Agent%E6%98%AF%E4%BB%80%E4%B9%88/" target="_self">
-        <div>
-          AI Agent是什么一、AI Agent 核心概念1. 定义AI Agent &#x3D; AI管家，是能够感知环境、自主决策、使用工具完成任务的智能实体。 2. 核心能力 自主性：独立思考和决策 工具使用：调用各种外部能力（如搜索、API、插件） 任务规划：拆解并执行复杂任务  3. 核心架构 User Request：用户发起请求 Agent：核心大脑，统筹调度 Tools：外部工具集 Me
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-02-23 10:00" pubdate>
-              2025-02-23
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/AI/" class="category-chain-item">AI</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/AI-Agent/">#AI Agent</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2025/02/23/AI/OpenAI%E5%BA%93/" target="_self">
-          OpenAI库
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/02/23/AI/OpenAI%E5%BA%93/" target="_self">
-        <div>
-          
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-02-23 10:00" pubdate>
-              2025-02-23
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/AI/" class="category-chain-item">AI</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/OpenAI/">#OpenAI</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2025/02/23/AI/%E6%89%A3%E5%AD%90%E6%99%BA%E8%83%BD%E4%BD%93%E5%AE%9E%E6%88%98/" target="_self">
-          扣子智能体实战
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/02/23/AI/%E6%89%A3%E5%AD%90%E6%99%BA%E8%83%BD%E4%BD%93%E5%AE%9E%E6%88%98/" target="_self">
-        <div>
-          扣子智能体实战提示词提示词分类 系统提示词 定义：大模型角色定位 + 回复逻辑 位置：在Agent的“人设与回复逻辑”中设置 作用：持续影响整个会话的响应模式   用户提示词 定义：用户直接提出的具体指令或问题 位置：在对话框中输入 作用：指导模型执行特定任务    插件插件 &#x3D; 一个工具集（Tool Set），内部包含一个或多个工具（Tool &#x2F; API）。 创建插件 以查询
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-02-23 10:00" pubdate>
-              2025-02-23
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/AI/" class="category-chain-item">AI</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E6%89%A3%E5%AD%90/">#扣子</a>
-            
-              <a href="/tags/Agent/">#Agent</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2025/01/03/AI/RAG%20%E6%A3%80%E7%B4%A2%E6%A8%A1%E5%BC%8F/" target="_self">
-          RAG 检索模式
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/01/03/AI/RAG%20%E6%A3%80%E7%B4%A2%E6%A8%A1%E5%BC%8F/" target="_self">
-        <div>
-          RAG 检索模式前言：检索，RAG 系统的天花板RAG（Retrieval-Augmented Generation）的核心流程可以概括为四个字：先搜，再答。 检索层质量直接决定了 RAG 系统的上限——“搜得好”，LLM 才有好的“参考资料”，回答才靠谱；“搜得烂”，LLM 只能“编”，结果一塌糊涂。 因此，理解并选对检索模式，是构建一个高可用 RAG 系统的第一步。  一、基础检索：两条底层技
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-01-03 00:00" pubdate>
-              2025-01-03
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/RAG/" class="category-chain-item">RAG</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/RAG/">#RAG</a>
-            
-              <a href="/tags/%E6%A3%80%E7%B4%A2%E6%A8%A1%E5%BC%8F/">#检索模式</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/12/19/TypeScript/TS%20%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5%E8%BE%A8%E6%9E%90/" target="_self">
-          TS 核心概念辨析
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/12/19/TypeScript/TS%20%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5%E8%BE%A8%E6%9E%90/" target="_self">
-        <div>
-          TS 核心概念辨析1. Any 与 Unknown（类型安全的天平） Any（万能逃逸口）：放弃所有类型检查。任何属性访问、方法调用都不会报错，相当于回到纯 JavaScript。 风险：会污染其他变量（赋值给 string 类型变量也不报错）。   Unknown（安全的未知）：代表“还不知道是什么类型”。必须通过类型守卫（typeof、instanceof）或类型断言（as）才能使用，否则无法
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-12-19 00:00" pubdate>
-              2024-12-19
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/TypeScript/" class="category-chain-item">TypeScript</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/TypeScript/">#TypeScript</a>
-            
-              <a href="/tags/%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5/">#核心概念</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/12/12/React/React%20Hook/" target="_self">
-          React Hook
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/12/12/React/React%20Hook/" target="_self">
-        <div>
-          React HookHook 是什么Hooks 是 React 16.8 的新增特性。 Hooks 本质上就是一类特殊的函数，它们可以为你的函数型组件（function component）注入一些特殊的功能，让你在不编写类的情况下使用 state(状态) 和其他 React 特性。 为什么要使用 React Hooks 状态逻辑难以复用   业务变得复杂之后，组件之间共享状态变得频繁，组件复用和
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-12-12 00:00" pubdate>
-              2024-12-12
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/React/" class="category-chain-item">React</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/React/">#React</a>
-            
-              <a href="/tags/Hook/">#Hook</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
 
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <a class="extend prev" rel="prev" href="/page/8/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/#board">7</a><a class="page-number" href="/page/8/#board">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/#board">10</a><a class="page-number" href="/page/11/#board">11</a><span class="space">&hellip;</span><a class="page-number" href="/page/24/#board">24</a><a class="extend next" rel="next" href="/page/10/#board"><i class="iconfont icon-arrowright"></i></a>
+      <a class="extend prev" rel="prev" href="/page/8/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/#board">7</a><a class="page-number" href="/page/8/#board">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/#board">10</a><a class="page-number" href="/page/11/#board">11</a><span class="space">&hellip;</span><a class="page-number" href="/page/25/#board">25</a><a class="extend next" rel="next" href="/page/10/#board"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
 

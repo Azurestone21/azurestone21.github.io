@@ -227,6 +227,311 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/10/15/%E7%AE%97%E6%B3%95/%E3%80%90%E7%AE%97%E6%B3%95%E3%80%91LRU%E7%BC%93%E5%AD%98/" target="_self">
+          LRU 缓存
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/10/15/%E7%AE%97%E6%B3%95/%E3%80%90%E7%AE%97%E6%B3%95%E3%80%91LRU%E7%BC%93%E5%AD%98/" target="_self">
+        <div>
+          LRU 缓存LRU 是最近最少使用淘汰策略，缓存满了优先淘汰最久未使用的。 要求 get 和 put 都是 O(1)。 核心结构：哈希表 + 双向链表。 哈希表存 key 到节点，双向链表维护使用顺序：头部最新，尾部最旧。get 命中就移到头部；put 存在就更新并移到头部，不存在就插入头部，超容量删尾部。 JS 里可以用 Map 的插入顺序特性简化实现。 实现一：哈希表 + 双向链表123456
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-10-15 00:00" pubdate>
+              2026-10-15
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%AE%97%E6%B3%95/" class="category-chain-item">算法</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%93%88%E5%B8%8C/">#哈希</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/10/15/%E7%AE%97%E6%B3%95/%E3%80%90%E7%AE%97%E6%B3%95%E3%80%91%E5%86%92%E6%B3%A1%E6%8E%92%E5%BA%8F/" target="_self">
+          【算法】冒泡排序
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/10/15/%E7%AE%97%E6%B3%95/%E3%80%90%E7%AE%97%E6%B3%95%E3%80%91%E5%86%92%E6%B3%A1%E6%8E%92%E5%BA%8F/" target="_self">
+        <div>
+          冒泡排序 核心：相邻比较、大数后移 稳定  时间复杂度 最坏情况：O(n²)，当列表是逆序时。 最好情况：O(n)，当列表已经有序时。 平均情况：O(n²)。  空间复杂度 O(1)，因为冒泡排序是原地排序算法，不需要额外的存储空间。  12345678910111213141516171819202122232425function bubbleSort(arr) &#123;  const l
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-10-15 00:00" pubdate>
+              2026-10-15
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%AE%97%E6%B3%95/" class="category-chain-item">算法</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%8E%92%E5%BA%8F/">#排序</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/10/15/%E7%AE%97%E6%B3%95/%E3%80%90%E7%AE%97%E6%B3%95%E3%80%91%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F/" target="_self">
+          【算法】选择排序
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/10/15/%E7%AE%97%E6%B3%95/%E3%80%90%E7%AE%97%E6%B3%95%E3%80%91%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F/" target="_self">
+        <div>
+          选择排序 核心：在未排序的序列中找到最小(或最大)元素，然后将其存放到序列的起始(末尾)位置。以此类推，直到所有元素均排序完毕。 不稳定  时间复杂度 最坏情况：O(n²)，无论输入数据是否有序，都需要进行 n(n-1)&#x2F;2 次比较。 最好情况：O(n²)，即使列表已经有序，仍需进行相同数量的比较。 平均情况：O(n²)。  空间复杂度 O(1)，选择排序是原地排序算法，不需要额外的存储
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-10-15 00:00" pubdate>
+              2026-10-15
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%AE%97%E6%B3%95/" class="category-chain-item">算法</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%8E%92%E5%BA%8F/">#排序</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/10/15/%E7%AE%97%E6%B3%95/%E3%80%90%E7%AE%97%E6%B3%95%E3%80%91%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F/" target="_self">
+          【算法】归并排序
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/10/15/%E7%AE%97%E6%B3%95/%E3%80%90%E7%AE%97%E6%B3%95%E3%80%91%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F/" target="_self">
+        <div>
+          归并排序 核心 分解（Divide）：将待排序的数组分成两个子数组，每个子数组包含大约一半的元素。 解决（Conquer）：递归地对每个子数组进行排序。 合并（Combine）：将两个已排序的子数组合并成一个有序的数组。   稳定  时间复杂度 分解：每次将列表分成两半，需要 O(log n) 层递归。 合并：每层递归需要 O(n) 的时间来合并子列表。 总时间复杂度：O(n log n)。  空
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-10-15 00:00" pubdate>
+              2026-10-15
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%AE%97%E6%B3%95/" class="category-chain-item">算法</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%8E%92%E5%BA%8F/">#排序</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/10/15/%E7%AE%97%E6%B3%95/%E3%80%90%E7%AE%97%E6%B3%95%E3%80%91%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F/" target="_self">
+          【算法】插入排序
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/10/15/%E7%AE%97%E6%B3%95/%E3%80%90%E7%AE%97%E6%B3%95%E3%80%91%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F/" target="_self">
+        <div>
+          插入排序 核心：将一个元素插入到有序序列中，保持有序。 稳定  时间复杂度 最坏情况：O(n²)，当列表是逆序时，每次插入都需要移动所有已排序元素。 最好情况：O(n)，当列表已经有序时，只需遍历一次列表。 平均情况：O(n²)。  空间复杂度 O(1)，插入排序是原地排序算法，不需要额外的存储空间。  实现12345678910111213141516function insertSort(ar
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-10-15 00:00" pubdate>
+              2026-10-15
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%AE%97%E6%B3%95/" class="category-chain-item">算法</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%8E%92%E5%BA%8F/">#排序</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/10/10/%E5%89%8D%E7%AB%AF/%E6%B5%8F%E8%A7%88%E5%99%A8%E4%BA%94%E5%A4%A7%20Observer%20API/" target="_self">
           浏览器五大 Observer API
         </a>
@@ -279,39 +584,6 @@
               <a href="/tags/Observer-API/">#Observer API</a>
             
           </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/10/01/%E7%AE%97%E6%B3%95/%E3%80%90%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%A0%91%E9%81%8D%E5%8E%86%EF%BC%88%E5%89%8D%E5%BA%8F%E3%80%81%E4%B8%AD%E5%BA%8F%E3%80%81%E5%90%8E%E5%BA%8F%E3%80%81%E5%B1%82%E5%BA%8F%EF%BC%89/" target="_self">
-          
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/10/01/%E7%AE%97%E6%B3%95/%E3%80%90%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%A0%91%E9%81%8D%E5%8E%86%EF%BC%88%E5%89%8D%E5%BA%8F%E3%80%81%E4%B8%AD%E5%BA%8F%E3%80%81%E5%90%8E%E5%BA%8F%E3%80%81%E5%B1%82%E5%BA%8F%EF%BC%89/" target="_self">
-        <div>
-          
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-10-01 00:34" pubdate>
-              2026-10-01
-            </time>
-          </div>
-        
-        
         
       </div>
     </article>
@@ -546,259 +818,11 @@
     </article>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/09/17/%E5%89%8D%E7%AB%AF/%E3%80%90Web%E6%94%BB%E5%87%BB%E3%80%91Dom%20Clobbering/" target="_self">
-          Dom Clobbering
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/09/17/%E5%89%8D%E7%AB%AF/%E3%80%90Web%E6%94%BB%E5%87%BB%E3%80%91Dom%20Clobbering/" target="_self">
-        <div>
-          Dom Clobbering一、概述DOM Clobbering（DOM 覆盖） 是一种前端攻击技术：攻击者通过注入 HTML 元素，利用元素的 id 或 name 属性，覆盖 JavaScript 中的全局变量或 DOM 属性，从而干扰页面原有 JS 逻辑，甚至升级为 XSS。 一句话：  不执行 JS，只靠 HTML 的 id&#x2F;name，就能把 JS 里的变量“顶掉”。  它通常出现
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-09-17 16:00" pubdate>
-              2026-09-17
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/Web%E6%94%BB%E5%87%BB/" class="category-chain-item">Web攻击</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/DOM-Clobbering/">#DOM Clobbering</a>
-            
-              <a href="/tags/DOM-%E8%A6%86%E7%9B%96/">#DOM 覆盖</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/09/17/%E5%89%8D%E7%AB%AF/%E3%80%90Web%E6%94%BB%E5%87%BB%E3%80%91%E7%82%B9%E5%87%BB%E5%8A%AB%E6%8C%81/" target="_self">
-          【Web攻击】点击劫持
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/09/17/%E5%89%8D%E7%AB%AF/%E3%80%90Web%E6%94%BB%E5%87%BB%E3%80%91%E7%82%B9%E5%87%BB%E5%8A%AB%E6%8C%81/" target="_self">
-        <div>
-          【Web攻击】点击劫持一、概述点击劫持是一种视觉欺骗攻击：攻击者把目标网站用透明 iframe 覆盖在一个诱导页面上，让用户以为点击的是当前页面的按钮，实际上点击的是 iframe 里目标网站的敏感操作。 一句话：  用户看到的是 A 页面，点到的却是 B 页面的按钮。   二、攻击原理 攻击者创建一个诱导页面，放上“点击领奖”“播放视频”等按钮。 用 &lt;iframe&gt; 加载目标网站（
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-09-17 15:00" pubdate>
-              2026-09-17
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/Web%E6%94%BB%E5%87%BB/" class="category-chain-item">Web攻击</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E7%82%B9%E5%87%BB%E5%8A%AB%E6%8C%81/">#点击劫持</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/09/17/%E5%89%8D%E7%AB%AF/%E3%80%90Web%E5%AE%89%E5%85%A8%E3%80%91Cookie%20%E4%B8%89%E5%A4%A7%E6%A0%B8%E5%BF%83%E5%AE%89%E5%85%A8%E8%AE%BE%E7%BD%AE/" target="_self">
-          Cookie 三大核心安全设置
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/09/17/%E5%89%8D%E7%AB%AF/%E3%80%90Web%E5%AE%89%E5%85%A8%E3%80%91Cookie%20%E4%B8%89%E5%A4%A7%E6%A0%B8%E5%BF%83%E5%AE%89%E5%85%A8%E8%AE%BE%E7%BD%AE/" target="_self">
-        <div>
-          Cookie 三大核心安全设置一、概述Cookie 是浏览器存储会话状态的重要机制，但也是攻击者的重点目标。通过设置安全属性，可以防止 Cookie 被窃取、篡改或跨站滥用。 核心安全属性有三个：  HttpOnly：防 XSS 窃取 Secure：防明文传输窃听 SameSite：防 CSRF 跨站携带   二、三大安全属性详解1. HttpOnly   项目 说明    作用 禁止 JS 通过
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-09-17 14:00" pubdate>
-              2026-09-17
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/Web%E5%AE%89%E5%85%A8/" class="category-chain-item">Web安全</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Cookie/">#Cookie</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/09/16/%E5%89%8D%E7%AB%AF/%E3%80%90Web%E6%94%BB%E5%87%BB%E3%80%91XSS%20%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%AC%E6%94%BB%E5%87%BB/" target="_self">
-          【Web攻击】跨站脚本攻击XSS
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/09/16/%E5%89%8D%E7%AB%AF/%E3%80%90Web%E6%94%BB%E5%87%BB%E3%80%91XSS%20%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%AC%E6%94%BB%E5%87%BB/" target="_self">
-        <div>
-          【Web攻击】跨站脚本攻击XSS一、概述XSS（Cross-Site Scripting，跨站脚本攻击），缩写原本为CSS，但这与HTML中的层叠样式表（Cascading Style Sheets）缩写重名了，为了区分就将跨站脚本改为了XSS。 其本质是：攻击者把恶意脚本注入到网页中，让浏览器在目标站点的源下，把它当作正常代码执行。 浏览器无法区分“开发者写的 JS”和“攻击者注入的 JS”，只
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-09-16 20:00" pubdate>
-              2026-09-16
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/Web%E6%94%BB%E5%87%BB/" class="category-chain-item">Web攻击</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/XSS/">#XSS</a>
-            
-              <a href="/tags/%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%AC%E6%94%BB%E5%87%BB/">#跨站脚本攻击</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
 
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/#board">2</a><a class="page-number" href="/page/3/#board">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/24/#board">24</a><a class="extend next" rel="next" href="/page/2/#board"><i class="iconfont icon-arrowright"></i></a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/#board">2</a><a class="page-number" href="/page/3/#board">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/25/#board">25</a><a class="extend next" rel="next" href="/page/2/#board"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
 

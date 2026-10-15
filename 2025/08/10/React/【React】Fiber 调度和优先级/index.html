@@ -1,0 +1,1068 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Fiber 的调度和优先级React 把更新拆成带优先级的任务，交给 Scheduler 按时间片调度。高优先级任务可以打断低优先级任务，Render 阶段可中断，Commit 阶段不可中断。优先级通过 Lane 模型表示，挂在 Fiber 的 lanes &#x2F; childLanes 上。 一、为什么需要调度没有调度时的问题：  一次更新可能构建整棵 Fiber 树，耗时长。 主线程被长时">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【React】Fiber 的调度和优先级">
+<meta property="og:url" content="http://example.com/2025/08/10/React/%E3%80%90React%E3%80%91Fiber%20%E8%B0%83%E5%BA%A6%E5%92%8C%E4%BC%98%E5%85%88%E7%BA%A7/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Fiber 的调度和优先级React 把更新拆成带优先级的任务，交给 Scheduler 按时间片调度。高优先级任务可以打断低优先级任务，Render 阶段可中断，Commit 阶段不可中断。优先级通过 Lane 模型表示，挂在 Fiber 的 lanes &#x2F; childLanes 上。 一、为什么需要调度没有调度时的问题：  一次更新可能构建整棵 Fiber 树，耗时长。 主线程被长时">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-08-09T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-15T16:08:16.041Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="Fiber">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>【React】Fiber 的调度和优先级 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">【React】Fiber 的调度和优先级</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-08-10 00:00" pubdate>
+          2025年8月10日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          27 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">【React】Fiber 的调度和优先级</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Fiber-的调度和优先级"><a href="#Fiber-的调度和优先级" class="headerlink" title="Fiber 的调度和优先级"></a>Fiber 的调度和优先级</h1><p><strong>React 把更新拆成带优先级的任务，交给 Scheduler 按时间片调度。高优先级任务可以打断低优先级任务，Render 阶段可中断，Commit 阶段不可中断。优先级通过 Lane 模型表示，挂在 Fiber 的 <code>lanes</code> &#x2F; <code>childLanes</code> 上。</strong></p>
+<h2 id="一、为什么需要调度"><a href="#一、为什么需要调度" class="headerlink" title="一、为什么需要调度"></a>一、为什么需要调度</h2><p>没有调度时的问题：</p>
+<ul>
+<li>一次更新可能构建整棵 Fiber 树，耗时长。</li>
+<li>主线程被长时间占用，用户输入、动画无法响应。</li>
+<li>高优先级更新（如输入框打字）被低优先级更新（如大数据列表渲染）阻塞。</li>
+</ul>
+<p>调度要解决三件事：</p>
+<ol>
+<li><strong>可中断</strong>：长任务拆成小任务，让出主线程。</li>
+<li><strong>可插队</strong>：高优先级任务优先执行，低优先级可被打断或延后。</li>
+<li><strong>可恢复</strong>：中断后能从上次位置继续。</li>
+</ol>
+<hr>
+<h2 id="二、Scheduler：时间片与任务队列"><a href="#二、Scheduler：时间片与任务队列" class="headerlink" title="二、Scheduler：时间片与任务队列"></a>二、Scheduler：时间片与任务队列</h2><p>Scheduler 是 React 独立出来的一个包（<code>scheduler</code>），不依赖 React。</p>
+<blockquote>
+<p><strong>Scheduler决定什么时候执行什么任务，并在浏览器空闲时执行，让高优先级任务先跑，低优先级任务可被打断。</strong></p>
+</blockquote>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs scss">┌─────────────────────────────────────────────┐<br>│  React Fiber (更新、渲染、提交的生命周期)<br>├─────────────────────────────────────────────┤<br>│  Scheduler (调度核心)                        │<br>│  ├─ 优先级模型 (Immediate / UserBlocking /   │<br>│  │              Normal / Low / Idle)        │<br>│  ├─ 任务队列 (taskQueue / timerQueue)        │<br>│  ├─ 时间切片 (shouldYieldToHost)             │<br>│  └─ 并发控制 (requestIdleCallback 替代方案)   │<br>├─────────────────────────────────────────────┤<br>│  浏览器 API (MessageChannel / setTimeout)    │<br>└─────────────────────────────────────────────┘<br></code></pre></td></tr></table></figure>
+
+<h3 id="优先级"><a href="#优先级" class="headerlink" title="优先级"></a>优先级</h3><p>Scheduler 暴露 5 个优先级：</p>
+<table>
+<thead>
+<tr>
+<th>优先级</th>
+<th>值</th>
+<th>来源</th>
+<th>超时</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>ImmediatePriority</strong></td>
+<td>1</td>
+<td><code>SyncLane</code></td>
+<td>0ms</td>
+<td>必须同步执行，如同步<code>setState</code></td>
+</tr>
+<tr>
+<td><strong>UserBlockingPriority</strong></td>
+<td>2</td>
+<td><code>InputContinuousLane</code> &#x2F; <code>SelectiveHydrationLane</code></td>
+<td>250ms</td>
+<td>用户输入直接触发的更新（输入、点击）</td>
+</tr>
+<tr>
+<td><strong>NormalPriority</strong></td>
+<td>3</td>
+<td><code>DefaultLane</code></td>
+<td>5000ms</td>
+<td>常规异步更新，如<code>setTimeout</code> 回调</td>
+</tr>
+<tr>
+<td><strong>LowPriority</strong></td>
+<td>4</td>
+<td><code>TransitionLane</code></td>
+<td>10000ms</td>
+<td><code>startTransition</code> 包裹的更新</td>
+</tr>
+<tr>
+<td><strong>IdlePriority</strong></td>
+<td>5</td>
+<td>无 Lane 对应</td>
+<td>未设定</td>
+<td>空闲时执行，如离屏内容渲染</td>
+</tr>
+</tbody></table>
+<p>React 内部会把 Lane 映射到这些优先级。</p>
+<h3 id="任务队列"><a href="#任务队列" class="headerlink" title="任务队列"></a>任务队列</h3><p>Scheduler 内部使用<strong>二叉最小堆</strong>维护两个队列：</p>
+<ul>
+<li>timerQueue （延迟队列）：堆顶是 startTime 最小的，即”最早可以开始”的任务。用 requestHostTimeout （即 setTimeout ）来驱动，因为它需要精确的时间等待。</li>
+<li>taskQueue （就绪队列）：堆顶是 expirationTime 最小的，即”优先级最高&#x2F;过期最早”的任务。用 requestHostCallback （宿主空闲回调）来驱动，因为它需要在主线程空闲时被执行，且支持时间切片。</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs JavaScript"><span class="hljs-comment">// taskQueue：就绪任务，按 sortIndex（即 expirationTime）排序</span><br><span class="hljs-comment">// timerQueue：定时器任务，按 starttime 排序</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">push</span>(<span class="hljs-params">heap, node</span>) &#123; <span class="hljs-comment">/* 堆插入 */</span> &#125;<br><span class="hljs-keyword">function</span> <span class="hljs-title function_">pop</span>(<span class="hljs-params">heap</span>)  &#123; <span class="hljs-comment">/* 堆顶弹出 */</span> &#125;<br><span class="hljs-keyword">function</span> <span class="hljs-title function_">peek</span>(<span class="hljs-params">heap</span>) &#123; <span class="hljs-keyword">return</span> heap[<span class="hljs-number">0</span>]; &#125;<br></code></pre></td></tr></table></figure>
+
+<p>堆顶永远是 sortIndex 最小的任务（最高优先级&#x2F;最早过期），取任务 O(1)，插入 O(log n)。</p>
+<p>每次取优先级最高的任务执行。</p>
+<h4 id="任务对象"><a href="#任务对象" class="headerlink" title="任务对象"></a>任务对象</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs JavaScript">&#123;<br>  <span class="hljs-attr">id</span>: number, 					<span class="hljs-comment">// 自增唯一 ID</span><br>  <span class="hljs-attr">callback</span>: <span class="hljs-title class_">Callback</span> | <span class="hljs-literal">null</span>,	<span class="hljs-comment">// 任务体（渲染函数）</span><br>  <span class="hljs-attr">priorityLevel</span>: <span class="hljs-title class_">PriorityLevel</span>, <span class="hljs-comment">// 优先级</span><br>  <span class="hljs-attr">startTime</span>: number,			<span class="hljs-comment">// 定时器开始时间</span><br>  <span class="hljs-attr">expirationTime</span>: number,		<span class="hljs-comment">// = startTime + timeout，用于排序</span><br>  <span class="hljs-attr">sortIndex</span>: number,			<span class="hljs-comment">// timerQueue 用 startTime，taskQueue 用 expirationTime</span><br>  isQueued?: boolean,<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>startTime ：任务应该开始执行的时间（有 delay 时为 currentTime + delay ，否则就是 currentTime ）</li>
+<li>timeout ：根据优先级决定的超时时间（越紧急的优先级 timeout 越小）</li>
+</ul>
+<h4 id="工作流程"><a href="#工作流程" class="headerlink" title="工作流程"></a>工作流程</h4><p><strong>一、入队</strong></p>
+<ol>
+<li>计算 <code>startTime</code> （立即任务用当前时间，延迟任务用 当前时间 + delay ）。</li>
+<li>按优先级查表得到 timeout ，算出 <code>expirationTime = startTime + timeout</code> 。</li>
+<li>创建 Task 对象。</li>
+<li><code>startTime &gt; currentTime</code> ？<ul>
+<li>是 → 按 <code>sortIndex = startTime</code> 入 <strong>timerQueue</strong> ，若它是最早到期的延迟任务则注册 <code>requestHostTimeout(handleTimeout</code>, 剩余等待时间) 。</li>
+<li>否 → 按 <code>sortIndex = expirationTime</code> 入 <strong>taskQueue</strong> ，若无正在执行且未调度则触发 <code>requestHostCallback()</code> 。</li>
+</ul>
+</li>
+</ol>
+<p><strong>二、触发执行</strong></p>
+<ol>
+<li><code>requestHostCallback</code> 通过 <code>setImmediate</code> &#x2F; <code>MessageChannel</code> &#x2F; <code>setTimeout(0)</code> 把 <code>performWorkUntilDeadline</code> 投递到下一个宏任务。</li>
+</ol>
+<p><strong>三、执行循环</strong></p>
+<ol>
+<li><code>performWorkUntilDeadline</code> → 调用 <code>flushWork</code> → 调用 <code>workLoop</code> 。</li>
+<li><code>workLoop</code> 开始时先调 <code>advanceTimers</code> 把到期延迟任务从 <code>timerQueue</code> 搬到 <code>taskQueue</code> 。</li>
+<li>取 <code>taskQueue</code> 堆顶任务进入 while 循环：<ul>
+<li>该 yield 了？ （未过期且已运行超 5ms）→ break，下一轮宏任务续跑。</li>
+<li>任务被取消 <code>unstable_cancelCallback</code>？（ callback &#x3D;&#x3D;&#x3D; null）→ pop，取下一个。</li>
+<li>执行 callback ，传入 <code>didUserCallbackTimeout</code> （是否已超时）。</li>
+<li>返回了续包函数 <code>Continuation Callback</code>？ → 塞回 task，主动 yield return true，下一轮从这个任务继续。</li>
+<li>正常完成？ → pop 移除，续取下一个。</li>
+</ul>
+</li>
+<li>循环结束：<ul>
+<li>还有任务未执行 → return true（续跑下一轮宏任务）。</li>
+<li><code>taskQueue</code> 空但 <code>timerQueue</code> 有任务 → 注册 <code>requestHostTimeout</code> 等下一个延迟。</li>
+<li>两队列都空 → return false（结束）。</li>
+</ul>
+</li>
+</ol>
+<p><strong>四、延迟任务到期接力</strong></p>
+<ol>
+<li><code>handleTimeout</code> （<code>setTimeout</code> 触发）： <code>advanceTimers</code> 搬任务入队，然后按队列情况触发 <code>requestHostCallback</code> 或重新注册下一个 <code>requestHostTimeout</code> 。</li>
+</ol>
+<h4 id="任务过期与饥饿"><a href="#任务过期与饥饿" class="headerlink" title="任务过期与饥饿"></a>任务过期与饥饿</h4><ul>
+<li>每个任务有 <code>expirationTime</code>，越早创建、优先级越高，过期越早。</li>
+<li>在 workLoop 中，如果任务已过期（<code>expirationTime &lt;= currentTime</code>），<strong>不再让出</strong>，强制执行。</li>
+<li>防止低优先级任务被无限插队。</li>
+</ul>
+<h3 id="两种调度方式"><a href="#两种调度方式" class="headerlink" title="两种调度方式"></a>两种调度方式</h3><table>
+<thead>
+<tr>
+<th>方式</th>
+<th>触发时机</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>scheduleCallback</code></td>
+<td>按优先级延迟执行</td>
+<td>普通更新</td>
+</tr>
+<tr>
+<td><code>scheduleSyncCallback</code></td>
+<td>立即同步执行</td>
+<td>高优先级、必须同步的更新</td>
+</tr>
+</tbody></table>
+<h3 id="时间切片"><a href="#时间切片" class="headerlink" title="时间切片"></a>时间切片</h3><p>为了实现时间切片，React 需要一种机制来定期检查“是否该让出主线程”。React 自研了调度器（Scheduler），底层通常使用 ‌<code>MessageChannel</code>来模拟宏任务调度。</p>
+<ol>
+<li><strong>用 <code>MessageChannel</code> 触发宏任务</strong>。</li>
+<li><strong>每个时间片 5ms</strong> ：每个宏任务开始时记录一个起点 startTime ， <code>shouldYieldToHost()</code> 不断检查当前时间和起点的差值是否超过 5ms （ frameYieldMs ）。。</li>
+<li><strong>检查让出</strong> ：<code>workLoop</code> 每执行一个任务检查 <code>shouldYieldToHost()</code>，超时就 break，返回 <code>true</code> 表示还有任务，<code>performWorkUntilDeadline</code> 再 <code>postMessage</code> 触发下一轮。</li>
+<li>当前宏任务 return → JS 引擎空了 → 浏览器趁机做渲染、响应用户输入 → 下一个宏任务触发 → startTime 重置为现在 → 重新计 5ms。</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// 检查时间</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">shouldYieldToHost</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-keyword">const</span> timeElapsed = <span class="hljs-title function_">getCurrentTime</span>() - startTime;<br>  <span class="hljs-keyword">return</span> timeElapsed &gt;= frameYieldMs; <span class="hljs-comment">// 默认 5ms</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// 触发宏任务</span><br><span class="hljs-keyword">const</span> channel = <span class="hljs-keyword">new</span> <span class="hljs-title class_">MessageChannel</span>(); 				<span class="hljs-comment">// 创建一个消息管道，有两个互相通信的端口</span><br><span class="hljs-keyword">const</span> port = channel.<span class="hljs-property">port2</span>;							<span class="hljs-comment">// 拿到端口 2，用于发送</span><br>channel.<span class="hljs-property">port1</span>.<span class="hljs-property">onmessage</span> = performWorkUntilDeadline; <span class="hljs-comment">// 端口 1 收到消息时执行回调</span><br>schedulePerformWorkUntilDeadline = <span class="hljs-function">() =&gt;</span> &#123;<br>  port.<span class="hljs-title function_">postMessage</span>(<span class="hljs-literal">null</span>);							<span class="hljs-comment">// 往端口 2 塞一条消息</span><br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<p><strong>为什么是 5ms？</strong></p>
+<p>一帧约 16.7ms，留一部分给浏览器渲染、合成、用户输入。5ms 是 React 的经验值，既能推进任务，又不太影响帧率。可以通过 <code>frameYieldMs</code> 配置。</p>
+<p><strong>为什么用 MessageChannel 不用 setTimeout？</strong></p>
+<p>浏览器规范规定： <strong>嵌套层级 ≥ 5 层的 setTimeout(fn, 0) 实际会被夹紧到 4ms 延迟</strong> 。Scheduler 会反复续投宏任务，几轮嵌套下来延迟就从 0ms 变 4ms，调度频率骤降。MessageChannel 没有这个限制， postMessage 永远是真正的下一个宏任务，0ms 延迟。</p>
+<p><strong>为什么不用 requestIdleCallback</strong></p>
+<ol>
+<li>兼容性差（Safari 长期不支持）。</li>
+<li>触发不稳定，任务可能饿死。</li>
+<li>无法控制优先级。</li>
+<li>帧率不可控。</li>
+</ol>
+<h3 id="Scheduler-与-Fiber-的分工"><a href="#Scheduler-与-Fiber-的分工" class="headerlink" title="Scheduler 与 Fiber 的分工"></a>Scheduler 与 Fiber 的分工</h3><table>
+<thead>
+<tr>
+<th>组件</th>
+<th>职责</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Scheduler</td>
+<td>决定<strong>何时</strong>执行，管理任务队列、优先级、时间切片</td>
+</tr>
+<tr>
+<td>Fiber Reconciler</td>
+<td>决定<strong>执行什么</strong>，构建 WIP 树、diff、打 flags</td>
+</tr>
+<tr>
+<td>Renderer</td>
+<td>决定<strong>怎么落 DOM</strong>，commit 阶段同步操作</td>
+</tr>
+</tbody></table>
+<p>Fiber 的 <code>workLoopConcurrent</code> 每个单元执行完调用 <code>shouldYield()</code>，如果该让出，返回 continuation，Scheduler 保存后下一帧继续。</p>
+<hr>
+<h2 id="三、Lane：React-的优先级模型"><a href="#三、Lane：React-的优先级模型" class="headerlink" title="三、Lane：React 的优先级模型"></a>三、Lane：React 的优先级模型</h2><h3 id="Lane-是什么"><a href="#Lane-是什么" class="headerlink" title="Lane 是什么"></a>Lane 是什么</h3><blockquote>
+<p><strong>Lane 是 React 的优先级车道，用位掩码表示优先级，每个二进制位代表一类优先级；Lanes 是多个车道的集合，用位运算管理更新批次。</strong></p>
+</blockquote>
+<h3 id="为什么用位掩码"><a href="#为什么用位掩码" class="headerlink" title="为什么用位掩码"></a>为什么用位掩码</h3><p>每个 Lane 是 2 的幂，二进制只占一位：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-title class_">NoLane</span> = <span class="hljs-number">0b0000</span>; <span class="hljs-comment">// 0</span><br><span class="hljs-title class_">SyncLane</span> = <span class="hljs-number">0b0001</span>; <span class="hljs-comment">// 1</span><br><span class="hljs-title class_">InputContinuousLane</span> = <span class="hljs-number">0b0100</span>; <span class="hljs-comment">// 4</span><br><span class="hljs-title class_">DefaultLane</span> = <span class="hljs-number">0b10000</span>; <span class="hljs-comment">// 16</span><br></code></pre></td></tr></table></figure>
+
+<p>好处：</p>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>代码</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>合并</td>
+<td><code>a | b</code></td>
+<td>多个 Lane 合并成一个集合</td>
+</tr>
+<tr>
+<td>判断包含</td>
+<td><code>(a &amp; b) !== 0</code></td>
+<td>判断是否包含某优先级</td>
+</tr>
+<tr>
+<td>取最高优先级</td>
+<td><code>lanes &amp; -lanes</code></td>
+<td>取最低位的 1</td>
+</tr>
+<tr>
+<td>清除</td>
+<td><code>lanes &amp; ~remove</code></td>
+<td>移除某优先级</td>
+</tr>
+</tbody></table>
+<p>如果用普通整数（1、2、3、4），位会重叠，无法表示优先级集合。</p>
+<h3 id="常见-Lane"><a href="#常见-Lane" class="headerlink" title="常见 Lane"></a>常见 Lane</h3><table>
+<thead>
+<tr>
+<th>Lane</th>
+<th>优先级</th>
+<th>场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>SyncLane</code></td>
+<td>最高</td>
+<td>点击、输入</td>
+</tr>
+<tr>
+<td><code>InputContinuousLane</code></td>
+<td>高</td>
+<td>连续事件（mousemove、scroll）</td>
+</tr>
+<tr>
+<td><code>DefaultLane</code></td>
+<td>中</td>
+<td>普通<code>setState</code>、数据请求回调</td>
+</tr>
+<tr>
+<td><code>TransitionLanes</code></td>
+<td>低</td>
+<td>useTransition、startTransition</td>
+</tr>
+<tr>
+<td><code>RetryLanes</code></td>
+<td>低</td>
+<td>Suspense 重试</td>
+</tr>
+<tr>
+<td><code>IdleLane</code></td>
+<td>最低</td>
+<td>空闲任务</td>
+</tr>
+<tr>
+<td><code>OffscreenLane</code></td>
+<td>最低</td>
+<td>离屏渲染</td>
+</tr>
+</tbody></table>
+<h3 id="优先级怎么分配"><a href="#优先级怎么分配" class="headerlink" title="优先级怎么分配"></a>优先级怎么分配</h3><p>触发更新时，React 根据事件类型分配 Lane：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// 交互事件（click、input）→ SyncLane</span><br><span class="hljs-comment">// 连续事件（scroll、mousemove）→ InputContinuousLane</span><br><span class="hljs-comment">// 普通 setState → DefaultLane</span><br><span class="hljs-comment">// startTransition 包裹 → TransitionLane</span><br></code></pre></td></tr></table></figure>
+
+<p>例如：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// 高优先级</span><br>button.<span class="hljs-property">onclick</span> = <span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">setCount</span>(<span class="hljs-function">(<span class="hljs-params">c</span>) =&gt;</span> c + <span class="hljs-number">1</span>);<br><br><span class="hljs-comment">// 低优先级</span><br><span class="hljs-title function_">startTransition</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>  <span class="hljs-title function_">setList</span>(newList);<br>&#125;);<br></code></pre></td></tr></table></figure>
+
+<h3 id="Lane-挂在-Fiber-上"><a href="#Lane-挂在-Fiber-上" class="headerlink" title="Lane 挂在 Fiber 上"></a>Lane 挂在 Fiber 上</h3><ul>
+<li><code>fiber.lanes</code>：当前 Fiber 自身待处理的更新优先级集合。</li>
+<li><code>fiber.childLanes</code>：子树中待处理的更新优先级集合。</li>
+<li><code>root.pendingLanes</code>：所有待处理更新的 Lane 集合。</li>
+</ul>
+<p>多个优先级用按位或合并：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs js">fiber.<span class="hljs-property">lanes</span> |= <span class="hljs-title class_">SyncLane</span>;<br>fiber.<span class="hljs-property">lanes</span> |= <span class="hljs-title class_">DefaultLane</span>;<br><span class="hljs-comment">// 结果：0b10001，同时包含两个优先级</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="更新时向上合并"><a href="#更新时向上合并" class="headerlink" title="更新时向上合并"></a>更新时向上合并</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">function</span> <span class="hljs-title function_">markUpdateLaneFromFiberToRoot</span>(<span class="hljs-params">fiber, lane</span>) &#123;<br>  fiber.<span class="hljs-property">lanes</span> |= lane;<br>  <span class="hljs-keyword">let</span> parent = fiber.<span class="hljs-property">return</span>;<br>  <span class="hljs-keyword">while</span> (parent !== <span class="hljs-literal">null</span>) &#123;<br>    parent.<span class="hljs-property">childLanes</span> |= lane;<br>    parent = parent.<span class="hljs-property">return</span>;<br>  &#125;<br>  root.<span class="hljs-property">pendingLanes</span> |= lane;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="四、Lane-与-Scheduler-优先级的映射"><a href="#四、Lane-与-Scheduler-优先级的映射" class="headerlink" title="四、Lane 与 Scheduler 优先级的映射"></a>四、Lane 与 Scheduler 优先级的映射</h2><p>多对一。Lane 更精细，负责管理更新批次、来源、中断、跳过子树；Scheduler 只负责粗粒度调度。映射发生在 <code>ensureRootIsScheduled</code>：</p>
+<p>映射发生在 <code>ensureRootIsScheduled</code>：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> nextLanes = <span class="hljs-title function_">getNextLanes</span>(root);<br><span class="hljs-keyword">const</span> highestLane = <span class="hljs-title function_">getHighestPriorityLane</span>(nextLanes);<br><span class="hljs-keyword">const</span> schedulerPriority = <span class="hljs-title function_">lanesToSchedulerPriority</span>(nextLanes);<br></code></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>Lane</th>
+<th>Scheduler 优先级</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>SyncLane</code></td>
+<td>Immediate（实际同步执行）</td>
+</tr>
+<tr>
+<td><code>InputContinuousLane</code></td>
+<td>UserBlocking</td>
+</tr>
+<tr>
+<td><code>DefaultLane</code></td>
+<td>Normal</td>
+</tr>
+<tr>
+<td><code>TransitionLanes</code></td>
+<td>Normal 或 Low</td>
+</tr>
+<tr>
+<td><code>IdleLane</code></td>
+<td>Idle</td>
+</tr>
+</tbody></table>
+<p><strong>为什么 Lane 多、Scheduler 少？</strong></p>
+<ul>
+<li>Lane 负责精细管理更新批次（区分来源、批次、中断、跳过子树）。</li>
+<li>Scheduler 只负责粗粒度调度（何时跑、能否打断）。</li>
+<li>Scheduler 内部还有 <code>expirationTime</code> 做更细排序，防饥饿。</li>
+</ul>
+<p>一句话：<strong>Lane 是精筛，Scheduler 是粗筛。</strong></p>
+<hr>
+<h2 id="五、调度完整流程"><a href="#五、调度完整流程" class="headerlink" title="五、调度完整流程"></a>五、调度完整流程</h2><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs text">触发更新（setState / useState）<br>  ↓<br>requestUpdateLane：根据事件优先级分配 Lane<br>  ↓<br>enqueueUpdate：加入更新队列<br>  ↓<br>markUpdateLaneFromFiberToRoot：从当前 Fiber 向上冒泡到 HostRoot<br>  │   fiber.lanes |= lane<br>  │   parent.childLanes |= lane<br>  │   root.pendingLanes |= lane<br>  ↓<br>ensureRootIsScheduled：调度根节点<br>  │   getNextLanes：取最高优先级 Lane<br>  │   lanesToSchedulerPriority：映射到 Scheduler 优先级<br>  │   scheduleCallback：按优先级入队<br>  ↓<br>Scheduler 时间片到期 → performConcurrentWorkOnRoot<br>  ↓<br>renderRoot：<br>  ├─ getNextLanes：取本次要渲染的 renderLanes<br>  ├─ workLoopConcurrent：<br>  │    ├─ performUnitOfWork → beginWork / completeWork<br>  │    ├─ shouldYield() 检查时间片<br>  │    └─ 超时则暂停，返回 continuation<br>  └─ WIP 树构建完成<br>  ↓<br>commitRoot：同步不可中断<br>  ├─ Before Mutation<br>  ├─ Mutation：根据 flags 操作真实 DOM<br>  ├─ Layout：生命周期、ref<br>  └─ root.current = finishedWork<br>  ↓<br>如果还有低优先级 Lane，继续调度<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="六、高优先级如何打断低优先级"><a href="#六、高优先级如何打断低优先级" class="headerlink" title="六、高优先级如何打断低优先级"></a>六、高优先级如何打断低优先级</h2><p>并发模式下：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs text">低优先级更新开始 render（TransitionLane）<br>  ↓<br>构建 WIP 到一半，shouldYield() 返回 true，暂停<br>  ↓<br>用户点击按钮，触发高优先级更新（SyncLane）<br>  ↓<br>ensureRootIsScheduled 被调用<br>  ↓<br>发现 SyncLane 优先级更高<br>  ↓<br>丢弃当前 WIP 树（或保留部分）<br>  ↓<br>重新从 root.current 开始，以 SyncLane 渲染<br>  ↓<br>高优先级 Commit 完成<br>  ↓<br>重新调度低优先级更新（TransitionLane），从头开始<br></code></pre></td></tr></table></figure>
+
+<p>关键点：</p>
+<ul>
+<li>高优先级可以<strong>打断</strong>低优先级。</li>
+<li>被打断的低优先级 WIP 树会被<strong>丢弃</strong>，下次重新构建。</li>
+<li>因为 Render 阶段不碰真实 DOM，丢弃是安全的。</li>
+<li>Commit 阶段不可中断，所以不会出现 UI 中间态。</li>
+</ul>
+<hr>
+<h2 id="七、bailout：跳过无更新的子树"><a href="#七、bailout：跳过无更新的子树" class="headerlink" title="七、bailout：跳过无更新的子树"></a>七、bailout：跳过无更新的子树</h2><p><code>beginWork</code> 里：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">if</span> (current !== <span class="hljs-literal">null</span> &amp;&amp; !<span class="hljs-title function_">includesSomeLane</span>(renderLanes, updateLanes)) &#123;<br>  <span class="hljs-keyword">if</span> ((current.<span class="hljs-property">childLanes</span> &amp; renderLanes) === <span class="hljs-title class_">NoLanes</span>) &#123;<br>    <span class="hljs-comment">// 子树没有当前 Lane 的更新，跳过</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>  &#125;<br>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">bailoutOnAlreadyFinishedWork</span>(current, workInProgress, renderLanes);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>如果当前 Fiber 没有当前 Lane 的更新，且子树也没有，直接跳过。</li>
+<li>这是 Lane 模型的重要优化：只处理有更新的子树。</li>
+</ul>
+<hr>
+<h2 id="八、优先级和-Suspense-Transition"><a href="#八、优先级和-Suspense-Transition" class="headerlink" title="八、优先级和 Suspense &#x2F; Transition"></a>八、优先级和 Suspense &#x2F; Transition</h2><h3 id="Suspense"><a href="#Suspense" class="headerlink" title="Suspense"></a>Suspense</h3><ul>
+<li>组件抛 Promise 时，React 标记该 Lane 为 <code>SuspendedLane</code>。</li>
+<li>不阻塞其他 Lane 的渲染。</li>
+<li>Promise resolve 后，用 <code>RetryLane</code> 重新渲染。</li>
+</ul>
+<h3 id="useTransition"><a href="#useTransition" class="headerlink" title="useTransition"></a>useTransition</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> [isPending, startTransition] = <span class="hljs-title function_">useTransition</span>();<br><br><span class="hljs-title function_">startTransition</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>  <span class="hljs-title function_">setList</span>(newList); <span class="hljs-comment">// 低优先级</span><br>&#125;);<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><code>startTransition</code> 内的更新分配 <code>TransitionLane</code>。</li>
+<li>高优先级更新可以打断它。</li>
+<li><code>isPending</code> 表示低优先级更新还没完成。</li>
+</ul>
+<h3 id="useDeferredValue"><a href="#useDeferredValue" class="headerlink" title="useDeferredValue"></a>useDeferredValue</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-keyword">const</span> deferredValue = <span class="hljs-title function_">useDeferredValue</span>(value);<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>类似 <code>startTransition</code>，把派生更新放到低优先级。</li>
+<li>高优先级更新先渲染，低优先级稍后跟上。</li>
+</ul>
+<hr>
+<h2 id="九、Sync-模式-vs-Concurrent-模式"><a href="#九、Sync-模式-vs-Concurrent-模式" class="headerlink" title="九、Sync 模式 vs Concurrent 模式"></a>九、Sync 模式 vs Concurrent 模式</h2><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>Sync 模式</th>
+<th>Concurrent 模式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>调度</td>
+<td>同步、不可中断</td>
+<td>时间片、可中断</td>
+</tr>
+<tr>
+<td>优先级</td>
+<td>不生效，FCFS</td>
+<td>Lane 生效</td>
+</tr>
+<tr>
+<td>打断</td>
+<td>不支持</td>
+<td>高优先级可打断低优先级</td>
+</tr>
+<tr>
+<td>WIP 丢弃</td>
+<td>不会</td>
+<td>可能被丢弃重建</td>
+</tr>
+<tr>
+<td>适用</td>
+<td>React 17 及以前</td>
+<td>React 18+</td>
+</tr>
+</tbody></table>
+<p>React 18 的 <code>createRoot</code> 默认开启并发特性。<br><code>ReactDOM.render</code>（旧 API）走 Sync 模式。</p>
+<hr>
+<h2 id="十、过期与饥饿"><a href="#十、过期与饥饿" class="headerlink" title="十、过期与饥饿"></a>十、过期与饥饿</h2><ul>
+<li>低优先级更新长时间得不到执行，Lane 会过期（<code>expiredLanes</code>），提升优先级。</li>
+<li>避免 transition 等低优先级更新被无限插队。</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">// 标记过期</span><br>root.<span class="hljs-property">expiredLanes</span> |= lane;<br><br><span class="hljs-comment">// 取 Lane 时优先处理过期 Lane</span><br><span class="hljs-keyword">const</span> nextLanes = <span class="hljs-title function_">getNextLanes</span>(root, ...);<br><span class="hljs-keyword">if</span> (nextLanes &amp; root.<span class="hljs-property">expiredLanes</span>) &#123;<br>  <span class="hljs-comment">// 强制以同步方式执行</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="十一、和-Fiber-的关系"><a href="#十一、和-Fiber-的关系" class="headerlink" title="十一、和 Fiber 的关系"></a>十一、和 Fiber 的关系</h2><p>Fiber 是调度的<strong>载体</strong>：</p>
+<ul>
+<li>每个 Fiber 节点有 <code>lanes</code> &#x2F; <code>childLanes</code>，记录优先级。</li>
+<li>链表结构让遍历可中断、可恢复。</li>
+<li><code>alternate</code> 让 WIP 树可以被丢弃重建。</li>
+<li><code>flags</code> 让 Commit 阶段知道要做什么。</li>
+</ul>
+<p>Lane 是调度的<strong>优先级语言</strong>：</p>
+<ul>
+<li>位掩码表示优先级。</li>
+<li>挂在 Fiber 上，随更新冒泡到根。</li>
+<li>渲染时取最高优先级 Lane。</li>
+</ul>
+<p>Scheduler 是调度的<strong>执行器</strong>：</p>
+<ul>
+<li>时间片控制。</li>
+<li>任务队列。</li>
+<li>优先级映射。</li>
+</ul>
+<p>三者配合：</p>
+<blockquote>
+<p><strong>Lane 决定“哪些更新先做”，Scheduler 决定“什么时候做”，Fiber 决定“怎么做、做完怎么提交”。</strong></p>
+</blockquote>
+<hr>
+<h2 id="十二、总结"><a href="#十二、总结" class="headerlink" title="十二、总结"></a>十二、总结</h2><p><strong>React 用 Lane 位掩码表示更新优先级，挂在 Fiber 的 <code>lanes</code> &#x2F; <code>childLanes</code> 上，随更新冒泡到根；Scheduler 用时间片按优先级调度任务，高优先级可打断低优先级；Render 阶段可中断、可丢弃，Commit 阶段同步不可中断。三者配合，实现了可中断、可恢复、可插队的并发渲染。</strong></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/React/" class="category-chain-item">React</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Fiber/" class="print-no-link">#Fiber</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>【React】Fiber 的调度和优先级</div>
+      <div>http://example.com/2025/08/10/React/【React】Fiber 调度和优先级/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年8月10日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/08/10/React/%E3%80%90React%E3%80%91Fiber%20%E4%B8%8E%E5%B9%B6%E5%8F%91%E7%89%B9%E6%80%A7/" title="【React】Fiber 与并发特性">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">【React】Fiber 与并发特性</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/08/10/React/%E3%80%90React%E3%80%91Hooks%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E8%83%BD%E6%9D%A1%E4%BB%B6%E8%B0%83%E7%94%A8/" title="【React】Hooks 为什么不能条件调用">
+                        <span class="hidden-mobile">【React】Hooks 为什么不能条件调用</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
