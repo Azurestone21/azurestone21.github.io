@@ -19,15 +19,15 @@
   <meta name="author" content="Azure">
   <meta name="keywords" content="">
   
-    <meta name="description" content="从零构建企业级 RAG 知识库从零构建企业级 RAG 知识库：NestJS + React + pgvector 全栈实战一、为什么要写这个项目RAG（Retrieval-Augmented Generation） 在 2024 年被吹上了天，2025 年又被骂成”过时方案”。但企业内部知识库问答、客服话术检索、合同条款比对这些场景，RAG 依然是性价比最高的方案——不需要训练模型，只要做好切片、">
+    <meta name="description" content="从零构建企业级 RAG 知识库：NestJS + React + pgvector 全栈实战一、为什么要写这个项目RAG（Retrieval-Augmented Generation） 在 2024 年被吹上了天，2025 年又被骂成”过时方案”。但企业内部知识库问答、客服话术检索、合同条款比对这些场景，RAG 依然是性价比最高的方案——不需要训练模型，只要做好切片、检索、引用三件事。 市面上的开">
 <meta property="og:type" content="article">
 <meta property="og:title" content="从零构建企业级 RAG 知识库">
 <meta property="og:url" content="http://example.com/2026/08/31/%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98/%E4%BB%8E%E9%9B%B6%E6%9E%84%E5%BB%BA%E4%BC%81%E4%B8%9A%E7%BA%A7%20RAG%20%E7%9F%A5%E8%AF%86%E5%BA%93/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="从零构建企业级 RAG 知识库从零构建企业级 RAG 知识库：NestJS + React + pgvector 全栈实战一、为什么要写这个项目RAG（Retrieval-Augmented Generation） 在 2024 年被吹上了天，2025 年又被骂成”过时方案”。但企业内部知识库问答、客服话术检索、合同条款比对这些场景，RAG 依然是性价比最高的方案——不需要训练模型，只要做好切片、">
+<meta property="og:description" content="从零构建企业级 RAG 知识库：NestJS + React + pgvector 全栈实战一、为什么要写这个项目RAG（Retrieval-Augmented Generation） 在 2024 年被吹上了天，2025 年又被骂成”过时方案”。但企业内部知识库问答、客服话术检索、合同条款比对这些场景，RAG 依然是性价比最高的方案——不需要训练模型，只要做好切片、检索、引用三件事。 市面上的开">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-08-31T02:00:00.000Z">
-<meta property="article:modified_time" content="2026-10-14T15:19:14.492Z">
+<meta property="article:modified_time" content="2026-10-18T15:57:49.667Z">
 <meta property="article:author" content="Azure">
 <meta property="article:tag" content="RAG">
 <meta property="article:tag" content="知识库">
@@ -278,7 +278,7 @@
             
               <div class="markdown-body">
                 
-                <h1 id="从零构建企业级-RAG-知识库"><a href="#从零构建企业级-RAG-知识库" class="headerlink" title="从零构建企业级 RAG 知识库"></a>从零构建企业级 RAG 知识库</h1><h2 id="从零构建企业级-RAG-知识库：NestJS-React-pgvector-全栈实战"><a href="#从零构建企业级-RAG-知识库：NestJS-React-pgvector-全栈实战" class="headerlink" title="从零构建企业级 RAG 知识库：NestJS + React + pgvector 全栈实战"></a>从零构建企业级 RAG 知识库：NestJS + React + pgvector 全栈实战</h2><h3 id="一、为什么要写这个项目"><a href="#一、为什么要写这个项目" class="headerlink" title="一、为什么要写这个项目"></a>一、为什么要写这个项目</h3><p><strong>RAG（Retrieval-Augmented Generation）</strong> 在 2024 年被吹上了天，2025 年又被骂成”过时方案”。但企业内部知识库问答、客服话术检索、合同条款比对这些场景，RAG 依然是性价比最高的方案——不需要训练模型，只要做好<strong>切片、检索、引用</strong>三件事。</p>
+                <h1 id="从零构建企业级-RAG-知识库：NestJS-React-pgvector-全栈实战"><a href="#从零构建企业级-RAG-知识库：NestJS-React-pgvector-全栈实战" class="headerlink" title="从零构建企业级 RAG 知识库：NestJS + React + pgvector 全栈实战"></a>从零构建企业级 RAG 知识库：NestJS + React + pgvector 全栈实战</h1><h3 id="一、为什么要写这个项目"><a href="#一、为什么要写这个项目" class="headerlink" title="一、为什么要写这个项目"></a>一、为什么要写这个项目</h3><p><strong>RAG（Retrieval-Augmented Generation）</strong> 在 2024 年被吹上了天，2025 年又被骂成”过时方案”。但企业内部知识库问答、客服话术检索、合同条款比对这些场景，RAG 依然是性价比最高的方案——不需要训练模型，只要做好<strong>切片、检索、引用</strong>三件事。</p>
 <p>市面上的开源 RAG 框架（Dify、FastGPT、MaxKB）功能越来越重，但当你想<strong>接入自己的百炼 API、自定义切片策略、或者给前端加一个 3 步骤上传向导</strong>时，二次开发的成本可能比自己搭一套还高。</p>
 <p>所以我决定用最小可维护的技术栈，从零实现一个 <strong>MVP 级别但生产可用</strong> 的 RAG 系统。本文是这个项目的完整复盘。</p>
 <hr>

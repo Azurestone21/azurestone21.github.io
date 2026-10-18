@@ -227,15 +227,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2023/08/10/JavaScript/%E3%80%90JS%E3%80%91polyfill/" target="_self">
-          JS polyfill
+        <a href="/2023/08/10/JavaScript/%E3%80%90JS%E3%80%91Object.defineProperty%E5%92%8CProxy/" target="_self">
+          JS Object.defineProperty和Proxy
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/08/10/JavaScript/%E3%80%90JS%E3%80%91polyfill/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/08/10/JavaScript/%E3%80%90JS%E3%80%91Object.defineProperty%E5%92%8CProxy/" target="_self">
         <div>
-          JS polyfill下面把之前关于 polyfill 的内容整合成一份系统笔记，方便复习和查阅。  1. 什么是 polyfillpolyfill 就是“垫片”或“补丁代码”：用一段 JS 代码，为旧浏览器或旧运行环境补上它们原生不支持的新 API，让新代码在旧环境里也能运行。 核心思路：  先检测环境有没有这个特性，没有就自己实现一个，有就用原生的。  例子： 12345if (!Array.
+          JS Object.defineProperty和ProxyObject.defineProperty 是“属性级”劫持，只能针对单个属性定义 getter&#x2F;setter；Proxy 是“对象级”代理，能拦截整个对象的多种操作。 这也是 Vue2 和 Vue3 响应式原理的核心差异。  对比表格   维度 Object.defineProperty Proxy    版本 ES5 ES6
         </div>
       </a>
 
@@ -276,7 +276,9 @@
             
               <a href="/tags/JavaScript/">#JavaScript</a>
             
-              <a href="/tags/polyfill/">#polyfill</a>
+              <a href="/tags/Object-defineProperty/">#Object.defineProperty</a>
+            
+              <a href="/tags/Proxy/">#Proxy</a>
             
           </div>
         
@@ -407,6 +409,69 @@
               <a href="/tags/undefined/">#undefined</a>
             
               <a href="/tags/void-0/">#void 0</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2023/08/10/JavaScript/%E3%80%90JS%E3%80%91polyfill/" target="_self">
+          JS polyfill
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/08/10/JavaScript/%E3%80%90JS%E3%80%91polyfill/" target="_self">
+        <div>
+          JS polyfill下面把之前关于 polyfill 的内容整合成一份系统笔记，方便复习和查阅。  1. 什么是 polyfillpolyfill 就是“垫片”或“补丁代码”：用一段 JS 代码，为旧浏览器或旧运行环境补上它们原生不支持的新 API，让新代码在旧环境里也能运行。 核心思路：  先检测环境有没有这个特性，没有就自己实现一个，有就用原生的。  例子： 12345if (!Array.
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-08-10 10:00" pubdate>
+              2023-08-10
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/JavaScript/" class="category-chain-item">JavaScript</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/JavaScript/">#JavaScript</a>
+            
+              <a href="/tags/polyfill/">#polyfill</a>
             
           </div>
         
@@ -612,6 +677,69 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2023/08/10/JavaScript/%E3%80%90JS%E3%80%91call%E3%80%81apply%E3%80%81bind%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" target="_self">
+          【JS】call、apply、bind的实现原理
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/08/10/JavaScript/%E3%80%90JS%E3%80%91call%E3%80%81apply%E3%80%81bind%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" target="_self">
+        <div>
+          【JS】call、apply、bind的实现原理call、apply、bind 的实现原理是前端面试的高频考点。理解它们的关键在于搞清楚 「如何让函数在执行时 this 指向指定对象」。下面从原理到手写实现，逐层拆解。  一、核心原理一句话 把函数临时挂到目标对象上，作为该对象的方法调用，这样 this 自然指向目标对象，调用完再删掉。  这是 call 和 apply 的通用套路。bind 在此
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-08-10 00:00" pubdate>
+              2023-08-10
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/JavaScript/" class="category-chain-item">JavaScript</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/JavaScript/">#JavaScript</a>
+            
+              <a href="/tags/%E5%8E%9F%E7%90%86/">#原理</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2023/08/10/JavaScript/%E3%80%90JS%E3%80%91ES6%20%E7%AE%AD%E5%A4%B4%E5%87%BD%E6%95%B0/" target="_self">
           ES6 箭头函数
         </a>
@@ -677,69 +805,6 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2023/08/10/JavaScript/%E3%80%90JS%E3%80%91call%E3%80%81apply%E3%80%81bind%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" target="_self">
-          【JS】call、apply、bind的实现原理
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/08/10/JavaScript/%E3%80%90JS%E3%80%91call%E3%80%81apply%E3%80%81bind%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" target="_self">
-        <div>
-          【JS】call、apply、bind的实现原理call、apply、bind 的实现原理是前端面试的高频考点。理解它们的关键在于搞清楚 「如何让函数在执行时 this 指向指定对象」。下面从原理到手写实现，逐层拆解。  一、核心原理一句话 把函数临时挂到目标对象上，作为该对象的方法调用，这样 this 自然指向目标对象，调用完再删掉。  这是 call 和 apply 的通用套路。bind 在此
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-08-10 00:00" pubdate>
-              2023-08-10
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/JavaScript/" class="category-chain-item">JavaScript</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/JavaScript/">#JavaScript</a>
-            
-              <a href="/tags/%E5%8E%9F%E7%90%86/">#原理</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
         <a href="/2023/08/10/JavaScript/%E3%80%90JS%E3%80%91new%20%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" target="_self">
           【JS】new 的实现原理
         </a>
@@ -790,73 +855,6 @@
               <a href="/tags/%E5%8E%9F%E7%90%86/">#原理</a>
             
               <a href="/tags/new/">#new</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2023/08/10/JavaScript/%E3%80%90JS%E3%80%91%E9%98%B2%E6%8A%96%E5%92%8C%E8%8A%82%E6%B5%81/" target="_self">
-          【JS】防抖和节流
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/08/10/JavaScript/%E3%80%90JS%E3%80%91%E9%98%B2%E6%8A%96%E5%92%8C%E8%8A%82%E6%B5%81/" target="_self">
-        <div>
-          【JS】防抖和节流1. 概念防抖（debounce）事件触发后，等待 delay 毫秒。如果期间没有再次触发，才执行；如果再次触发，就重新计时。  频繁触发，只执行最后一次（或首次）。  1输入框搜索：用户停止输入 500ms 后才发请求  节流（throttle）固定时间间隔内最多执行一次。无论触发多频繁，都按固定频率执行。  频繁触发，每隔 wait 毫秒执行一次。  1滚动加载：每 200m
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-08-10 00:00" pubdate>
-              2023-08-10
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/JavaScript/" class="category-chain-item">JavaScript</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%8E%9F%E7%90%86/">#原理</a>
-            
-              <a href="/tags/%E9%98%B2%E6%8A%96/">#防抖</a>
-            
-              <a href="/tags/%E8%8A%82%E6%B5%81/">#节流</a>
-            
-              <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">#性能优化</a>
             
           </div>
         

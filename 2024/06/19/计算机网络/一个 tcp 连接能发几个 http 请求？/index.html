@@ -19,15 +19,15 @@
   <meta name="author" content="Azure">
   <meta name="keywords" content="">
   
-    <meta name="description" content="一个 TCP 连接能发几个 HTTP 请求？理论上，一个TCP连接可以发送无限个HTTP请求。 实际上，一个 TCP 连接能发送的 HTTP 请求数量，核心取决于 HTTP 版本。 1. HTTP&#x2F;1.0：“一发一断”HTTP&#x2F;1.0 在默认情况下，一个TCP连接只发一个HTTP请求。每个请求响应结束后就会断开TCP连接。效率非常低。  如何工作： 与服务器建立一个TCP连接">
+    <meta name="description" content="一个 TCP 连接能发几个 HTTP 请求？先说结论：理论上无限，实际上取决于 HTTP 版本。 很多人面试时会被问到这个问题，答案其实藏在 HTTP 协议的演进史里。从 HTTP&#x2F;1.0 的”一发一断”到 HTTP&#x2F;3 的 QUIC 多路复用，每一代协议都在回答同一个问题：如何更高效地复用一条连接？ 下面按版本逐一拆解。  HTTP&#x2F;1.0：一发一断HTTP&amp;#x2">
 <meta property="og:type" content="article">
 <meta property="og:title" content="一个 TCP 连接能发几个 HTTP 请求？">
 <meta property="og:url" content="http://example.com/2024/06/19/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E4%B8%80%E4%B8%AA%20tcp%20%E8%BF%9E%E6%8E%A5%E8%83%BD%E5%8F%91%E5%87%A0%E4%B8%AA%20http%20%E8%AF%B7%E6%B1%82%EF%BC%9F/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="一个 TCP 连接能发几个 HTTP 请求？理论上，一个TCP连接可以发送无限个HTTP请求。 实际上，一个 TCP 连接能发送的 HTTP 请求数量，核心取决于 HTTP 版本。 1. HTTP&#x2F;1.0：“一发一断”HTTP&#x2F;1.0 在默认情况下，一个TCP连接只发一个HTTP请求。每个请求响应结束后就会断开TCP连接。效率非常低。  如何工作： 与服务器建立一个TCP连接">
+<meta property="og:description" content="一个 TCP 连接能发几个 HTTP 请求？先说结论：理论上无限，实际上取决于 HTTP 版本。 很多人面试时会被问到这个问题，答案其实藏在 HTTP 协议的演进史里。从 HTTP&#x2F;1.0 的”一发一断”到 HTTP&#x2F;3 的 QUIC 多路复用，每一代协议都在回答同一个问题：如何更高效地复用一条连接？ 下面按版本逐一拆解。  HTTP&#x2F;1.0：一发一断HTTP&amp;#x2">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-06-19T13:18:03.000Z">
-<meta property="article:modified_time" content="2026-10-14T15:19:14.388Z">
+<meta property="article:modified_time" content="2026-10-18T05:00:37.374Z">
 <meta property="article:author" content="Azure">
 <meta property="article:tag" content="HTTP">
 <meta property="article:tag" content="TCP">
@@ -224,7 +224,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.2k 字
+          1.1k 字
         
       </span>
     
@@ -235,7 +235,7 @@
         
         
         
-          11 分钟
+          10 分钟
         
       </span>
     
@@ -277,97 +277,103 @@
             
               <div class="markdown-body">
                 
-                <h1 id="一个-TCP-连接能发几个-HTTP-请求？"><a href="#一个-TCP-连接能发几个-HTTP-请求？" class="headerlink" title="一个 TCP 连接能发几个 HTTP 请求？"></a>一个 TCP 连接能发几个 HTTP 请求？</h1><p>理论上，一个TCP连接可以发送无限个HTTP请求。</p>
-<p>实际上，一个 TCP 连接能发送的 HTTP 请求数量，核心取决于 HTTP 版本。</p>
-<h2 id="1-HTTP-1-0：“一发一断”"><a href="#1-HTTP-1-0：“一发一断”" class="headerlink" title="1. HTTP&#x2F;1.0：“一发一断”"></a>1. HTTP&#x2F;1.0：“一发一断”</h2><p>HTTP&#x2F;1.0 在默认情况下，一个TCP连接只发一个HTTP请求。每个请求响应结束后就会断开TCP连接。效率非常低。</p>
-<ul>
-<li><strong>如何工作：</strong><ol>
-<li>与服务器建立一个TCP连接</li>
-<li>通过这个连接发送一个HTTP请求</li>
-<li>接收服务器的响应</li>
-<li><strong>立即关闭这个TCP连接</strong></li>
+                <h1 id="一个-TCP-连接能发几个-HTTP-请求？"><a href="#一个-TCP-连接能发几个-HTTP-请求？" class="headerlink" title="一个 TCP 连接能发几个 HTTP 请求？"></a>一个 TCP 连接能发几个 HTTP 请求？</h1><p>先说结论：<strong>理论上无限，实际上取决于 HTTP 版本。</strong></p>
+<p>很多人面试时会被问到这个问题，答案其实藏在 HTTP 协议的演进史里。从 HTTP&#x2F;1.0 的”一发一断”到 HTTP&#x2F;3 的 QUIC 多路复用，每一代协议都在回答同一个问题：<strong>如何更高效地复用一条连接？</strong></p>
+<p>下面按版本逐一拆解。</p>
+<hr>
+<h2 id="HTTP-1-0：一发一断"><a href="#HTTP-1-0：一发一断" class="headerlink" title="HTTP&#x2F;1.0：一发一断"></a>HTTP&#x2F;1.0：一发一断</h2><p>HTTP&#x2F;1.0 默认<strong>一个 TCP 连接只发一个 HTTP 请求</strong>，响应结束后立即断开。</p>
+<p>工作流程很直接：</p>
+<ol>
+<li>建立 TCP 连接（三次握手）</li>
+<li>发送一个 HTTP 请求</li>
+<li>接收响应</li>
+<li>立即关闭连接</li>
 </ol>
-</li>
-<li><strong>缺点</strong>：<ul>
-<li>建立一个TCP连接需要“三次握手”，成本很高。如果一个网页有10个图片，就需要建立和断开10次TCP连接，非常浪费资源和时间。</li>
-</ul>
-</li>
-</ul>
-<p>为了解决这个问题，一些浏览器引入了非标准的 <code>Connection: keep-alive</code> 头，试图重用连接，但这并非官方标准，且受服务器端超时配置（如 KeepAliveTimeout）限制，并非无限复用。</p>
-<h2 id="2-HTTP-1-1：“持久连接”-Keep-Alive"><a href="#2-HTTP-1-1：“持久连接”-Keep-Alive" class="headerlink" title="2. HTTP&#x2F;1.1：“持久连接” (Keep-Alive)"></a>2. HTTP&#x2F;1.1：“持久连接” (Keep-Alive)</h2><p>HTTP&#x2F;1.1 将持久连接<code>Connection: keep-alive</code>设为<strong>默认行为</strong>。这意味着TCP连接在完成一次请求-响应后不会立即关闭，而是保持打开状态，允许客户端继续发送新的请求。</p>
+<p>问题显而易见：建连成本太高。一个网页有 10 张图片，就要经历 10 次”握手—传输—断开”，时间和资源都浪费在连接管理上。</p>
+<p>后来一些浏览器引入了非标准的 <code>Connection: keep-alive</code> 头试图复用连接，但这并非官方标准，且受服务器超时配置（如 <code>KeepAliveTimeout</code>）限制，<strong>并非无限复用</strong>。</p>
+<hr>
+<h2 id="HTTP-1-1：持久连接成为默认"><a href="#HTTP-1-1：持久连接成为默认" class="headerlink" title="HTTP&#x2F;1.1：持久连接成为默认"></a>HTTP&#x2F;1.1：持久连接成为默认</h2><p>HTTP&#x2F;1.1 把 <code>Connection: keep-alive</code> 变成了<strong>默认行为</strong>。一次请求-响应结束后，TCP 连接保持打开，等待下一个请求。</p>
 <ul>
-<li><strong>如何工作</strong>： 客户端发送请求，服务器回复响应，然后<strong>通道保持空闲</strong>，等待下一个请求。客户端会按顺序一个接一个地发送请求。</li>
-<li><strong>如何关闭</strong>： 服务器或客户端可以通过发送 <code>Connection: close</code> 头来主动关闭连接。否则，连接可能会在一段空闲超时后被关闭。</li>
-<li><strong>缺点：</strong><ul>
-<li><strong>队头阻塞（Head-of-Line Blocking）</strong>： 单个 TCP 连接可被复用，发送 多个 HTTP 请求，但请求需串行执行（必须等前一个请求的响应返回后，才能发送下一个请求）。如果第一个请求处理得很慢（比如一个大文件），它就会“阻塞”后面已经准备好的请求。后面的请求必须排队等待。</li>
-<li><strong>连接的复用并非无限</strong>：服务器端通常会配置 “最大请求数”（如 Nginx 的 keepalive_requests，默认 100 个）和 “连接超时时间”（如 keepalive_timeout，默认 65 秒）—— 若单个连接发送的请求数达到上限，或连接空闲时间超过超时阈值，TCP 连接会被关闭；</li>
+<li><strong>工作方式</strong>：客户端按顺序一个接一个地发送请求，通道在响应后保持空闲。</li>
+<li><strong>关闭方式</strong>：任一方发送 <code>Connection: close</code>，或连接空闲超时后被关闭。</li>
 </ul>
-</li>
-</ul>
-<h2 id="3-HTTP-2：“多路复用”-Multiplexing"><a href="#3-HTTP-2：“多路复用”-Multiplexing" class="headerlink" title="3. HTTP&#x2F;2：“多路复用” (Multiplexing)"></a>3. HTTP&#x2F;2：“多路复用” (Multiplexing)</h2><p>HTTP&#x2F;2是革命性的升级。它允许在<strong>一个TCP连接上同时交错地发送多个请求和响应</strong>，而不是串行。</p>
+<p>但 HTTP&#x2F;1.1 有两个硬伤：</p>
+<p><strong>① 队头阻塞（Head-of-Line Blocking）</strong></p>
+<p>单个连接虽然可复用，但请求必须<strong>串行执行</strong>——前一个响应没回来，后一个请求就得排队。如果第一个请求是个大文件，后面所有请求都会被它堵住。</p>
+<p><strong>② 复用并非无限</strong></p>
+<p>服务器通常会配置上限：比如 Nginx 的 <code>keepalive_requests</code> 默认 100 个请求，<code>keepalive_timeout</code> 默认 65 秒。请求数达到上限或空闲超时，连接就会被关闭。</p>
+<hr>
+<h2 id="HTTP-2：多路复用"><a href="#HTTP-2：多路复用" class="headerlink" title="HTTP&#x2F;2：多路复用"></a>HTTP&#x2F;2：多路复用</h2><p>HTTP&#x2F;2 是革命性的一步：它允许在<strong>一个 TCP 连接上同时交错发送多个请求和响应</strong>。</p>
+<p>实现方式是<strong>二进制分帧</strong>：请求和响应被拆成更小的<strong>帧（Frame）</strong>，每个帧打上<strong>流（Stream）ID</strong>。不同流的帧可以在同一条连接上混合传输，接收方按流 ID 重新组装。</p>
+<p>带来的好处：</p>
 <ul>
-<li><strong>如何工作</strong>： HTTP&#x2F;2将请求和响应消息分割成更小的<strong>帧（Frames）</strong>，并给每个帧打上一个<strong>流（Stream）</strong> 的ID编号。所有这些来自不同流的帧都可以在一个TCP连接上混合在一起传输。接收方根据流ID就能重新组装出完整的请求和响应。</li>
-<li><strong>优点</strong>：<ul>
-<li><strong>彻底解决了HTTP层面的队头阻塞问题</strong>。慢请求的帧不会阻塞其他请求的帧。</li>
-<li>只需要一个TCP连接就能加载整个页面，减少了TCP握手带来的延迟和开销。</li>
-<li>更高效地利用TCP带宽。</li>
+<li><strong>解决了 HTTP 层面的队头阻塞</strong>——慢请求的帧不会堵住其他请求的帧</li>
+<li>一个 TCP 连接就能加载整个页面，省去多次握手的开销</li>
+<li>更充分地利用 TCP 带宽</li>
 </ul>
-</li>
-<li><strong>限制</strong>： 虽然HTTP层面没有队头阻塞了，但<strong>TCP层面依然存在</strong>。因为TCP保证数据包必须按顺序送达。如果任何一个TCP数据包在传输中丢失，整个TCP连接必须等待该包重传成功，这会阻塞所有正在传输的HTTP&#x2F;2流。</li>
-</ul>
-<h2 id="4-HTTP-3：“基于QUIC”"><a href="#4-HTTP-3：“基于QUIC”" class="headerlink" title="4. HTTP&#x2F;3：“基于QUIC”"></a>4. HTTP&#x2F;3：“基于QUIC”</h2><p>为了彻底解决TCP层面的队头阻塞问题，HTTP&#x2F;3迈出了更大的一步：它弃用了TCP，转而使用基于UDP的新协议——<strong>QUIC</strong>。</p>
+<p><strong>但限制依然存在</strong>：HTTP 层不堵了，<strong>TCP 层还会堵</strong>。TCP 保证数据包按序送达，一旦某个包丢失，整条连接都要等它重传，所有 HTTP&#x2F;2 流都会被阻塞。这就是所谓的 <strong>TCP 队头阻塞</strong>。</p>
+<hr>
+<h2 id="HTTP-3：基于-QUIC，彻底告别队头阻塞"><a href="#HTTP-3：基于-QUIC，彻底告别队头阻塞" class="headerlink" title="HTTP&#x2F;3：基于 QUIC，彻底告别队头阻塞"></a>HTTP&#x2F;3：基于 QUIC，彻底告别队头阻塞</h2><p>为了干掉 TCP 层的队头阻塞，HTTP&#x2F;3 直接<strong>弃用 TCP</strong>，改用基于 UDP 的新协议 <strong>QUIC</strong>。</p>
+<p>QUIC 在 UDP 之上实现了自己可靠的、有序的传输机制，但<strong>顺序保证只到”流”这一级</strong>：某个流丢包只影响该流本身，不会波及连接上的其他流。</p>
+<p>优势：</p>
 <ul>
-<li><strong>如何工作</strong>： QUIC在UDP之上实现了自己可靠的、有序的传输机制。它在每个“流”上保证数据的顺序，但如果一个流丢失了数据包，只会影响该流本身，而不会影响连接上的其他所有流。</li>
-<li><strong>优点</strong>：<ul>
-<li><strong>解决了TCP和HTTP两个层面的队头阻塞问题</strong>。</li>
-<li>连接建立更快（通常0-RTT或1-RTT），尤其在高延迟网络下优势明显。</li>
+<li><strong>同时解决 HTTP 层和 TCP 层的队头阻塞</strong></li>
+<li>连接建立更快（通常 0-RTT 或 1-RTT），高延迟网络下优势尤其明显</li>
 </ul>
-</li>
-</ul>
-<table>
+<hr>
+<h2 id="一张表总结"><a href="#一张表总结" class="headerlink" title="一张表总结"></a>一张表总结</h2><table>
 <thead>
 <tr>
-<th align="left"><strong>HTTP 版本</strong></th>
-<th><strong>底层连接</strong></th>
-<th align="left"><strong>单个连接支持的请求数</strong></th>
-<th align="left"><strong>核心限制因素</strong></th>
-<th align="left"><strong>关键特性</strong></th>
-<th align="left"><strong>主要问题</strong></th>
+<th align="left">HTTP 版本</th>
+<th align="left">底层连接</th>
+<th align="left">单连接请求数</th>
+<th align="left">核心限制因素</th>
+<th align="left">关键特性</th>
+<th align="left">主要问题</th>
 </tr>
 </thead>
 <tbody><tr>
 <td align="left">HTTP&#x2F;1.0</td>
-<td>TCP</td>
+<td align="left">TCP</td>
 <td align="left">1 个（默认）&#x2F; 有限个（keep-alive）</td>
-<td align="left">无默认长连接，超时配置</td>
+<td align="left">无默认长连接、超时配置</td>
 <td align="left">短连接，无复用</td>
 <td align="left">连接无法复用，开销巨大</td>
 </tr>
 <tr>
 <td align="left">HTTP&#x2F;1.1</td>
-<td>TCP</td>
+<td align="left">TCP</td>
 <td align="left">多个（串行）</td>
-<td align="left">服务器<code>keepalive_requests</code> 配置、超时</td>
+<td align="left"><code>keepalive_requests</code>、超时</td>
 <td align="left">长连接，串行复用</td>
-<td align="left">HTTP队头阻塞</td>
+<td align="left">HTTP 队头阻塞</td>
 </tr>
 <tr>
 <td align="left">HTTP&#x2F;2</td>
-<td>TCP</td>
+<td align="left">TCP</td>
 <td align="left">海量（并行）</td>
-<td align="left">服务器最大并发流数、资源</td>
+<td align="left">最大并发流数、服务器资源</td>
 <td align="left">二进制帧，多路复用</td>
-<td align="left">TCP队头阻塞</td>
+<td align="left">TCP 队头阻塞</td>
 </tr>
 <tr>
 <td align="left">HTTP&#x2F;3</td>
-<td><strong>QUIC (over UDP)</strong></td>
+<td align="left">QUIC（over UDP）</td>
 <td align="left">海量（并行）</td>
 <td align="left">服务器资源、QUIC 配置</td>
 <td align="left">QUIC 多路复用，无队头阻塞</td>
 <td align="left">暂无明显通用性问题</td>
 </tr>
 </tbody></table>
+<hr>
+<h2 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h2><p>回到最初的问题：一个 TCP 连接能发几个 HTTP 请求？</p>
+<ul>
+<li><strong>HTTP&#x2F;1.0</strong>：1 个（默认）</li>
+<li><strong>HTTP&#x2F;1.1</strong>：多个，但串行，且受服务器配置限制</li>
+<li><strong>HTTP&#x2F;2</strong>：海量并行，但受 TCP 层拖累</li>
+<li><strong>HTTP&#x2F;3</strong>：海量并行，且无队头阻塞</li>
+</ul>
+<p>协议演进的主线，其实就是一句话：<strong>让一条连接承载更多请求，同时让它们互不阻塞。</strong> 理解了这条主线，这个问题也就不再是死记硬背的面试题了。</p>
 
                 
               </div>

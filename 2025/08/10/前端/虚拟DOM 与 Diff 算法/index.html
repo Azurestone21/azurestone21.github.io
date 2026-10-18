@@ -1,0 +1,811 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="虚拟 DOM 与 Diff 算法引言在现代前端框架中，虚拟 DOM 与 Diff 算法是一对密不可分的核心概念。它们共同支撑起了 React、Vue 等框架的声明式编程模型，让开发者从繁琐的手动 DOM 操作中解放出来。本文将从虚拟 DOM 的本质出发，逐步深入到 Diff 算法的实现细节，并对比 React 与 Vue 3 在这一领域的两种不同设计思路。 一、虚拟 DOM 是什么虚拟 DOM 本">
+<meta property="og:type" content="article">
+<meta property="og:title" content="虚拟 DOM 与 Diff 算法">
+<meta property="og:url" content="http://example.com/2025/08/10/%E5%89%8D%E7%AB%AF/%E8%99%9A%E6%8B%9FDOM%20%E4%B8%8E%20Diff%20%E7%AE%97%E6%B3%95/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="虚拟 DOM 与 Diff 算法引言在现代前端框架中，虚拟 DOM 与 Diff 算法是一对密不可分的核心概念。它们共同支撑起了 React、Vue 等框架的声明式编程模型，让开发者从繁琐的手动 DOM 操作中解放出来。本文将从虚拟 DOM 的本质出发，逐步深入到 Diff 算法的实现细节，并对比 React 与 Vue 3 在这一领域的两种不同设计思路。 一、虚拟 DOM 是什么虚拟 DOM 本">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-08-09T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-16T08:45:43.332Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="Diff 算法">
+<meta property="article:tag" content="虚拟 DOM">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>虚拟 DOM 与 Diff 算法 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">虚拟 DOM 与 Diff 算法</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-08-10 00:00" pubdate>
+          2025年8月10日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          27 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">虚拟 DOM 与 Diff 算法</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="虚拟-DOM-与-Diff-算法"><a href="#虚拟-DOM-与-Diff-算法" class="headerlink" title="虚拟 DOM 与 Diff 算法"></a>虚拟 DOM 与 Diff 算法</h1><h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>在现代前端框架中，虚拟 DOM 与 Diff 算法是一对密不可分的核心概念。它们共同支撑起了 React、Vue 等框架的声明式编程模型，让开发者从繁琐的手动 DOM 操作中解放出来。本文将从虚拟 DOM 的本质出发，逐步深入到 Diff 算法的实现细节，并对比 React 与 Vue 3 在这一领域的两种不同设计思路。</p>
+<h2 id="一、虚拟-DOM-是什么"><a href="#一、虚拟-DOM-是什么" class="headerlink" title="一、虚拟 DOM 是什么"></a>一、虚拟 DOM 是什么</h2><p>虚拟 DOM 本质上是用 JavaScript 对象来描述真实 DOM 结构的一棵树。</p>
+<p>真实 DOM：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;box&quot;</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>标题<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>内容<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>对应的虚拟 DOM：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs js">&#123;<br>  <span class="hljs-attr">tag</span>: <span class="hljs-string">&#x27;div&#x27;</span>,<br>  <span class="hljs-attr">props</span>: &#123; <span class="hljs-attr">class</span>: <span class="hljs-string">&#x27;box&#x27;</span> &#125;,<br>  <span class="hljs-attr">children</span>: [<br>    &#123; <span class="hljs-attr">tag</span>: <span class="hljs-string">&#x27;h1&#x27;</span>, <span class="hljs-attr">props</span>: &#123;&#125;, <span class="hljs-attr">children</span>: [<span class="hljs-string">&#x27;标题&#x27;</span>] &#125;,<br>    &#123; <span class="hljs-attr">tag</span>: <span class="hljs-string">&#x27;p&#x27;</span>, <span class="hljs-attr">props</span>: &#123;&#125;, <span class="hljs-attr">children</span>: [<span class="hljs-string">&#x27;内容&#x27;</span>] &#125;<br>  ]<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>它就是一个普通的 JS 对象。操作它比操作真实 DOM 便宜得多，因为真实 DOM 节点包含大量属性、方法和事件，创建和修改成本都很高，每次修改还可能触发样式计算、布局和重绘。</p>
+<p>虚拟 DOM 的核心思路是：<strong>先在内存里用 JS 对象算清楚”哪里变了”，再一次性、最小化地更新真实 DOM</strong>。</p>
+<h2 id="二、为什么需要虚拟-DOM"><a href="#二、为什么需要虚拟-DOM" class="headerlink" title="二、为什么需要虚拟 DOM"></a>二、为什么需要虚拟 DOM</h2><p>直接操作真实 DOM 有三个问题：</p>
+<ol>
+<li><strong>真实 DOM 很”重”</strong>：一个 DOM 节点背后是庞大的对象结构。</li>
+<li><strong>频繁操作性能差</strong>：每次修改都可能触发 reflow 和 repaint。</li>
+<li><strong>手动优化困难</strong>：开发者要自己判断哪里该改、怎么批量改，心智负担大。</li>
+</ol>
+<p>虚拟 DOM 带来的价值不只是”快”，更重要的是<strong>让开发者用声明式的方式写 UI</strong>——你只需要描述”UI 应该是什么样”，框架负责算出”怎么改”。同时，虚拟 DOM 还带来了跨平台能力：同一棵虚拟 DOM 树可以渲染到 Web、Native、Canvas 等不同目标。</p>
+<h2 id="三、Diff-算法：虚拟-DOM-的大脑"><a href="#三、Diff-算法：虚拟-DOM-的大脑" class="headerlink" title="三、Diff 算法：虚拟 DOM 的大脑"></a>三、Diff 算法：虚拟 DOM 的大脑</h2><p>虚拟 DOM 初次渲染时，会生成真实 DOM 并挂载到页面。当状态变化时，会生成一棵新的虚拟 DOM 树，然后通过 Diff 算法对比新旧两棵树，找出差异，只把变化的部分更新到真实 DOM。</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs glsl">旧 VNode 树  ─┐<br>              ├─ Diff 算法 ─→ 差异集合 ─→ <span class="hljs-keyword">patch</span> 到真实 DOM<br>新 VNode 树  ─┘<br></code></pre></td></tr></table></figure>
+
+<p>完整对比两棵树的复杂度是 O(n³)，对前端来说太慢。因此框架都采用了<strong>启发式优化</strong>，把复杂度降到 O(n)，主要基于三条假设：</p>
+<ol>
+<li><strong>同层比较</strong>：只比较同一层级的节点，不跨层移动。</li>
+<li><strong>类型不同直接替换</strong>：节点 tag 不一样，就整棵子树删掉重建。</li>
+<li><strong>用 key 标识节点</strong>：列表渲染时通过 key 判断哪个节点是同一个，从而复用。</li>
+</ol>
+<p>其中，<strong>列表 Diff</strong> 是最复杂、也是最能体现算法差异的部分。React 和 Vue 3 在这里走上了两条不同的路。</p>
+<h2 id="四、React：单向链表的”从左到右”"><a href="#四、React：单向链表的”从左到右”" class="headerlink" title="四、React：单向链表的”从左到右”"></a>四、React：单向链表的”从左到右”</h2><p>React 的 Diff 算法深度绑定了它的 <strong>Fiber 架构</strong>。</p>
+<h3 id="数据结构：没有”回头路”的单向链表"><a href="#数据结构：没有”回头路”的单向链表" class="headerlink" title="数据结构：没有”回头路”的单向链表"></a>数据结构：没有”回头路”的单向链表</h3><p>React 在内存中把虚拟 DOM 树重构成了 Fiber 链表。每个节点通过 <code>child</code>、<code>sibling</code>、<code>return</code> 三个指针连接。关键在于，它<strong>没有记录前一个兄弟节点的指针</strong>。因此当 Diff 算法走到某个位置时，只能继续往右看，无法轻易”回头”。</p>
+<h3 id="比较策略：左对齐-Map-查找"><a href="#比较策略：左对齐-Map-查找" class="headerlink" title="比较策略：左对齐 + Map 查找"></a>比较策略：左对齐 + Map 查找</h3><p>正因为单向链表的限制，React 在处理列表更新时采用”从左向右依次对比”的策略：</p>
+<ol>
+<li>先进行第一轮遍历，拿新旧列表的第一个、第二个……依次对比。</li>
+<li>一旦遇到 key 或 type 对不上，第一轮遍历立即结束。</li>
+<li>把剩下的旧节点全部丢进一个 Map（以 key 为键）。</li>
+<li>拿着剩下的新节点去 Map 里查找能复用的旧节点。</li>
+</ol>
+<p>React 用一个 <code>lastPlacedIndex</code> 变量记录”上一个被复用节点在旧列表中的索引”。遍历新列表时：</p>
+<ul>
+<li>如果当前节点在旧列表中的索引 ≥ <code>lastPlacedIndex</code>，说明相对顺序没变，不需要移动。</li>
+<li>如果小于 <code>lastPlacedIndex</code>，说明这个节点往后移了，标记为需要移动。</li>
+</ul>
+<p>这是一种<strong>贪心近似</strong>策略——它能快速判断哪些节点”大概率不用动”，但无法保证移动次数最少。</p>
+<h3 id="代价与收益"><a href="#代价与收益" class="headerlink" title="代价与收益"></a>代价与收益</h3><p>这种策略在处理”节点从后面移到前面”的场景时比较吃力，会把中间的节点依次向后搬。但它换来了 <strong>Fiber 可中断渲染</strong>的能力：渲染工作可以被拆分成小块，随时暂停、恢复，从而避免长时间阻塞主线程。</p>
+<h2 id="五、Vue-3：双端指针的”两头夹击”"><a href="#五、Vue-3：双端指针的”两头夹击”" class="headerlink" title="五、Vue 3：双端指针的”两头夹击”"></a>五、Vue 3：双端指针的”两头夹击”</h2><p>Vue 3 的 Diff 采用了更经典的<strong>双端对比</strong>策略。</p>
+<h3 id="比较策略：头尾指针同时收缩"><a href="#比较策略：头尾指针同时收缩" class="headerlink" title="比较策略：头尾指针同时收缩"></a>比较策略：头尾指针同时收缩</h3><p>Vue 3 在处理列表 Diff 时，会在新旧列表的两端分别设置指针，<strong>依次尝试四种匹配</strong>：</p>
+<ol>
+<li><strong>旧头 vs 新头</strong>：相同则复用，双头指针后移。</li>
+<li><strong>旧尾 vs 新尾</strong>：相同则复用，双尾指针前移。</li>
+<li><strong>旧头 vs 新尾</strong>：相同则复用，旧头后移、新尾前移。</li>
+<li><strong>旧尾 vs 新头</strong>：相同则复用，旧尾前移、新头后移。</li>
+</ol>
+<p>这种”两头夹击”的方式，能非常高效地处理”尾部新增”、”头部插入”等常见场景，很快就能把两端相同的部分消化掉。</p>
+<h3 id="乱序处理：最长递增子序列"><a href="#乱序处理：最长递增子序列" class="headerlink" title="乱序处理：最长递增子序列"></a>乱序处理：最长递增子序列</h3><p>当两端指针交错，剩下的就是完全乱序的”硬骨头”。此时 Vue 3 会：</p>
+<ol>
+<li>以新列表剩余部分为基准，建立 <code>key → 新索引</code> 的 Map。</li>
+<li>遍历旧列表剩余部分，得到每个节点在新列表中的索引，组成一个数组。</li>
+<li>计算这个数组的<strong>最长递增子序列（LIS）</strong>。</li>
+</ol>
+<p>LIS 的含义是：这些递增的索引对应的节点，在旧列表里本来就是按顺序排好的，<strong>不需要移动</strong>。我们只要保持它们不动，把其他节点插进去就行。</p>
+<h3 id="最长递增子序列算法"><a href="#最长递增子序列算法" class="headerlink" title="最长递增子序列算法"></a>最长递增子序列算法</h3><p>Vue 3 源码里的函数叫 <code>getSequence</code>，用的是<strong>贪心 + 二分查找 + 回溯</strong>，时间复杂度 O(n log n)。</p>
+<p>以数组 <code>[0, 2, 3, 1, 4]</code> 为例：</p>
+<p><strong>核心思路</strong>：维护一个数组 <code>result</code>，记录”长度为 i 的递增子序列，末尾元素的最小值”对应的原数组索引。同时用 <code>p</code> 数组记录每个元素的前驱，方便最后回溯。</p>
+<p><strong>逐步模拟：</strong></p>
+<ul>
+<li>i&#x3D;0，值 0：<code>result = [0]</code></li>
+<li>i&#x3D;1，值 2：2 &gt; 0，追加，<code>result = [0, 1]</code></li>
+<li>i&#x3D;2，值 3：3 &gt; 2，追加，<code>result = [0, 1, 2]</code></li>
+<li>i&#x3D;3，值 1：找到第一个 ≥ 1 的位置（索引 1，值 2），替换，<code>result = [0, 3, 2]</code>，<code>p[3] = 0</code></li>
+<li>i&#x3D;4，值 4：4 &gt; 3，追加，<code>result = [0, 3, 2, 4]</code>，<code>p[4] = 2</code></li>
+</ul>
+<p><strong>回溯</strong>：从 <code>result</code> 最后一项索引 4 开始，顺着 <code>p</code> 往前找：<code>4 → 2 → 1 → 0</code>，倒过来就是 <code>[0, 1, 2, 4]</code>。</p>
+<p>验证：原数组 <code>[0, 2, 3, 1, 4]</code>，取索引 0、1、2、4 → <code>[0, 2, 3, 4]</code>，确实是递增的，长度 4，正确。</p>
+<p><strong>回到 DOM 操作</strong>：有了 LIS <code>[0, 1, 2, 4]</code>，Vue 就知道这些节点不需要移动，剩下的节点需要插入到正确位置。这样 DOM 移动次数就被压到了最低。</p>
+<h3 id="为什么用贪心-二分"><a href="#为什么用贪心-二分" class="headerlink" title="为什么用贪心 + 二分"></a>为什么用贪心 + 二分</h3><p>暴力找 LIS 是 O(n²)。Vue 3 用贪心策略——尽量让每个长度的子序列末尾元素越小越好，这样后面更容易接上——配合二分查找快速定位替换位置，把复杂度降到 O(n log n)。对于可能几百上千条数据的列表渲染，这个优化很关键。</p>
+<h2 id="六、LIS-的适用边界"><a href="#六、LIS-的适用边界" class="headerlink" title="六、LIS 的适用边界"></a>六、LIS 的适用边界</h2><p>需要澄清的是，<strong>LIS 只用在”带 key 的列表 Diff”里，而且是列表 Diff 的最后一个兜底步骤</strong>。<br>只有当双端对比<strong>卡住</strong>——四种比较全部失败，无法再靠两端匹配消化任何节点时，才会跳出双端循环，进入乱序处理，也才轮到 LIS 登场。</p>
+<p>对于普通嵌套结构：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>123<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>345<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>这是两个同层兄弟节点，但没有 key，也没有顺序变化。Diff 走的是普通的同层比较——按位置逐个比对，相同就复用，不同就替换，<strong>根本不会用到 LIS</strong>。</p>
+<p>即使加上 key，只要顺序不变，也不会触发 LIS。只有顺序变了，才会进入带 key 的列表 Diff，进而可能用到 LIS。</p>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>是否用 LIS</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>普通嵌套结构、静态兄弟节点</td>
+<td>否</td>
+</tr>
+<tr>
+<td>列表顺序不变，只增删尾部&#x2F;头部</td>
+<td>否（双端对比就解决）</td>
+</tr>
+<tr>
+<td>列表顺序打乱，需要决定谁移动</td>
+<td>是</td>
+</tr>
+</tbody></table>
+<h2 id="七、一个完整的例子"><a href="#七、一个完整的例子" class="headerlink" title="七、一个完整的例子"></a>七、一个完整的例子</h2><p>假设旧列表 <code>[A, B, C, D, E]</code>，新列表 <code>[A, C, D, B, E]</code>，变化是 B 从第 2 位移到第 4 位。</p>
+<p><strong>Vue 3 的双端对比：</strong></p>
+<p>双端对比的每一轮，都按 <strong>旧头vs新头 → 旧尾vs新尾 → 旧头vs新尾 → 旧尾vs新头</strong> 的顺序依次尝试，命中一个就进入下一轮。</p>
+<figure class="highlight mathematica"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs mathematica">初始：旧 <span class="hljs-punctuation">[</span><span class="hljs-variable">A</span><span class="hljs-operator">,</span> <span class="hljs-variable">B</span><span class="hljs-operator">,</span> <span class="hljs-built_in">C</span><span class="hljs-operator">,</span> <span class="hljs-built_in">D</span><span class="hljs-operator">,</span> <span class="hljs-built_in">E</span><span class="hljs-punctuation">]</span>  新 <span class="hljs-punctuation">[</span><span class="hljs-variable">A</span><span class="hljs-operator">,</span> <span class="hljs-built_in">C</span><span class="hljs-operator">,</span> <span class="hljs-built_in">D</span><span class="hljs-operator">,</span> <span class="hljs-variable">B</span><span class="hljs-operator">,</span> <span class="hljs-built_in">E</span><span class="hljs-punctuation">]</span><br><br>第 <span class="hljs-number">1</span> 轮：<br>  ① 旧头 <span class="hljs-variable">A</span> <span class="hljs-variable">vs</span> 新头 <span class="hljs-variable">A</span> → 相同，复用，双头后移<br>  旧头→<span class="hljs-variable">B</span>，新头→<span class="hljs-built_in">C</span><br><br>第 <span class="hljs-number">2</span> 轮：<br>  ① 旧头 <span class="hljs-variable">B</span> <span class="hljs-variable">vs</span> 新头 <span class="hljs-built_in">C</span> → 不同<br>  ② 旧尾 <span class="hljs-built_in">E</span> <span class="hljs-variable">vs</span> 新尾 <span class="hljs-built_in">E</span> → 相同，复用，双尾前移<br>  旧尾→<span class="hljs-built_in">D</span>，新尾→<span class="hljs-variable">B</span><br><br>第 <span class="hljs-number">3</span> 轮：<br>  ① 旧头 <span class="hljs-variable">B</span> <span class="hljs-variable">vs</span> 新头 <span class="hljs-built_in">C</span> → 不同<br>  ② 旧尾 <span class="hljs-built_in">D</span> <span class="hljs-variable">vs</span> 新尾 <span class="hljs-variable">B</span> → 不同<br>  ③ 旧头 <span class="hljs-variable">B</span> <span class="hljs-variable">vs</span> 新尾 <span class="hljs-variable">B</span> → 相同！<span class="hljs-variable">B</span> 被移到了后面，复用旧 <span class="hljs-variable">B</span>，移动到新尾位置<br>  旧头→<span class="hljs-built_in">C</span>，新尾→<span class="hljs-built_in">D</span><br><br>第 <span class="hljs-number">4</span> 轮：<br>  ① 旧头 <span class="hljs-built_in">C</span> <span class="hljs-variable">vs</span> 新头 <span class="hljs-built_in">C</span> → 相同，复用，双头后移<br>  旧头→<span class="hljs-built_in">D</span>，新头→<span class="hljs-built_in">D</span><br><br>第 <span class="hljs-number">5</span> 轮：<br>  ① 旧头 <span class="hljs-built_in">D</span> <span class="hljs-variable">vs</span> 新头 <span class="hljs-built_in">D</span> → 相同，复用，双头后移<br>  旧头越过旧尾，新头越过新尾 → 循环结束<br></code></pre></td></tr></table></figure>
+
+<p><strong>全程没有任何一轮出现”四种比较全失败”的情况</strong>，所以这次 Diff <strong>不会进入 LIS 阶段</strong>。最终只需要移动 B 一个节点。</p>
+<p><strong>React 的处理：</strong></p>
+<ul>
+<li>旧 A vs 新 A → 相同，继续</li>
+<li>旧 B vs 新 C → key 不同，第一轮结束</li>
+<li>建立旧节点 Map <code>{ b, c, d, e }</code></li>
+<li>遍历新列表剩余部分，用 <code>lastPlacedIndex</code> 判断：<ul>
+<li>C：旧索引 2，<code>lastPlacedIndex = 2</code></li>
+<li>D：旧索引 3 &gt; 2，<code>lastPlacedIndex = 3</code></li>
+<li>B：旧索引 1 &lt; 3 → <strong>标记移动</strong></li>
+<li>E：旧索引 4 &gt; 3，<code>lastPlacedIndex = 4</code></li>
+</ul>
+</li>
+</ul>
+<p>最终也是移动 B 一个节点。</p>
+<p>这个例子里两者结果相同。但在**”大部分有序、少量乱序”**的复杂场景下，Vue 3 的 LIS 能精确找出”最小移动集合”，而 React 的 <code>lastPlacedIndex</code> 是一种贪心近似，可能多移动一些节点。</p>
+<h2 id="八、两种设计的对比"><a href="#八、两种设计的对比" class="headerlink" title="八、两种设计的对比"></a>八、两种设计的对比</h2><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>Vue 3</th>
+<th>React</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>列表 Diff 策略</td>
+<td>双端对比 + Map + LIS</td>
+<td>从左到右 + Map + lastPlacedIndex</td>
+</tr>
+<tr>
+<td>底层结构</td>
+<td>虚拟节点数组，可自由设置头尾指针</td>
+<td>Fiber 单向链表，不可反向遍历</td>
+</tr>
+<tr>
+<td>头部插入</td>
+<td>双端识别，1 次操作</td>
+<td>需移动后续节点</td>
+</tr>
+<tr>
+<td>尾部插入</td>
+<td>双端识别，1 次操作</td>
+<td>直接追加，1 次操作</td>
+</tr>
+<tr>
+<td>中间移动</td>
+<td>LIS 精确求最小移动集</td>
+<td>贪心近似，可能多移</td>
+</tr>
+<tr>
+<td>可中断</td>
+<td>同步，不可中断</td>
+<td>Fiber 可中断渲染</td>
+</tr>
+<tr>
+<td>设计取舍</td>
+<td>追求 Diff 精度</td>
+<td>追求渲染调度能力</td>
+</tr>
+</tbody></table>
+<h2 id="九、虚拟-DOM-的争议与未来"><a href="#九、虚拟-DOM-的争议与未来" class="headerlink" title="九、虚拟 DOM 的争议与未来"></a>九、虚拟 DOM 的争议与未来</h2><p>虚拟 DOM 并非没有争议。它的额外开销是真实存在的：维护 VNode 树、跑 Diff，都需要内存和计算成本。如果开发者精确知道要改哪个 DOM，直接改反而更快。</p>
+<p>现代框架也在不断改进：</p>
+<ul>
+<li><strong>Vue 3</strong> 通过编译时优化（静态提升、Patch Flag）减少运行时 Diff 的工作量。</li>
+<li><strong>Svelte</strong> 在编译期直接生成 DOM 操作代码，完全绕过了虚拟 DOM。</li>
+<li><strong>SolidJS</strong> 采用细粒度响应式，状态变化直接定位到具体 DOM 节点。</li>
+</ul>
+<p>这些方案都在某种程度上”绕过”或弱化了虚拟 DOM。但虚拟 DOM 的核心价值——<strong>让开发者用声明式的方式写 UI，同时保持可接受的性能</strong>——在可预见的未来依然是主流框架的基石。</p>
+<h2 id="十、结语"><a href="#十、结语" class="headerlink" title="十、结语"></a>十、结语</h2><p>虚拟 DOM 与 Diff 算法，一个负责”描述 UI”，一个负责”算出最小变更”。它们共同构成了现代前端框架的运行时核心。</p>
+<p>React 选择了 Fiber 单向链表 + 贪心 Diff，牺牲部分 Diff 精度，换来了可中断渲染的调度能力；Vue 3 选择了双端对比 + LIS，追求 Diff 的精确性和最小移动。</p>
+<p>两种设计没有绝对的优劣，它们只是对”什么更重要”给出了不同的答案。理解它们背后的取舍，比记住”哪个更快”更有价值——因为技术选型从来不是比谁跑分高，而是看谁更契合你要解决的问题。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%89%8D%E7%AB%AF/" class="category-chain-item">前端</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E8%99%9A%E6%8B%9F-DOM/" class="print-no-link">#虚拟 DOM</a>
+      
+        <a href="/tags/Diff-%E7%AE%97%E6%B3%95/" class="print-no-link">#Diff 算法</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>虚拟 DOM 与 Diff 算法</div>
+      <div>http://example.com/2025/08/10/前端/虚拟DOM 与 Diff 算法/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年8月10日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/08/10/React/%E3%80%90React%E3%80%91Hooks%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E8%83%BD%E6%9D%A1%E4%BB%B6%E8%B0%83%E7%94%A8/" title="【React】Hooks 为什么不能条件调用">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">【React】Hooks 为什么不能条件调用</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/08/01/AI/Codex%20%E6%96%9C%E6%9D%A0%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/" title="Codex 斜杠命令大全">
+                        <span class="hidden-mobile">Codex 斜杠命令大全</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

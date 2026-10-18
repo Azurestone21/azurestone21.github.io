@@ -227,15 +227,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2024/12/12/React/%E3%80%90React%E3%80%91%E7%B1%BB%E7%BB%84%E4%BB%B6%E5%92%8C%E5%87%BD%E6%95%B0%E7%BB%84%E4%BB%B6/" target="_self">
-          React 类组件和函数组件
+        <a href="/2024/12/12/React/React%20Hook%EF%BC%9AuseReducer/" target="_self">
+          React Hook：useReducer
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/12/12/React/%E3%80%90React%E3%80%91%E7%B1%BB%E7%BB%84%E4%BB%B6%E5%92%8C%E5%87%BD%E6%95%B0%E7%BB%84%E4%BB%B6/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/12/12/React/React%20Hook%EF%BC%9AuseReducer/" target="_self">
         <div>
-          React 类组件和函数组件一、概述React 中定义组件有两种方式：  类组件（Class Component）：用 ES6 class 定义，继承 React.Component。 函数组件（Function Component）：用普通函数定义，返回 JSX。  React 16.8 引入 Hooks 之前，函数组件只能做无状态展示，类组件才能管理状态和生命周期。Hooks 之后，函数组件具
+          useReducer 笔记一、概述useReducer 是 React 提供的一个状态管理 Hook，用于处理复杂的状态逻辑。它是 useState 的替代方案，核心思想来自 Redux：通过 dispatch action 来触发状态更新，而不是直接设置新值。 基本语法1const [state, dispatch] = useReducer(reducer, initialState);
         </div>
       </a>
 
@@ -275,6 +275,71 @@
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/React/">#React</a>
+            
+              <a href="/tags/Hook/">#Hook</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2024/12/12/React/React%20Hook/" target="_self">
+          React Hook
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/12/12/React/React%20Hook/" target="_self">
+        <div>
+          React HookHook 是什么Hooks 是 React 16.8 的新增特性。 Hooks 本质上就是一类特殊的函数，它们可以为你的函数型组件（function component）注入一些特殊的功能，让你在不编写类的情况下使用 state(状态) 和其他 React 特性。 为什么要使用 React Hooks 状态逻辑难以复用   业务变得复杂之后，组件之间共享状态变得频繁，组件复用和
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-12-12 00:00" pubdate>
+              2024-12-12
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/React/" class="category-chain-item">React</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/React/">#React</a>
+            
+              <a href="/tags/Hook/">#Hook</a>
             
           </div>
         
@@ -773,69 +838,6 @@
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/%E6%94%BB%E5%87%BB/">#攻击</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/12/10/%E5%89%8D%E7%AB%AF/%E3%80%90%E6%9E%84%E5%BB%BA%E3%80%91Vite%20%E5%A6%82%E4%BD%95%E8%AE%A9%E5%90%AF%E5%8A%A8%E6%9B%B4%E5%BF%AB/" target="_self">
-          Vite 如何让启动更快
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/12/10/%E5%89%8D%E7%AB%AF/%E3%80%90%E6%9E%84%E5%BB%BA%E3%80%91Vite%20%E5%A6%82%E4%BD%95%E8%AE%A9%E5%90%AF%E5%8A%A8%E6%9B%B4%E5%BF%AB/" target="_self">
-        <div>
-          Vite 如何让启动更快先说结论很多人说“Vite 比 Webpack 快”，更准确的说法是：  Vite 的快，主要体现在开发阶段。Webpack 是“先打包，再启动开发服务器”；Vite 是“先启动开发服务器，浏览器请求什么，再按需编译什么”。  生产环境下，Vite 仍然会打包，通常使用 Rollup，新版本逐步引入 Rolldown，并用 esbuild 做压缩。所以 Vite 并不是完全
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-12-10 00:00" pubdate>
-              2024-12-10
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E5%89%8D%E7%AB%AF/" class="category-chain-item">前端</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E6%9E%84%E5%BB%BA%E5%B7%A5%E5%85%B7/">#构建工具</a>
-            
-              <a href="/tags/Vite/">#Vite</a>
             
           </div>
         
