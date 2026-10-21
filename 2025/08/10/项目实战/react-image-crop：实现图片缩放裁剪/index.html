@@ -1,0 +1,910 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="react-image-crop：实现图片缩放裁剪 从零到一，解决大图适配、缩放平移、精准导出三大核心难题。  前言react-image-crop 是 React 生态中最流行的图片裁剪库之一（GitHub 4k+ stars）。但它只提供了”裁剪框”的能力——缩放、平移、导出这些环节都要自己拼。官方 Demo 比较简陋，实际项目中会遇到一堆坑。 本文基于生产环境组件的实践经验，带你一步步实现一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="react-image-crop：实现图片缩放裁剪">
+<meta property="og:url" content="http://example.com/2025/08/10/%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98/react-image-crop%EF%BC%9A%E5%AE%9E%E7%8E%B0%E5%9B%BE%E7%89%87%E7%BC%A9%E6%94%BE%E8%A3%81%E5%89%AA/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="react-image-crop：实现图片缩放裁剪 从零到一，解决大图适配、缩放平移、精准导出三大核心难题。  前言react-image-crop 是 React 生态中最流行的图片裁剪库之一（GitHub 4k+ stars）。但它只提供了”裁剪框”的能力——缩放、平移、导出这些环节都要自己拼。官方 Demo 比较简陋，实际项目中会遇到一堆坑。 本文基于生产环境组件的实践经验，带你一步步实现一">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-08-09T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-19T08:57:30.764Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="react">
+<meta property="article:tag" content="图片裁剪">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>react-image-crop：实现图片缩放裁剪 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">react-image-crop：实现图片缩放裁剪</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-08-10 00:00" pubdate>
+          2025年8月10日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          44 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">react-image-crop：实现图片缩放裁剪</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="react-image-crop：实现图片缩放裁剪"><a href="#react-image-crop：实现图片缩放裁剪" class="headerlink" title="react-image-crop：实现图片缩放裁剪"></a>react-image-crop：实现图片缩放裁剪</h1><blockquote>
+<p>从零到一，解决大图适配、缩放平移、精准导出三大核心难题。</p>
+</blockquote>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p><code>react-image-crop</code> 是 React 生态中最流行的图片裁剪库之一（GitHub 4k+ stars）。但它只提供了”裁剪框”的能力——<strong>缩放、平移、导出这些环节都要自己拼</strong>。官方 Demo 比较简陋，实际项目中会遇到一堆坑。</p>
+<p>本文基于生产环境组件的实践经验，带你一步步实现一个<strong>支持缩放、平移、精准导出</strong>的完整裁剪组件。</p>
+<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ul>
+<li><a href="#react-image-crop%E5%AE%9E%E7%8E%B0%E5%9B%BE%E7%89%87%E7%BC%A9%E6%94%BE%E8%A3%81%E5%89%AA">react-image-crop：实现图片缩放裁剪</a><ul>
+<li><a href="#%E5%89%8D%E8%A8%80">前言</a></li>
+<li><a href="#%E7%9B%AE%E5%BD%95">目录</a></li>
+<li><a href="#%E4%B8%80%E5%9F%BA%E7%A1%80%E6%9C%80%E5%B0%8F%E5%8F%AF%E7%94%A8%E7%9A%84%E8%A3%81%E5%89%AA%E7%BB%84%E4%BB%B6">一、基础：最小可用的裁剪组件</a><ul>
+<li><a href="#react-image-crop-%E5%86%85%E7%BD%AE%E7%9A%84%E4%B8%A4%E4%B8%AA%E8%BE%85%E5%8A%A9%E5%87%BD%E6%95%B0">react-image-crop 内置的两个辅助函数</a></li>
+<li><a href="#%E8%87%AA%E5%B7%B1%E5%B0%81%E8%A3%85-centeraspectcrop">自己封装 centerAspectCrop</a></li>
+<li><a href="#%E4%B8%89%E4%B8%AA%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5">三个核心概念</a></li>
+<li><a href="#%E4%B8%80%E4%B8%AA%E5%AE%B9%E6%98%93%E5%BF%BD%E7%95%A5%E7%9A%84%E7%82%B9">一个容易忽略的点</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%8C%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%9D%91%E5%A4%A7%E5%9B%BE%E6%92%91%E7%88%86%E5%AE%B9%E5%99%A8">二、第一个坑：大图撑爆容器</a><ul>
+<li><a href="#%E6%96%B9%E6%A1%88js-%E5%AE%9E%E7%8E%B0-object-fit-contain">方案：JS 实现 object-fit: contain</a></li>
+<li><a href="#%E6%98%BE%E7%A4%BA%E5%B0%BA%E5%AF%B8%E7%8A%B6%E6%80%81">显示尺寸状态</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%89%E8%BF%9B%E9%98%B6%E4%B8%80%E7%BC%A9%E6%94%BE%E5%8A%9F%E8%83%BD">三、进阶一：缩放功能</a><ul>
+<li><a href="#%E4%BD%86-scale-%E6%9C%89%E4%B8%A4%E4%B8%AA%E9%97%AE%E9%A2%98">但 scale 有两个问题</a></li>
+</ul>
+</li>
+<li><a href="#%E5%9B%9B%E8%BF%9B%E9%98%B6%E4%BA%8Cpanoffset-%E5%B9%B3%E7%A7%BB%E7%B3%BB%E7%BB%9F">四、进阶二：PanOffset 平移系统</a><ul>
+<li><a href="#%E6%A0%B8%E5%BF%83%E6%80%9D%E8%B7%AF">核心思路</a></li>
+<li><a href="#%E7%8A%B6%E6%80%81--%E8%BE%B9%E7%95%8C%E7%BA%A6%E6%9D%9F">状态 &amp; 边界约束</a></li>
+<li><a href="#pointer-events-%E5%AE%9E%E7%8E%B0%E6%8B%96%E5%8A%A8">Pointer Events 实现拖动</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BA%94%E8%BF%9B%E9%98%B6%E4%B8%89%E4%BA%8B%E4%BB%B6%E5%88%86%E5%B1%82">五、进阶三：事件分层</a></li>
+<li><a href="#%E5%85%AD%E8%BF%9B%E9%98%B6%E5%9B%9Bcanvas-%E5%AF%BC%E5%87%BA%E7%BC%A9%E6%94%BE%E5%B9%B3%E7%A7%BB%E4%BF%AE%E6%AD%A3">六、进阶四：Canvas 导出（缩放+平移修正）</a><ul>
+<li><a href="#%E5%9D%90%E6%A0%87%E6%98%A0%E5%B0%84%E5%8E%9F%E7%90%86">坐标映射原理</a></li>
+<li><a href="#%E4%BA%A4%E9%9B%86%E8%AE%A1%E7%AE%97%E7%9A%84%E5%BF%85%E8%A6%81%E6%80%A7">交集计算的必要性</a></li>
+<li><a href="#%E5%AE%8C%E6%95%B4%E7%9A%84-drawtocanvas">完整的 drawToCanvas</a></li>
+<li><a href="#%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96offscreencanvas">性能优化：OffscreenCanvas</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%83%E6%94%B6%E5%B0%BEflex-%E5%B8%83%E5%B1%80%E8%AE%A9%E4%B8%80%E5%88%87%E9%A1%BA%E6%BB%91">七、收尾：Flex 布局让一切顺滑</a></li>
+<li><a href="#%E5%85%AB%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81">八、完整代码</a></li>
+<li><a href="#%E4%B9%9D%E6%80%BB%E7%BB%93">九、总结</a></li>
+<li><a href="#%E9%99%84%E8%B8%A9%E5%9D%91%E6%97%B6%E9%97%B4%E7%BA%BF%E6%88%91%E7%9A%84%E8%BF%AD%E4%BB%A3%E8%AE%B0%E5%BD%95">附：踩坑时间线（我的迭代记录）</a></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="一、基础：最小可用的裁剪组件"><a href="#一、基础：最小可用的裁剪组件" class="headerlink" title="一、基础：最小可用的裁剪组件"></a>一、基础：最小可用的裁剪组件</h2><p>先跑通最基础的裁剪功能。</p>
+<h3 id="react-image-crop-内置的两个辅助函数"><a href="#react-image-crop-内置的两个辅助函数" class="headerlink" title="react-image-crop 内置的两个辅助函数"></a>react-image-crop 内置的两个辅助函数</h3><p>在写自己的 <code>centerAspectCrop</code> 之前，得先理解 react-image-crop 暴露的两个工具函数：</p>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>作用</th>
+<th>签名</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>makeAspectCrop</code></td>
+<td>给定一个基础裁剪框，按指定宽高比重新计算，返回新的 PercentCrop</td>
+<td><code>makeAspectCrop(crop, aspect, mediaW, mediaH)</code></td>
+</tr>
+<tr>
+<td><code>centerCrop</code></td>
+<td>把裁剪框居中于图片中，确保坐标合法（不超出图片边界）</td>
+<td><code>centerCrop(crop, mediaW, mediaH)</code></td>
+</tr>
+</tbody></table>
+<h3 id="自己封装-centerAspectCrop"><a href="#自己封装-centerAspectCrop" class="headerlink" title="自己封装 centerAspectCrop"></a>自己封装 centerAspectCrop</h3><p>react-image-crop <strong>没有</strong>提供”按 aspect 居中铺满”的组合函数，所以自己拼一个：</p>
+<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-keyword">import</span> &#123; centerCrop, makeAspectCrop &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;react-image-crop&quot;</span>;<br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">centerAspectCrop</span>(<span class="hljs-params"></span><br><span class="hljs-params">  <span class="hljs-attr">mediaW</span>: <span class="hljs-built_in">number</span>,</span><br><span class="hljs-params">  <span class="hljs-attr">mediaH</span>: <span class="hljs-built_in">number</span>,</span><br><span class="hljs-params">  <span class="hljs-attr">aspect</span>: <span class="hljs-built_in">number</span>,</span><br><span class="hljs-params"></span>): <span class="hljs-title class_">PercentCrop</span> &#123;<br>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">centerCrop</span>(<br>    <span class="hljs-title function_">makeAspectCrop</span>(&#123; <span class="hljs-attr">unit</span>: <span class="hljs-string">&quot;%&quot;</span>, <span class="hljs-attr">width</span>: <span class="hljs-number">100</span> &#125;, aspect, mediaW, mediaH),<br>    mediaW,<br>    mediaH,<br>  );<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>逻辑：先用 <code>makeAspectCrop</code> 以 100% 宽度为基础按 aspect 算一个裁剪框，再用 <code>centerCrop</code> 把它居中到图片里。调用时传入图片的 naturalWidth&#x2F;naturalHeight 和目标 aspect 即可。</p>
+<blockquote>
+<p><strong>为什么传 naturalWidth&#x2F;naturalHeight 而不是 displayWidth&#x2F;displayHeight？</strong> 因为 ReactCrop 内部会把 PercentCrop 换算成 PixelCrop，换算基准是 <code>&lt;img&gt;</code> 的 naturalWidth&#x2F;naturalHeight（原始尺寸），不是当前显示尺寸。所以传给 centerCrop&#x2F;makeAspectCrop 的也应该是 natural 值。</p>
+</blockquote>
+<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-keyword">import</span> <span class="hljs-title class_">React</span>, &#123;<br>  useRef,<br>  useState,<br>  forwardRef,<br>  useImperativeHandle,<br>&#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;react&quot;</span>;<br><span class="hljs-keyword">import</span> <span class="hljs-title class_">ReactCrop</span>, &#123; centerCrop, makeAspectCrop &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;react-image-crop&quot;</span>;<br><span class="hljs-keyword">import</span> <span class="hljs-keyword">type</span> &#123; <span class="hljs-title class_">PercentCrop</span>, <span class="hljs-title class_">PixelCrop</span> &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;react-image-crop&quot;</span>;<br><span class="hljs-keyword">import</span> <span class="hljs-string">&quot;react-image-crop/src/ReactCrop.scss&quot;</span>;<br><br><span class="hljs-keyword">interface</span> <span class="hljs-title class_">Props</span> &#123;<br>  <span class="hljs-attr">src</span>: <span class="hljs-built_in">string</span> | <span class="hljs-title class_">File</span> | <span class="hljs-title class_">Blob</span>;<br>  <span class="hljs-attr">aspect</span>?: <span class="hljs-built_in">number</span>;<br>&#125;<br><br><span class="hljs-keyword">const</span> <span class="hljs-title class_">ImageCropper</span> = forwardRef&lt;&#123; <span class="hljs-attr">getCropBlob</span>: <span class="hljs-function">() =&gt;</span> <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-title class_">Blob</span>&gt; &#125;, <span class="hljs-title class_">Props</span>&gt;(<br>  <span class="hljs-function">(<span class="hljs-params">&#123; src, aspect &#125;, ref</span>) =&gt;</span> &#123;<br>    <span class="hljs-keyword">const</span> [crop, setCrop] = useState&lt;<span class="hljs-title class_">PercentCrop</span>&gt;();<br>    <span class="hljs-keyword">const</span> [completedCrop, setCompletedCrop] = useState&lt;<span class="hljs-title class_">PixelCrop</span>&gt;();<br>    <span class="hljs-keyword">const</span> imgRef = useRef&lt;<span class="hljs-title class_">HTMLImageElement</span>&gt;(<span class="hljs-literal">null</span>);<br>    <span class="hljs-keyword">const</span> [url, setUrl] = useState&lt;<span class="hljs-built_in">string</span>&gt;();<br><br>    <span class="hljs-comment">// File/Blob → ObjectURL</span><br>    <span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> src === <span class="hljs-string">&quot;string&quot;</span>) &#123;<br>        <span class="hljs-title function_">setUrl</span>(src);<br>        <span class="hljs-keyword">return</span>;<br>      &#125;<br>      <span class="hljs-keyword">const</span> objectUrl = <span class="hljs-variable constant_">URL</span>.<span class="hljs-title function_">createObjectURL</span>(src);<br>      <span class="hljs-title function_">setUrl</span>(objectUrl);<br>      <span class="hljs-keyword">return</span> <span class="hljs-function">() =&gt;</span> <span class="hljs-variable constant_">URL</span>.<span class="hljs-title function_">revokeObjectURL</span>(objectUrl);<br>    &#125;, [src]);<br><br>    <span class="hljs-comment">// 图片加载后，设置初始裁剪框</span><br>    <span class="hljs-keyword">const</span> <span class="hljs-title function_">onImageLoad</span> = (<span class="hljs-params"><span class="hljs-attr">e</span>: <span class="hljs-title class_">React</span>.<span class="hljs-title class_">SyntheticEvent</span>&lt;<span class="hljs-title class_">HTMLImageElement</span>&gt;</span>) =&gt; &#123;<br>      <span class="hljs-keyword">const</span> &#123; naturalWidth, naturalHeight &#125; = e.<span class="hljs-property">currentTarget</span>;<br>      <span class="hljs-keyword">if</span> (aspect) &#123;<br>        <span class="hljs-title function_">setCrop</span>(<span class="hljs-title function_">centerAspectCrop</span>(naturalWidth, naturalHeight, aspect));<br>      &#125; <span class="hljs-keyword">else</span> &#123;<br>        <span class="hljs-title function_">setCrop</span>(&#123; <span class="hljs-attr">unit</span>: <span class="hljs-string">&quot;%&quot;</span>, <span class="hljs-attr">width</span>: <span class="hljs-number">100</span>, <span class="hljs-attr">height</span>: <span class="hljs-number">100</span>, <span class="hljs-attr">x</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">y</span>: <span class="hljs-number">0</span> &#125;);<br>      &#125;<br>    &#125;;<br><br>    <span class="hljs-comment">// canvas 导出（核心）</span><br>    <span class="hljs-keyword">const</span> getCropBlob = <span class="hljs-title function_">async</span> (): <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-title class_">Blob</span>&gt; =&gt; &#123;<br>      <span class="hljs-keyword">const</span> image = imgRef.<span class="hljs-property">current</span>;<br>      <span class="hljs-keyword">if</span> (!image || !completedCrop) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&quot;图片或裁剪区域不存在&quot;</span>);<br><br>      <span class="hljs-keyword">const</span> scaleX = image.<span class="hljs-property">naturalWidth</span> / image.<span class="hljs-property">width</span>;<br>      <span class="hljs-keyword">const</span> scaleY = image.<span class="hljs-property">naturalHeight</span> / image.<span class="hljs-property">height</span>;<br>      <span class="hljs-keyword">const</span> canvas = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">createElement</span>(<span class="hljs-string">&quot;canvas&quot;</span>);<br>      canvas.<span class="hljs-property">width</span> = completedCrop.<span class="hljs-property">width</span> * scaleX;<br>      canvas.<span class="hljs-property">height</span> = completedCrop.<span class="hljs-property">height</span> * scaleY;<br>      <span class="hljs-keyword">const</span> ctx = canvas.<span class="hljs-title function_">getContext</span>(<span class="hljs-string">&quot;2d&quot;</span>)!;<br><br>      ctx.<span class="hljs-title function_">drawImage</span>(<br>        image,<br>        completedCrop.<span class="hljs-property">x</span> * scaleX,<br>        completedCrop.<span class="hljs-property">y</span> * scaleY,<br>        completedCrop.<span class="hljs-property">width</span> * scaleX,<br>        completedCrop.<span class="hljs-property">height</span> * scaleY,<br>        <span class="hljs-number">0</span>,<br>        <span class="hljs-number">0</span>,<br>        canvas.<span class="hljs-property">width</span>,<br>        canvas.<span class="hljs-property">height</span>,<br>      );<br><br>      <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve</span>) =&gt;</span> canvas.<span class="hljs-title function_">toBlob</span>(resolve, <span class="hljs-string">&quot;image/png&quot;</span>));<br>    &#125;;<br><br>    <span class="hljs-title function_">useImperativeHandle</span>(ref, <span class="hljs-function">() =&gt;</span> (&#123; getCropBlob &#125;));<br><br>    <span class="hljs-keyword">return</span> (<br>      <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">ReactCrop</span></span></span><br><span class="hljs-tag"><span class="language-xml">        <span class="hljs-attr">crop</span>=<span class="hljs-string">&#123;crop&#125;</span></span></span><br><span class="hljs-tag"><span class="language-xml">        <span class="hljs-attr">onChange</span>=<span class="hljs-string">&#123;(_,</span> <span class="hljs-attr">percentCrop</span>) =&gt;</span> setCrop(percentCrop)&#125;</span><br><span class="language-xml">        onComplete=&#123;(c) =&gt; setCompletedCrop(c)&#125;</span><br><span class="language-xml">        aspect=&#123;aspect&#125;</span><br><span class="language-xml">        keepSelection</span><br><span class="language-xml">      &gt;</span><br><span class="language-xml">        <span class="hljs-tag">&lt;<span class="hljs-name">img</span></span></span><br><span class="hljs-tag"><span class="language-xml">          <span class="hljs-attr">ref</span>=<span class="hljs-string">&#123;imgRef&#125;</span></span></span><br><span class="hljs-tag"><span class="language-xml">          <span class="hljs-attr">src</span>=<span class="hljs-string">&#123;url&#125;</span></span></span><br><span class="hljs-tag"><span class="language-xml">          <span class="hljs-attr">onLoad</span>=<span class="hljs-string">&#123;onImageLoad&#125;</span></span></span><br><span class="hljs-tag"><span class="language-xml">          <span class="hljs-attr">crossOrigin</span>=<span class="hljs-string">&quot;anonymous&quot;</span></span></span><br><span class="hljs-tag"><span class="language-xml">        /&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;/<span class="hljs-name">ReactCrop</span>&gt;</span></span><br>    );<br>  &#125;,<br>);<br></code></pre></td></tr></table></figure>
+
+<h3 id="三个核心概念"><a href="#三个核心概念" class="headerlink" title="三个核心概念"></a>三个核心概念</h3><table>
+<thead>
+<tr>
+<th>概念</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>PercentCrop</code></td>
+<td>百分比坐标（<code>x: 0-100, width: 0-100</code>），跟随图片缩放自适应</td>
+</tr>
+<tr>
+<td><code>PixelCrop</code></td>
+<td>像素坐标，<code>onComplete</code> 回调返回的就是这个，<strong>canvas 导出用它</strong></td>
+</tr>
+<tr>
+<td><code>scaleX / scaleY</code></td>
+<td>图片 <code>naturalWidth / 当前 displayWidth</code>，把显示坐标映射回原图坐标</td>
+</tr>
+</tbody></table>
+<p><code>centerAspectCrop</code> 是个工具函数，让裁剪框按指定比例居中铺满图片：</p>
+<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-keyword">function</span> <span class="hljs-title function_">centerAspectCrop</span>(<span class="hljs-params"><span class="hljs-attr">mediaW</span>: <span class="hljs-built_in">number</span>, <span class="hljs-attr">mediaH</span>: <span class="hljs-built_in">number</span>, <span class="hljs-attr">aspect</span>: <span class="hljs-built_in">number</span></span>) &#123;<br>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">centerCrop</span>(<br>    <span class="hljs-title function_">makeAspectCrop</span>(&#123; <span class="hljs-attr">unit</span>: <span class="hljs-string">&quot;%&quot;</span>, <span class="hljs-attr">width</span>: <span class="hljs-number">100</span> &#125;, aspect, mediaW, mediaH),<br>    mediaW,<br>    mediaH,<br>  );<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="一个容易忽略的点"><a href="#一个容易忽略的点" class="headerlink" title="一个容易忽略的点"></a>一个容易忽略的点</h3><p><strong>react-image-crop 的类型需要 <code>import type</code></strong>。<code>PercentCrop</code>、<code>PixelCrop</code>、<code>ReactCropProps</code> 都是 TypeScript interface，编译后不存在。如果用普通 <code>import</code>，ESM 构建时会报错 “does not provide an export named XXX”。</p>
+<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-comment">// ✅ 正确</span><br><span class="hljs-keyword">import</span> <span class="hljs-title class_">ReactCrop</span>, &#123; centerCrop, makeAspectCrop &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;react-image-crop&quot;</span>;<br><span class="hljs-keyword">import</span> <span class="hljs-keyword">type</span> &#123; <span class="hljs-title class_">PercentCrop</span>, <span class="hljs-title class_">PixelCrop</span>, <span class="hljs-title class_">ReactCropProps</span> &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;react-image-crop&quot;</span>;<br><br><span class="hljs-comment">// ❌ 错误</span><br><span class="hljs-keyword">import</span> <span class="hljs-title class_">ReactCrop</span>, &#123; <span class="hljs-title class_">PercentCrop</span>, <span class="hljs-title class_">PixelCrop</span> &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;react-image-crop&quot;</span>;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="二、第一个坑：大图撑爆容器"><a href="#二、第一个坑：大图撑爆容器" class="headerlink" title="二、第一个坑：大图撑爆容器"></a>二、第一个坑：大图撑爆容器</h2><p>直接渲染 <code>&lt;img&gt;</code>，大图会把容器撑爆。你可能会想用 CSS <code>max-width: 100%</code>——但图片的显示尺寸变了，裁剪框是跟着 <code>&lt;img&gt;</code> 的实际渲染尺寸来的，ReactCrop 内部会读 <code>&lt;img&gt;</code> 的 <code>clientWidth/clientHeight</code>。</p>
+<p><strong>CSS 缩放是能生效的</strong>，但真正的问题是：父容器如果有固定高度约束，或者全局有 <code>overflow: hidden</code>，图片会被截断，裁剪框可能只在可见区域的一部分。</p>
+<h3 id="方案：JS-实现-object-fit-contain"><a href="#方案：JS-实现-object-fit-contain" class="headerlink" title="方案：JS 实现 object-fit: contain"></a>方案：JS 实现 object-fit: contain</h3><figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-keyword">const</span> <span class="hljs-title function_">computeConstrainedSize</span> = (<span class="hljs-params"></span><br><span class="hljs-params">  <span class="hljs-attr">naturalW</span>: <span class="hljs-built_in">number</span>,</span><br><span class="hljs-params">  <span class="hljs-attr">naturalH</span>: <span class="hljs-built_in">number</span>,</span><br><span class="hljs-params">  <span class="hljs-attr">container</span>: <span class="hljs-title class_">HTMLElement</span>,</span><br><span class="hljs-params"></span>) =&gt; &#123;<br>  <span class="hljs-keyword">let</span> width = naturalW;<br>  <span class="hljs-keyword">let</span> height = naturalH;<br><br>  <span class="hljs-comment">// 宽度约束</span><br>  <span class="hljs-keyword">if</span> (container.<span class="hljs-property">clientWidth</span> &gt; <span class="hljs-number">0</span> &amp;&amp; width &gt; container.<span class="hljs-property">clientWidth</span>) &#123;<br>    width = container.<span class="hljs-property">clientWidth</span>;<br>    height = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">round</span>((naturalH / naturalW) * width);<br>  &#125;<br>  <span class="hljs-comment">// 高度约束（双向！不能用 if-else）</span><br>  <span class="hljs-keyword">if</span> (container.<span class="hljs-property">clientHeight</span> &gt; <span class="hljs-number">0</span> &amp;&amp; height &gt; container.<span class="hljs-property">clientHeight</span>) &#123;<br>    height = container.<span class="hljs-property">clientHeight</span>;<br>    width = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">round</span>((naturalW / naturalH) * height);<br>  &#125;<br>  <span class="hljs-keyword">return</span> &#123; width, height &#125;;<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<p><strong>两次 <code>if</code> 而非 <code>if-else</code> 是关键</strong>：一张极宽的横图，按宽度缩完后高度可能还是超，必须再检查一遍。这就是 CSS <code>object-fit: contain</code> 的语义——<strong>宽高双向约束，保持比例</strong>。</p>
+<p>调用时机：</p>
+<ul>
+<li><code>onImageLoad</code>（图片首次加载后）</li>
+<li><code>useLayoutEffect</code>（src &#x2F; aspect 变化后）</li>
+<li><code>resize</code> 监听（窗口尺寸变化后）</li>
+</ul>
+<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-keyword">const</span> containerRef = useRef&lt;<span class="hljs-title class_">HTMLDivElement</span>&gt;(<span class="hljs-literal">null</span>);<br><br><span class="hljs-comment">// 图片加载完成的初始化：</span><br><span class="hljs-comment">// - 计算受约束的显示尺寸</span><br><span class="hljs-keyword">const</span> <span class="hljs-title function_">onImageLoad</span> = (<span class="hljs-params"><span class="hljs-attr">e</span>: <span class="hljs-title class_">React</span>.<span class="hljs-title class_">SyntheticEvent</span>&lt;<span class="hljs-title class_">HTMLImageElement</span>&gt;</span>) =&gt; &#123;<br>  <span class="hljs-keyword">const</span> &#123; naturalWidth, naturalHeight &#125; = e.<span class="hljs-property">currentTarget</span>;<br>  <span class="hljs-keyword">const</span> container = containerRef.<span class="hljs-property">current</span>;<br>  <span class="hljs-keyword">if</span> (!container) <span class="hljs-keyword">return</span>;<br>  <span class="hljs-keyword">const</span> constrained = <span class="hljs-title function_">computeConstrainedSize</span>(<br>    naturalWidth,<br>    naturalHeight,<br>    container,<br>  );<br>  <span class="hljs-title function_">setImageDisplaySize</span>(constrained);<br>  <span class="hljs-comment">// ...设置初始裁剪框</span><br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<h3 id="显示尺寸状态"><a href="#显示尺寸状态" class="headerlink" title="显示尺寸状态"></a>显示尺寸状态</h3><p><code>computeConstrainedSize</code> 的结果存到 <code>imageDisplaySize</code> 状态里：</p>
+<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-keyword">const</span> [imageDisplaySize, setImageDisplaySize] = useState&lt;&#123;<br>  <span class="hljs-attr">width</span>: <span class="hljs-built_in">number</span>;<br>  <span class="hljs-attr">height</span>: <span class="hljs-built_in">number</span>;<br>&#125;&gt;(&#123;<br>  <span class="hljs-attr">width</span>: <span class="hljs-number">0</span>,<br>  <span class="hljs-attr">height</span>: <span class="hljs-number">0</span>,<br>&#125;);<br></code></pre></td></tr></table></figure>
+
+<p>组件内部常解构为 <code>displayW</code> &#x2F; <code>displayH</code> 方便使用：</p>
+<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-keyword">const</span> displayW = imageDisplaySize.<span class="hljs-property">width</span>;<br><span class="hljs-keyword">const</span> displayH = imageDisplaySize.<span class="hljs-property">height</span>;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="三、进阶一：缩放功能"><a href="#三、进阶一：缩放功能" class="headerlink" title="三、进阶一：缩放功能"></a>三、进阶一：缩放功能</h2><p>加一个 Slider 控制 <code>zoomScale</code>，用 CSS <code>transform: scale()</code> 实现视觉缩放。</p>
+<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-keyword">const</span> [zoomScale, setZoomScale] = <span class="hljs-title function_">useState</span>(<span class="hljs-number">1</span>)<br><br><span class="hljs-comment">// img 的 style 里加：</span><br><span class="hljs-attr">transform</span>: <span class="hljs-string">`scale(<span class="hljs-subst">$&#123;zoomScale&#125;</span>)`</span>,<br><span class="hljs-attr">transformOrigin</span>: <span class="hljs-string">&#x27;center center&#x27;</span>,<br></code></pre></td></tr></table></figure>
+
+<h3 id="但-scale-有两个问题"><a href="#但-scale-有两个问题" class="headerlink" title="但 scale 有两个问题"></a>但 scale 有两个问题</h3><p><strong>问题 1：scale 只是视觉放大，不改变元素的布局尺寸</strong>。<code>width/height</code> 还是原来的 <code>displayW/displayH</code>，但视觉上图片比容器大了。裁剪框锚定在图片上，现在只能看到图片中心的一部分。</p>
+<p><strong>问题 2：放大后怎么移动图片？</strong> 用户需要”拖动”图片来查看裁剪区域的不同部分。</p>
+<p>这就是下一节 panOffset 要解决的问题。</p>
+<hr>
+<h2 id="四、进阶二：PanOffset-平移系统"><a href="#四、进阶二：PanOffset-平移系统" class="headerlink" title="四、进阶二：PanOffset 平移系统"></a>四、进阶二：PanOffset 平移系统</h2><h3 id="核心思路"><a href="#核心思路" class="headerlink" title="核心思路"></a>核心思路</h3><p>给 <code>&lt;img&gt;</code> 加一个 <code>translate(x, y)</code>，和 <code>scale</code> 组合：</p>
+<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-attr">transform</span>: <span class="hljs-string">`translate(<span class="hljs-subst">$&#123;panOffset.x&#125;</span>px, <span class="hljs-subst">$&#123;panOffset.y&#125;</span>px) scale(<span class="hljs-subst">$&#123;zoomScale&#125;</span>)`</span>,<br><span class="hljs-attr">transformOrigin</span>: <span class="hljs-string">&#x27;center center&#x27;</span>,<br></code></pre></td></tr></table></figure>
+
+<h3 id="状态-边界约束"><a href="#状态-边界约束" class="headerlink" title="状态 &amp; 边界约束"></a>状态 &amp; 边界约束</h3><figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-keyword">const</span> [panOffset, setPanOffset] = useState&lt;&#123; <span class="hljs-attr">x</span>: <span class="hljs-built_in">number</span>; <span class="hljs-attr">y</span>: <span class="hljs-built_in">number</span> &#125;&gt;(&#123;<br>  <span class="hljs-attr">x</span>: <span class="hljs-number">0</span>,<br>  <span class="hljs-attr">y</span>: <span class="hljs-number">0</span>,<br>&#125;);<br><br><span class="hljs-keyword">const</span> <span class="hljs-title function_">clampPanOffset</span> = (<span class="hljs-params"><span class="hljs-attr">offset</span>: &#123; x: <span class="hljs-built_in">number</span>; y: <span class="hljs-built_in">number</span> &#125;</span>) =&gt; &#123;<br>  <span class="hljs-keyword">if</span> (zoomScale &lt;= <span class="hljs-number">1</span>) <span class="hljs-keyword">return</span> offset; <span class="hljs-comment">// 没放大不需要平移</span><br>  <span class="hljs-keyword">const</span> scaledW = imageDisplaySize.<span class="hljs-property">width</span> * zoomScale;<br>  <span class="hljs-keyword">const</span> scaledH = imageDisplaySize.<span class="hljs-property">height</span> * zoomScale;<br>  <span class="hljs-comment">// 图片比容器多出的部分的一半</span><br>  <span class="hljs-keyword">const</span> maxPanX = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">max</span>(<span class="hljs-number">0</span>, (scaledW - imageDisplaySize.<span class="hljs-property">width</span>) / <span class="hljs-number">2</span>);<br>  <span class="hljs-keyword">const</span> maxPanY = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">max</span>(<span class="hljs-number">0</span>, (scaledH - imageDisplaySize.<span class="hljs-property">height</span>) / <span class="hljs-number">2</span>);<br>  <span class="hljs-keyword">return</span> &#123;<br>    <span class="hljs-attr">x</span>: <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">max</span>(-maxPanX, <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">min</span>(maxPanX, offset.<span class="hljs-property">x</span>)),<br>    <span class="hljs-attr">y</span>: <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">max</span>(-maxPanY, <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">min</span>(maxPanY, offset.<span class="hljs-property">y</span>)),<br>  &#125;;<br>&#125;;<br><br><span class="hljs-comment">// 缩放级别变化时重置平移基准</span><br><span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>  <span class="hljs-title function_">setPanOffset</span>(&#123; <span class="hljs-attr">x</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">y</span>: <span class="hljs-number">0</span> &#125;);<br>&#125;, [zoomScale]);<br></code></pre></td></tr></table></figure>
+
+<p>clamp 的核心逻辑：放大后图片比容器多出的部分（比如 <code>scaledW - displayW</code>），图片最多能往那个方向移动一半——保证容器内始终有图片覆盖，不会拖出空白。</p>
+<h3 id="Pointer-Events-实现拖动"><a href="#Pointer-Events-实现拖动" class="headerlink" title="Pointer Events 实现拖动"></a>Pointer Events 实现拖动</h3><p><strong>不要用 <code>mousedown/mousemove</code>，要用 Pointer Events</strong>——同时支持鼠标和触屏，更健壮。</p>
+<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-keyword">const</span> isPanningRef = <span class="hljs-title function_">useRef</span>(<span class="hljs-literal">false</span>);<br><span class="hljs-keyword">const</span> lastPanPosRef = useRef&lt;&#123; <span class="hljs-attr">x</span>: <span class="hljs-built_in">number</span>; <span class="hljs-attr">y</span>: <span class="hljs-built_in">number</span> &#125;&gt;(&#123; <span class="hljs-attr">x</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">y</span>: <span class="hljs-number">0</span> &#125;);<br><br><span class="hljs-keyword">const</span> <span class="hljs-title function_">handleImgPointerDown</span> = (<span class="hljs-params"><span class="hljs-attr">e</span>: <span class="hljs-title class_">React</span>.<span class="hljs-title class_">PointerEvent</span>&lt;<span class="hljs-title class_">HTMLImageElement</span>&gt;</span>) =&gt; &#123;<br>  <span class="hljs-keyword">if</span> (zoomScale &lt;= <span class="hljs-number">1</span>) <span class="hljs-keyword">return</span>;<br>  e.<span class="hljs-title function_">stopPropagation</span>();<br>  isPanningRef.<span class="hljs-property">current</span> = <span class="hljs-literal">true</span>;<br>  lastPanPosRef.<span class="hljs-property">current</span> = &#123; <span class="hljs-attr">x</span>: e.<span class="hljs-property">clientX</span>, <span class="hljs-attr">y</span>: e.<span class="hljs-property">clientY</span> &#125;;<br>  <span class="hljs-comment">// 关键：捕获指针，防止拖出元素后丢失事件</span><br>  (e.<span class="hljs-property">target</span> <span class="hljs-keyword">as</span> <span class="hljs-title class_">HTMLElement</span>).<span class="hljs-property">setPointerCapture</span>?.(e.<span class="hljs-property">pointerId</span>);<br>&#125;;<br><br><span class="hljs-keyword">const</span> <span class="hljs-title function_">handleImgPointerMove</span> = (<span class="hljs-params"><span class="hljs-attr">e</span>: <span class="hljs-title class_">React</span>.<span class="hljs-title class_">PointerEvent</span>&lt;<span class="hljs-title class_">HTMLImageElement</span>&gt;</span>) =&gt; &#123;<br>  <span class="hljs-keyword">if</span> (!isPanningRef.<span class="hljs-property">current</span>) <span class="hljs-keyword">return</span>;<br>  e.<span class="hljs-title function_">stopPropagation</span>();<br>  <span class="hljs-keyword">const</span> dx = e.<span class="hljs-property">clientX</span> - lastPanPosRef.<span class="hljs-property">current</span>.<span class="hljs-property">x</span>;<br>  <span class="hljs-keyword">const</span> dy = e.<span class="hljs-property">clientY</span> - lastPanPosRef.<span class="hljs-property">current</span>.<span class="hljs-property">y</span>;<br>  lastPanPosRef.<span class="hljs-property">current</span> = &#123; <span class="hljs-attr">x</span>: e.<span class="hljs-property">clientX</span>, <span class="hljs-attr">y</span>: e.<span class="hljs-property">clientY</span> &#125;;<br>  <span class="hljs-title function_">setPanOffset</span>(<span class="hljs-function">(<span class="hljs-params">prev</span>) =&gt;</span> <span class="hljs-title function_">clampPanOffset</span>(&#123; <span class="hljs-attr">x</span>: prev.<span class="hljs-property">x</span> + dx, <span class="hljs-attr">y</span>: prev.<span class="hljs-property">y</span> + dy &#125;));<br>&#125;;<br><br><span class="hljs-keyword">const</span> <span class="hljs-title function_">handleImgPointerUp</span> = (<span class="hljs-params"><span class="hljs-attr">e</span>: <span class="hljs-title class_">React</span>.<span class="hljs-title class_">PointerEvent</span>&lt;<span class="hljs-title class_">HTMLImageElement</span>&gt;</span>) =&gt; &#123;<br>  isPanningRef.<span class="hljs-property">current</span> = <span class="hljs-literal">false</span>;<br>  (e.<span class="hljs-property">target</span> <span class="hljs-keyword">as</span> <span class="hljs-title class_">HTMLElement</span>).<span class="hljs-property">releasePointerCapture</span>?.(e.<span class="hljs-property">pointerId</span>);<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<p>Pointer Events 还有个好处：系统会自动处理触摸滑动和滚动的冲突，你不需要自己判断 <code>preventDefault</code>。</p>
+<hr>
+<h2 id="五、进阶三：事件分层"><a href="#五、进阶三：事件分层" class="headerlink" title="五、进阶三：事件分层"></a>五、进阶三：事件分层</h2><p>你可能会担心：裁剪框自己也能拖动，会不会和图片平移冲突？</p>
+<p><strong>答案是不会。</strong> ReactCrop 的事件处理天然分层：</p>
+<table>
+<thead>
+<tr>
+<th>点击位置</th>
+<th>事件去向</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>裁剪框内部</td>
+<td>ReactCrop 优先处理 → 创建&#x2F;移动裁剪框</td>
+</tr>
+<tr>
+<td>裁剪框外部（图片其他部分）</td>
+<td>事件冒泡到 <code>&lt;img&gt;</code> → 触发平移</td>
+</tr>
+</tbody></table>
+<p>ReactCrop 内部在 <code>keepSelection</code> 为 <code>true</code> 且已有裁剪框时，点击外部区域不会创建新框，事件直接冒泡。<strong>两套 handler 天然共存，不需要手动 <code>disabled</code> 任何一方</strong>。</p>
+<blockquote>
+<p>我曾在迭代中走过弯路：为了防止冲突加了 <code>disabled={zoomActive}</code>，结果放大后裁剪框完全拖不动。后来删掉 disabled，发现事件天然分层。这是一次典型的”手动解决了不存在的问题”。</p>
+</blockquote>
+<hr>
+<h2 id="六、进阶四：Canvas-导出（缩放-平移修正）"><a href="#六、进阶四：Canvas-导出（缩放-平移修正）" class="headerlink" title="六、进阶四：Canvas 导出（缩放+平移修正）"></a>六、进阶四：Canvas 导出（缩放+平移修正）</h2><p>这是最容易翻车的环节。<code>scale</code> 和 <code>translate</code> 只是 CSS 视觉效果，canvas 一无所知——你必须手动把 panOffset 和 zoomScale 纳入坐标计算。</p>
+<h3 id="坐标映射原理"><a href="#坐标映射原理" class="headerlink" title="坐标映射原理"></a>坐标映射原理</h3><p>先理清坐标系：</p>
+<figure class="highlight isbl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs isbl">┌─────────────────┐  容器（等于 <span class="hljs-variable">displayW</span> × <span class="hljs-variable">displayH</span>）<br>│  ┌───────────┐  │<br>│  │   裁剪框   │  │  <span class="hljs-variable">PixelCrop</span> 坐标 = 相对容器的像素<br>│  └───────────┘  │<br>│                 │<br>│  ┌──────────────┼──────────────┐<br>│  │    缩放后图片（视觉上比容器大）│ ← <span class="hljs-function"><span class="hljs-title">scale</span>(<span class="hljs-variable">zoomScale</span>) + <span class="hljs-title">translate</span>(<span class="hljs-variable">panOffset</span>)</span><br>│  └──────────────┼──────────────┘<br>└─────────────────┘<br></code></pre></td></tr></table></figure>
+
+<p>图片在容器中的起始位置：</p>
+<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-keyword">const</span> scaledW = imageDisplayWidth * zoomScale; <span class="hljs-comment">// 缩放后图片的宽度</span><br><span class="hljs-keyword">const</span> scaledH = imageDisplayHeight * zoomScale; <span class="hljs-comment">// 缩放后图片的高度</span><br><br><span class="hljs-comment">// scale 以 center 为原点，所以基准偏移是 (display - scaled) / 2</span><br><span class="hljs-comment">// 再加上用户的 panOffset</span><br><span class="hljs-keyword">const</span> offsetX = (imageDisplayWidth - scaledW) / <span class="hljs-number">2</span> + panOffset.<span class="hljs-property">x</span>; <span class="hljs-comment">// 缩放后图片左上角的 x</span><br><span class="hljs-keyword">const</span> offsetY = (imageDisplayHeight - scaledH) / <span class="hljs-number">2</span> + panOffset.<span class="hljs-property">y</span>; <span class="hljs-comment">// 缩放后图片左上角的 y</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="交集计算的必要性"><a href="#交集计算的必要性" class="headerlink" title="交集计算的必要性"></a>交集计算的必要性</h3><p>放大 + 平移后，<strong>裁剪框的部分区域可能已经超出图片范围</strong>。比如向右拖了很多，裁剪框的左半部分是容器的白色背景，右半部分是图片。交集计算就是为了只绘制”既在裁剪框内又在图片内”的那块。</p>
+<h3 id="完整的-drawToCanvas"><a href="#完整的-drawToCanvas" class="headerlink" title="完整的 drawToCanvas"></a>完整的 drawToCanvas</h3><figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-keyword">function</span> <span class="hljs-title function_">drawToCanvas</span>(<span class="hljs-params">&#123;</span><br><span class="hljs-params">  image,</span><br><span class="hljs-params">  crop,</span><br><span class="hljs-params">  canvasWidth,</span><br><span class="hljs-params">  canvasHeight,</span><br><span class="hljs-params">  zoomScale,</span><br><span class="hljs-params">  zoomEnabled,</span><br><span class="hljs-params">  imageDisplayWidth,</span><br><span class="hljs-params">  imageDisplayHeight,</span><br><span class="hljs-params">  panOffset,</span><br><span class="hljs-params">&#125;</span>) &#123;<br>  <span class="hljs-keyword">const</span> canvas = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">createElement</span>(<span class="hljs-string">&quot;canvas&quot;</span>);<br>  canvas.<span class="hljs-property">width</span> = canvasWidth;<br>  canvas.<span class="hljs-property">height</span> = canvasHeight;<br>  <span class="hljs-keyword">const</span> ctx = canvas.<span class="hljs-title function_">getContext</span>(<span class="hljs-string">&quot;2d&quot;</span>)!;<br><br>  ctx.<span class="hljs-property">fillStyle</span> = <span class="hljs-string">&quot;#ffffff&quot;</span>;<br>  ctx.<span class="hljs-title function_">fillRect</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, canvasWidth, canvasHeight);<br><br>  <span class="hljs-keyword">const</span> scaledW = imageDisplayWidth * zoomScale;<br>  <span class="hljs-keyword">const</span> scaledH = imageDisplayHeight * zoomScale;<br>  <span class="hljs-keyword">const</span> offsetX = (imageDisplayWidth - scaledW) / <span class="hljs-number">2</span> + panOffset.<span class="hljs-property">x</span>;<br>  <span class="hljs-keyword">const</span> offsetY = (imageDisplayHeight - scaledH) / <span class="hljs-number">2</span> + panOffset.<span class="hljs-property">y</span>;<br><br>  <span class="hljs-keyword">const</span> imgStartX = offsetX;<br>  <span class="hljs-keyword">const</span> imgEndX = offsetX + scaledW;<br>  <span class="hljs-keyword">const</span> imgStartY = offsetY;<br>  <span class="hljs-keyword">const</span> imgEndY = offsetY + scaledH;<br><br>  <span class="hljs-comment">// 计算 原图 / img元素显示的大小 比例</span><br>  <span class="hljs-keyword">const</span> scaleX = image.<span class="hljs-property">naturalWidth</span> / imageDisplayWidth;<br>  <span class="hljs-keyword">const</span> scaleY = image.<span class="hljs-property">naturalHeight</span> / imageDisplayHeight;<br><br>  <span class="hljs-comment">// 交集计算（裁剪框 和 缩放图 的交集）</span><br>  <span class="hljs-keyword">const</span> interSx = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">max</span>(crop.<span class="hljs-property">x</span>, imgStartX);<br>  <span class="hljs-keyword">const</span> interEx = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">min</span>(crop.<span class="hljs-property">x</span> + crop.<span class="hljs-property">width</span>, imgEndX);<br>  <span class="hljs-keyword">const</span> interSy = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">max</span>(crop.<span class="hljs-property">y</span>, imgStartY);<br>  <span class="hljs-keyword">const</span> interEy = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">min</span>(crop.<span class="hljs-property">y</span> + crop.<span class="hljs-property">height</span>, imgEndY);<br><br>  <span class="hljs-keyword">if</span> (interSx &gt;= interEx || interSy &gt;= interEy) <span class="hljs-keyword">return</span> canvas;<br><br>  <span class="hljs-comment">// 交集 → 原图坐标</span><br>  <span class="hljs-keyword">const</span> sourceX = ((interSx - offsetX) / zoomScale) * scaleX;<br>  <span class="hljs-keyword">const</span> sourceY = ((interSy - offsetY) / zoomScale) * scaleY;<br>  <span class="hljs-keyword">const</span> sourceW = ((interEx - interSx) / zoomScale) * scaleX;<br>  <span class="hljs-keyword">const</span> sourceH = ((interEy - interSy) / zoomScale) * scaleY;<br><br>  <span class="hljs-comment">// 交集 → canvas 坐标</span><br>  <span class="hljs-keyword">const</span> relativeX = interSx - crop.<span class="hljs-property">x</span>;<br>  <span class="hljs-keyword">const</span> relativeY = interSy - crop.<span class="hljs-property">y</span>;<br>  <span class="hljs-keyword">const</span> destX = (relativeX / crop.<span class="hljs-property">width</span>) * canvasWidth;<br>  <span class="hljs-keyword">const</span> destY = (relativeY / crop.<span class="hljs-property">height</span>) * canvasHeight;<br>  <span class="hljs-keyword">const</span> destW = ((interEx - interSx) / crop.<span class="hljs-property">width</span>) * canvasWidth;<br>  <span class="hljs-keyword">const</span> destH = ((interEy - interSy) / crop.<span class="hljs-property">height</span>) * canvasHeight;<br><br>  ctx.<span class="hljs-title function_">drawImage</span>(<br>    image,<br>    <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">round</span>(sourceX),<br>    <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">round</span>(sourceY),<br>    <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">round</span>(sourceW),<br>    <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">round</span>(sourceH),<br>    <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">round</span>(destX),<br>    <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">round</span>(destY),<br>    <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">round</span>(destW),<br>    <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">round</span>(destH),<br>  );<br><br>  <span class="hljs-keyword">return</span> canvas;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>整个 panOffset 从 <code>useImperativeHandle</code> → <code>generateCropImage</code> → <code>drawToCanvas</code> 一路透传，保证链路完整。导出的图就是用户在裁剪框里<strong>实际看到的那块</strong>，而非图片中心。</p>
+<h3 id="性能优化：OffscreenCanvas"><a href="#性能优化：OffscreenCanvas" class="headerlink" title="性能优化：OffscreenCanvas"></a>性能优化：OffscreenCanvas</h3><p>生产环境中可以用 <code>OffscreenCanvas</code> 替代 <code>document.createElement(&#39;canvas&#39;)</code>——它完全脱离 DOM，绘制更快，还支持 Web Worker。</p>
+<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-keyword">const</span> offscreen = <span class="hljs-keyword">new</span> <span class="hljs-title class_">OffscreenCanvas</span>(canvasWidth, canvasHeight);<br><span class="hljs-keyword">const</span> ctx = offscreen.<span class="hljs-title function_">getContext</span>(<span class="hljs-string">&quot;2d&quot;</span>)!;<br><span class="hljs-comment">// ... 同样的绘制逻辑 ...</span><br><span class="hljs-keyword">return</span> offscreen; <span class="hljs-comment">// 后续用 offscreen.convertToBlob()</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="七、收尾：Flex-布局让一切顺滑"><a href="#七、收尾：Flex-布局让一切顺滑" class="headerlink" title="七、收尾：Flex 布局让一切顺滑"></a>七、收尾：Flex 布局让一切顺滑</h2><p>把裁剪区和 Slider 作为 Flex 兄弟节点，让裁剪区自动拿到 Slider 之外的剩余空间：</p>
+<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-comment">// 父容器必须有固定高度，比如 h-[80vh]</span><br>&lt;div className=<span class="hljs-string">&quot;flex flex-col h-[80vh]&quot;</span>&gt;<br>  &#123;<span class="hljs-comment">/* 裁剪区：flex-1 min-h-0 拿到剩余空间 */</span>&#125;<br>  &lt;div<br>    ref=&#123;containerRef&#125;<br>    className=<span class="hljs-string">&quot;flex-1 min-h-0 flex items-center justify-center&quot;</span><br>  &gt;<br>    &#123;<span class="hljs-comment">/* ReactCrop + img */</span>&#125;<br>  &lt;/div&gt;<br>  &#123;<span class="hljs-comment">/* Slider：内容高度自适应 */</span>&#125;<br>  &lt;div className=<span class="hljs-string">&quot;mt-4&quot;</span>&gt;<br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">Slider</span></span></span><br><span class="hljs-tag"><span class="language-xml">      <span class="hljs-attr">min</span>=<span class="hljs-string">&#123;0.1&#125;</span></span></span><br><span class="hljs-tag"><span class="language-xml">      <span class="hljs-attr">max</span>=<span class="hljs-string">&#123;3&#125;</span></span></span><br><span class="hljs-tag"><span class="language-xml">      <span class="hljs-attr">step</span>=<span class="hljs-string">&#123;0.01&#125;</span></span></span><br><span class="hljs-tag"><span class="language-xml">      <span class="hljs-attr">value</span>=<span class="hljs-string">&#123;zoomScale&#125;</span></span></span><br><span class="hljs-tag"><span class="language-xml">      <span class="hljs-attr">onChange</span>=<span class="hljs-string">&#123;setZoomScale&#125;</span></span></span><br><span class="hljs-tag"><span class="language-xml">    /&gt;</span></span><br>  &lt;/div&gt;<br>&lt;/div&gt;<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong><code>min-h-0</code> 是 Flex 布局中最容易被忽略的细节</strong>。Flex 子项默认 <code>min-height: auto</code>，内容不会收缩到比自身更小。加上 <code>min-h-0</code> 才能让这个 div 被真正压缩到 Slider 之外的剩余高度，让 <code>containerRef.clientHeight</code> 返回准确值。</p>
+</blockquote>
+<p>为什么不能用一个 <code>&lt;div&gt;</code> 把两者包在一起？那样 <code>computeConstrainedSize</code> 读到的是包含 Slider 的父容器高度，图片会被计算得过高。<strong>拆分后，containerRef div 的 clientHeight 就是图片能用到的真实高度</strong>。</p>
+<hr>
+<h2 id="八、完整代码"><a href="#八、完整代码" class="headerlink" title="八、完整代码"></a>八、完整代码</h2><p>以下是整合后的完整 ImageCropper 组件：</p>
+<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br><span class="line">360</span><br><span class="line">361</span><br><span class="line">362</span><br><span class="line">363</span><br><span class="line">364</span><br><span class="line">365</span><br><span class="line">366</span><br><span class="line">367</span><br><span class="line">368</span><br><span class="line">369</span><br><span class="line">370</span><br><span class="line">371</span><br><span class="line">372</span><br><span class="line">373</span><br><span class="line">374</span><br><span class="line">375</span><br><span class="line">376</span><br><span class="line">377</span><br><span class="line">378</span><br><span class="line">379</span><br><span class="line">380</span><br><span class="line">381</span><br><span class="line">382</span><br><span class="line">383</span><br><span class="line">384</span><br><span class="line">385</span><br><span class="line">386</span><br><span class="line">387</span><br><span class="line">388</span><br><span class="line">389</span><br><span class="line">390</span><br><span class="line">391</span><br><span class="line">392</span><br><span class="line">393</span><br><span class="line">394</span><br><span class="line">395</span><br><span class="line">396</span><br><span class="line">397</span><br><span class="line">398</span><br><span class="line">399</span><br><span class="line">400</span><br><span class="line">401</span><br><span class="line">402</span><br><span class="line">403</span><br><span class="line">404</span><br><span class="line">405</span><br><span class="line">406</span><br><span class="line">407</span><br><span class="line">408</span><br><span class="line">409</span><br><span class="line">410</span><br><span class="line">411</span><br><span class="line">412</span><br><span class="line">413</span><br><span class="line">414</span><br><span class="line">415</span><br><span class="line">416</span><br><span class="line">417</span><br><span class="line">418</span><br><span class="line">419</span><br><span class="line">420</span><br><span class="line">421</span><br><span class="line">422</span><br><span class="line">423</span><br><span class="line">424</span><br><span class="line">425</span><br><span class="line">426</span><br><span class="line">427</span><br><span class="line">428</span><br><span class="line">429</span><br><span class="line">430</span><br><span class="line">431</span><br><span class="line">432</span><br><span class="line">433</span><br><span class="line">434</span><br><span class="line">435</span><br><span class="line">436</span><br><span class="line">437</span><br><span class="line">438</span><br><span class="line">439</span><br><span class="line">440</span><br><span class="line">441</span><br><span class="line">442</span><br><span class="line">443</span><br><span class="line">444</span><br><span class="line">445</span><br><span class="line">446</span><br><span class="line">447</span><br><span class="line">448</span><br><span class="line">449</span><br><span class="line">450</span><br><span class="line">451</span><br><span class="line">452</span><br><span class="line">453</span><br><span class="line">454</span><br><span class="line">455</span><br><span class="line">456</span><br><span class="line">457</span><br><span class="line">458</span><br><span class="line">459</span><br><span class="line">460</span><br><span class="line">461</span><br><span class="line">462</span><br><span class="line">463</span><br><span class="line">464</span><br><span class="line">465</span><br><span class="line">466</span><br><span class="line">467</span><br><span class="line">468</span><br><span class="line">469</span><br><span class="line">470</span><br><span class="line">471</span><br><span class="line">472</span><br><span class="line">473</span><br><span class="line">474</span><br><span class="line">475</span><br><span class="line">476</span><br><span class="line">477</span><br><span class="line">478</span><br><span class="line">479</span><br><span class="line">480</span><br><span class="line">481</span><br><span class="line">482</span><br><span class="line">483</span><br><span class="line">484</span><br><span class="line">485</span><br><span class="line">486</span><br><span class="line">487</span><br><span class="line">488</span><br><span class="line">489</span><br><span class="line">490</span><br><span class="line">491</span><br><span class="line">492</span><br><span class="line">493</span><br><span class="line">494</span><br><span class="line">495</span><br><span class="line">496</span><br><span class="line">497</span><br><span class="line">498</span><br><span class="line">499</span><br><span class="line">500</span><br><span class="line">501</span><br><span class="line">502</span><br><span class="line">503</span><br><span class="line">504</span><br><span class="line">505</span><br><span class="line">506</span><br><span class="line">507</span><br><span class="line">508</span><br><span class="line">509</span><br><span class="line">510</span><br><span class="line">511</span><br><span class="line">512</span><br><span class="line">513</span><br><span class="line">514</span><br><span class="line">515</span><br><span class="line">516</span><br><span class="line">517</span><br><span class="line">518</span><br><span class="line">519</span><br><span class="line">520</span><br><span class="line">521</span><br><span class="line">522</span><br><span class="line">523</span><br><span class="line">524</span><br><span class="line">525</span><br><span class="line">526</span><br><span class="line">527</span><br><span class="line">528</span><br><span class="line">529</span><br><span class="line">530</span><br><span class="line">531</span><br><span class="line">532</span><br><span class="line">533</span><br><span class="line">534</span><br><span class="line">535</span><br><span class="line">536</span><br><span class="line">537</span><br><span class="line">538</span><br><span class="line">539</span><br><span class="line">540</span><br><span class="line">541</span><br><span class="line">542</span><br><span class="line">543</span><br><span class="line">544</span><br><span class="line">545</span><br><span class="line">546</span><br><span class="line">547</span><br><span class="line">548</span><br><span class="line">549</span><br><span class="line">550</span><br><span class="line">551</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-keyword">import</span> <span class="hljs-title class_">React</span>, &#123;<br>  forwardRef,<br>  useEffect,<br>  useImperativeHandle,<br>  useLayoutEffect,<br>  useRef,<br>  useState,<br>&#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;react&quot;</span>;<br><span class="hljs-keyword">import</span> <span class="hljs-title class_">ReactCrop</span>, &#123; centerCrop, makeAspectCrop &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;react-image-crop&quot;</span>;<br><span class="hljs-keyword">import</span> <span class="hljs-keyword">type</span> &#123; <span class="hljs-title class_">PercentCrop</span>, <span class="hljs-title class_">PixelCrop</span>, <span class="hljs-title class_">ReactCropProps</span> &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;react-image-crop&quot;</span>;<br><span class="hljs-keyword">import</span> &#123; <span class="hljs-title class_">Form</span>, <span class="hljs-title class_">Slider</span> &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;antd&quot;</span>;<br><span class="hljs-keyword">import</span> <span class="hljs-string">&quot;react-image-crop/src/ReactCrop.scss&quot;</span>;<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">ExportConfig</span> &#123;<br>  <span class="hljs-attr">format</span>?: <span class="hljs-string">&quot;image/png&quot;</span> | <span class="hljs-string">&quot;image/webp&quot;</span>;<br>  <span class="hljs-attr">maxWidth</span>?: <span class="hljs-built_in">number</span>;<br>  <span class="hljs-attr">maxHeight</span>?: <span class="hljs-built_in">number</span>;<br>&#125;<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">type</span> <span class="hljs-title class_">ImageCropperProps</span> = <span class="hljs-title class_">Omit</span>&lt;<span class="hljs-title class_">ReactCropProps</span>, <span class="hljs-string">&quot;onChange&quot;</span>&gt; &amp; &#123;<br>  <span class="hljs-attr">size</span>?: <span class="hljs-built_in">number</span>;<br>  <span class="hljs-attr">src</span>: <span class="hljs-built_in">string</span> | <span class="hljs-title class_">File</span> | <span class="hljs-title class_">Blob</span>;<br>  <span class="hljs-attr">imageStyle</span>?: <span class="hljs-title class_">React</span>.<span class="hljs-property">CSSProperties</span>;<br>  <span class="hljs-attr">circularCrop</span>?: <span class="hljs-built_in">boolean</span>;<br>  <span class="hljs-attr">exportConfig</span>?: <span class="hljs-title class_">ExportConfig</span>;<br>  <span class="hljs-attr">zoom</span>?: <span class="hljs-built_in">boolean</span>;<br>&#125;;<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">type</span> <span class="hljs-title class_">ImageCropperRef</span> = &#123;<br>  <span class="hljs-attr">getCropImageBlob</span>: <span class="hljs-function">(<span class="hljs-params"><span class="hljs-attr">config</span>?: <span class="hljs-title class_">ExportConfig</span></span>) =&gt;</span> <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-title class_">Blob</span>&gt;;<br>  <span class="hljs-attr">getCropImageFile</span>: <span class="hljs-function">(<span class="hljs-params"><span class="hljs-attr">config</span>?: <span class="hljs-title class_">ExportConfig</span></span>) =&gt;</span> <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-title class_">File</span>&gt;;<br>&#125;;<br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">centerAspectCrop</span>(<span class="hljs-params"></span><br><span class="hljs-params">  <span class="hljs-attr">mediaWidth</span>: <span class="hljs-built_in">number</span>,</span><br><span class="hljs-params">  <span class="hljs-attr">mediaHeight</span>: <span class="hljs-built_in">number</span>,</span><br><span class="hljs-params">  <span class="hljs-attr">aspect</span>: <span class="hljs-built_in">number</span>,</span><br><span class="hljs-params"></span>) &#123;<br>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">centerCrop</span>(<br>    <span class="hljs-title function_">makeAspectCrop</span>(&#123; <span class="hljs-attr">unit</span>: <span class="hljs-string">&quot;%&quot;</span>, <span class="hljs-attr">width</span>: <span class="hljs-number">100</span> &#125;, aspect, mediaWidth, mediaHeight),<br>    mediaWidth,<br>    mediaHeight,<br>  );<br>&#125;<br><br><span class="hljs-comment">// --- Canvas 绘制 ---</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">drawToCanvas</span>(<span class="hljs-params">&#123;</span><br><span class="hljs-params">  image,</span><br><span class="hljs-params">  crop,</span><br><span class="hljs-params">  canvasWidth,</span><br><span class="hljs-params">  canvasHeight,</span><br><span class="hljs-params">  circularCrop,</span><br><span class="hljs-params">  scaleX,</span><br><span class="hljs-params">  scaleY,</span><br><span class="hljs-params">  zoomScale = <span class="hljs-number">1</span>,</span><br><span class="hljs-params">  zoomEnabled = <span class="hljs-literal">false</span>,</span><br><span class="hljs-params">  imageDisplayWidth = <span class="hljs-number">0</span>,</span><br><span class="hljs-params">  imageDisplayHeight = <span class="hljs-number">0</span>,</span><br><span class="hljs-params">  panOffset = &#123; x: <span class="hljs-number">0</span>, y: <span class="hljs-number">0</span> &#125;,</span><br><span class="hljs-params">&#125;: &#123;</span><br><span class="hljs-params">  image: HTMLImageElement;</span><br><span class="hljs-params">  crop: PixelCrop;</span><br><span class="hljs-params">  canvasWidth: <span class="hljs-built_in">number</span>;</span><br><span class="hljs-params">  canvasHeight: <span class="hljs-built_in">number</span>;</span><br><span class="hljs-params">  circularCrop: <span class="hljs-built_in">boolean</span>;</span><br><span class="hljs-params">  scaleX: <span class="hljs-built_in">number</span>;</span><br><span class="hljs-params">  scaleY: <span class="hljs-built_in">number</span>;</span><br><span class="hljs-params">  zoomScale?: <span class="hljs-built_in">number</span>;</span><br><span class="hljs-params">  zoomEnabled?: <span class="hljs-built_in">boolean</span>;</span><br><span class="hljs-params">  imageDisplayWidth?: <span class="hljs-built_in">number</span>;</span><br><span class="hljs-params">  imageDisplayHeight?: <span class="hljs-built_in">number</span>;</span><br><span class="hljs-params">  panOffset?: &#123; x: <span class="hljs-built_in">number</span>; y: <span class="hljs-built_in">number</span> &#125;;</span><br><span class="hljs-params">&#125;</span>) &#123;<br>  <span class="hljs-keyword">const</span> offscreen = <span class="hljs-keyword">new</span> <span class="hljs-title class_">OffscreenCanvas</span>(canvasWidth, canvasHeight);<br>  <span class="hljs-keyword">const</span> ctx = offscreen.<span class="hljs-title function_">getContext</span>(<span class="hljs-string">&quot;2d&quot;</span>)!;<br><br>  <span class="hljs-keyword">if</span> (circularCrop) &#123;<br>    ctx.<span class="hljs-title function_">beginPath</span>();<br>    ctx.<span class="hljs-title function_">arc</span>(<br>      canvasWidth / <span class="hljs-number">2</span>,<br>      canvasHeight / <span class="hljs-number">2</span>,<br>      <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">min</span>(canvasWidth, canvasHeight) / <span class="hljs-number">2</span>,<br>      <span class="hljs-number">0</span>,<br>      <span class="hljs-title class_">Math</span>.<span class="hljs-property">PI</span> * <span class="hljs-number">2</span>,<br>    );<br>    ctx.<span class="hljs-title function_">closePath</span>();<br>    ctx.<span class="hljs-title function_">clip</span>();<br>  &#125;<br><br>  ctx.<span class="hljs-property">imageSmoothingEnabled</span> = <span class="hljs-literal">true</span>;<br>  ctx.<span class="hljs-property">imageSmoothingQuality</span> = <span class="hljs-string">&quot;high&quot;</span>;<br><br>  <span class="hljs-keyword">if</span> (<br>    zoomEnabled &amp;&amp;<br>    zoomScale !== <span class="hljs-number">1</span> &amp;&amp;<br>    imageDisplayWidth &gt; <span class="hljs-number">0</span> &amp;&amp;<br>    imageDisplayHeight &gt; <span class="hljs-number">0</span><br>  ) &#123;<br>    ctx.<span class="hljs-property">fillStyle</span> = <span class="hljs-string">&quot;#ffffff&quot;</span>;<br>    ctx.<span class="hljs-title function_">fillRect</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, canvasWidth, canvasHeight);<br><br>    <span class="hljs-keyword">const</span> scaledImageWidth = imageDisplayWidth * zoomScale;<br>    <span class="hljs-keyword">const</span> scaledImageHeight = imageDisplayHeight * zoomScale;<br><br>    <span class="hljs-keyword">const</span> offsetX = (imageDisplayWidth - scaledImageWidth) / <span class="hljs-number">2</span> + panOffset.<span class="hljs-property">x</span>;<br>    <span class="hljs-keyword">const</span> offsetY = (imageDisplayHeight - scaledImageHeight) / <span class="hljs-number">2</span> + panOffset.<span class="hljs-property">y</span>;<br><br>    <span class="hljs-keyword">const</span> cropX = crop.<span class="hljs-property">x</span>;<br>    <span class="hljs-keyword">const</span> cropY = crop.<span class="hljs-property">y</span>;<br>    <span class="hljs-keyword">const</span> cropWidth = crop.<span class="hljs-property">width</span>;<br>    <span class="hljs-keyword">const</span> cropHeight = crop.<span class="hljs-property">height</span>;<br><br>    <span class="hljs-keyword">const</span> imageStartX = offsetX;<br>    <span class="hljs-keyword">const</span> imageEndX = offsetX + scaledImageWidth;<br>    <span class="hljs-keyword">const</span> imageStartY = offsetY;<br>    <span class="hljs-keyword">const</span> imageEndY = offsetY + scaledImageHeight;<br><br>    <span class="hljs-keyword">const</span> intersectStartX = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">max</span>(cropX, imageStartX);<br>    <span class="hljs-keyword">const</span> intersectEndX = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">min</span>(cropX + cropWidth, imageEndX);<br>    <span class="hljs-keyword">const</span> intersectStartY = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">max</span>(cropY, imageStartY);<br>    <span class="hljs-keyword">const</span> intersectEndY = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">min</span>(cropY + cropHeight, imageEndY);<br><br>    <span class="hljs-keyword">if</span> (intersectStartX &lt; intersectEndX &amp;&amp; intersectStartY &lt; intersectEndY) &#123;<br>      <span class="hljs-keyword">const</span> relativeX = intersectStartX - cropX;<br>      <span class="hljs-keyword">const</span> relativeY = intersectStartY - cropY;<br><br>      <span class="hljs-keyword">const</span> sourceX = ((intersectStartX - offsetX) / zoomScale) * scaleX;<br>      <span class="hljs-keyword">const</span> sourceY = ((intersectStartY - offsetY) / zoomScale) * scaleY;<br>      <span class="hljs-keyword">const</span> sourceWidth =<br>        ((intersectEndX - intersectStartX) / zoomScale) * scaleX;<br>      <span class="hljs-keyword">const</span> sourceHeight =<br>        ((intersectEndY - intersectStartY) / zoomScale) * scaleY;<br><br>      <span class="hljs-keyword">const</span> destX = (relativeX / cropWidth) * canvasWidth;<br>      <span class="hljs-keyword">const</span> destY = (relativeY / cropHeight) * canvasHeight;<br>      <span class="hljs-keyword">const</span> destWidth =<br>        ((intersectEndX - intersectStartX) / cropWidth) * canvasWidth;<br>      <span class="hljs-keyword">const</span> destHeight =<br>        ((intersectEndY - intersectStartY) / cropHeight) * canvasHeight;<br><br>      ctx.<span class="hljs-title function_">drawImage</span>(<br>        image,<br>        <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">round</span>(sourceX),<br>        <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">round</span>(sourceY),<br>        <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">round</span>(sourceWidth),<br>        <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">round</span>(sourceHeight),<br>        <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">round</span>(destX),<br>        <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">round</span>(destY),<br>        <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">round</span>(destWidth),<br>        <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">round</span>(destHeight),<br>      );<br>    &#125;<br>  &#125; <span class="hljs-keyword">else</span> &#123;<br>    ctx.<span class="hljs-title function_">drawImage</span>(<br>      image,<br>      <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">round</span>(crop.<span class="hljs-property">x</span> * scaleX),<br>      <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">round</span>(crop.<span class="hljs-property">y</span> * scaleY),<br>      <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">round</span>(crop.<span class="hljs-property">width</span> * scaleX),<br>      <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">round</span>(crop.<span class="hljs-property">height</span> * scaleY),<br>      <span class="hljs-number">0</span>,<br>      <span class="hljs-number">0</span>,<br>      canvasWidth,<br>      canvasHeight,<br>    );<br>  &#125;<br><br>  <span class="hljs-keyword">return</span> offscreen;<br>&#125;<br><br><span class="hljs-comment">// --- 导出主函数 ---</span><br><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">generateCropImage</span>(<span class="hljs-params">&#123;</span><br><span class="hljs-params">  size,</span><br><span class="hljs-params">  crop,</span><br><span class="hljs-params">  image,</span><br><span class="hljs-params">  resultType,</span><br><span class="hljs-params">  config = &#123;&#125;,</span><br><span class="hljs-params">  circularCrop = <span class="hljs-literal">false</span>,</span><br><span class="hljs-params">  zoomScale = <span class="hljs-number">1</span>,</span><br><span class="hljs-params">  zoomEnabled = <span class="hljs-literal">false</span>,</span><br><span class="hljs-params">  imageDisplayWidth = <span class="hljs-number">0</span>,</span><br><span class="hljs-params">  imageDisplayHeight = <span class="hljs-number">0</span>,</span><br><span class="hljs-params">  panOffset = &#123; x: <span class="hljs-number">0</span>, y: <span class="hljs-number">0</span> &#125;,</span><br><span class="hljs-params">&#125;: &#123;</span><br><span class="hljs-params">  size: <span class="hljs-built_in">number</span>;</span><br><span class="hljs-params">  crop?: PixelCrop;</span><br><span class="hljs-params">  image?: HTMLImageElement | <span class="hljs-literal">null</span>;</span><br><span class="hljs-params">  resultType: <span class="hljs-string">&quot;file&quot;</span> | <span class="hljs-string">&quot;blob&quot;</span>;</span><br><span class="hljs-params">  config?: ExportConfig;</span><br><span class="hljs-params">  circularCrop?: <span class="hljs-built_in">boolean</span>;</span><br><span class="hljs-params">  zoomScale?: <span class="hljs-built_in">number</span>;</span><br><span class="hljs-params">  zoomEnabled?: <span class="hljs-built_in">boolean</span>;</span><br><span class="hljs-params">  imageDisplayWidth?: <span class="hljs-built_in">number</span>;</span><br><span class="hljs-params">  imageDisplayHeight?: <span class="hljs-built_in">number</span>;</span><br><span class="hljs-params">  panOffset?: &#123; x: <span class="hljs-built_in">number</span>; y: <span class="hljs-built_in">number</span> &#125;;</span><br><span class="hljs-params">&#125;</span>): <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-title class_">Blob</span> | <span class="hljs-title class_">File</span>&gt; &#123;<br>  <span class="hljs-keyword">if</span> (!image || !crop) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&quot;图片或裁剪区域不存在&quot;</span>);<br><br>  <span class="hljs-keyword">const</span> &#123; format = <span class="hljs-string">&quot;image/png&quot;</span>, maxWidth = <span class="hljs-number">0</span>, maxHeight = <span class="hljs-number">0</span> &#125; = config;<br>  <span class="hljs-keyword">const</span> scaleX = image.<span class="hljs-property">naturalWidth</span> / image.<span class="hljs-property">width</span>;<br>  <span class="hljs-keyword">const</span> scaleY = image.<span class="hljs-property">naturalHeight</span> / image.<span class="hljs-property">height</span>;<br><br>  <span class="hljs-keyword">const</span> zoomCorrection = zoomEnabled &amp;&amp; zoomScale !== <span class="hljs-number">1</span> ? zoomScale : <span class="hljs-number">1</span>;<br>  <span class="hljs-keyword">let</span> canvasWidth = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">round</span>((crop.<span class="hljs-property">width</span> * scaleX) / zoomCorrection);<br>  <span class="hljs-keyword">let</span> canvasHeight = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">round</span>((crop.<span class="hljs-property">height</span> * scaleY) / zoomCorrection);<br><br>  <span class="hljs-keyword">if</span> (maxWidth &gt; <span class="hljs-number">0</span> &amp;&amp; canvasWidth &gt; maxWidth) &#123;<br>    <span class="hljs-keyword">const</span> ratio = maxWidth / canvasWidth;<br>    canvasWidth = maxWidth;<br>    canvasHeight = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">round</span>(canvasHeight * ratio);<br>  &#125;<br>  <span class="hljs-keyword">if</span> (maxHeight &gt; <span class="hljs-number">0</span> &amp;&amp; canvasHeight &gt; maxHeight) &#123;<br>    <span class="hljs-keyword">const</span> ratio = maxHeight / canvasHeight;<br>    canvasHeight = maxHeight;<br>    canvasWidth = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">round</span>(canvasWidth * ratio);<br>  &#125;<br><br>  <span class="hljs-keyword">let</span> offscreen = <span class="hljs-title function_">drawToCanvas</span>(&#123;<br>    image,<br>    crop,<br>    canvasWidth,<br>    canvasHeight,<br>    circularCrop,<br>    scaleX,<br>    scaleY,<br>    zoomScale,<br>    zoomEnabled,<br>    imageDisplayWidth,<br>    imageDisplayHeight,<br>    panOffset,<br>  &#125;);<br><br>  <span class="hljs-keyword">let</span> blob = <span class="hljs-keyword">await</span> offscreen.<span class="hljs-title function_">convertToBlob</span>(&#123; <span class="hljs-attr">type</span>: format &#125;);<br><br>  <span class="hljs-keyword">const</span> <span class="hljs-variable constant_">MAX_SIZE</span> = size * <span class="hljs-number">1024</span> * <span class="hljs-number">1024</span>;<br>  <span class="hljs-keyword">let</span> compressRatio = <span class="hljs-number">0.9</span>;<br>  <span class="hljs-keyword">while</span> (blob.<span class="hljs-property">size</span> &gt; <span class="hljs-variable constant_">MAX_SIZE</span> &amp;&amp; canvasWidth &gt; <span class="hljs-number">100</span> &amp;&amp; canvasHeight &gt; <span class="hljs-number">100</span>) &#123;<br>    canvasWidth = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">round</span>(canvasWidth * compressRatio);<br>    canvasHeight = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">round</span>(canvasHeight * compressRatio);<br>    offscreen = <span class="hljs-title function_">drawToCanvas</span>(&#123;<br>      image,<br>      crop,<br>      canvasWidth,<br>      canvasHeight,<br>      circularCrop,<br>      scaleX,<br>      scaleY,<br>      zoomScale,<br>      zoomEnabled,<br>      imageDisplayWidth,<br>      imageDisplayHeight,<br>      panOffset,<br>    &#125;);<br>    blob = <span class="hljs-keyword">await</span> offscreen.<span class="hljs-title function_">convertToBlob</span>(&#123; <span class="hljs-attr">type</span>: format &#125;);<br>    compressRatio -= <span class="hljs-number">0.1</span>;<br>  &#125;<br><br>  <span class="hljs-keyword">if</span> (resultType === <span class="hljs-string">&quot;blob&quot;</span>) <span class="hljs-keyword">return</span> blob;<br>  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">File</span>([blob], <span class="hljs-string">`cropped_image.<span class="hljs-subst">$&#123;format.split(<span class="hljs-string">&quot;/&quot;</span>)[<span class="hljs-number">1</span>]&#125;</span>`</span>, &#123;<br>    <span class="hljs-attr">type</span>: format,<br>  &#125;);<br>&#125;<br><br><span class="hljs-comment">// --- 主组件 ---</span><br><span class="hljs-keyword">const</span> <span class="hljs-title class_">ImageCropper</span> = forwardRef&lt;<span class="hljs-title class_">ImageCropperRef</span>, <span class="hljs-title class_">ImageCropperProps</span>&gt;(<br>  <span class="hljs-function">(<span class="hljs-params"></span></span><br><span class="hljs-params"><span class="hljs-function">    &#123;</span></span><br><span class="hljs-params"><span class="hljs-function">      size = <span class="hljs-number">999999</span>,</span></span><br><span class="hljs-params"><span class="hljs-function">      aspect,</span></span><br><span class="hljs-params"><span class="hljs-function">      src,</span></span><br><span class="hljs-params"><span class="hljs-function">      circularCrop = <span class="hljs-literal">false</span>,</span></span><br><span class="hljs-params"><span class="hljs-function">      imageStyle,</span></span><br><span class="hljs-params"><span class="hljs-function">      keepSelection = <span class="hljs-literal">true</span>,</span></span><br><span class="hljs-params"><span class="hljs-function">      exportConfig = &#123;&#125;,</span></span><br><span class="hljs-params"><span class="hljs-function">      zoom = <span class="hljs-literal">false</span>,</span></span><br><span class="hljs-params"><span class="hljs-function">      ...restProps</span></span><br><span class="hljs-params"><span class="hljs-function">    &#125;,</span></span><br><span class="hljs-params"><span class="hljs-function">    ref,</span></span><br><span class="hljs-params"><span class="hljs-function">  </span>) =&gt;</span> &#123;<br>    <span class="hljs-keyword">const</span> [crop, setCrop] = useState&lt;<span class="hljs-title class_">PercentCrop</span>&gt;();<br>    <span class="hljs-keyword">const</span> imgRef = useRef&lt;<span class="hljs-title class_">HTMLImageElement</span>&gt;(<span class="hljs-literal">null</span>);<br>    <span class="hljs-keyword">const</span> containerRef = useRef&lt;<span class="hljs-title class_">HTMLDivElement</span>&gt;(<span class="hljs-literal">null</span>);<br>    <span class="hljs-keyword">const</span> [completedCrop, setCompletedCrop] = useState&lt;<span class="hljs-title class_">PixelCrop</span>&gt;();<br>    <span class="hljs-keyword">const</span> [url, setUrl] = useState&lt;<span class="hljs-built_in">string</span>&gt;();<br>    <span class="hljs-keyword">const</span> [zoomScale, setZoomScale] = useState&lt;<span class="hljs-built_in">number</span>&gt;(<span class="hljs-number">1</span>);<br>    <span class="hljs-keyword">const</span> [imageDisplaySize, setImageDisplaySize] = useState&lt;&#123;<br>      <span class="hljs-attr">width</span>: <span class="hljs-built_in">number</span>;<br>      <span class="hljs-attr">height</span>: <span class="hljs-built_in">number</span>;<br>    &#125;&gt;(&#123;<br>      <span class="hljs-attr">width</span>: <span class="hljs-number">0</span>,<br>      <span class="hljs-attr">height</span>: <span class="hljs-number">0</span>,<br>    &#125;);<br>    <span class="hljs-keyword">const</span> [panOffset, setPanOffset] = useState&lt;&#123; <span class="hljs-attr">x</span>: <span class="hljs-built_in">number</span>; <span class="hljs-attr">y</span>: <span class="hljs-built_in">number</span> &#125;&gt;(&#123;<br>      <span class="hljs-attr">x</span>: <span class="hljs-number">0</span>,<br>      <span class="hljs-attr">y</span>: <span class="hljs-number">0</span>,<br>    &#125;);<br>    <span class="hljs-keyword">const</span> isPanningRef = <span class="hljs-title function_">useRef</span>(<span class="hljs-literal">false</span>);<br>    <span class="hljs-keyword">const</span> lastPanPosRef = useRef&lt;&#123; <span class="hljs-attr">x</span>: <span class="hljs-built_in">number</span>; <span class="hljs-attr">y</span>: <span class="hljs-built_in">number</span> &#125;&gt;(&#123; <span class="hljs-attr">x</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">y</span>: <span class="hljs-number">0</span> &#125;);<br><br>    <span class="hljs-comment">// 双向约束</span><br>    <span class="hljs-keyword">const</span> <span class="hljs-title function_">computeConstrainedSize</span> = (<span class="hljs-params"><span class="hljs-attr">naturalW</span>: <span class="hljs-built_in">number</span>, <span class="hljs-attr">naturalH</span>: <span class="hljs-built_in">number</span></span>) =&gt; &#123;<br>      <span class="hljs-keyword">const</span> el = containerRef.<span class="hljs-property">current</span>;<br>      <span class="hljs-keyword">if</span> (!el) <span class="hljs-keyword">return</span> &#123; <span class="hljs-attr">width</span>: naturalW, <span class="hljs-attr">height</span>: naturalH &#125;;<br>      <span class="hljs-keyword">let</span> width = naturalW;<br>      <span class="hljs-keyword">let</span> height = naturalH;<br>      <span class="hljs-keyword">if</span> (el.<span class="hljs-property">clientWidth</span> &gt; <span class="hljs-number">0</span> &amp;&amp; width &gt; el.<span class="hljs-property">clientWidth</span>) &#123;<br>        width = el.<span class="hljs-property">clientWidth</span>;<br>        height = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">round</span>((naturalH / naturalW) * width);<br>      &#125;<br>      <span class="hljs-keyword">if</span> (el.<span class="hljs-property">clientHeight</span> &gt; <span class="hljs-number">0</span> &amp;&amp; height &gt; el.<span class="hljs-property">clientHeight</span>) &#123;<br>        height = el.<span class="hljs-property">clientHeight</span>;<br>        width = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">round</span>((naturalW / naturalH) * height);<br>      &#125;<br>      <span class="hljs-keyword">return</span> &#123; width, height &#125;;<br>    &#125;;<br><br>    <span class="hljs-comment">// panOffset 边界</span><br>    <span class="hljs-keyword">const</span> <span class="hljs-title function_">clampPanOffset</span> = (<span class="hljs-params"><span class="hljs-attr">offset</span>: &#123; x: <span class="hljs-built_in">number</span>; y: <span class="hljs-built_in">number</span> &#125;</span>) =&gt; &#123;<br>      <span class="hljs-keyword">if</span> (!zoom || zoomScale &lt;= <span class="hljs-number">1</span> || imageDisplaySize.<span class="hljs-property">width</span> === <span class="hljs-number">0</span>)<br>        <span class="hljs-keyword">return</span> offset;<br>      <span class="hljs-keyword">const</span> scaledW = imageDisplaySize.<span class="hljs-property">width</span> * zoomScale;<br>      <span class="hljs-keyword">const</span> scaledH = imageDisplaySize.<span class="hljs-property">height</span> * zoomScale;<br>      <span class="hljs-keyword">const</span> maxPanX = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">max</span>(<span class="hljs-number">0</span>, (scaledW - imageDisplaySize.<span class="hljs-property">width</span>) / <span class="hljs-number">2</span>);<br>      <span class="hljs-keyword">const</span> maxPanY = <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">max</span>(<span class="hljs-number">0</span>, (scaledH - imageDisplaySize.<span class="hljs-property">height</span>) / <span class="hljs-number">2</span>);<br>      <span class="hljs-keyword">return</span> &#123;<br>        <span class="hljs-attr">x</span>: <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">max</span>(-maxPanX, <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">min</span>(maxPanX, offset.<span class="hljs-property">x</span>)),<br>        <span class="hljs-attr">y</span>: <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">max</span>(-maxPanY, <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">min</span>(maxPanY, offset.<span class="hljs-property">y</span>)),<br>      &#125;;<br>    &#125;;<br><br>    <span class="hljs-comment">// zoom 变化时重置平移</span><br>    <span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>      <span class="hljs-title function_">setPanOffset</span>(&#123; <span class="hljs-attr">x</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">y</span>: <span class="hljs-number">0</span> &#125;);<br>    &#125;, [zoomScale]);<br><br>    <span class="hljs-comment">// resize 监听</span><br>    <span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>      <span class="hljs-keyword">const</span> <span class="hljs-title function_">handleResize</span> = (<span class="hljs-params"></span>) =&gt; &#123;<br>        <span class="hljs-keyword">if</span> (!imgRef.<span class="hljs-property">current</span>) <span class="hljs-keyword">return</span>;<br>        <span class="hljs-keyword">const</span> img = imgRef.<span class="hljs-property">current</span>;<br>        <span class="hljs-keyword">if</span> (!img.<span class="hljs-property">complete</span> || img.<span class="hljs-property">naturalWidth</span> === <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span>;<br>        <span class="hljs-keyword">const</span> constrained = <span class="hljs-title function_">computeConstrainedSize</span>(<br>          img.<span class="hljs-property">naturalWidth</span>,<br>          img.<span class="hljs-property">naturalHeight</span>,<br>        );<br>        <span class="hljs-title function_">setImageDisplaySize</span>(<span class="hljs-function">(<span class="hljs-params">prev</span>) =&gt;</span> &#123;<br>          <span class="hljs-keyword">if</span> (<br>            prev.<span class="hljs-property">width</span> === constrained.<span class="hljs-property">width</span> &amp;&amp;<br>            prev.<span class="hljs-property">height</span> === constrained.<span class="hljs-property">height</span><br>          )<br>            <span class="hljs-keyword">return</span> prev;<br>          <span class="hljs-keyword">return</span> constrained;<br>        &#125;);<br>        <span class="hljs-title function_">setPanOffset</span>(&#123; <span class="hljs-attr">x</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">y</span>: <span class="hljs-number">0</span> &#125;);<br>      &#125;;<br>      <span class="hljs-variable language_">window</span>.<span class="hljs-title function_">addEventListener</span>(<span class="hljs-string">&quot;resize&quot;</span>, handleResize);<br>      <span class="hljs-keyword">return</span> <span class="hljs-function">() =&gt;</span> <span class="hljs-variable language_">window</span>.<span class="hljs-title function_">removeEventListener</span>(<span class="hljs-string">&quot;resize&quot;</span>, handleResize);<br>    &#125;, []);<br><br>    <span class="hljs-comment">// src → URL</span><br>    <span class="hljs-title function_">useEffect</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> src === <span class="hljs-string">&quot;string&quot;</span>) &#123;<br>        <span class="hljs-title function_">setUrl</span>(src);<br>        <span class="hljs-keyword">return</span>;<br>      &#125;<br>      <span class="hljs-keyword">const</span> objectUrl = <span class="hljs-variable constant_">URL</span>.<span class="hljs-title function_">createObjectURL</span>(src);<br>      <span class="hljs-title function_">setUrl</span>(objectUrl);<br>      <span class="hljs-keyword">return</span> <span class="hljs-function">() =&gt;</span> <span class="hljs-variable constant_">URL</span>.<span class="hljs-title function_">revokeObjectURL</span>(objectUrl);<br>    &#125;, [src]);<br><br>    <span class="hljs-keyword">const</span> <span class="hljs-title function_">onImageLoad</span> = (<span class="hljs-params"><span class="hljs-attr">e</span>: <span class="hljs-title class_">React</span>.<span class="hljs-title class_">SyntheticEvent</span>&lt;<span class="hljs-title class_">HTMLImageElement</span>&gt;</span>) =&gt; &#123;<br>      <span class="hljs-keyword">const</span> img = e.<span class="hljs-property">currentTarget</span>;<br>      <span class="hljs-keyword">const</span> &#123; naturalWidth, naturalHeight &#125; = img;<br>      <span class="hljs-keyword">const</span> constrained = <span class="hljs-title function_">computeConstrainedSize</span>(naturalWidth, naturalHeight);<br>      <span class="hljs-title function_">setImageDisplaySize</span>(constrained);<br><br>      <span class="hljs-keyword">if</span> (aspect) &#123;<br>        <span class="hljs-title function_">setCrop</span>(<br>          <span class="hljs-title function_">centerAspectCrop</span>(constrained.<span class="hljs-property">width</span>, constrained.<span class="hljs-property">height</span>, aspect),<br>        );<br>      &#125; <span class="hljs-keyword">else</span> &#123;<br>        <span class="hljs-title function_">setCrop</span>(&#123; <span class="hljs-attr">unit</span>: <span class="hljs-string">&quot;%&quot;</span>, <span class="hljs-attr">width</span>: <span class="hljs-number">100</span>, <span class="hljs-attr">height</span>: <span class="hljs-number">100</span>, <span class="hljs-attr">x</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">y</span>: <span class="hljs-number">0</span> &#125;);<br>        <span class="hljs-title function_">setCompletedCrop</span>(&#123;<br>          <span class="hljs-attr">unit</span>: <span class="hljs-string">&quot;px&quot;</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">const</span>,<br>          <span class="hljs-attr">x</span>: <span class="hljs-number">0</span>,<br>          <span class="hljs-attr">y</span>: <span class="hljs-number">0</span>,<br>          <span class="hljs-attr">width</span>: constrained.<span class="hljs-property">width</span>,<br>          <span class="hljs-attr">height</span>: constrained.<span class="hljs-property">height</span>,<br>        &#125;);<br>      &#125;<br>    &#125;;<br><br>    <span class="hljs-title function_">useLayoutEffect</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>      <span class="hljs-keyword">if</span> (!url || !imgRef.<span class="hljs-property">current</span> || !containerRef.<span class="hljs-property">current</span>) <span class="hljs-keyword">return</span>;<br>      <span class="hljs-keyword">const</span> img = imgRef.<span class="hljs-property">current</span>;<br>      <span class="hljs-keyword">if</span> (!img.<span class="hljs-property">complete</span> || img.<span class="hljs-property">naturalWidth</span> === <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span>;<br>      <span class="hljs-keyword">const</span> constrained = <span class="hljs-title function_">computeConstrainedSize</span>(<br>        img.<span class="hljs-property">naturalWidth</span>,<br>        img.<span class="hljs-property">naturalHeight</span>,<br>      );<br>      <span class="hljs-title function_">setImageDisplaySize</span>(constrained);<br>    &#125;, [url, aspect, circularCrop]);<br><br>    <span class="hljs-title function_">useImperativeHandle</span>(ref, <span class="hljs-function">() =&gt;</span> (&#123;<br>      <span class="hljs-attr">getCropImageBlob</span>: <span class="hljs-function">(<span class="hljs-params"><span class="hljs-attr">config</span>: <span class="hljs-title class_">ExportConfig</span> = &#123;&#125;</span>) =&gt;</span><br>        <span class="hljs-title function_">generateCropImage</span>(&#123;<br>          size,<br>          <span class="hljs-attr">crop</span>: completedCrop,<br>          <span class="hljs-attr">image</span>: imgRef.<span class="hljs-property">current</span>,<br>          <span class="hljs-attr">resultType</span>: <span class="hljs-string">&quot;blob&quot;</span>,<br>          <span class="hljs-attr">config</span>: &#123; ...exportConfig, ...config &#125;,<br>          circularCrop,<br>          zoomScale,<br>          <span class="hljs-attr">zoomEnabled</span>: zoom,<br>          <span class="hljs-attr">imageDisplayWidth</span>: imageDisplaySize.<span class="hljs-property">width</span>,<br>          <span class="hljs-attr">imageDisplayHeight</span>: imageDisplaySize.<span class="hljs-property">height</span>,<br>          panOffset,<br>        &#125;) <span class="hljs-keyword">as</span> <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-title class_">Blob</span>&gt;,<br><br>      <span class="hljs-attr">getCropImageFile</span>: <span class="hljs-function">(<span class="hljs-params"><span class="hljs-attr">config</span>: <span class="hljs-title class_">ExportConfig</span> = &#123;&#125;</span>) =&gt;</span><br>        <span class="hljs-title function_">generateCropImage</span>(&#123;<br>          size,<br>          <span class="hljs-attr">crop</span>: completedCrop,<br>          <span class="hljs-attr">image</span>: imgRef.<span class="hljs-property">current</span>,<br>          <span class="hljs-attr">resultType</span>: <span class="hljs-string">&quot;file&quot;</span>,<br>          <span class="hljs-attr">config</span>: &#123; ...exportConfig, ...config &#125;,<br>          circularCrop,<br>          zoomScale,<br>          <span class="hljs-attr">zoomEnabled</span>: zoom,<br>          <span class="hljs-attr">imageDisplayWidth</span>: imageDisplaySize.<span class="hljs-property">width</span>,<br>          <span class="hljs-attr">imageDisplayHeight</span>: imageDisplaySize.<span class="hljs-property">height</span>,<br>          panOffset,<br>        &#125;) <span class="hljs-keyword">as</span> <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-title class_">File</span>&gt;,<br>    &#125;));<br><br>    <span class="hljs-keyword">const</span> displayW = imageDisplaySize.<span class="hljs-property">width</span>;<br>    <span class="hljs-keyword">const</span> displayH = imageDisplaySize.<span class="hljs-property">height</span>;<br>    <span class="hljs-keyword">const</span> zoomActive = zoom &amp;&amp; zoomScale !== <span class="hljs-number">1</span>;<br><br>    <span class="hljs-keyword">const</span> <span class="hljs-title function_">handleImgPointerDown</span> = (<span class="hljs-params"><span class="hljs-attr">e</span>: <span class="hljs-title class_">React</span>.<span class="hljs-title class_">PointerEvent</span>&lt;<span class="hljs-title class_">HTMLImageElement</span>&gt;</span>) =&gt; &#123;<br>      <span class="hljs-keyword">if</span> (!zoomActive) <span class="hljs-keyword">return</span>;<br>      e.<span class="hljs-title function_">stopPropagation</span>();<br>      isPanningRef.<span class="hljs-property">current</span> = <span class="hljs-literal">true</span>;<br>      lastPanPosRef.<span class="hljs-property">current</span> = &#123; <span class="hljs-attr">x</span>: e.<span class="hljs-property">clientX</span>, <span class="hljs-attr">y</span>: e.<span class="hljs-property">clientY</span> &#125;;<br>      (e.<span class="hljs-property">target</span> <span class="hljs-keyword">as</span> <span class="hljs-title class_">HTMLElement</span>).<span class="hljs-property">setPointerCapture</span>?.(e.<span class="hljs-property">pointerId</span>);<br>    &#125;;<br><br>    <span class="hljs-keyword">const</span> <span class="hljs-title function_">handleImgPointerMove</span> = (<span class="hljs-params"><span class="hljs-attr">e</span>: <span class="hljs-title class_">React</span>.<span class="hljs-title class_">PointerEvent</span>&lt;<span class="hljs-title class_">HTMLImageElement</span>&gt;</span>) =&gt; &#123;<br>      <span class="hljs-keyword">if</span> (!zoomActive || !isPanningRef.<span class="hljs-property">current</span>) <span class="hljs-keyword">return</span>;<br>      e.<span class="hljs-title function_">stopPropagation</span>();<br>      <span class="hljs-keyword">const</span> dx = e.<span class="hljs-property">clientX</span> - lastPanPosRef.<span class="hljs-property">current</span>.<span class="hljs-property">x</span>;<br>      <span class="hljs-keyword">const</span> dy = e.<span class="hljs-property">clientY</span> - lastPanPosRef.<span class="hljs-property">current</span>.<span class="hljs-property">y</span>;<br>      lastPanPosRef.<span class="hljs-property">current</span> = &#123; <span class="hljs-attr">x</span>: e.<span class="hljs-property">clientX</span>, <span class="hljs-attr">y</span>: e.<span class="hljs-property">clientY</span> &#125;;<br>      <span class="hljs-title function_">setPanOffset</span>(<span class="hljs-function">(<span class="hljs-params">prev</span>) =&gt;</span><br>        <span class="hljs-title function_">clampPanOffset</span>(&#123; <span class="hljs-attr">x</span>: prev.<span class="hljs-property">x</span> + dx, <span class="hljs-attr">y</span>: prev.<span class="hljs-property">y</span> + dy &#125;),<br>      );<br>    &#125;;<br><br>    <span class="hljs-keyword">const</span> <span class="hljs-title function_">handleImgPointerUp</span> = (<span class="hljs-params"><span class="hljs-attr">e</span>: <span class="hljs-title class_">React</span>.<span class="hljs-title class_">PointerEvent</span>&lt;<span class="hljs-title class_">HTMLImageElement</span>&gt;</span>) =&gt; &#123;<br>      <span class="hljs-keyword">if</span> (!zoomActive) <span class="hljs-keyword">return</span>;<br>      isPanningRef.<span class="hljs-property">current</span> = <span class="hljs-literal">false</span>;<br>      (e.<span class="hljs-property">target</span> <span class="hljs-keyword">as</span> <span class="hljs-title class_">HTMLElement</span>).<span class="hljs-property">releasePointerCapture</span>?.(e.<span class="hljs-property">pointerId</span>);<br>    &#125;;<br><br>    <span class="hljs-keyword">return</span> (<br>      <span class="language-xml"><span class="hljs-tag">&lt;&gt;</span></span><br><span class="language-xml">        <span class="hljs-tag">&lt;<span class="hljs-name">div</span></span></span><br><span class="hljs-tag"><span class="language-xml">          <span class="hljs-attr">ref</span>=<span class="hljs-string">&#123;containerRef&#125;</span></span></span><br><span class="hljs-tag"><span class="language-xml">          <span class="hljs-attr">className</span>=<span class="hljs-string">&quot;w-full flex-1 min-h-0 flex items-center justify-center&quot;</span></span></span><br><span class="hljs-tag"><span class="language-xml">        &gt;</span></span><br><span class="language-xml">          <span class="hljs-tag">&lt;<span class="hljs-name">div</span></span></span><br><span class="hljs-tag"><span class="language-xml">            <span class="hljs-attr">className</span>=<span class="hljs-string">&quot;relative mx-auto&quot;</span></span></span><br><span class="hljs-tag"><span class="language-xml">            <span class="hljs-attr">style</span>=<span class="hljs-string">&#123;</span></span></span><br><span class="hljs-tag"><span class="language-xml">              <span class="hljs-attr">displayW</span> &gt;</span> 0 &amp;&amp; displayH &gt; 0</span><br><span class="language-xml">                ? &#123;</span><br><span class="language-xml">                    width: displayW,</span><br><span class="language-xml">                    height: displayH,</span><br><span class="language-xml">                    ...(zoomActive</span><br><span class="language-xml">                      ? &#123; backgroundColor: &quot;#ffffff&quot;, overflow: &quot;hidden&quot; &#125;</span><br><span class="language-xml">                      : &#123;&#125;),</span><br><span class="language-xml">                  &#125;</span><br><span class="language-xml">                : &#123;&#125;</span><br><span class="language-xml">            &#125;</span><br><span class="language-xml">          &gt;</span><br><span class="language-xml">            <span class="hljs-tag">&lt;<span class="hljs-name">ReactCrop</span></span></span><br><span class="hljs-tag"><span class="language-xml">              <span class="hljs-attr">crop</span>=<span class="hljs-string">&#123;crop&#125;</span></span></span><br><span class="hljs-tag"><span class="language-xml">              <span class="hljs-attr">onChange</span>=<span class="hljs-string">&#123;(_,</span> <span class="hljs-attr">percentCrop</span>) =&gt;</span> setCrop(percentCrop)&#125;</span><br><span class="language-xml">              onComplete=&#123;(c) =&gt; setCompletedCrop(c)&#125;</span><br><span class="language-xml">              aspect=&#123;aspect&#125;</span><br><span class="language-xml">              keepSelection=&#123;keepSelection&#125;</span><br><span class="language-xml">              &#123;...restProps&#125;</span><br><span class="language-xml">              circularCrop=&#123;circularCrop&#125;</span><br><span class="language-xml">              style=&#123;&#123;</span><br><span class="language-xml">                display: &quot;block&quot;,</span><br><span class="language-xml">                ...(displayW &gt; 0 &amp;&amp; displayH &gt; 0</span><br><span class="language-xml">                  ? &#123; width: displayW, height: displayH &#125;</span><br><span class="language-xml">                  : &#123;&#125;),</span><br><span class="language-xml">              &#125;&#125;</span><br><span class="language-xml">            &gt;</span><br><span class="language-xml">              <span class="hljs-tag">&lt;<span class="hljs-name">img</span></span></span><br><span class="hljs-tag"><span class="language-xml">                <span class="hljs-attr">ref</span>=<span class="hljs-string">&#123;imgRef&#125;</span></span></span><br><span class="hljs-tag"><span class="language-xml">                <span class="hljs-attr">src</span>=<span class="hljs-string">&#123;url&#125;</span></span></span><br><span class="hljs-tag"><span class="language-xml">                <span class="hljs-attr">onPointerDown</span>=<span class="hljs-string">&#123;handleImgPointerDown&#125;</span></span></span><br><span class="hljs-tag"><span class="language-xml">                <span class="hljs-attr">onPointerMove</span>=<span class="hljs-string">&#123;handleImgPointerMove&#125;</span></span></span><br><span class="hljs-tag"><span class="language-xml">                <span class="hljs-attr">onPointerUp</span>=<span class="hljs-string">&#123;handleImgPointerUp&#125;</span></span></span><br><span class="hljs-tag"><span class="language-xml">                <span class="hljs-attr">onPointerCancel</span>=<span class="hljs-string">&#123;handleImgPointerUp&#125;</span></span></span><br><span class="hljs-tag"><span class="language-xml">                <span class="hljs-attr">style</span>=<span class="hljs-string">&#123;&#123;</span></span></span><br><span class="hljs-tag"><span class="language-xml">                  <span class="hljs-attr">...imageStyle</span>,</span></span><br><span class="hljs-tag"><span class="language-xml">                  <span class="hljs-attr">display:</span> &quot;<span class="hljs-attr">block</span>&quot;,</span></span><br><span class="hljs-tag"><span class="language-xml">                  <span class="hljs-attr">...</span>(<span class="hljs-attr">displayW</span> &gt;</span> 0 &amp;&amp; displayH &gt; 0</span><br><span class="language-xml">                    ? &#123;</span><br><span class="language-xml">                        width: displayW,</span><br><span class="language-xml">                        height: displayH,</span><br><span class="language-xml">                        ...(zoomActive</span><br><span class="language-xml">                          ? &#123;</span><br><span class="language-xml">                              transform: `translate($&#123;panOffset.x&#125;px, $&#123;panOffset.y&#125;px) scale($&#123;zoomScale&#125;)`,</span><br><span class="language-xml">                              transformOrigin: &quot;center center&quot;,</span><br><span class="language-xml">                              cursor: isPanningRef.current</span><br><span class="language-xml">                                ? &quot;grabbing&quot;</span><br><span class="language-xml">                                : &quot;grab&quot;,</span><br><span class="language-xml">                            &#125;</span><br><span class="language-xml">                          : &#123;&#125;),</span><br><span class="language-xml">                      &#125;</span><br><span class="language-xml">                    : &#123;&#125;),</span><br><span class="language-xml">                &#125;&#125;</span><br><span class="language-xml">                crossOrigin=&quot;anonymous&quot;</span><br><span class="language-xml">                draggable=&quot;false&quot;</span><br><span class="language-xml">                onLoad=&#123;onImageLoad&#125;</span><br><span class="language-xml">              /&gt;</span><br><span class="language-xml">            <span class="hljs-tag">&lt;/<span class="hljs-name">ReactCrop</span>&gt;</span></span><br><span class="language-xml">          <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="language-xml">        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="language-xml">        &#123;zoom &amp;&amp; (</span><br><span class="language-xml">          <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">className</span>=<span class="hljs-string">&quot;mt-4&quot;</span>&gt;</span></span><br><span class="language-xml">            <span class="hljs-tag">&lt;<span class="hljs-name">Form.Item</span> <span class="hljs-attr">label</span>=<span class="hljs-string">&quot;缩放&quot;</span>&gt;</span></span><br><span class="language-xml">              <span class="hljs-tag">&lt;<span class="hljs-name">Slider</span></span></span><br><span class="hljs-tag"><span class="language-xml">                <span class="hljs-attr">min</span>=<span class="hljs-string">&#123;0.1&#125;</span></span></span><br><span class="hljs-tag"><span class="language-xml">                <span class="hljs-attr">max</span>=<span class="hljs-string">&#123;3&#125;</span></span></span><br><span class="hljs-tag"><span class="language-xml">                <span class="hljs-attr">step</span>=<span class="hljs-string">&#123;0.01&#125;</span></span></span><br><span class="hljs-tag"><span class="language-xml">                <span class="hljs-attr">value</span>=<span class="hljs-string">&#123;zoomScale&#125;</span></span></span><br><span class="hljs-tag"><span class="language-xml">                <span class="hljs-attr">onChange</span>=<span class="hljs-string">&#123;setZoomScale&#125;</span></span></span><br><span class="hljs-tag"><span class="language-xml">                <span class="hljs-attr">tooltip</span>=<span class="hljs-string">&#123;&#123;</span> <span class="hljs-attr">formatter:</span> (<span class="hljs-attr">v</span>) =&gt;</span> `$&#123;Math.round((v || 0) * 100)&#125;%` &#125;&#125;</span><br><span class="language-xml">              /&gt;</span><br><span class="language-xml">            <span class="hljs-tag">&lt;/<span class="hljs-name">Form.Item</span>&gt;</span></span><br><span class="language-xml">          <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="language-xml">        )&#125;</span><br><span class="language-xml">      <span class="hljs-tag">&lt;/&gt;</span></span><br>    );<br>  &#125;,<br>);<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-title class_">ImageCropper</span>;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="九、总结"><a href="#九、总结" class="headerlink" title="九、总结"></a>九、总结</h2><p>一个完整的图片缩放裁剪组件，其实是 5 层叠加：</p>
+<table>
+<thead>
+<tr>
+<th>层级</th>
+<th>职责</th>
+<th>核心技术</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>① 基础裁剪</td>
+<td>裁剪框交互 + canvas 导出</td>
+<td>react-image-crop + <code>scaleX/scaleY</code> 映射</td>
+</tr>
+<tr>
+<td>② 容器适配</td>
+<td>大图不撑爆容器</td>
+<td><code>computeConstrainedSize</code> 双向约束</td>
+</tr>
+<tr>
+<td>③ 视觉缩放</td>
+<td>放大查看细节</td>
+<td><code>transform: scale()</code></td>
+</tr>
+<tr>
+<td>④ 平移拖动</td>
+<td>放大后移动图片</td>
+<td><code>panOffset</code> + Pointer Events + <code>clamp</code></td>
+</tr>
+<tr>
+<td>⑤ 导出修正</td>
+<td>canvas 还原视觉结果</td>
+<td><code>panOffset</code>&#x2F;<code>zoomScale</code> 纳入 <code>drawImage</code> 坐标</td>
+</tr>
+</tbody></table>
+<p>每一层都不能省，每一层都有自己的坑。希望这篇文章能帮你少走弯路。</p>
+<hr>
+<h2 id="附：踩坑时间线（我的迭代记录）"><a href="#附：踩坑时间线（我的迭代记录）" class="headerlink" title="附：踩坑时间线（我的迭代记录）"></a>附：踩坑时间线（我的迭代记录）</h2><table>
+<thead>
+<tr>
+<th>版本</th>
+<th>遇到的问题</th>
+<th>修复</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>v1</td>
+<td>硬编码 <code>naturalWidth</code> 撑爆父容器</td>
+<td>改用 <code>computeConstrainedSize</code> 读父容器宽度</td>
+</tr>
+<tr>
+<td>v2</td>
+<td>加 <code>maxHeight: 70vh</code> 但条件只在 zoom 时才生效</td>
+<td>无条件生效 + 双向约束</td>
+</tr>
+<tr>
+<td>v3</td>
+<td>页面滚动被全局 <code>overflow: hidden</code> 锁死</td>
+<td>发现 <code>base.scss</code> 根因，自建滚动容器</td>
+</tr>
+<tr>
+<td>v4</td>
+<td>Slider 和裁剪区共用容器导致高度计算不准</td>
+<td>Fragment 拆分，<code>containerRef</code> 拿 Slider 之外的高度</td>
+</tr>
+<tr>
+<td>v5</td>
+<td>放大后只能看中间，无法移动</td>
+<td>新增 <code>panOffset</code> + Pointer Events + <code>img transform translate</code></td>
+</tr>
+<tr>
+<td>v6</td>
+<td>放大后裁剪框也拖不动</td>
+<td>删掉 <code>disabled={zoomActive}</code>，发现事件天然分层</td>
+</tr>
+<tr>
+<td>v7</td>
+<td>裁剪器出现滚动条</td>
+<td>wrap div 改 flex column + <code>min-h-0</code></td>
+</tr>
+</tbody></table>
+<hr>
+<p><em>文中示例代码可在 GitHub 仓库获取，含可直接运行的 Demo。</em></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98/" class="category-chain-item">项目实战</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/react/" class="print-no-link">#react</a>
+      
+        <a href="/tags/%E5%9B%BE%E7%89%87%E8%A3%81%E5%89%AA/" class="print-no-link">#图片裁剪</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>react-image-crop：实现图片缩放裁剪</div>
+      <div>http://example.com/2025/08/10/项目实战/react-image-crop：实现图片缩放裁剪/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年8月10日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/08/10/%E5%89%8D%E7%AB%AF/%E8%99%9A%E6%8B%9FDOM%20%E4%B8%8E%20Diff%20%E7%AE%97%E6%B3%95/" title="虚拟 DOM 与 Diff 算法">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">虚拟 DOM 与 Diff 算法</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/08/01/AI/Codex%20%E6%96%9C%E6%9D%A0%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/" title="Codex 斜杠命令大全">
+                        <span class="hidden-mobile">Codex 斜杠命令大全</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

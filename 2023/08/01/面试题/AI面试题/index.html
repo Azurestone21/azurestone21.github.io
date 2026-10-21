@@ -1,0 +1,804 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="AI面试题SSE为什么 AI 对话场景选 SSE 而不是 WebSocket？ 需求本质：大模型流式输出是服务端单向持续推流（服务端 → 客户端），客户端只需接收 token 并渲染，不需要 WebSocket 的全双工能力。 SSE 优势：基于 HTTP&#x2F;HTTPS，更容易接入现有网关、负载均衡和鉴权体系；原生支持断线重连；更轻量。 WebSocket 劣势：双向能力在此场景下是冗余的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AI面试题">
+<meta property="og:url" content="http://example.com/2023/08/01/%E9%9D%A2%E8%AF%95%E9%A2%98/AI%E9%9D%A2%E8%AF%95%E9%A2%98/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="AI面试题SSE为什么 AI 对话场景选 SSE 而不是 WebSocket？ 需求本质：大模型流式输出是服务端单向持续推流（服务端 → 客户端），客户端只需接收 token 并渲染，不需要 WebSocket 的全双工能力。 SSE 优势：基于 HTTP&#x2F;HTTPS，更容易接入现有网关、负载均衡和鉴权体系；原生支持断线重连；更轻量。 WebSocket 劣势：双向能力在此场景下是冗余的">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-07-31T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-21T16:24:05.625Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="面试题">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>AI面试题 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">AI面试题</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-08-01 00:00" pubdate>
+          2023年8月1日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          8.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          68 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">AI面试题</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="AI面试题"><a href="#AI面试题" class="headerlink" title="AI面试题"></a>AI面试题</h1><h2 id="SSE"><a href="#SSE" class="headerlink" title="SSE"></a>SSE</h2><h3 id="为什么-AI-对话场景选-SSE-而不是-WebSocket？"><a href="#为什么-AI-对话场景选-SSE-而不是-WebSocket？" class="headerlink" title="为什么 AI 对话场景选 SSE 而不是 WebSocket？"></a>为什么 AI 对话场景选 SSE 而不是 WebSocket？</h3><ul>
+<li><strong>需求本质</strong>：大模型流式输出是<strong>服务端单向持续推流</strong>（服务端 → 客户端），客户端只需接收 token 并渲染，不需要 WebSocket 的全双工能力。</li>
+<li><strong>SSE 优势</strong>：基于 HTTP&#x2F;HTTPS，更容易接入现有网关、负载均衡和鉴权体系；原生支持断线重连；更轻量。</li>
+<li><strong>WebSocket 劣势</strong>：双向能力在此场景下是冗余的，反而引入了额外的心跳维护、连接状态管理和更复杂的负载均衡配置成本。</li>
+</ul>
+<h3 id="为什么不用原生-EventSource？如何自己实现-SSE-解析？"><a href="#为什么不用原生-EventSource？如何自己实现-SSE-解析？" class="headerlink" title="为什么不用原生 EventSource？如何自己实现 SSE 解析？"></a>为什么不用原生 EventSource？如何自己实现 SSE 解析？</h3><ul>
+<li><strong>EventSource 的硬伤</strong>：原生 API 只支持 <strong>GET</strong> 请求，无法携带请求体（POST body），也不方便自定义 Header（如 <code>Authorization</code> 传 Token），这在需要鉴权的 AI 接口中无法接受。</li>
+<li><strong>替代方案</strong>：使用 <strong><code>fetch</code> + <code>ReadableStream</code></strong> 发起 POST 请求，手动读取响应流并解析 SSE 协议格式。</li>
+<li><strong>协议格式</strong>：需要按行解析，遇到空行（<code>\n\n</code>）才代表一个完整 Event 结束，同时提取 <code>data:</code>、<code>event:</code>、<code>id:</code> 等字段。</li>
+</ul>
+<h3 id="如何处理-SSE-的“半包”与“粘包”问题？"><a href="#如何处理-SSE-的“半包”与“粘包”问题？" class="headerlink" title="如何处理 SSE 的“半包”与“粘包”问题？"></a>如何处理 SSE 的“半包”与“粘包”问题？</h3><ul>
+<li><strong>问题根因</strong>：TCP 是字节流协议，没有消息边界。一次 <code>read</code> 拿到的数据可能包含半个 SSE 消息，也可能包含多个消息粘连在一起。</li>
+<li><strong>解决方案</strong>：维护一个<strong>缓冲区（Buffer）</strong>。每次收到 chunk 后追加到 buffer 中，然后按换行符切分，检查是否遇到空行。只有遇到空行才取出完整事件进行解析，剩余不完整的数据留在 buffer 中等待下一个 chunk。</li>
+<li><strong>中文乱码</strong>：如果 chunk 截断了多字节字符（如中文），需要使用 <code>TextDecoder</code> 的 <code>&#123; stream: true &#125;</code> 模式进行流式解码，避免字符被从中间劈开导致乱码。</li>
+</ul>
+<h3 id="SSE-断线重连与消息去重怎么设计？"><a href="#SSE-断线重连与消息去重怎么设计？" class="headerlink" title="SSE 断线重连与消息去重怎么设计？"></a>SSE 断线重连与消息去重怎么设计？</h3><p>AI 流式输出耗时长，网络抖动极易导致连接中断。</p>
+<ul>
+<li><strong>服务端配合</strong>：服务端为每个事件生成递增的 <code>id</code> 字段。如果使用原生 <code>EventSource</code>，浏览器重连时会自动在 Header 中携带 <code>Last-Event-ID</code>，服务端据此从断点继续推送。</li>
+<li><strong>自定义实现</strong>：如果用 <code>fetch</code> 自己解析，需要在前端维护最后收到的 <code>id</code>，重连时手动带上该 ID 请求续传。</li>
+<li><strong>去重兜底</strong>：即使有 <code>Last-Event-ID</code>，服务端可能因实现问题重复发送。前端应在渲染层做幂等校验，例如记录已渲染的最大序号，只渲染序号更大的数据。</li>
+</ul>
+<h3 id="高频流式数据如何优化前端渲染性能？"><a href="#高频流式数据如何优化前端渲染性能？" class="headerlink" title="高频流式数据如何优化前端渲染性能？"></a>高频流式数据如何优化前端渲染性能？</h3><p>当 token 以每秒上百个的速度到达时，直接每次 <code>setState</code> 会导致 React 重渲染卡顿。</p>
+<ul>
+<li><strong>渲染节流</strong>：使用 <code>requestAnimationFrame</code> 将数据接收与 UI 更新解耦。数据可以高频到达并暂存在 ref 或 buffer 中，但每帧（约 16ms）只合并触发一次 React 状态更新，将多次 token 合并为一次渲染。</li>
+<li><strong>解析分离</strong>：如果 Markdown 解析或代码高亮开销较大，可以考虑将解析逻辑放到 Web Worker 中，避免阻塞主线程。</li>
+</ul>
+<h3 id="浏览器对-SSE-的连接数限制是什么？如何突破？"><a href="#浏览器对-SSE-的连接数限制是什么？如何突破？" class="headerlink" title="浏览器对 SSE 的连接数限制是什么？如何突破？"></a>浏览器对 SSE 的连接数限制是什么？如何突破？</h3><ul>
+<li><strong>限制</strong>：在 HTTP&#x2F;1.1 协议下，浏览器通常限制<strong>同域名下最多 6 个并发连接</strong>。如果页面同时打开多个 SSE 连接，会阻塞其他请求。</li>
+<li><strong>突破方式</strong>：升级到 <strong>HTTP&#x2F;2</strong>。HTTP&#x2F;2 的多路复用特性允许在同一个 TCP 连接上并发多个流，彻底解决了域名级别的连接数限制问题。</li>
+</ul>
+<h2 id="Prompt"><a href="#Prompt" class="headerlink" title="Prompt"></a>Prompt</h2><h3 id="前端怎么保证模型输出能被-JSON-parse-稳定解析？"><a href="#前端怎么保证模型输出能被-JSON-parse-稳定解析？" class="headerlink" title="前端怎么保证模型输出能被 JSON.parse 稳定解析？"></a>前端怎么保证模型输出能被 <code>JSON.parse</code> 稳定解析？</h3><p>分三层。</p>
+<p><strong>Prompt 层</strong>明确输出契约，用 JSON Schema 或固定字段说明约束结构，并加否定性约束“不要在 JSON 外包含任何散文”。</p>
+<p><strong>API 层</strong>优先开启 <code>response_format: &#123; type: &quot;json_object&quot; &#125;</code> 等结构化输出模式，这比纯靠 Prompt 可靠得多。</p>
+<p><strong>前端代码层</strong>必须做防御式解析：<code>try-catch</code> 包裹 <code>JSON.parse</code>，失败时降级展示兜底文案并上报日志，而不是让整个组件树崩溃。关键判断：Prompt 负责解释字段语义，程序负责硬校验，二者不能互相替代。</p>
+<h3 id="System-Prompt-应该放什么、不该放什么？"><a href="#System-Prompt-应该放什么、不该放什么？" class="headerlink" title="System Prompt 应该放什么、不该放什么？"></a>System Prompt 应该放什么、不该放什么？</h3><blockquote>
+<p>“稳定规则”与“动态上下文”的分层。</p>
+</blockquote>
+<p>System Prompt 是模型的<strong>长期行为契约</strong>，放角色目标、任务边界、输出契约、工具规则、异常处理与安全约束。</p>
+<p><strong>不该放</strong>的是频繁变化的业务数据（实时价格、库存、用户订单状态），这些应该通过 RAG 或工具在请求时注入，硬编码在 System Prompt 里很快过期。</p>
+<p>静态规则放在 Prompt 最前面可以利用 Prompt Caching 复用 KV Cache，降低首 token 延迟和成本；动态内容按优先级排在后面。</p>
+<h3 id="Prompt-里的变量插值和类型安全，前端怎么管？"><a href="#Prompt-里的变量插值和类型安全，前端怎么管？" class="headerlink" title="Prompt 里的变量插值和类型安全，前端怎么管？"></a>Prompt 里的变量插值和类型安全，前端怎么管？</h3><p>Prompt 模板本质是<strong>从变量到最终字符串的函数</strong>。前端可以封装一个类型安全的模板解析器，用 TypeScript 泛型约束变量名和类型，在编译期发现“模板里写了 <code>&#123;&#123;userName&#125;&#125;</code> 但调用时传的是 <code>userId</code>”这类错误。实践上，模板库需要版本管理和 A&#x2F;B 测试能力，改一版 Prompt 跑一遍评估集，指标不降才上线。</p>
+<h3 id="模型输出跑题或格式漂移，前端能做什么？"><a href="#模型输出跑题或格式漂移，前端能做什么？" class="headerlink" title="模型输出跑题或格式漂移，前端能做什么？"></a>模型输出跑题或格式漂移，前端能做什么？</h3><p>前端不直接改模型，但可以在<strong>接入层</strong>做拦截和修正。</p>
+<p>格式漂移的典型场景是：要求输出 JSON 但模型夹带了 Markdown 代码块标记（<code>json ... </code>）。处理方式是在 <code>JSON.parse</code> 之前先做清洗（提取第一个 <code>&#123;</code> 到最后一个 <code>&#125;</code> 之间的内容），再解析。</p>
+<p>如果解析成功但字段不符合预期 schema，前端可以用轻量校验库做字段级检查，缺失必填字段时触发重试或展示降级 UI。</p>
+<p>如果跑题是语义层面的（答非所问），前端能做的是把用户负面反馈和原始 Prompt 版本号一起上报，作为后端优化 Prompt 或检索链路的信号，而不是在前端硬改 Prompt 试图“修”语义问题。</p>
+<h3 id="前端-AICoding-场景中，Prompt-怎么拆解任务？"><a href="#前端-AICoding-场景中，Prompt-怎么拆解任务？" class="headerlink" title="前端 AICoding 场景中，Prompt 怎么拆解任务？"></a>前端 AICoding 场景中，Prompt 怎么拆解任务？</h3><p>核心原则是<strong>分而治之，不要一句话生成完整系统</strong>。</p>
+<p>正确的拆解顺序：先让 AI 确认技术栈和目录结构 → 再生成静态骨架（布局、样式）→ 再绑定数据和交互 → 最后让 AI 自查异常处理。每一步的 Prompt 都带上明确约束：框架版本、UI 库、命名规范、是否输出 TypeScript 类型。</p>
+<p>加分点：提到你会先 Review AI 生成代码的<strong>可控性</strong>（是否引入未约定的依赖、是否有 XSS 风险、异常路径是否处理），再决定是否采纳，而不是直接复制粘贴。</p>
+<h3 id="Prompt-工程和-Context-Engineering-什么区别"><a href="#Prompt-工程和-Context-Engineering-什么区别" class="headerlink" title="Prompt 工程和 Context Engineering 什么区别"></a>Prompt 工程和 Context Engineering 什么区别</h3><p><strong>Prompt 工程管的是“指令怎么写清楚”，Context Engineering 管的是“模型该看到什么信息”</strong>。前端在这两层都有实际控制点：Prompt 模板的类型安全和版本管理、上下文（RAG 结果、用户画像、历史摘要）的拼装顺序和 token 预算分配。</p>
+<h2 id="Skills"><a href="#Skills" class="headerlink" title="Skills"></a>Skills</h2><h3 id="什么是-Agent-Skills？它由哪几部分组成？"><a href="#什么是-Agent-Skills？它由哪几部分组成？" class="headerlink" title="什么是 Agent Skills？它由哪几部分组成？"></a>什么是 Agent Skills？它由哪几部分组成？</h3><ul>
+<li>Agent Skills 是用自然语言（通常是 Markdown）编写的“岗位操作手册”，告诉 AI 在特定场景下<strong>何时做、做什么、怎么做、什么不能做</strong>。</li>
+<li><strong>结构</strong>：一个 Skill 通常是一个文件夹，核心是 <code>SKILL.md</code>（含 YAML Frontmatter 元数据与正文指令），可选包含 <code>scripts/</code>（可执行脚本）、<code>references/</code>（参考文档）、<code>assets/</code>（模板资源）。</li>
+<li><strong>四要素</strong>：触发条件（Trigger）、指令（Instructions）、脚本&#x2F;工具（Scripts）、约束（Constraints）。</li>
+</ul>
+<h3 id="Skill-和普通提示词（Prompt）到底有什么区别？"><a href="#Skill-和普通提示词（Prompt）到底有什么区别？" class="headerlink" title="Skill 和普通提示词（Prompt）到底有什么区别？"></a>Skill 和普通提示词（Prompt）到底有什么区别？</h3><ul>
+<li><strong>本质区别</strong>：普通 Prompt 是一段静态指令；Skill 是<strong>可发现、可按需加载的能力资产</strong>。它通常包含触发条件（description）、执行步骤、可调用的脚本&#x2F;资源、以及约束条件。</li>
+<li><strong>关键机制</strong>：Skill 实现了<strong>渐进式披露（Progressive Disclosure）</strong>。系统不会一次性把所有 Skill 内容塞进上下文，而是先通过精简的元数据（name&#x2F;description）让模型判断“是否适用”，只有在触发后才加载完整指令或脚本。这解决了多规则场景下 Prompt 过长导致的注意力分散和 Token 浪费问题。</li>
+<li><strong>追问防御</strong>：“既然就是提示词，为什么不直接塞进 System Prompt？”答：直接塞入会导致上下文膨胀、规则冲突且无法版本化管理。Skill 是按需调用的“操作手册”，而非常驻的“背景知识”。</li>
+</ul>
+<h3 id="装了几十个-Skill，上下文为什么没被撑爆？-技能数量变大后怎么办？"><a href="#装了几十个-Skill，上下文为什么没被撑爆？-技能数量变大后怎么办？" class="headerlink" title="装了几十个 Skill，上下文为什么没被撑爆？&#x2F; 技能数量变大后怎么办？"></a>装了几十个 Skill，上下文为什么没被撑爆？&#x2F; 技能数量变大后怎么办？</h3><ul>
+<li><strong>上下文层面</strong>：依靠<strong>渐进式加载</strong>。系统启动时只加载所有 Skill 的 <code>name</code> 和 <code>description</code>（极少量 Token），只有当任务匹配时，才加载该 Skill 的完整正文和脚本。</li>
+<li><strong>检索与组合层面</strong>：当技能库变大，关键变成<strong>语义检索 + 结构化筛选</strong>。不能仅靠名字相似度，还要结合环境、权限、工具版本进行路由。同时需要处理依赖图、冲突检测和组合规划（例如 A Skill 的输出是否适配 B Skill 的输入）。</li>
+<li><strong>评测指标</strong>：关注技能命中率、组合成功率、无效调用率，而非单纯堆砌数量。</li>
+</ul>
+<h3 id="Skill-怎么做版本管理？"><a href="#Skill-怎么做版本管理？" class="headerlink" title="Skill 怎么做版本管理？"></a>Skill 怎么做版本管理？</h3><ul>
+<li><strong>为什么需要</strong>：Skill 是会被反复修改的文本资产（调整 description 优化触发率、更新脚本逻辑），改坏了需要回退，多人协作需要防覆盖。</li>
+<li><strong>方案分层</strong>：<ul>
+<li><strong>轻量级</strong>：在 <code>SKILL.md</code> 的 frontmatter 中维护语义化版本号（如 <code>1.3.0</code>），并配合 <code>CHANGELOG.md</code> 记录改动内容。</li>
+<li><strong>工程化</strong>：将整个 Skill 目录（含脚本、参考文档）纳入 <strong>Git</strong> 管理。版本管理的对象是整个文件夹，而不仅仅是主文件。线上出问题时按版本标签回滚。</li>
+</ul>
+</li>
+</ul>
+<h3 id="Skill-和-MCP（Model-Context-Protocol）是什么关系？"><a href="#Skill-和-MCP（Model-Context-Protocol）是什么关系？" class="headerlink" title="Skill 和 MCP（Model Context Protocol）是什么关系？"></a>Skill 和 MCP（Model Context Protocol）是什么关系？</h3><ul>
+<li><strong>MCP 是“手”</strong>：负责连接外部工具和数据源（如数据库、Slack、本地文件系统），解决“能不能访问”的问题。</li>
+<li><strong>Skill 是“本事&#x2F;说明书”</strong>：教 Agent 在拿到工具权限后，<strong>按什么流程、什么规范去操作</strong>。Skill 可以调用 MCP 提供的工具，但 Skill 本身不负责连接外部系统。</li>
+</ul>
+<h2 id="MCP"><a href="#MCP" class="headerlink" title="MCP"></a>MCP</h2><h3 id="MCP是什么？"><a href="#MCP是什么？" class="headerlink" title="MCP是什么？"></a>MCP是什么？</h3><p><strong>MCP 是一个开放协议，用来标准化 AI 应用和外部工具、数据源之间的连接方式。</strong></p>
+<p>它解决的核心问题是集成成本。没有 MCP 时，N 个 AI 应用对接 M 个工具，要写 N×M 套适配代码；有了 MCP，工具方实现一个 Server，任何支持 MCP 的应用都能直接发现和调用，变成 N+M，业内把它比作“AI 领域的 USB-C”。</p>
+<p>架构上分三个角色：<strong>Host</strong> 是用户实际用的 AI 应用，<strong>Client</strong> 嵌在 Host 里负责和单个 Server 建立连接，<strong>Server</strong> 把外部能力包装成标准接口暴露出来。Server 对外提供三类东西：<strong>Tools</strong> 由模型决定何时调用，<strong>Resources</strong> 由应用决定何时加载，<strong>Prompts</strong> 由用户显式选择。</p>
+<h3 id="MCP-和-Function-Calling-到底有什么区别？"><a href="#MCP-和-Function-Calling-到底有什么区别？" class="headerlink" title="MCP 和 Function Calling 到底有什么区别？"></a>MCP 和 Function Calling 到底有什么区别？</h3><p>两者不在同一层。</p>
+<p>Function Calling 解决的是<strong>模型如何表达“我要调用什么”</strong>，输出的是工具名和结构化参数，属于模型 API 层的能力。</p>
+<p>MCP 解决的是<strong>客户端如何发现、获取和接入外部能力</strong>，属于应用集成层协议。</p>
+<p>完整链路是：MCP Client 从 Server 发现工具 → 映射成模型能理解的 schema → 模型输出 Function Call → runtime 通过 MCP 去 Server 执行。</p>
+<p>它们是“上下游关系”而非“替代关系”。</p>
+<h3 id="前端在-MCP-架构里到底负责什么？"><a href="#前端在-MCP-架构里到底负责什么？" class="headerlink" title="前端在 MCP 架构里到底负责什么？"></a>前端在 MCP 架构里到底负责什么？</h3><p>前端不负责实现 MCP Server（那是后端或工具开发者的职责），也不直接参与协议层的 JSON-RPC 通信。前端消费的是 MCP 暴露能力的<strong>上层结果</strong>：管理 Tool 调用的状态 UI（哪个工具正在执行、耗时多久、返回了什么）、展示 Agent 的思考过程、处理 streaming 渲染。如果面试官追问“前端要自己连 MCP Server 吗”，答案是否定的——MCP 的 Client 通常在宿主应用（如 Cursor、IDE 或后端 Agent runtime）内部，前端拿到的已经是工具调用事件或结构化结果。</p>
+<h3 id="Tools、Resources、Prompts-三者的区别是什么？"><a href="#Tools、Resources、Prompts-三者的区别是什么？" class="headerlink" title="Tools、Resources、Prompts 三者的区别是什么？"></a>Tools、Resources、Prompts 三者的区别是什么？</h3><p>区别在于“谁决定何时使用”。</p>
+<p><strong>Tools 由模型控制</strong>，LLM 根据上下文自行决定何时调用，通常有副作用（写文件、调 API、发消息）。</p>
+<p><strong>Resources 由应用控制</strong>，Host 或用户决定何时加载，是只读上下文（读日志、查文档）。</p>
+<p><strong>Prompts 由用户控制</strong>，是预定义的、带参数的提示模板，用户显式选择使用。记忆口诀：Tools 改变世界，Resources 观察世界，Prompts 结构化表达。</p>
+<h3 id="MCP-的传输方式有哪些？早期方案有什么问题？"><a href="#MCP-的传输方式有哪些？早期方案有什么问题？" class="headerlink" title="MCP 的传输方式有哪些？早期方案有什么问题？"></a>MCP 的传输方式有哪些？早期方案有什么问题？</h3><p>当前规范使用 <strong>stdio</strong>（本地子进程）和 <strong>Streamable HTTP</strong>（远程服务）。</p>
+<p>早期 2024-11-05 规范中的“HTTP + SSE 双端点”方案已在 2025-03-26 规范更新中被标记为 deprecated，新项目不应再描述或使用双 SSE 端点方案。</p>
+<h3 id="MCP-和-SSE-什么关系"><a href="#MCP-和-SSE-什么关系" class="headerlink" title="MCP 和 SSE 什么关系"></a>MCP 和 SSE 什么关系</h3><p>SSE 是早期 MCP 远程传输的一种实现方式，但当前规范已经演进，MCP 的远程传输基于 Streamable HTTP。前端在消费 MCP 结果时，仍然可能通过 SSE 接收流式事件，但那是应用层的流式通道，不是 MCP 协议本身的规定。</p>
+<h3 id="MCP-工具调用失败了，前端怎么处理？"><a href="#MCP-工具调用失败了，前端怎么处理？" class="headerlink" title="MCP 工具调用失败了，前端怎么处理？"></a>MCP 工具调用失败了，前端怎么处理？</h3><p>分两层。</p>
+<p><strong>执行层</strong>的错误（工具不存在、参数校验失败、超时）通常由 MCP Client 或后端 runtime 捕获，前端拿到的是结构化的错误事件。前端要做的是<strong>把错误可视化，而不是静默吞掉</strong>：展示哪个工具调用失败、错误类型是什么、是否可重试。</p>
+<p><strong>渲染层</strong>的兜底是另一层：如果工具返回的数据要驱动 UI（比如生成图表配置），防御式解析，失败时降级展示原始数据或错误提示，避免组件树崩溃。面试中如果被追问“重试策略谁负责”，标准答案是重试逻辑在 runtime 层，前端提供用户手动重试的入口即可。</p>
+<h3 id="MCP-的核心角色有哪些？各自职责边界是什么？"><a href="#MCP-的核心角色有哪些？各自职责边界是什么？" class="headerlink" title="MCP 的核心角色有哪些？各自职责边界是什么？"></a>MCP 的核心角色有哪些？各自职责边界是什么？</h3><p>三个角色，职责必须分清。</p>
+<p><strong>Host</strong> 是用户实际使用的 AI 应用（如 Cursor、Claude Desktop），掌握用户身份、策略和模型调用，决定哪些工具可以暴露给模型。</p>
+<p><strong>Client</strong> 是 Host 内部的协议连接器，一个 Client 对应一个 Server，负责初始化、能力发现和请求转发，不做复杂业务授权。</p>
+<p><strong>Server</strong> 是能力提供方，封装外部系统，暴露 Tools、Resources、Prompts，不关心上层是哪个 Host。关键判断：授权策略应由 Host 主导，而不是全部下沉到 Server，否则无法统一治理。</p>
+<h3 id="MCP-Server-的安全威胁主要有哪些？如何防护？"><a href="#MCP-Server-的安全威胁主要有哪些？如何防护？" class="headerlink" title="MCP Server 的安全威胁主要有哪些？如何防护？"></a>MCP Server 的安全威胁主要有哪些？如何防护？</h3><p>这是进阶题，考察是否具备生产环境思维。</p>
+<p>主要威胁向量包括：</p>
+<ul>
+<li><strong>工具结果中的提示注入</strong>（Server 返回的内容劫持 LLM 后续行为）</li>
+<li><strong>工具投毒</strong>（描述与实际行为不符）</li>
+<li><strong>通过 sampling 窃取凭证</strong></li>
+<li><strong>资源范围蔓延</strong></li>
+<li><strong>供应链攻击</strong>（安装了被篡改的社区 Server）</li>
+</ul>
+<p>防护原则：Host 作为信任锚点，将工具结果视为<strong>不可信数据</strong>而非指令；Server 遵循最小权限原则；对敏感操作要求人工确认；固定 Server 版本并审查来源。</p>
+<h3 id="企业级-MCP-部署如何架构？"><a href="#企业级-MCP-部署如何架构？" class="headerlink" title="企业级 MCP 部署如何架构？"></a>企业级 MCP 部署如何架构？</h3><p>如果面试的是平台或架构岗，这道题区分度很高。</p>
+<p>核心挑战是避免每个 AI 产品重复对接每个 Server，同时管理差异化的访问权限。</p>
+<p>推荐方案是<strong>集中式 MCP Gateway</strong>：所有 AI 产品通过网关连接，网关负责认证授权、按客户端身份过滤能力列表（如客服机器人不应看到代码执行工具）、审计日志和限流。每个 Server 独立持有凭证，产品不直接接触。网关本身是单点，需用 active-active 部署兜底。</p>
+<h3 id="MCP-和-A2A-什么关系"><a href="#MCP-和-A2A-什么关系" class="headerlink" title="MCP 和 A2A 什么关系"></a>MCP 和 A2A 什么关系</h3><p><strong>MCP 解决 Agent ↔ 工具的纵向连接，A2A 解决 Agent ↔ Agent 的横向协作</strong>，两者互补而非竞争。Agent 内部用 MCP 调工具，Agent 之间用 A2A 通信。</p>
+<h2 id="Harness"><a href="#Harness" class="headerlink" title="Harness"></a>Harness</h2><h3 id="什么是-Harness？"><a href="#什么是-Harness？" class="headerlink" title="什么是 Harness？"></a>什么是 Harness？</h3><p>Harness 则是 Agent 的“操作系统层”或“缰绳”，负责把模型、工具、上下文、执行循环绑在一起，让模型真正能干活；DeepSeek 的公式很直白：Model + Harness &#x3D; Agent。</p>
+<h3 id="Harness-和-Prompt-Engineering、Context-Engineering-什么关系？"><a href="#Harness-和-Prompt-Engineering、Context-Engineering-什么关系？" class="headerlink" title="Harness 和 Prompt Engineering、Context Engineering 什么关系？"></a>Harness 和 Prompt Engineering、Context Engineering 什么关系？</h3><p>这是区分认知层次的关键题。三者是递进且互补的关系：</p>
+<p><strong>Prompt Engineering</strong> 优化的是“指令表达”（模板、示例、输出格式）；</p>
+<p><strong>Context Engineering</strong> 优化的是“本轮可见信息”（历史、记忆、检索证据）；</p>
+<p><strong>Harness Engineering</strong> 优化的是 <strong>Agent 运行闭环</strong>——包括工具调用、状态维护、结果验证、故障恢复。</p>
+<p>简单说，前两者管“模型看到什么”，Harness 管“模型在什么系统里行动”。</p>
+<h3 id="一个高质量的-Harness-包含哪些核心组件？"><a href="#一个高质量的-Harness-包含哪些核心组件？" class="headerlink" title="一个高质量的 Harness 包含哪些核心组件？"></a>一个高质量的 Harness 包含哪些核心组件？</h3><p>核心包括：<strong>状态机</strong>（维护目标和计划）、<strong>工具层</strong>（通过 Schema 和沙箱限制动作边界）、<strong>Checkpoint</strong>（保存恢复点）、<strong>Validator</strong>（判断产物是否合格）、<strong>Trace</strong>（记录调用链和结果）。模型只负责“提出下一步”，Harness 负责“执行并返回 Observation”。黄仁勋在访谈中进一步补充，Harness 还包括 Prompt、工具说明、记忆、上下文管理、任务拆分、重试、评测和权限控制。</p>
+<h3 id="为什么同一个模型，换一套-Harness-效果差很多？"><a href="#为什么同一个模型，换一套-Harness-效果差很多？" class="headerlink" title="为什么同一个模型，换一套 Harness 效果差很多？"></a>为什么同一个模型，换一套 Harness 效果差很多？</h3><p>用数据说话。LangChain 让 Nemotron 3 Ultra 跑 Deep Agents 评测，<strong>模型权重没变</strong>，只调整了系统 Prompt、工具描述和中间件，成绩从原始状态追到 0.86（最高分 0.87），但单次成本从 <strong>43.48 美元降到 4.48 美元</strong>，便宜近 10 倍。这说明模型能力是上限，Harness 决定你能释放多少、以什么成本释放。</p>
+<h3 id="Harness-的工程落地指标有哪些？"><a href="#Harness-的工程落地指标有哪些？" class="headerlink" title="Harness 的工程落地指标有哪些？"></a>Harness 的工程落地指标有哪些？</h3><p>不要答“准确率”。核心指标是：<strong>任务成功率、无效调用率、恢复成功率、P95 时延、单位成功任务成本</strong>。回归测试场景应覆盖：长任务、工具异常、权限拒绝、中断恢复。</p>
+<h3 id="有没有了解过-deepseek-harness？"><a href="#有没有了解过-deepseek-harness？" class="headerlink" title="有没有了解过 deepseek harness？"></a>有没有了解过 deepseek harness？</h3><p>DeepSeek Harness 是 DeepSeek 开源的 Agent 运行时，核心设计原则是“一切皆插件”——模型适配器、工具注册、会话日志甚至 Agent Loop 本身都可替换，没有特权内核。</p>
+<p>它提供四种运行模式，兼容 Op</p>
+<p>enAI、Anthropic、Gemini 等模型，还支持把 Claude Code 作为子 Agent 调用。会话日志采用只追加设计，支持恢复、分叉、回放，对调试和可观测性很友好。</p>
+<h2 id="Agent"><a href="#Agent" class="headerlink" title="Agent"></a>Agent</h2><h3 id="什么是-Agent？"><a href="#什么是-Agent？" class="headerlink" title="什么是 Agent？"></a>什么是 Agent？</h3><p>Agent 是一种 <strong>以目标为导向、能够自主决策并执行行动的软件系统</strong> 。它以大模型为决策核心，但关键区别不在于“模型更聪明”，而在于 <strong>控制权的转移</strong> ：普通大模型调用是“你问一句，它答一句”，路径由用户预设；Agent 则是“你给一个目标，它自己拆解步骤、选择工具、观察结果，并根据反馈决定下一步继续还是调整”，形成一个<strong>感知—决策—执行—观察</strong>的闭环。</p>
+<h3 id="Agent和普通-LLM-调用、Workflow-有什么区别？"><a href="#Agent和普通-LLM-调用、Workflow-有什么区别？" class="headerlink" title="Agent和普通 LLM 调用、Workflow 有什么区别？"></a>Agent和普通 LLM 调用、Workflow 有什么区别？</h3><p><strong>普通 LLM 调用</strong> ：普通调用是一次性的输入输出，模型不关心执行结果，也没有下一步动作。Agent 有循环，模型每一步都在根据上一步的结果做判断。</p>
+<p><strong>Workflow</strong> ：Workflow 的路径由代码或规则预先固定，即使中间调用了模型，流程本身不因模型判断而改变。</p>
+<h3 id="ReAct-循环在前端视角下是怎样的？"><a href="#ReAct-循环在前端视角下是怎样的？" class="headerlink" title="ReAct 循环在前端视角下是怎样的？"></a>ReAct 循环在前端视角下是怎样的？</h3><blockquote>
+<p>“模型决策”和“前端&#x2F;本地执行”的边界</p>
+</blockquote>
+<p>最小核心循环是：用户输入 → 把工具注册表（Schema）传给模型 → 模型返回 <code>tool_call</code>（JSON）→ 本地执行模块调用对应工具 → 结果追加回上下文 → 循环直到任务完成。前端或客户端在这里的角色是<strong>执行器的宿主和状态的可视化层</strong>：工具调用可能是本地函数，也可能是远端请求，前端需要管理“正在执行哪个工具、等待了多久、返回了什么、是否出错”这一整套异步状态。</p>
+<h3 id="Agent-的工具调用返回了非标准-JSON-或异常数据，前端怎么兜底？"><a href="#Agent-的工具调用返回了非标准-JSON-或异常数据，前端怎么兜底？" class="headerlink" title="Agent 的工具调用返回了非标准 JSON 或异常数据，前端怎么兜底？"></a>Agent 的工具调用返回了非标准 JSON 或异常数据，前端怎么兜底？</h3><blockquote>
+<p>AI 输出不是编译器保证的，前端不能假设它永远合法。</p>
+</blockquote>
+<p>分两层处理。<strong>执行前</strong>做参数校验（Schema 校验），不合法就直接抛 error，把错误信息追加回上下文让模型自我纠错，而不是强行执行。<strong>渲染层</strong>的兜底是另一层：如果 Agent 返回的数据要驱动 UI（比如生成一个图表配置），前端需要做防御式解析，解析失败时降级展示原始文本或错误提示，而不是让整个组件树崩溃。字节面试中就有类似场景题：“AI 生成的 ECharts 图表万一报错，前端怎么兜底？”</p>
+<h3 id="Agent-陷入循环或卡死，前端怎么排查和干预？"><a href="#Agent-陷入循环或卡死，前端怎么排查和干预？" class="headerlink" title="Agent 陷入循环或卡死，前端怎么排查和干预？"></a>Agent 陷入循环或卡死，前端怎么排查和干预？</h3><blockquote>
+<p>Agent “失控”场景</p>
+</blockquote>
+<p><strong>检测层面</strong>，不能只靠 max_steps 熔断。如果 Agent 在前 10 步反复调用同一个工具或同一条命令，即使没到步数上限，也应该触发警告或中断。</p>
+<p><strong>前端干预层面</strong>，需要给用户提供“中断生成”的能力（AbortController），以及在 UI 上清晰展示 Agent 当前处于哪一步、已经重复了什么操作。用户反馈“Agent 卡死不动了”时，前端能做的第一件事是确认是<strong>流断了</strong>还是<strong>执行器卡住了</strong>：看最后一条消息的时间戳、工具调用状态是否一直停在 running。</p>
+<h3 id="多-Agent-的协作过程，前端怎么展示？"><a href="#多-Agent-的协作过程，前端怎么展示？" class="headerlink" title="多 Agent 的协作过程，前端怎么展示？"></a>多 Agent 的协作过程，前端怎么展示？</h3><blockquote>
+<p>理解 Agent 系统是一个有状态、有分支的流程。</p>
+</blockquote>
+<p>常见的多 Agent 结构是 supervisor 模式：主 Agent 做调度和拆解，子 Agent 各自处理具体子任务。前端展示的核心是<strong>把不可见的调度过程可视化</strong>：哪个 Agent 正在工作、它在调用什么工具、主 Agent 把哪个子任务派给了谁、最终结果从哪里返回。技术上，这要求前端能接收并渲染 Agent 执行过程中的<strong>中间事件</strong>（不只是最终的流式 token），并用树形或时间线结构组织这些事件，而不是全部塞进一个线性对话流里。</p>
+<h3 id="Agent-的状态流转（思考→执行→观察→完成）在前端怎么建模？"><a href="#Agent-的状态流转（思考→执行→观察→完成）在前端怎么建模？" class="headerlink" title="Agent 的状态流转（思考→执行→观察→完成）在前端怎么建模？"></a>Agent 的状态流转（思考→执行→观察→完成）在前端怎么建模？</h3><p>不要用一堆零散的 boolean（isLoading、isExecuting、hasError）拼凑，因为 Agent 的状态是<strong>互斥且有序</strong>的。用联合类型或状态机来建模：<code>type AgentState = &#39;thinking&#39; | &#39;executing&#39; | &#39;observing&#39; | &#39;done&#39; | &#39;error&#39;</code>，配合类型守卫确保状态切换合法。</p>
+<p>面试中如果被追问具体工具，提到 XState 或状态图来建模 Agent 完整工作流（含工具调用、条件分支、错误处理）是加分项，但更重要的是说清楚<strong>为什么需要状态机</strong>：Agent 的执行路径不是线性的，工具返回后可能回到思考、可能直接结束、可能进入错误分支，普通的状态变量无法约束这些转换的合法性。</p>
+<h3 id="前端怎么接-MCP？Agent-和-MCP-在系统里的分工是什么？"><a href="#前端怎么接-MCP？Agent-和-MCP-在系统里的分工是什么？" class="headerlink" title="前端怎么接 MCP？Agent 和 MCP 在系统里的分工是什么？"></a>前端怎么接 MCP？Agent 和 MCP 在系统里的分工是什么？</h3><p>MCP 是当前 Agent 面试的架构考点，前端需要知道自己的位置。</p>
+<p>MCP 的本质是<strong>统一工具调用的协议标准</strong>，类似于 AI 时代的 RPC，让模型能以标准方式发现和调用外部工具。</p>
+<p>前端在其中的角色不是实现 MCP Server，而是<strong>消费 MCP 暴露的能力</strong>：管理工具调用的状态 UI、展示 Agent 的思考过程、处理 streaming 渲染。</p>
+<h3 id="怎么看待-Skills？它和-MCP-什么关系？"><a href="#怎么看待-Skills？它和-MCP-什么关系？" class="headerlink" title="怎么看待 Skills？它和 MCP 什么关系？"></a>怎么看待 Skills？它和 MCP 什么关系？</h3><blockquote>
+<p>Agent 能力组织方式的理解层</p>
+</blockquote>
+<p>MCP 是<strong>强约束的连接协议</strong>（“你必须通过这个接口调用工具”），Skills 是<strong>概率性的能力封装</strong>（“建议你按这个流程和上下文去完成任务”）。</p>
+<p>Skills 本质上是 Agent 可复用的能力模块，封装了 Prompt、工具调用策略和上下文逻辑，让模型在特定场景下复用一套已经调好的行为模式。</p>
+<p>前端视角下，Skills 的切换和触发状态可以反映在 UI 上（当前激活了哪个 Skill、它建议了什么下一步），但不要把它和 MCP 混为一谈。</p>
+<h3 id="前端在-Agent-系统里到底有什么不可替代的价值"><a href="#前端在-Agent-系统里到底有什么不可替代的价值" class="headerlink" title="前端在 Agent 系统里到底有什么不可替代的价值"></a>前端在 Agent 系统里到底有什么不可替代的价值</h3><p><strong>Agent 的输出是不确定的、过程是异步的、状态是多步的，而用户需要一个可理解、可中断、可追溯的界面</strong>。模型负责决策，执行器负责动作，前端负责让这个黑盒变得可观察、可控制。点明这个分工，比罗列技术名词更能体现工程判断。</p>
+<h3 id="Agent-的上下文如何管理？"><a href="#Agent-的上下文如何管理？" class="headerlink" title="Agent 的上下文如何管理？"></a>Agent 的上下文如何管理？</h3><p>核心思路是“主动注入”而非“被动调用”。用上下文提供者机制：在每次调用模型前，自动把对话历史、用户偏好、RAG 检索结果注入提示词；调用后，再提取新状态存入记忆。</p>
+<p>关键决策是：每次都需要的信息走上下文提供者（开发者控制、透明注入），按需才用的走工具（模型决定、反应式调用）。长对话中要把状态结构化存储，而不是把整段历史塞进提示词。</p>
+<h3 id="多-Agent-如何串行和并行调度？"><a href="#多-Agent-如何串行和并行调度？" class="headerlink" title="多 Agent 如何串行和并行调度？"></a>多 Agent 如何串行和并行调度？</h3><p>选择依据是任务依赖结构。串行适合子任务输出强耦合、中间结果决定下游的场景；并行适合依赖图浅、子任务独立的场景；层级分解则适合有可分离的内部依赖子图的复杂任务。</p>
+<p>工程上，可以用“并行草稿 + 条件传播”的混合策略：先让多个 Agent 并行产出候选，再根据响应质量决定是否需要串行传播。值得注意的是，编排开销超过总 token 预算的 15% 时，协调成本会吃掉规划收益。</p>
+<h3 id="如何让-Agent-输出可控？"><a href="#如何让-Agent-输出可控？" class="headerlink" title="如何让 Agent 输出可控？"></a>如何让 Agent 输出可控？</h3><p>分三层做约束。</p>
+<p>输入层：统一协议，把任务拆成目标、上下文、约束、输出规范，输出规范写死 JSON Schema。</p>
+<p>系统提示层：用“标识与角色、行为约束、范围限制、升级触发条件、输出格式要求”五段结构，约束用“不会”而非“不应”。</p>
+<p>执行层：Planner-Executor-Checker 分步执行，工具调用加断言，输出校验不过时把错误清单作为反馈让它逐条修正，而不是自由重写。</p>
+<h2 id="RAG"><a href="#RAG" class="headerlink" title="RAG"></a>RAG</h2><h3 id="简单介绍-RAG。它主要解决什么问题，适合哪些场景？"><a href="#简单介绍-RAG。它主要解决什么问题，适合哪些场景？" class="headerlink" title="简单介绍 RAG。它主要解决什么问题，适合哪些场景？"></a>简单介绍 RAG。它主要解决什么问题，适合哪些场景？</h3><p>RAG 是“检索增强生成”：把用户问题在自有知识库中检索相关文档，把检索结果作为上下文塞进提示词，让模型基于特定数据生成答案。</p>
+<p>它解决的是大模型“不知道你的私有数据、不知道最新信息”的问题，且不需要重新训练模型。</p>
+<p>适合场景：客服机器人、企业知识库搜索、基于内部文档的内容生成和摘要。</p>
+<h3 id="前端在-RAG-链路里到底承担什么职责？"><a href="#前端在-RAG-链路里到底承担什么职责？" class="headerlink" title="前端在 RAG 链路里到底承担什么职责？"></a>前端在 RAG 链路里到底承担什么职责？</h3><p>前端不负责向量化、检索、排序，这些在后端或中间层完成。前端的核心价值是<strong>把检索到的证据结构化地呈现给用户，并与流式生成过程融合</strong>，提升可解释性和信任度。</p>
+<p>具体职责拆成三块：接收后端返回的引用片段与消息结构；将引用标记与流式文本对齐渲染（高亮、hover 展示来源、点击跳转）；在长对话场景下保证渲染性能不因引用解析和流式更新而卡顿。</p>
+<h3 id="RAG-的引用（Citation）在前端怎么实现？后端插入标记还是前端匹配？"><a href="#RAG-的引用（Citation）在前端怎么实现？后端插入标记还是前端匹配？" class="headerlink" title="RAG 的引用（Citation）在前端怎么实现？后端插入标记还是前端匹配？"></a>RAG 的引用（Citation）在前端怎么实现？后端插入标记还是前端匹配？</h3><p>明确回答<strong>由后端在生成文本中插入引用标记，前端只负责解析和渲染</strong>。</p>
+<p>前端拿文本去和 chunk 做字符串匹配的方案精度差、性能差，而且流式输出下根本不可行——文本还没生成完，匹配无从谈起。</p>
+<p>具体实现：后端返回结构化的引用数据（chunk 内容、来源文档、位置偏移或标记 ID），前端在流式渲染 Markdown 时，用自定义 renderer 识别标记并替换为可交互的高亮元素。</p>
+<p>面试官追问“怎么判断召回结果可信”时，答案落在<strong>引用可溯源</strong>上：用户点击引用能看到原文 chunk，而不是只看到一段模型生成的漂亮话。</p>
+<h3 id="流式输出和引用渲染怎么融合？"><a href="#流式输出和引用渲染怎么融合？" class="headerlink" title="流式输出和引用渲染怎么融合？"></a>流式输出和引用渲染怎么融合？</h3><p>核心矛盾是流式 chunk 高频到达，引用信息可能在文本生成中途或最后才返回。</p>
+<p>处理原则是<strong>文本流和引用信息分离处理</strong>：先按常规流式链路增量渲染文本，引用数据单独接收或随最后一批数据到达后做二次解析和 diff 更新，避免每来一个 chunk 就重新解析全文引用。</p>
+<p>性能上，用 buffer 批量更新而非逐 chunk 触发 React 重渲染，长对话用虚拟列表避免 DOM 爆炸。</p>
+<h3 id="检索结果不准，前端能做什么？"><a href="#检索结果不准，前端能做什么？" class="headerlink" title="检索结果不准，前端能做什么？"></a>检索结果不准，前端能做什么？</h3><p>前端不直接改检索算法，但可以在体验层做兜底和信号反馈。</p>
+<p>兜底层面：当后端返回的相似度分数低于阈值，或引用列表为空时，前端应展示“未找到相关依据”的提示，而不是让模型裸答。</p>
+<p>信号层面：记录用户对引用来源的点击行为和负面反馈，回流给后端用于评估检索质量。</p>
+<p>如果面试官追问“怎么避免检索漂移”，Prompt 层约束“只基于检索上下文回答”是后端的事，前端能做的是在 UI 上明确区分“有依据的回答”和“无依据的推测”。</p>
+<h3 id="前端本地向量检索（Transformers-js-ONNX-Runtime）考什么？"><a href="#前端本地向量检索（Transformers-js-ONNX-Runtime）考什么？" class="headerlink" title="前端本地向量检索（Transformers.js &#x2F; ONNX Runtime）考什么？"></a>前端本地向量检索（Transformers.js &#x2F; ONNX Runtime）考什么？</h3><p>如果被问到，先说明适用边界——本地向量检索适合<strong>小规模、隐私敏感、离线可用</strong>的场景，不适合替代服务端知识库。</p>
+<p>技术链路：用 Transformers.js 或 ONNX Runtime Web 加载轻量 Embedding 模型，在 Web Worker 中做文本向量化避免阻塞主线程，向量存入 IndexedDB，查询时做余弦相似度匹配。主动提性能代价：端侧模型加载体积、推理延迟、IndexedDB 读写开销都是真实成本，面试官听到你主动谈限制，比只报技术名词加分。</p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h3 id="你如何用-Spec-Coding-和-AI-做技术方案选型？"><a href="#你如何用-Spec-Coding-和-AI-做技术方案选型？" class="headerlink" title="你如何用 Spec Coding 和 AI 做技术方案选型？"></a>你如何用 Spec Coding 和 AI 做技术方案选型？</h3><p>先用 Spec Coding 的方法把选型问题本身结构化：写清目标与非目标、约束条件、候选方案、评估维度、决策标准。然后让 AI 基于这些“可执行的规格”做对比分析，而不是直接问“选哪个好”。AI 生成的建议必须附带证据链和风险点，我把它当“快速调研助手”而非“决策者”。关键原则是：AI 可以帮你整理选项和维度，但最终判断依赖对团队能力、维护成本和长期演进的综合评估。</p>
+<h3 id="日常开发中使用-AI-取得过什么成果？"><a href="#日常开发中使用-AI-取得过什么成果？" class="headerlink" title="日常开发中使用 AI 取得过什么成果？"></a>日常开发中使用 AI 取得过什么成果？</h3><p>在前端日常开发中，我把 AI 主要用在几个高频场景。</p>
+<p>组件开发：描述清楚 props、状态和交互后，AI 直接生成带 TypeScript 类型、样式和基础单测的组件骨架，我只需微调业务逻辑，单个组件从 1 小时压缩到 20 分钟左右。</p>
+<p>样式与响应式：把设计稿描述或截图丢给 AI，生成 Tailwind 或 CSS Module 代码，再让它补齐移动端断点，省去大量查文档时间。</p>
+<p>联调排查：跨域、打包报错、白屏这类问题，把控制台报错和关键代码贴给 AI，通常几分钟内能定位方向，比自己翻源码快很多。</p>
+<p>单测补全：让 AI 基于组件行为生成 Jest&#x2F;Vitest 用例，覆盖边界条件，补测覆盖率提升很快。</p>
+<p>整体感受：AI 把前端开发中“写样板、查 API、调样式、补测试”这些重复性工作大幅压缩，我更多精力放在组件拆分、状态设计、性能优化和业务交互的合理性上。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/AI/" class="print-no-link">#AI</a>
+      
+        <a href="/tags/%E9%9D%A2%E8%AF%95%E9%A2%98/" class="print-no-link">#面试题</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>AI面试题</div>
+      <div>http://example.com/2023/08/01/面试题/AI面试题/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年8月1日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/08/01/%E7%AE%97%E6%B3%95/%E3%80%90%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%A0%91%E9%81%8D%E5%8E%86%EF%BC%88%E5%89%8D%E5%BA%8F%E3%80%81%E4%B8%AD%E5%BA%8F%E3%80%81%E5%90%8E%E5%BA%8F%E3%80%81%E5%B1%82%E5%BA%8F%EF%BC%89/" title="【算法】二叉树遍历（前序、中序、后序、层序）">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">【算法】二叉树遍历（前序、中序、后序、层序）</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/08/01/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/HTTP%20%E5%92%8C%20HTTPS/" title="HTTP 和 HTTPS">
+                        <span class="hidden-mobile">HTTP 和 HTTPS</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
