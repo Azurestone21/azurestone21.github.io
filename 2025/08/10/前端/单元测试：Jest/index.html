@@ -1,0 +1,739 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="单元测试：JestJest 介绍Jest 是一个JavaScript测试框架，专注于简单性。 适用于使用Babel、TypeScript、Node、React、Angular、Vue等的项目。  Jest 不支持 Vite。  入门 安装  12345npm install --save-dev jestyarn add --dev jestpnpm add --save-dev jest   p">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React + Jest 前端项目单元测试">
+<meta property="og:url" content="http://example.com/2025/08/10/%E5%89%8D%E7%AB%AF/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%EF%BC%9AJest/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="单元测试：JestJest 介绍Jest 是一个JavaScript测试框架，专注于简单性。 适用于使用Babel、TypeScript、Node、React、Angular、Vue等的项目。  Jest 不支持 Vite。  入门 安装  12345npm install --save-dev jestyarn add --dev jestpnpm add --save-dev jest   p">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-08-09T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-22T08:36:46.438Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="Jest">
+<meta property="article:tag" content="单元测试">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>React + Jest 前端项目单元测试 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">React + Jest 前端项目单元测试</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-08-10 00:00" pubdate>
+          2025年8月10日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          977 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          9 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">React + Jest 前端项目单元测试</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="单元测试：Jest"><a href="#单元测试：Jest" class="headerlink" title="单元测试：Jest"></a>单元测试：Jest</h1><h2 id="Jest-介绍"><a href="#Jest-介绍" class="headerlink" title="Jest 介绍"></a>Jest 介绍</h2><p><a target="_blank" rel="noopener" href="https://jest.nodejs.cn/">Jest</a> 是一个JavaScript测试框架，专注于简单性。</p>
+<p>适用于使用Babel、TypeScript、Node、React、Angular、Vue等的项目。</p>
+<blockquote>
+<p>Jest 不支持 Vite。</p>
+</blockquote>
+<h2 id="入门"><a href="#入门" class="headerlink" title="入门"></a>入门</h2><ul>
+<li>安装</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs Shell">npm install --save-dev jest<br><br>yarn add --dev jest<br><br>pnpm add --save-dev jest<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>package.json：配置启动命令</li>
+</ul>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs JSON"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;scripts&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;test&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;jest&quot;</span><br>  <span class="hljs-punctuation">&#125;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="使用-TypeScript"><a href="#使用-TypeScript" class="headerlink" title="使用 TypeScript"></a>使用 TypeScript</h2><h3 id="TypeScript-预处理器"><a href="#TypeScript-预处理器" class="headerlink" title="TypeScript 预处理器"></a>TypeScript 预处理器</h3><ul>
+<li><code>ts-jest</code> ：Jest 的 TypeScript 预处理器，负责在运行测试前把 <code>.ts</code> 文件转换掉。</li>
+</ul>
+<h3 id="配置-jest-config-js"><a href="#配置-jest-config-js" class="headerlink" title="配置 jest.config.js"></a>配置 jest.config.js</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs JavaScript"><span class="hljs-variable language_">module</span>.<span class="hljs-property">exports</span> = &#123;<br>  <span class="hljs-attr">preset</span>: <span class="hljs-string">&#x27;ts-jest&#x27;</span>, <span class="hljs-comment">// 关键</span><br>  <span class="hljs-attr">testEnvironment</span>: <span class="hljs-string">&#x27;node&#x27;</span>,<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>除了<code>ts-jest</code>，也可以使用 <code>Babel</code></p>
+</blockquote>
+<h3 id="类型定义"><a href="#类型定义" class="headerlink" title="类型定义"></a>类型定义</h3><p>有两种方法可以为用 TypeScript 编写的测试文件输入 <a target="_blank" rel="noopener" href="https://jest.nodejs.cn/docs/api">Jest 全局 API</a>。</p>
+<ol>
+<li><code>@jest/globals</code>：需要导入 API 使用。Jest 附带的类型定义，并且每次更新 Jest 时都会更新。</li>
+<li><code>@types/jest</code>：无需导入 API。但 <code>@types/jest</code> 是 DefinitelyTyped 维护的第三方库，因此可能尚未涵盖最新的 Jest 功能或版本。尽可能匹配 Jest 和 <code>@types/jest</code> 的版本。</li>
+</ol>
+<h2 id="常用-Jest-API-速查"><a href="#常用-Jest-API-速查" class="headerlink" title="常用 Jest API 速查"></a>常用 Jest API 速查</h2><h3 id="1-组织测试-describe"><a href="#1-组织测试-describe" class="headerlink" title="1 组织测试 describe"></a>1 组织测试 describe</h3><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-title function_">describe</span>(<span class="hljs-string">&quot;debounce&quot;</span>, <span class="hljs-function">() =&gt;</span> &#123;<br>  <span class="hljs-title function_">beforeAll</span>(<span class="hljs-function">() =&gt;</span> &#123;&#125;); <span class="hljs-comment">// 组内所有用例前执行一次</span><br>  <span class="hljs-title function_">beforeEach</span>(<span class="hljs-function">() =&gt;</span> &#123;&#125;); <span class="hljs-comment">// 每条用例前执行</span><br>  <span class="hljs-title function_">afterEach</span>(<span class="hljs-function">() =&gt;</span> &#123;&#125;); <span class="hljs-comment">// 每条用例后执行</span><br>  <span class="hljs-title function_">afterAll</span>(<span class="hljs-function">() =&gt;</span> &#123;&#125;); <span class="hljs-comment">// 组内所有用例后执行一次</span><br><br>  <span class="hljs-title function_">it</span>(<span class="hljs-string">&quot;should delay function execution&quot;</span>, <span class="hljs-function">() =&gt;</span> &#123;&#125;);<br>  <span class="hljs-title function_">test</span>(<span class="hljs-string">&quot;等价于 it&quot;</span>, <span class="hljs-function">() =&gt;</span> &#123;&#125;);<br>&#125;);<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p><code>it</code> 和 <code>test</code> 完全等价，同一项目内保持统一即可。</p>
+</blockquote>
+<h3 id="2-常用匹配器"><a href="#2-常用匹配器" class="headerlink" title="2 常用匹配器"></a>2 常用匹配器</h3><table>
+<thead>
+<tr>
+<th>匹配器</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>toBe</code></td>
+<td>严格相等（<code>===</code>），适合数字、字符串、布尔值</td>
+</tr>
+<tr>
+<td><code>toEqual</code></td>
+<td>递归比较对象&#x2F;数组内容</td>
+</tr>
+<tr>
+<td><code>toHaveLength</code></td>
+<td>数组或字符串长度</td>
+</tr>
+<tr>
+<td><code>toContain</code></td>
+<td>数组包含元素 &#x2F; 字符串包含子串</td>
+</tr>
+<tr>
+<td><code>toThrow</code></td>
+<td>断言函数抛出异常</td>
+</tr>
+<tr>
+<td><code>toBeNull</code> &#x2F; <code>toBeUndefined</code> &#x2F; <code>toBeTruthy</code></td>
+<td>空值、真值判断</td>
+</tr>
+<tr>
+<td><code>.not</code></td>
+<td>任何匹配器前加 <code>.not</code> 取反</td>
+</tr>
+</tbody></table>
+<h3 id="3-Mock-函数"><a href="#3-Mock-函数" class="headerlink" title="3 Mock 函数"></a>3 Mock 函数</h3><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-keyword">const</span> fn = jest.<span class="hljs-title function_">fn</span>();<br>fn.<span class="hljs-title function_">mockReturnValue</span>(<span class="hljs-number">1</span>);<br>fn.<span class="hljs-title function_">mockImplementation</span>(<span class="hljs-function">(<span class="hljs-params">x</span>) =&gt;</span> x * <span class="hljs-number">2</span>);<br>fn.<span class="hljs-title function_">mockResolvedValue</span>(<span class="hljs-string">&quot;ok&quot;</span>);<br><br><span class="hljs-title function_">expect</span>(fn).<span class="hljs-title function_">toHaveBeenCalled</span>();<br><span class="hljs-title function_">expect</span>(fn).<span class="hljs-title function_">toHaveBeenCalledWith</span>(<span class="hljs-string">&quot;arg&quot;</span>);<br><span class="hljs-title function_">expect</span>(fn).<span class="hljs-title function_">toHaveBeenCalledTimes</span>(<span class="hljs-number">2</span>);<br><br>jest.<span class="hljs-title function_">spyOn</span>(<span class="hljs-built_in">object</span>, <span class="hljs-string">&quot;method&quot;</span>); <span class="hljs-comment">// 监听已有方法，可用 mockRestore() 还原</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="4-模块-Mock"><a href="#4-模块-Mock" class="headerlink" title="4 模块 Mock"></a>4 模块 Mock</h3><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs ts">jest.<span class="hljs-title function_">mock</span>(<span class="hljs-string">&#x27;模块路径&#x27;</span>)                       <span class="hljs-comment">// 去 __mocks__ 找替身</span><br>jest.<span class="hljs-title function_">mock</span>(<span class="hljs-string">&#x27;模块路径&#x27;</span>, <span class="hljs-function">() =&gt;</span> (&#123; ... &#125;))      <span class="hljs-comment">// 工厂函数直接返回替身</span><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p><code>jest.mock</code> 会被提升到文件顶部；工厂函数里不能引用外部变量（除非变量名以 <code>mock</code> 开头）。</p>
+</blockquote>
+<h3 id="5-异步测试"><a href="#5-异步测试" class="headerlink" title="5 异步测试"></a>5 异步测试</h3><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-title function_">it</span>(<span class="hljs-string">&quot;resolves&quot;</span>, <span class="hljs-title function_">async</span> () =&gt; &#123;<br>  <span class="hljs-keyword">await</span> <span class="hljs-title function_">expect</span>(<span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-string">&quot;lemon&quot;</span>)).<span class="hljs-property">resolves</span>.<span class="hljs-title function_">toBe</span>(<span class="hljs-string">&quot;lemon&quot;</span>);<br>  <span class="hljs-keyword">await</span> <span class="hljs-title function_">expect</span>(<span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">reject</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">&quot;fail&quot;</span>))).<span class="hljs-property">rejects</span>.<span class="hljs-title function_">toThrow</span>(<span class="hljs-string">&quot;fail&quot;</span>);<br>&#125;);<br></code></pre></td></tr></table></figure>
+
+<p>异步用例建议加 <code>expect.assertions(n)</code> 或 <code>expect.hasAssertions()</code>，防止断言未执行就被误判通过。</p>
+<h3 id="6-假定时器"><a href="#6-假定时器" class="headerlink" title="6 假定时器"></a>6 假定时器</h3><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs ts"><span class="hljs-title function_">beforeEach</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>  jest.<span class="hljs-title function_">useFakeTimers</span>();<br>&#125;);<br><span class="hljs-title function_">afterEach</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>  jest.<span class="hljs-title function_">useRealTimers</span>();<br>&#125;);<br><br><span class="hljs-title function_">it</span>(<span class="hljs-string">&quot;debounce&quot;</span>, <span class="hljs-function">() =&gt;</span> &#123;<br>  <span class="hljs-keyword">const</span> fn = jest.<span class="hljs-title function_">fn</span>();<br>  <span class="hljs-keyword">const</span> debounced = <span class="hljs-title function_">debounce</span>(fn, <span class="hljs-number">100</span>);<br>  <span class="hljs-title function_">debounced</span>();<br>  <span class="hljs-title function_">expect</span>(fn).<span class="hljs-property">not</span>.<span class="hljs-title function_">toHaveBeenCalled</span>();<br>  jest.<span class="hljs-title function_">advanceTimersByTime</span>(<span class="hljs-number">100</span>);<br>  <span class="hljs-title function_">expect</span>(fn).<span class="hljs-title function_">toHaveBeenCalledTimes</span>(<span class="hljs-number">1</span>);<br>&#125;);<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>假定时器是全局替换，<code>afterEach</code> 必须恢复，否则会影响同文件其他用例。涉及 Promise + 定时器混用时，用 <code>jest.advanceTimersByTimeAsync(ms)</code> 并 <code>await</code>，它会同时处理微任务。</p>
+</blockquote>
+<hr>
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><ul>
+<li>utils&#x2F;index.ts</li>
+</ul>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs TypeScript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> <span class="hljs-title function_">formatCount</span> = (<span class="hljs-params"><span class="hljs-attr">count</span>: <span class="hljs-built_in">number</span></span>) =&gt; &#123;<br>  <span class="hljs-keyword">if</span> (count &gt;= <span class="hljs-number">10000</span>) &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">`<span class="hljs-subst">$&#123;<span class="hljs-built_in">parseFloat</span>((count / <span class="hljs-number">10000</span>).toFixed(<span class="hljs-number">1</span>))&#125;</span>w`</span><br>  &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (count &gt;= <span class="hljs-number">1000</span>) &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">`<span class="hljs-subst">$&#123;<span class="hljs-built_in">parseFloat</span>((count / <span class="hljs-number">1000</span>).toFixed(<span class="hljs-number">1</span>))&#125;</span>K`</span><br>  &#125; <span class="hljs-keyword">else</span> &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">`<span class="hljs-subst">$&#123;count&#125;</span>`</span><br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>utils&#x2F;index.test.ts</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs JavaScript"><span class="hljs-keyword">import</span> &#123; formatCount &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./index&#x27;</span><br><br><span class="hljs-title function_">describe</span>(<span class="hljs-string">&#x27;formatCount&#x27;</span>, <span class="hljs-function">() =&gt;</span> &#123;<br>  <span class="hljs-title function_">it</span>(<span class="hljs-string">&#x27;should format counts less than 1000 as-is&#x27;</span>, <span class="hljs-function">() =&gt;</span> &#123;<br>    <span class="hljs-title function_">expect</span>(<span class="hljs-title function_">formatCount</span>(<span class="hljs-number">999</span>)).<span class="hljs-title function_">toBe</span>(<span class="hljs-string">&#x27;999&#x27;</span>)<br>    <span class="hljs-title function_">expect</span>(<span class="hljs-title function_">formatCount</span>(<span class="hljs-number">0</span>)).<span class="hljs-title function_">toBe</span>(<span class="hljs-string">&#x27;0&#x27;</span>)<br>  &#125;)<br><br>  <span class="hljs-title function_">it</span>(<span class="hljs-string">&#x27;should format counts between 1000 and 9999 as K&#x27;</span>, <span class="hljs-function">() =&gt;</span> &#123;<br>    <span class="hljs-title function_">expect</span>(<span class="hljs-title function_">formatCount</span>(<span class="hljs-number">1000</span>)).<span class="hljs-title function_">toBe</span>(<span class="hljs-string">&#x27;1K&#x27;</span>)<br>    <span class="hljs-title function_">expect</span>(<span class="hljs-title function_">formatCount</span>(<span class="hljs-number">5500</span>)).<span class="hljs-title function_">toBe</span>(<span class="hljs-string">&#x27;5.5K&#x27;</span>)<br>    <span class="hljs-title function_">expect</span>(<span class="hljs-title function_">formatCount</span>(<span class="hljs-number">9999</span>)).<span class="hljs-title function_">toBe</span>(<span class="hljs-string">&#x27;10K&#x27;</span>)<br>  &#125;)<br><br>  <span class="hljs-title function_">it</span>(<span class="hljs-string">&#x27;should format counts &gt;= 10000 as w&#x27;</span>, <span class="hljs-function">() =&gt;</span> &#123;<br>    <span class="hljs-title function_">expect</span>(<span class="hljs-title function_">formatCount</span>(<span class="hljs-number">10000</span>)).<span class="hljs-title function_">toBe</span>(<span class="hljs-string">&#x27;1w&#x27;</span>)<br>    <span class="hljs-title function_">expect</span>(<span class="hljs-title function_">formatCount</span>(<span class="hljs-number">15000</span>)).<span class="hljs-title function_">toBe</span>(<span class="hljs-string">&#x27;1.5w&#x27;</span>)<br>    <span class="hljs-title function_">expect</span>(<span class="hljs-title function_">formatCount</span>(<span class="hljs-number">999999</span>)).<span class="hljs-title function_">toBe</span>(<span class="hljs-string">&#x27;100w&#x27;</span>)<br>  &#125;)<br>&#125;)<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="测试重点"><a href="#测试重点" class="headerlink" title="测试重点"></a>测试重点</h2><ol>
+<li><strong>纯函数与工具逻辑</strong>：格式化、校验、计算、数据转换——性价比最高，优先覆盖。</li>
+<li><strong>自定义 Hooks</strong>：用 <code>renderHook</code> 单独测状态变化和副作用。</li>
+<li><strong>关键组件的用户交互</strong>：分支渲染、回调调用、加载&#x2F;错误态——只测用户能感知的行为。</li>
+<li><strong>异步数据流</strong>：加载中 → 成功渲染、加载中 → 报错 → 错误态。推荐用 MSW 在网络层拦截请求。</li>
+<li><strong>不测</strong>：纯展示组件、样式布局、第三方库的简单封装、无意义的快照。</li>
+</ol>
+<hr>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%89%8D%E7%AB%AF/" class="category-chain-item">前端</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/" class="print-no-link">#单元测试</a>
+      
+        <a href="/tags/Jest/" class="print-no-link">#Jest</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>React + Jest 前端项目单元测试</div>
+      <div>http://example.com/2025/08/10/前端/单元测试：Jest/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年8月10日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/08/10/%E5%89%8D%E7%AB%AF/react-image-crop%EF%BC%9AReact%20%E5%9B%BE%E5%83%8F%E5%89%AA%E8%A3%81%E5%B7%A5%E5%85%B7/" title="react-image-crop：React 图像剪裁工具">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">react-image-crop：React 图像剪裁工具</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/08/10/%E5%89%8D%E7%AB%AF/%E8%99%9A%E6%8B%9FDOM%20%E4%B8%8E%20Diff%20%E7%AE%97%E6%B3%95/" title="虚拟 DOM 与 Diff 算法">
+                        <span class="hidden-mobile">虚拟 DOM 与 Diff 算法</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

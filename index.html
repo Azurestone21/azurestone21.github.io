@@ -227,67 +227,6 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2026/10/15/%E7%AE%97%E6%B3%95/%E3%80%90%E7%AE%97%E6%B3%95%E3%80%91LRU%E7%BC%93%E5%AD%98/" target="_self">
-          LRU 缓存
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/10/15/%E7%AE%97%E6%B3%95/%E3%80%90%E7%AE%97%E6%B3%95%E3%80%91LRU%E7%BC%93%E5%AD%98/" target="_self">
-        <div>
-          LRU 缓存LRU 是最近最少使用淘汰策略，缓存满了优先淘汰最久未使用的。 要求 get 和 put 都是 O(1)。 核心结构：哈希表 + 双向链表。 哈希表存 key 到节点，双向链表维护使用顺序：头部最新，尾部最旧。get 命中就移到头部；put 存在就更新并移到头部，不存在就插入头部，超容量删尾部。 JS 里可以用 Map 的插入顺序特性简化实现。 实现一：哈希表 + 双向链表123456
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-10-15 00:00" pubdate>
-              2026-10-15
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E7%AE%97%E6%B3%95/" class="category-chain-item">算法</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%93%88%E5%B8%8C/">#哈希</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
         <a href="/2026/10/15/%E7%AE%97%E6%B3%95/%E3%80%90%E7%AE%97%E6%B3%95%E3%80%91%E5%86%92%E6%B3%A1%E6%8E%92%E5%BA%8F/" target="_self">
           【算法】冒泡排序
         </a>
@@ -349,15 +288,76 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2026/10/15/%E7%AE%97%E6%B3%95/%E3%80%90%E7%AE%97%E6%B3%95%E3%80%91%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F/" target="_self">
-          【算法】插入排序
+        <a href="/2026/10/15/%E7%AE%97%E6%B3%95/%E3%80%90%E7%AE%97%E6%B3%95%E3%80%91LRU%E7%BC%93%E5%AD%98/" target="_self">
+          LRU 缓存
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/10/15/%E7%AE%97%E6%B3%95/%E3%80%90%E7%AE%97%E6%B3%95%E3%80%91%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/10/15/%E7%AE%97%E6%B3%95/%E3%80%90%E7%AE%97%E6%B3%95%E3%80%91LRU%E7%BC%93%E5%AD%98/" target="_self">
         <div>
-          插入排序 核心：将一个元素插入到有序序列中，保持有序。 稳定  时间复杂度 最坏情况：O(n²)，当列表是逆序时，每次插入都需要移动所有已排序元素。 最好情况：O(n)，当列表已经有序时，只需遍历一次列表。 平均情况：O(n²)。  空间复杂度 O(1)，插入排序是原地排序算法，不需要额外的存储空间。  实现12345678910111213141516function insertSort(ar
+          LRU 缓存LRU 是最近最少使用淘汰策略，缓存满了优先淘汰最久未使用的。 要求 get 和 put 都是 O(1)。 核心结构：哈希表 + 双向链表。 哈希表存 key 到节点，双向链表维护使用顺序：头部最新，尾部最旧。get 命中就移到头部；put 存在就更新并移到头部，不存在就插入头部，超容量删尾部。 JS 里可以用 Map 的插入顺序特性简化实现。 实现一：哈希表 + 双向链表123456
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-10-15 00:00" pubdate>
+              2026-10-15
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%AE%97%E6%B3%95/" class="category-chain-item">算法</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%93%88%E5%B8%8C/">#哈希</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/10/15/%E7%AE%97%E6%B3%95/%E3%80%90%E7%AE%97%E6%B3%95%E3%80%91%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F/" target="_self">
+          【算法】归并排序
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/10/15/%E7%AE%97%E6%B3%95/%E3%80%90%E7%AE%97%E6%B3%95%E3%80%91%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F/" target="_self">
+        <div>
+          归并排序 核心 分解（Divide）：将待排序的数组分成两个子数组，每个子数组包含大约一半的元素。 解决（Conquer）：递归地对每个子数组进行排序。 合并（Combine）：将两个已排序的子数组合并成一个有序的数组。   稳定  时间复杂度 分解：每次将列表分成两半，需要 O(log n) 层递归。 合并：每层递归需要 O(n) 的时间来合并子列表。 总时间复杂度：O(n log n)。  空
         </div>
       </a>
 
@@ -471,15 +471,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2026/10/15/%E7%AE%97%E6%B3%95/%E3%80%90%E7%AE%97%E6%B3%95%E3%80%91%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F/" target="_self">
-          【算法】归并排序
+        <a href="/2026/10/15/%E7%AE%97%E6%B3%95/%E3%80%90%E7%AE%97%E6%B3%95%E3%80%91%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F/" target="_self">
+          【算法】插入排序
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/10/15/%E7%AE%97%E6%B3%95/%E3%80%90%E7%AE%97%E6%B3%95%E3%80%91%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/10/15/%E7%AE%97%E6%B3%95/%E3%80%90%E7%AE%97%E6%B3%95%E3%80%91%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F/" target="_self">
         <div>
-          归并排序 核心 分解（Divide）：将待排序的数组分成两个子数组，每个子数组包含大约一半的元素。 解决（Conquer）：递归地对每个子数组进行排序。 合并（Combine）：将两个已排序的子数组合并成一个有序的数组。   稳定  时间复杂度 分解：每次将列表分成两半，需要 O(log n) 层递归。 合并：每层递归需要 O(n) 的时间来合并子列表。 总时间复杂度：O(n log n)。  空
+          插入排序 核心：将一个元素插入到有序序列中，保持有序。 稳定  时间复杂度 最坏情况：O(n²)，当列表是逆序时，每次插入都需要移动所有已排序元素。 最好情况：O(n)，当列表已经有序时，只需遍历一次列表。 平均情况：O(n²)。  空间复杂度 O(1)，插入排序是原地排序算法，不需要额外的存储空间。  实现12345678910111213141516function insertSort(ar
         </div>
       </a>
 
