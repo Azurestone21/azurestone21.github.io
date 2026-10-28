@@ -19,17 +19,20 @@
   <meta name="author" content="Azure">
   <meta name="keywords" content="">
   
-    <meta name="description" content="前端缓存浏览器本地缓存cookie 大小限制为4KB 主要保存登录信息，一般是服务器生成 可以设置失效时间，默认是浏览器关闭后失效 会携带在请求头中，传给服务器  localStorage（本地缓存） 大小一般是5MB HTML5 标准中新加入的技术 在不清除的情况下，可以永久保存 只在浏览器中保存，不参与服务器通信  sessionStorage（会话缓存） 大小一般也是5MB 只在当下会话有效">
+    <meta name="description" content="前端缓存前端缓存大致分两块：浏览器本地缓存（cookie、localStorage、sessionStorage、indexDB）和 HTTP 缓存（强缓存、协商缓存）。前者是 JS 可读写的数据存储，后者是浏览器对 HTTP 响应的缓存复用机制，二者定位不同。  一、浏览器本地缓存1. cookie 大小限制约 4KB。 主要保存登录态等信息，一般由服务器通过 Set-Cookie 响应头生成，">
 <meta property="og:type" content="article">
 <meta property="og:title" content="前端缓存">
 <meta property="og:url" content="http://example.com/2024/12/03/%E5%89%8D%E7%AB%AF/%E5%89%8D%E7%AB%AF%E7%BC%93%E5%AD%98/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="前端缓存浏览器本地缓存cookie 大小限制为4KB 主要保存登录信息，一般是服务器生成 可以设置失效时间，默认是浏览器关闭后失效 会携带在请求头中，传给服务器  localStorage（本地缓存） 大小一般是5MB HTML5 标准中新加入的技术 在不清除的情况下，可以永久保存 只在浏览器中保存，不参与服务器通信  sessionStorage（会话缓存） 大小一般也是5MB 只在当下会话有效">
+<meta property="og:description" content="前端缓存前端缓存大致分两块：浏览器本地缓存（cookie、localStorage、sessionStorage、indexDB）和 HTTP 缓存（强缓存、协商缓存）。前者是 JS 可读写的数据存储，后者是浏览器对 HTTP 响应的缓存复用机制，二者定位不同。  一、浏览器本地缓存1. cookie 大小限制约 4KB。 主要保存登录态等信息，一般由服务器通过 Set-Cookie 响应头生成，">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-12-03T13:12:32.000Z">
-<meta property="article:modified_time" content="2026-10-14T15:19:14.471Z">
+<meta property="article:modified_time" content="2026-10-28T16:41:07.177Z">
 <meta property="article:author" content="Azure">
-<meta property="article:tag" content="缓存">
+<meta property="article:tag" content="HTTP缓存">
+<meta property="article:tag" content="协商缓存">
+<meta property="article:tag" content="强缓存">
+<meta property="article:tag" content="浏览器缓存">
 <meta name="twitter:card" content="summary_large_image">
   
   
@@ -223,7 +226,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.4k 字
+          2.2k 字
         
       </span>
     
@@ -234,7 +237,7 @@
         
         
         
-          12 分钟
+          19 分钟
         
       </span>
     
@@ -276,94 +279,302 @@
             
               <div class="markdown-body">
                 
-                <h1 id="前端缓存"><a href="#前端缓存" class="headerlink" title="前端缓存"></a>前端缓存</h1><h2 id="浏览器本地缓存"><a href="#浏览器本地缓存" class="headerlink" title="浏览器本地缓存"></a>浏览器本地缓存</h2><h3 id="cookie"><a href="#cookie" class="headerlink" title="cookie"></a>cookie</h3><ul>
-<li>大小限制为4KB</li>
-<li>主要保存登录信息，一般是服务器生成</li>
-<li>可以设置失效时间，默认是浏览器关闭后失效</li>
-<li>会携带在请求头中，传给服务器</li>
+                <h1 id="前端缓存"><a href="#前端缓存" class="headerlink" title="前端缓存"></a>前端缓存</h1><p>前端缓存大致分两块：<strong>浏览器本地缓存</strong>（cookie、localStorage、sessionStorage、indexDB）和 <strong>HTTP 缓存</strong>（强缓存、协商缓存）。前者是 JS 可读写的数据存储，后者是浏览器对 HTTP 响应的缓存复用机制，二者定位不同。</p>
+<hr>
+<h2 id="一、浏览器本地缓存"><a href="#一、浏览器本地缓存" class="headerlink" title="一、浏览器本地缓存"></a>一、浏览器本地缓存</h2><h3 id="1-cookie"><a href="#1-cookie" class="headerlink" title="1. cookie"></a>1. cookie</h3><ul>
+<li>大小限制约 <strong>4KB</strong>。</li>
+<li>主要保存登录态等信息，一般由<strong>服务器通过 <code>Set-Cookie</code> 响应头生成</strong>，浏览器随后在请求头 <code>Cookie</code> 中自动带回。</li>
+<li>可设置失效时间（<code>Expires</code> &#x2F; <code>Max-Age</code>），默认浏览器关闭后失效（会话 cookie）。</li>
+<li><strong>每次同源请求都会自动携带</strong>，所以 cookie 过多会增大请求体积。</li>
+<li>默认情况下，Cookie 在同源且<strong>路径匹配</strong>的页面间共享。如果服务器在设置 Cookie 时指定了 <code>Domain</code> 属性（例如 <code>.example.com</code>），那么该 Cookie 可以在该域名及其子域名（如 <code>a.example.com</code> 与 <code>b.example.com</code>）之间共享。只要满足上述域名和路径规则，同一浏览器内所有标签页的请求都会自动携带相同的 Cookie。</li>
 </ul>
-<h3 id="localStorage（本地缓存）"><a href="#localStorage（本地缓存）" class="headerlink" title="localStorage（本地缓存）"></a>localStorage（本地缓存）</h3><ul>
-<li>大小一般是5MB</li>
-<li>HTML5 标准中新加入的技术</li>
-<li>在不清除的情况下，可以永久保存</li>
-<li>只在浏览器中保存，不参与服务器通信</li>
+<p><strong>关键属性：</strong></p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>HttpOnly</code></td>
+<td>禁止 JS 通过 <code>document.cookie</code> 读取，防 XSS 窃取</td>
+</tr>
+<tr>
+<td><code>Secure</code></td>
+<td>仅在 HTTPS 下发送</td>
+</tr>
+<tr>
+<td><code>SameSite=Strict/Lax/None</code></td>
+<td>限制跨站携带，防 CSRF；<code>None</code> 必须配合 <code>Secure</code></td>
+</tr>
+<tr>
+<td><code>Domain</code> &#x2F; <code>Path</code></td>
+<td>限定生效的域名和路径</td>
+</tr>
+<tr>
+<td><code>Max-Age</code> &#x2F; <code>Expires</code></td>
+<td>有效期，<code>Max-Age</code> 优先级更高</td>
+</tr>
+</tbody></table>
+<h3 id="2-localStorage（本地缓存）"><a href="#2-localStorage（本地缓存）" class="headerlink" title="2. localStorage（本地缓存）"></a>2. localStorage（本地缓存）</h3><ul>
+<li>大小一般 <strong>5MB</strong>（各浏览器略有差异）。</li>
+<li>HTML5 新增。</li>
+<li><strong>持久保存</strong>，除非手动清除（<code>localStorage.clear()</code> 或用户清理浏览器数据）。无痕&#x2F;隐私浏览模式下，数据会在最后一个隐私标签页关闭时被清除，且不与普通模式共享。</li>
+<li><strong>只在浏览器本地保存，不参与服务器通信</strong>。</li>
+<li>同源共享，同步 API，存大量数据会阻塞主线程。</li>
 </ul>
-<h3 id="sessionStorage（会话缓存）"><a href="#sessionStorage（会话缓存）" class="headerlink" title="sessionStorage（会话缓存）"></a>sessionStorage（会话缓存）</h3><ul>
-<li>大小一般也是5MB</li>
-<li>只在当下会话有效，关闭页面或关闭浏览器会失效</li>
+<h3 id="3-sessionStorage（会话缓存）"><a href="#3-sessionStorage（会话缓存）" class="headerlink" title="3. sessionStorage（会话缓存）"></a>3. sessionStorage（会话缓存）</h3><ul>
+<li>大小一般也是 <strong>5MB</strong>。</li>
+<li><strong>仅在当前会话有效</strong>，关闭标签页&#x2F;页面即失效。</li>
+<li>同源、同标签页隔离：新开标签页不共享（即使同源）。</li>
+<li>同样不参与服务器通信。</li>
 </ul>
-<h3 id="indexDB"><a href="#indexDB" class="headerlink" title="indexDB"></a>indexDB</h3><h2 id="HTTP缓存"><a href="#HTTP缓存" class="headerlink" title="HTTP缓存"></a>HTTP缓存</h2><p>HTTP缓存主要是针对html，css，img等静态资源。会将请求过的资源缓存下来，再次需要用到这些资源的时候就不用重新请求。</p>
-<p>HTTP缓存分为强制缓存和协商缓存。</p>
-<p>优点：</p>
-<ol>
-<li>减少不必要的网络传输，节约宽带（就是省钱）</li>
-<li>更快的加载页面（就是加速）</li>
-<li>减少服务器负载，避免服务器过载的情况出现。（就是减载）</li>
-</ol>
-<p>缺点：</p>
-<ol>
-<li><strong>占内存</strong>（有些缓存会被存到内存中）</li>
-</ol>
-<h3 id="强制缓存"><a href="#强制缓存" class="headerlink" title="强制缓存"></a>强制缓存</h3><h4 id="Expires（废弃）"><a href="#Expires（废弃）" class="headerlink" title="Expires（废弃）"></a>Expires（废弃）</h4><p>Expires字段的作用是，设定一个强缓存时间。在此时间范围内，则从内存（或磁盘）中读取缓存返回。</p>
-<p>Expires判断强缓存是否过期的机制是:获取本地时间戳，并对先前拿到的资源文件中的Expires字段的时间做比较。来判断是否需要对服务器发起请求。</p>
-<p>如果本地与服务器时间不同步，就会出现资源无法被缓存或者资源永远被缓存的情况。</p>
-<p>现在的项目中，不推荐使用Expires</p>
-<h4 id="Cache-control（替代Expires）"><a href="#Cache-control（替代Expires）" class="headerlink" title="Cache-control（替代Expires）"></a>Cache-control（替代Expires）</h4><p>Cache-control是在http1.1中增加的，解决了Expires本地时间和服务器时间不同步的问题。</p>
-<p><strong>Cache-Control:max-age&#x3D;N</strong>，N就是需要缓存的秒数。从第一次请求资源的时候开始，往后N秒内，资源若再次请求，则直接从磁盘（或内存中读取），不与服务器做任何交互。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">//往响应头中写入需要缓存的时间</span><br><span class="hljs-string">&#x27;Cache-Control&#x27;</span>: <span class="hljs-string">&#x27;max-age=10&#x27;</span><br></code></pre></td></tr></table></figure>
-
-<p>Cache-control有max-age、s-maxage、no-cache、no-store、private、public这六个属性。</p>
-<ul>
-<li>max-age决定客户端资源被缓存多久。</li>
-<li>s-maxage决定代理服务器缓存的时长。</li>
-<li>no-cache表示是强制进行协商缓存。</li>
-<li>no-store是表示禁止任何缓存策略。</li>
-<li>public表示资源即可以被浏览器缓存也可以被代理服务器缓存。</li>
-<li>private表示资源只能被浏览器缓存。</li>
+<h3 id="4-indexDB"><a href="#4-indexDB" class="headerlink" title="4. indexDB"></a>4. indexDB</h3><ul>
+<li>浏览器端的<strong>事务型 NoSQL 数据库</strong>，容量远大于 localStorage（通常按磁盘配额，可达数百 MB 甚至更多）。</li>
+<li>支持<strong>异步 API</strong>（不阻塞主线程）、索引、事务、存储二进制（Blob&#x2F;File）。</li>
+<li>适合存储<strong>大量结构化数据</strong>，如离线应用数据、缓存接口响应、富文本草稿等。</li>
+<li>同源共享，需通过 <code>indexedDB.open()</code> 打开数据库。</li>
 </ul>
-<h3 id="协商缓存"><a href="#协商缓存" class="headerlink" title="协商缓存"></a>协商缓存</h3><h4 id="Last-Modified、If-Modified-Since"><a href="#Last-Modified、If-Modified-Since" class="headerlink" title="Last-Modified、If-Modified-Since"></a>Last-Modified、If-Modified-Since</h4><ul>
-<li><code>Last-Modified</code> 表示本地文件最后修改日期，浏览器会在request header加上</li>
-<li><code>If-Modified-Since</code>（上次返回的<code>Last-Modified</code>的值），询问服务器在该日期后资源是否有更新，有更新的话就会将新的资源发送回来</li>
-</ul>
-<p><strong>实现方式</strong></p>
-<ol>
-<li>首先需要在服务器端读出文件修改时间，将读出来的修改时间赋给响应头的last-modified字段。</li>
-<li>最后设置Cache-control:no-cache</li>
-<li>当资源过期时（浏览器判断Cache-Control标识的max-age过期）<ol>
-<li>发现响应头具有Last-Modified声明，则再次向服务器请求时带上头if-modified-since，表示请求时间。</li>
-<li>服务器收到请求后发现有if-modified-since则与被请求资源的最后修改时间进行对比（Last-Modified），若最后修改时间较新（大），说明资源又被改过，则返回最新资源，HTTP 200 OK;若最后修改时间较旧（小），说明资源无新修改，响应HTTP 304 走缓存。</li>
-</ol>
-</li>
-</ol>
-<p><strong>缺点</strong></p>
-<ol>
-<li><p>根据文件修改时间来判断的，在文件内容本身不修改的情况下，依然有可能更新文件修改时间（比如修改文件名再改回来）。有可能文件内容明明没有修改，但是缓存依然失效了。</p>
-</li>
-<li><p>当文件在极短时间内完成修改的时候（比如几百毫秒）。因为文件修改时间记录的最小单位是秒，所以，如果文件在几百毫秒内完成修改的话，文件修改时间不会改变，这样，即使文件内容修改了，依然不会返回新的文件。</p>
-</li>
-</ol>
-<h4 id="ETag-Entity-实体标签-、If-None-Match"><a href="#ETag-Entity-实体标签-、If-None-Match" class="headerlink" title="ETag(Entity 实体标签)、If-None-Match"></a>ETag(Entity 实体标签)、If-None-Match</h4><blockquote>
-<p>文件指纹：根据文件内容计算出的唯一哈希值。文件内容一旦改变则指纹改变。</p>
+<h3 id="四者对比"><a href="#四者对比" class="headerlink" title="四者对比"></a>四者对比</h3><table>
+<thead>
+<tr>
+<th>特性</th>
+<th>cookie</th>
+<th>localStorage</th>
+<th>sessionStorage</th>
+<th>indexDB</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>大小</td>
+<td>~4KB</td>
+<td>~5MB</td>
+<td>~5MB</td>
+<td>大（按配额）</td>
+</tr>
+<tr>
+<td>生命周期</td>
+<td>可设，默认会话</td>
+<td>永久</td>
+<td>会话（关页面失效）</td>
+<td>永久（除非删除）</td>
+</tr>
+<tr>
+<td>参与请求</td>
+<td><strong>是</strong>（自动携带）</td>
+<td>否</td>
+<td>否</td>
+<td>否</td>
+</tr>
+<tr>
+<td>API 同步&#x2F;异步</td>
+<td>同步</td>
+<td>同步</td>
+<td>同步</td>
+<td><strong>异步</strong></td>
+</tr>
+<tr>
+<td>存储类型</td>
+<td>字符串</td>
+<td>字符串</td>
+<td>字符串</td>
+<td>结构化&#x2F;二进制</td>
+</tr>
+<tr>
+<td>典型用途</td>
+<td>登录态</td>
+<td>偏好设置</td>
+<td>临时表单</td>
+<td>大量离线数据</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>Service Worker 缓存</strong>（Cache Storage）是另一种前端可编程缓存，可拦截请求、自定义缓存策略，常与 PWA 配合，和 HTTP 缓存是并列关系。</p>
 </blockquote>
-<p>ETag是http1.1开始新增的一个头信息。将原先协商缓存的比较时间戳的形式修改成了比较文件指纹。</p>
-<p><strong>实现方式</strong></p>
-<ul>
-<li>当资源过期时，浏览器发现响应头里有Etag，则再次向服务器请求时带上请求头if-none-match(值是Etag的值)。服务器收到请求进行比对，决定返回200或304。</li>
-</ul>
-<p><strong>缺点</strong></p>
+<hr>
+<h2 id="二、HTTP-缓存"><a href="#二、HTTP-缓存" class="headerlink" title="二、HTTP 缓存"></a>二、HTTP 缓存</h2><p>HTTP 缓存主要针对 HTML、CSS、JS、图片等资源，把请求过的响应存下来，再次需要时直接复用，减少网络请求。</p>
+<p><strong>优点：</strong></p>
 <ol>
-<li><p>ETag需要计算文件指纹，服务端需要更多的计算开销。如果文件尺寸大，数量多，并且计算频繁，那么ETag的计算就会影响服务器的性能。</p>
-</li>
-<li><p>ETag有强验证和弱验证。</p>
-<ol>
-<li>强验证，只要文件中有一个字节改变了，就会生成不同的哈希值，可以保证文件内容绝对的不变。但是，强验证非常消耗计算量。</li>
-<li>弱验证，提取文件的部分属性来生成哈希值。因为不必精确到每个字节，整体速度会比强验证快，但是准确率不高。会降低协商缓存的有效性。</li>
+<li>减少不必要的网络传输，节约带宽。</li>
+<li>加快页面加载。</li>
+<li>降低服务器负载。</li>
 </ol>
+<p><strong>缺点（修正表述）：</strong></p>
+<ol>
+<li>可能读到<strong>旧资源</strong>，造成缓存不一致（这是最主要的代价）。</li>
+<li>缓存会占用浏览器内存或磁盘空间（强缓存可能落内存也可能落磁盘）。</li>
+<li>缓存策略配置不当会增加调试难度。</li>
+</ol>
+<h3 id="缓存存放位置"><a href="#缓存存放位置" class="headerlink" title="缓存存放位置"></a>缓存存放位置</h3><p>强缓存命中时，资源可能来自：</p>
+<ul>
+<li><strong>Memory Cache（内存缓存）</strong>：快，但随页面&#x2F;进程销毁，通常用于当前页面已加载的资源。</li>
+<li><strong>Disk Cache（磁盘缓存）</strong>：持久，容量大，跨会话可用。</li>
+</ul>
+<p>DevTools Network 面板会显示 <code>200 (from memory cache)</code> 或 <code>200 (from disk cache)</code>。</p>
+<h3 id="强缓存"><a href="#强缓存" class="headerlink" title="强缓存"></a>强缓存</h3><p>强缓存命中时，浏览器<strong>完全不发请求</strong>，直接读本地。由两个响应头控制，<strong>优先级 <code>Cache-Control</code> &gt; <code>Expires</code></strong>；<code>Cache-Control</code> 内部 <code>max-age</code> 优先级高于 <code>Expires</code>。</p>
+<h4 id="Expires（已废弃）"><a href="#Expires（已废弃）" class="headerlink" title="Expires（已废弃）"></a>Expires（已废弃）</h4><p>设定一个<strong>绝对时间</strong>，在此时间前从缓存读取。判断机制是拿<strong>本地时间</strong>与 <code>Expires</code> 比较。</p>
+<p>问题：本地与服务器时间不同步时，会出现资源无法缓存或永远被缓存。<strong>不推荐使用。</strong></p>
+<h4 id="Cache-Control（替代-Expires）"><a href="#Cache-Control（替代-Expires）" class="headerlink" title="Cache-Control（替代 Expires）"></a>Cache-Control（替代 Expires）</h4><p>HTTP&#x2F;1.1 新增，用<strong>相对时间</strong> <code>max-age</code> 解决时钟不同步问题。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// 响应头写入：缓存 10 秒</span><br><span class="hljs-string">&#x27;Cache-Control&#x27;</span>: <span class="hljs-string">&#x27;max-age=10&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>常用指令：</strong></p>
+<table>
+<thead>
+<tr>
+<th>指令</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>max-age=N</code></td>
+<td>客户端缓存 N 秒</td>
+</tr>
+<tr>
+<td><code>s-maxage=N</code></td>
+<td>共享缓存（CDN&#x2F;代理）缓存 N 秒，优先级高于 <code>max-age</code></td>
+</tr>
+<tr>
+<td><code>no-cache</code></td>
+<td><strong>可以缓存，但每次使用前必须向服务器验证</strong>（走协商缓存）</td>
+</tr>
+<tr>
+<td><code>no-store</code></td>
+<td><strong>禁止任何缓存</strong>，不存储</td>
+</tr>
+<tr>
+<td><code>public</code></td>
+<td>可被浏览器和代理服务器缓存</td>
+</tr>
+<tr>
+<td><code>private</code></td>
+<td>只允许浏览器缓存，代理不缓存</td>
+</tr>
+<tr>
+<td><code>must-revalidate</code></td>
+<td>过期后必须验证，不能用过期缓存</td>
+</tr>
+<tr>
+<td><code>immutable</code></td>
+<td>有效期内即使刷新也不验证，适合带 hash 的静态资源</td>
+</tr>
+<tr>
+<td><code>stale-while-revalidate=N</code></td>
+<td>过期后 N 秒内先用旧缓存，同时后台更新（补充）</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>易错点</strong>：<code>no-cache</code> ≠ 不缓存，而是”要验证”；<code>no-store</code> 才是”别存”。</p>
+</blockquote>
+<h4 id="浏览器刷新行为的影响（补充，高频考点）"><a href="#浏览器刷新行为的影响（补充，高频考点）" class="headerlink" title="浏览器刷新行为的影响（补充，高频考点）"></a>浏览器刷新行为的影响（补充，高频考点）</h4><table>
+<thead>
+<tr>
+<th>操作</th>
+<th>强缓存</th>
+<th>协商缓存</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>地址栏回车 &#x2F; 点链接</td>
+<td>生效</td>
+<td>生效</td>
+</tr>
+<tr>
+<td>F5 &#x2F; Ctrl+R</td>
+<td><strong>跳过</strong>（带 <code>max-age=0</code>）</td>
+<td>生效</td>
+</tr>
+<tr>
+<td>Ctrl+Shift+R</td>
+<td>跳过</td>
+<td><strong>跳过</strong>（带 <code>no-cache</code>，直接请求）</td>
+</tr>
+</tbody></table>
+<h3 id="协商缓存"><a href="#协商缓存" class="headerlink" title="协商缓存"></a>协商缓存</h3><p>强缓存过期后，浏览器带”验证凭证”问服务器，命中返回 <strong>304 Not Modified</strong>，响应体为空，只更新缓存元数据，省流量。</p>
+<p><strong>优先级：<code>ETag</code>&#x2F;<code>If-None-Match</code> &gt; <code>Last-Modified</code>&#x2F;<code>If-Modified-Since</code>。</strong></p>
+<blockquote>
+<p><strong>关键区分</strong>：强缓存是否过期由<strong>浏览器本地</strong>比较时间判断；协商缓存是否命中由<strong>服务器</strong>比较凭证判断。</p>
+</blockquote>
+<h4 id="Last-Modified-If-Modified-Since"><a href="#Last-Modified-If-Modified-Since" class="headerlink" title="Last-Modified &#x2F; If-Modified-Since"></a>Last-Modified &#x2F; If-Modified-Since</h4><ul>
+<li><code>Last-Modified</code>：资源最后修改时间，服务器写入响应头。</li>
+<li><code>If-Modified-Since</code>：浏览器下次请求带上上次的 <code>Last-Modified</code> 值。</li>
+<li>服务器比较：资源更新了 → 200 + 新资源；没更新 → 304 走缓存。</li>
+</ul>
+<p><strong>实现方式：</strong></p>
+<ol>
+<li>服务器读出文件修改时间，写入响应头 <code>Last-Modified</code>。</li>
+<li>同时设置 <code>Cache-Control: no-cache</code>（或让强缓存过期）。</li>
+<li>强缓存过期后，浏览器带 <code>If-Modified-Since</code> 请求；服务器与当前 <code>Last-Modified</code> 比较，决定 200 或 304。</li>
+</ol>
+<p><strong>缺点：</strong></p>
+<ol>
+<li>仅凭修改时间判断，内容没变但修改时间变了（如改文件名再改回）会导致缓存失效。</li>
+<li>修改时间最小单位是秒，几百毫秒内的修改可能检测不到，导致内容变了却返回 304。</li>
+</ol>
+<h4 id="ETag-If-None-Match"><a href="#ETag-If-None-Match" class="headerlink" title="ETag &#x2F; If-None-Match"></a>ETag &#x2F; If-None-Match</h4><blockquote>
+<p><strong>文件指纹</strong>：根据文件内容计算的唯一哈希值，内容变则指纹变。</p>
+</blockquote>
+<p>HTTP&#x2F;1.1 新增，把”比时间”改成”比指纹”。</p>
+<p><strong>实现方式：</strong></p>
+<ul>
+<li>资源过期后，浏览器发现响应头有 <code>ETag</code>，请求时带 <code>If-None-Match: &lt;ETag 值&gt;</code>。</li>
+<li>服务器比对，相同 → 304；不同 → 200 + 新资源。</li>
+</ul>
+<p><strong>缺点：</strong></p>
+<ol>
+<li>计算指纹有服务端开销，文件大、数量多、计算频繁时影响性能。</li>
+<li>分强验证和弱验证：<ul>
+<li><strong>强验证</strong>：任一字节变化即生成不同哈希，最精确，但计算量大。</li>
+<li><strong>弱验证</strong>（<code>W/&quot;...&quot;</code>）：提取部分属性生成哈希，快但准确率低，会降低协商缓存有效性。</li>
+</ul>
 </li>
 </ol>
 <blockquote>
-<p>cache-control是expires的完全替代方案</p>
-<p>ETag并不是last-modified的完全替代方案。而是last-modified的补充方案。</p>
+<p><strong>两句话总结：</strong></p>
+<ul>
+<li><code>Cache-Control</code> 是 <code>Expires</code> 的<strong>完全替代方案</strong>。</li>
+<li><code>ETag</code> 不是 <code>Last-Modified</code> 的完全替代，而是<strong>补充方案</strong>（时间精度不够时用指纹兜底）。</li>
+</ul>
+</blockquote>
+<h3 id="Vary-头"><a href="#Vary-头" class="headerlink" title="Vary 头"></a>Vary 头</h3><p><code>Vary</code> 告诉缓存”按哪些请求头区分不同版本”。例如：</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ada">Vary: <span class="hljs-keyword">Accept</span>-Encoding<br></code></pre></td></tr></table></figure>
+
+<p>表示压缩版和未压缩版要分别缓存。CDN 场景常用，配错会导致缓存错乱。</p>
+<hr>
+<h2 id="三、实际项目中的常见策略"><a href="#三、实际项目中的常见策略" class="headerlink" title="三、实际项目中的常见策略"></a>三、实际项目中的常见策略</h2><table>
+<thead>
+<tr>
+<th>资源类型</th>
+<th>推荐设置</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>HTML 入口文件</strong></td>
+<td><code>Cache-Control: no-cache</code> + ETag，每次验证，保证拿到最新资源引用</td>
+</tr>
+<tr>
+<td><strong>带 hash 的 JS&#x2F;CSS&#x2F;图片</strong></td>
+<td><code>Cache-Control: public, max-age=31536000, immutable</code>，文件名变 URL 就变，天然破缓存</td>
+</tr>
+<tr>
+<td><strong>敏感接口数据</strong></td>
+<td><code>Cache-Control: no-store</code></td>
+</tr>
+<tr>
+<td><strong>普通接口数据</strong></td>
+<td>短 <code>max-age</code> + <code>ETag</code>，或 <code>no-cache</code> 每次验证</td>
+</tr>
+<tr>
+<td><strong>CDN 层</strong></td>
+<td><code>s-maxage</code> 控制边缘节点缓存，<code>public</code> 允许共享缓存</td>
+</tr>
+</tbody></table>
+<p><strong>Nginx 配置示例（补充，落地）：</strong></p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-comment"># 带 hash 的静态资源：长缓存</span><br><span class="hljs-section">location</span> <span class="hljs-regexp">~* \.(js|css|jpg|png|woff2)$</span> &#123;<br>    <span class="hljs-attribute">add_header</span> Cache-Control <span class="hljs-string">&quot;public, max-age=31536000, immutable&quot;</span>;<br>&#125;<br><br><span class="hljs-comment"># HTML 入口：每次验证</span><br><span class="hljs-section">location</span> <span class="hljs-regexp">~* \.html$</span> &#123;<br>    <span class="hljs-attribute">add_header</span> Cache-Control <span class="hljs-string">&quot;no-cache&quot;</span>;<br>    <span class="hljs-attribute">etag</span> <span class="hljs-literal">on</span>;<br>&#125;<br><br><span class="hljs-comment"># API：不缓存敏感数据</span><br><span class="hljs-section">location</span> /api/secure/ &#123;<br>    <span class="hljs-attribute">add_header</span> Cache-Control <span class="hljs-string">&quot;no-store&quot;</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><blockquote>
+<p><strong>本地缓存</strong>解决”数据存哪、存多久、是否随请求发送”；<strong>HTTP 缓存</strong>解决”响应能否复用”——强缓存决定<strong>要不要发请求</strong>（浏览器本地判断），协商缓存决定<strong>发了请求要不要传内容</strong>（服务器判断）。静态资源用长 <code>max-age</code> + hash，入口 HTML 用 <code>no-cache</code> + 验证，是最稳妥的组合。</p>
 </blockquote>
 
                 
@@ -398,7 +609,13 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E7%BC%93%E5%AD%98/" class="print-no-link">#缓存</a>
+        <a href="/tags/%E6%B5%8F%E8%A7%88%E5%99%A8%E7%BC%93%E5%AD%98/" class="print-no-link">#浏览器缓存</a>
+      
+        <a href="/tags/HTTP%E7%BC%93%E5%AD%98/" class="print-no-link">#HTTP缓存</a>
+      
+        <a href="/tags/%E5%BC%BA%E7%BC%93%E5%AD%98/" class="print-no-link">#强缓存</a>
+      
+        <a href="/tags/%E5%8D%8F%E5%95%86%E7%BC%93%E5%AD%98/" class="print-no-link">#协商缓存</a>
       
     </div>
   

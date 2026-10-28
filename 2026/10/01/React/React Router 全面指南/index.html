@@ -1,0 +1,853 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="React Router 全面指南：从 v6 基础到 v7 数据路由实战React Router 是 React 生态中官方推荐的路由解决方案，用于在单页应用（SPA）中根据 URL 动态渲染组件，实现不刷新页面的”页面”跳转。它的核心机制是将 URL 与路由配置进行匹配，并渲染对应的组件树。 本文从 v6 的基础写法讲起，覆盖参数获取、列表翻页、表单提交、权限控制等核心场景，再过渡到 v7 的数">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React Router 全面指南">
+<meta property="og:url" content="http://example.com/2026/10/01/React/React%20Router%20%E5%85%A8%E9%9D%A2%E6%8C%87%E5%8D%97/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="React Router 全面指南：从 v6 基础到 v7 数据路由实战React Router 是 React 生态中官方推荐的路由解决方案，用于在单页应用（SPA）中根据 URL 动态渲染组件，实现不刷新页面的”页面”跳转。它的核心机制是将 URL 与路由配置进行匹配，并渲染对应的组件树。 本文从 v6 的基础写法讲起，覆盖参数获取、列表翻页、表单提交、权限控制等核心场景，再过渡到 v7 的数">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-09-30T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-26T16:15:31.241Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="React Router">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>React Router 全面指南 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">React Router 全面指南</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-10-01 00:00" pubdate>
+          2026年10月1日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          24 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">React Router 全面指南</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="React-Router-全面指南：从-v6-基础到-v7-数据路由实战"><a href="#React-Router-全面指南：从-v6-基础到-v7-数据路由实战" class="headerlink" title="React Router 全面指南：从 v6 基础到 v7 数据路由实战"></a>React Router 全面指南：从 v6 基础到 v7 数据路由实战</h1><p>React Router 是 React 生态中官方推荐的路由解决方案，用于在单页应用（SPA）中根据 URL 动态渲染组件，实现不刷新页面的”页面”跳转。它的核心机制是将 URL 与路由配置进行匹配，并渲染对应的组件树。</p>
+<p>本文从 v6 的基础写法讲起，覆盖参数获取、列表翻页、表单提交、权限控制等核心场景，再过渡到 v7 的数据路由范式与迁移路径，形成完整的版本脉络。</p>
+<hr>
+<h2 id="一、核心概念与版本脉络"><a href="#一、核心概念与版本脉络" class="headerlink" title="一、核心概念与版本脉络"></a>一、核心概念与版本脉络</h2><h3 id="基础概念"><a href="#基础概念" class="headerlink" title="基础概念"></a>基础概念</h3><ul>
+<li><strong>路由配置</strong>：将路径（<code>path</code>）映射到组件（<code>element</code> &#x2F; <code>Component</code>）。</li>
+<li><strong>动态段</strong>：路径中的 <code>:id</code> 占位符，匹配 URL 中的实际值。</li>
+<li><strong>嵌套路由</strong>：父路由通过 <code>&lt;Outlet /&gt;</code> 渲染子路由，实现布局复用。</li>
+<li><strong>导航</strong>：<code>&lt;Link&gt;</code> &#x2F; <code>&lt;NavLink&gt;</code> 声明式跳转，<code>useNavigate()</code> 编程式跳转。</li>
+</ul>
+<h3 id="版本脉络"><a href="#版本脉络" class="headerlink" title="版本脉络"></a>版本脉络</h3><table>
+<thead>
+<tr>
+<th align="left">版本</th>
+<th align="left">定位</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>v6</strong></td>
+<td align="left">引入 <code>&lt;Routes&gt;</code> &#x2F; <code>&lt;Route&gt;</code> JSX 写法与 <code>useRoutes</code> 对象配置；后期（v6.4+）引入 <code>createBrowserRouter</code> 数据路由与 <code>loader</code> &#x2F; <code>action</code></td>
+</tr>
+<tr>
+<td align="left"><strong>v7</strong></td>
+<td align="left">数据路由成为默认范式；所有功能合并进 <code>react-router</code> 包；移除 <code>json</code> &#x2F; <code>defer</code> 等废弃 API；要求 Node 20+、React 18+</td>
+</tr>
+</tbody></table>
+<p>v7 并非颠覆性重写，而是把 v6 后期以”未来标志（Future Flags）”形式释放的变更正式转正。<strong>在 v6 中启用所有 future flags 后，升级到 v7 几乎无感</strong>。</p>
+<hr>
+<h2 id="二、v6-的两种路由写法"><a href="#二、v6-的两种路由写法" class="headerlink" title="二、v6 的两种路由写法"></a>二、v6 的两种路由写法</h2><h3 id="方式一：JSX-组件式"><a href="#方式一：JSX-组件式" class="headerlink" title="方式一：JSX 组件式"></a>方式一：JSX 组件式</h3><p>通过 <code>&lt;BrowserRouter&gt;</code>、<code>&lt;Routes&gt;</code>、<code>&lt;Route&gt;</code> 声明路由：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">import</span> &#123; <span class="hljs-title class_">BrowserRouter</span>, <span class="hljs-title class_">Routes</span>, <span class="hljs-title class_">Route</span> &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;react-router-dom&quot;</span>;<br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">App</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-keyword">return</span> (<br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">BrowserRouter</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">Routes</span>&gt;</span></span><br><span class="language-xml">        <span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">path</span>=<span class="hljs-string">&quot;/&quot;</span> <span class="hljs-attr">element</span>=<span class="hljs-string">&#123;</span>&lt;<span class="hljs-attr">Home</span> /&gt;</span>&#125; /&gt;</span><br><span class="language-xml">        <span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">path</span>=<span class="hljs-string">&quot;/about&quot;</span> <span class="hljs-attr">element</span>=<span class="hljs-string">&#123;</span>&lt;<span class="hljs-attr">About</span> /&gt;</span>&#125; /&gt;</span><br><span class="language-xml">        <span class="hljs-tag">&lt;<span class="hljs-name">Route</span> <span class="hljs-attr">path</span>=<span class="hljs-string">&quot;/user/:id&quot;</span> <span class="hljs-attr">element</span>=<span class="hljs-string">&#123;</span>&lt;<span class="hljs-attr">User</span> /&gt;</span>&#125; /&gt;</span><br><span class="language-xml">      <span class="hljs-tag">&lt;/<span class="hljs-name">Routes</span>&gt;</span></span><br><span class="language-xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">BrowserRouter</span>&gt;</span></span><br>  );<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>简单直观，但数据获取（<code>useEffect</code> + <code>fetch</code>）和表单提交逻辑与路由定义是分离的。</p>
+<h3 id="方式二：数据路由式"><a href="#方式二：数据路由式" class="headerlink" title="方式二：数据路由式"></a>方式二：数据路由式</h3><p>v6.4 引入 <code>createBrowserRouter</code>，将路由配置定义为对象数组，并允许直接在路由上挂载 <code>loader</code>（加载数据）和 <code>action</code>（处理表单）：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">import</span> &#123; createBrowserRouter, <span class="hljs-title class_">RouterProvider</span> &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;react-router-dom&quot;</span>;<br><br><span class="hljs-keyword">const</span> router = <span class="hljs-title function_">createBrowserRouter</span>([<br>  &#123;<br>    <span class="hljs-attr">path</span>: <span class="hljs-string">&quot;/&quot;</span>,<br>    <span class="hljs-attr">element</span>: <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">Home</span> /&gt;</span></span>,<br>    <span class="hljs-attr">loader</span>: <span class="hljs-title function_">async</span> () =&gt; <span class="hljs-title function_">fetch</span>(<span class="hljs-string">&quot;/api/home&quot;</span>).<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">r</span>) =&gt;</span> r.<span class="hljs-title function_">json</span>()),<br>  &#125;,<br>]);<br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">App</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-keyword">return</span> <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">RouterProvider</span> <span class="hljs-attr">router</span>=<span class="hljs-string">&#123;router&#125;</span> /&gt;</span></span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>v7 中这成为推荐且默认的范式。</p>
+<hr>
+<h2 id="三、useRoutes：对象化的路由声明"><a href="#三、useRoutes：对象化的路由声明" class="headerlink" title="三、useRoutes：对象化的路由声明"></a>三、<code>useRoutes</code>：对象化的路由声明</h2><p><code>useRoutes</code> 是 <code>&lt;Routes&gt;</code> 的 Hook 化写法，用对象数组定义路由，返回可渲染的元素。它必须运行在 <code>&lt;BrowserRouter&gt;</code> 等路由上下文内部。</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">import</span> &#123; useRoutes &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;react-router&quot;</span>;<br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">App</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-keyword">const</span> element = <span class="hljs-title function_">useRoutes</span>([<br>    &#123;<br>      <span class="hljs-attr">path</span>: <span class="hljs-string">&quot;/&quot;</span>,<br>      <span class="hljs-attr">element</span>: <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">Dashboard</span> /&gt;</span></span>,<br>      <span class="hljs-attr">children</span>: [<br>        &#123; <span class="hljs-attr">path</span>: <span class="hljs-string">&quot;messages&quot;</span>, <span class="hljs-attr">element</span>: <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">DashboardMessages</span> /&gt;</span></span> &#125;,<br>        &#123; <span class="hljs-attr">path</span>: <span class="hljs-string">&quot;tasks&quot;</span>, <span class="hljs-attr">element</span>: <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">DashboardTasks</span> /&gt;</span></span> &#125;,<br>      ],<br>    &#125;,<br>    &#123; <span class="hljs-attr">path</span>: <span class="hljs-string">&quot;team&quot;</span>, <span class="hljs-attr">element</span>: <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">AboutPage</span> /&gt;</span></span> &#125;,<br>  ]);<br>  <span class="hljs-keyword">return</span> element;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><code>useRoutes</code> 只解决”URL 匹配 → 渲染哪个组件”，<strong>不具备</strong>数据路由的 <code>loader</code>、<code>action</code>、<code>errorElement</code>、<code>useNavigation</code>、<code>useFetcher</code> 等能力。适合静态页面或数据逻辑极简的场景。</p>
+<hr>
+<h2 id="四、动态参数与查询参数"><a href="#四、动态参数与查询参数" class="headerlink" title="四、动态参数与查询参数"></a>四、动态参数与查询参数</h2><h3 id="动态参数（-user-id）"><a href="#动态参数（-user-id）" class="headerlink" title="动态参数（/user/:id）"></a>动态参数（<code>/user/:id</code>）</h3><p><strong>在 <code>loader</code> &#x2F; <code>action</code> 中</strong>：入参直接有 <code>params</code> 对象。</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs jsx">&#123;<br>  <span class="hljs-attr">path</span>: <span class="hljs-string">&quot;/user/:id&quot;</span>,<br>  <span class="hljs-attr">element</span>: <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">UserPage</span> /&gt;</span></span>,<br>  <span class="hljs-attr">loader</span>: <span class="hljs-title function_">async</span> (&#123; params &#125;) =&gt; &#123;<br>    <span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`/api/users/<span class="hljs-subst">$&#123;params.id&#125;</span>`</span>);<br>    <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">json</span>();<br>  &#125;,<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong>在组件中</strong>：用 <code>useParams()</code>。</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">import</span> &#123; useParams &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;react-router&quot;</span>;<br><br><span class="hljs-keyword">const</span> &#123; id &#125; = <span class="hljs-title function_">useParams</span>(); <span class="hljs-comment">// 字符串，需要数字时 Number(id)</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="查询参数（-page-2-keyword-vue）"><a href="#查询参数（-page-2-keyword-vue）" class="headerlink" title="查询参数（?page=2&amp;keyword=vue）"></a>查询参数（<code>?page=2&amp;keyword=vue</code>）</h3><p><strong>在 <code>loader</code> &#x2F; <code>action</code> 中</strong>：从 <code>request.url</code> 解析。</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-attr">loader</span>: <span class="hljs-title function_">async</span> (&#123; request &#125;) =&gt; &#123;<br>  <span class="hljs-keyword">const</span> url = <span class="hljs-keyword">new</span> <span class="hljs-title function_">URL</span>(request.<span class="hljs-property">url</span>);<br>  <span class="hljs-keyword">const</span> keyword = url.<span class="hljs-property">searchParams</span>.<span class="hljs-title function_">get</span>(<span class="hljs-string">&quot;keyword&quot;</span>) || <span class="hljs-string">&quot;&quot;</span>;<br>  <span class="hljs-keyword">const</span> page = <span class="hljs-title class_">Number</span>(url.<span class="hljs-property">searchParams</span>.<span class="hljs-title function_">get</span>(<span class="hljs-string">&quot;page&quot;</span>) || <span class="hljs-number">1</span>);<br>  <span class="hljs-comment">// ...</span><br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<p><strong>在组件中</strong>：用 <code>useSearchParams()</code>。</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">import</span> &#123; useSearchParams &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;react-router&quot;</span>;<br><br><span class="hljs-keyword">const</span> [searchParams, setSearchParams] = <span class="hljs-title function_">useSearchParams</span>();<br><span class="hljs-keyword">const</span> page = <span class="hljs-title class_">Number</span>(searchParams.<span class="hljs-title function_">get</span>(<span class="hljs-string">&quot;page&quot;</span>) || <span class="hljs-number">1</span>);<br></code></pre></td></tr></table></figure>
+
+<h3 id="对照速查"><a href="#对照速查" class="headerlink" title="对照速查"></a>对照速查</h3><table>
+<thead>
+<tr>
+<th align="left">参数类型</th>
+<th align="left"><code>loader</code> &#x2F; <code>action</code> 中</th>
+<th align="left">组件中</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">动态参数</td>
+<td align="left"><code>({ params }) =&gt; params.id</code></td>
+<td align="left"><code>useParams().id</code></td>
+</tr>
+<tr>
+<td align="left">查询参数</td>
+<td align="left"><code>new URL(request.url).searchParams.get(&quot;key&quot;)</code></td>
+<td align="left"><code>useSearchParams()[0].get(&quot;key&quot;)</code></td>
+</tr>
+</tbody></table>
+<p><strong>注意</strong>：两者取出的值都是<strong>字符串</strong>，数字运算前务必 <code>Number()</code> 并给默认值。</p>
+<hr>
+<h2 id="五、列表翻页：URL-作为唯一数据源"><a href="#五、列表翻页：URL-作为唯一数据源" class="headerlink" title="五、列表翻页：URL 作为唯一数据源"></a>五、列表翻页：URL 作为唯一数据源</h2><p>翻页的核心是把页码和筛选条件放进 URL 的 search params，让 <code>loader</code> 直接读取，翻页即一次导航，React Router 自动重跑 <code>loader</code>。</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-comment">// 路由配置</span><br>&#123;<br>  <span class="hljs-attr">path</span>: <span class="hljs-string">&quot;/users&quot;</span>,<br>  <span class="hljs-attr">element</span>: <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">UsersPage</span> /&gt;</span></span>,<br>  <span class="hljs-attr">loader</span>: <span class="hljs-title function_">async</span> (&#123; request &#125;) =&gt; &#123;<br>    <span class="hljs-keyword">const</span> url = <span class="hljs-keyword">new</span> <span class="hljs-title function_">URL</span>(request.<span class="hljs-property">url</span>);<br>    <span class="hljs-keyword">const</span> page = <span class="hljs-title class_">Number</span>(url.<span class="hljs-property">searchParams</span>.<span class="hljs-title function_">get</span>(<span class="hljs-string">&quot;page&quot;</span>) || <span class="hljs-number">1</span>);<br>    <span class="hljs-keyword">const</span> pageSize = <span class="hljs-title class_">Number</span>(url.<span class="hljs-property">searchParams</span>.<span class="hljs-title function_">get</span>(<span class="hljs-string">&quot;pageSize&quot;</span>) || <span class="hljs-number">10</span>);<br>    <span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">`/api/users?page=<span class="hljs-subst">$&#123;page&#125;</span>&amp;pageSize=<span class="hljs-subst">$&#123;pageSize&#125;</span>`</span>);<br>    <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">json</span>();<br>  &#125;,<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-comment">// 组件</span><br><span class="hljs-keyword">import</span> &#123; <span class="hljs-title class_">Table</span> &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;antd&quot;</span>;<br><span class="hljs-keyword">import</span> &#123; useLoaderData, useSearchParams, useNavigation &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;react-router&quot;</span>;<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">UsersPage</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-keyword">const</span> &#123; list, total &#125; = <span class="hljs-title function_">useLoaderData</span>();<br>  <span class="hljs-keyword">const</span> [searchParams, setSearchParams] = <span class="hljs-title function_">useSearchParams</span>();<br>  <span class="hljs-keyword">const</span> navigation = <span class="hljs-title function_">useNavigation</span>();<br><br>  <span class="hljs-keyword">const</span> page = <span class="hljs-title class_">Number</span>(searchParams.<span class="hljs-title function_">get</span>(<span class="hljs-string">&quot;page&quot;</span>) || <span class="hljs-number">1</span>);<br>  <span class="hljs-keyword">const</span> pageSize = <span class="hljs-title class_">Number</span>(searchParams.<span class="hljs-title function_">get</span>(<span class="hljs-string">&quot;pageSize&quot;</span>) || <span class="hljs-number">10</span>);<br><br>  <span class="hljs-keyword">return</span> (<br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">Table</span></span></span><br><span class="hljs-tag"><span class="language-xml">      <span class="hljs-attr">loading</span>=<span class="hljs-string">&#123;navigation.state</span> === <span class="hljs-string">&quot;loading&quot;</span>&#125;</span></span><br><span class="hljs-tag"><span class="language-xml">      <span class="hljs-attr">rowKey</span>=<span class="hljs-string">&quot;id&quot;</span></span></span><br><span class="hljs-tag"><span class="language-xml">      <span class="hljs-attr">columns</span>=<span class="hljs-string">&#123;columns&#125;</span></span></span><br><span class="hljs-tag"><span class="language-xml">      <span class="hljs-attr">dataSource</span>=<span class="hljs-string">&#123;list&#125;</span></span></span><br><span class="hljs-tag"><span class="language-xml">      <span class="hljs-attr">pagination</span>=<span class="hljs-string">&#123;&#123;</span></span></span><br><span class="hljs-tag"><span class="language-xml">        <span class="hljs-attr">current:</span> <span class="hljs-attr">page</span>,</span></span><br><span class="hljs-tag"><span class="language-xml">        <span class="hljs-attr">pageSize</span>,</span></span><br><span class="hljs-tag"><span class="language-xml">        <span class="hljs-attr">total</span>,</span></span><br><span class="hljs-tag"><span class="language-xml">        <span class="hljs-attr">showSizeChanger:</span> <span class="hljs-attr">true</span>,</span></span><br><span class="hljs-tag"><span class="language-xml">        <span class="hljs-attr">onChange:</span> (<span class="hljs-attr">nextPage</span>, <span class="hljs-attr">nextPageSize</span>) =&gt;</span> &#123;</span><br><span class="language-xml">          setSearchParams(&#123;</span><br><span class="language-xml">            page: String(nextPage),</span><br><span class="language-xml">            pageSize: String(nextPageSize),</span><br><span class="language-xml">          &#125;);</span><br><span class="language-xml">        &#125;,</span><br><span class="language-xml">      &#125;&#125;</span><br><span class="language-xml">    /&gt;</span><br>  );<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong>原则</strong>：页码不要用 <code>useState</code> 存，URL 是唯一数据源；改筛选条件时把 <code>page</code> 重置为 1；加载态用 <code>useNavigation().state</code> 驱动。</p>
+<hr>
+<h2 id="六、数据路由实战：loader-action-与-Antd-配合"><a href="#六、数据路由实战：loader-action-与-Antd-配合" class="headerlink" title="六、数据路由实战：loader &#x2F; action 与 Antd 配合"></a>六、数据路由实战：<code>loader</code> &#x2F; <code>action</code> 与 Antd 配合</h2><p><code>loader</code> &#x2F; <code>action</code> 是数据层，Antd 是 UI 层，两者完全兼容。以”用户列表 + 添加表单”为例。</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-comment">// 路由配置</span><br>&#123;<br>  <span class="hljs-attr">path</span>: <span class="hljs-string">&quot;/users&quot;</span>,<br>  <span class="hljs-attr">element</span>: <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">UsersPage</span> /&gt;</span></span>,<br>  <span class="hljs-attr">loader</span>: <span class="hljs-title function_">async</span> () =&gt; &#123;<br>    <span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">&quot;/api/users&quot;</span>);<br>    <span class="hljs-keyword">if</span> (!res.<span class="hljs-property">ok</span>) <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Response</span>(<span class="hljs-string">&quot;加载失败&quot;</span>, &#123; <span class="hljs-attr">status</span>: res.<span class="hljs-property">status</span> &#125;);<br>    <span class="hljs-keyword">return</span> res.<span class="hljs-title function_">json</span>();<br>  &#125;,<br>  <span class="hljs-attr">action</span>: <span class="hljs-title function_">async</span> (&#123; request &#125;) =&gt; &#123;<br>    <span class="hljs-keyword">const</span> form = <span class="hljs-keyword">await</span> request.<span class="hljs-title function_">formData</span>();<br>    <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">&quot;/api/users&quot;</span>, &#123;<br>      <span class="hljs-attr">method</span>: <span class="hljs-string">&quot;POST&quot;</span>,<br>      <span class="hljs-attr">body</span>: <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(&#123; <span class="hljs-attr">name</span>: form.<span class="hljs-title function_">get</span>(<span class="hljs-string">&quot;name&quot;</span>) &#125;),<br>      <span class="hljs-attr">headers</span>: &#123; <span class="hljs-string">&quot;Content-Type&quot;</span>: <span class="hljs-string">&quot;application/json&quot;</span> &#125;,<br>    &#125;);<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>  &#125;,<br>  <span class="hljs-attr">errorElement</span>: <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">ErrorPage</span> /&gt;</span></span>,<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-comment">// 组件：Antd 表单通过 useSubmit 触发 action</span><br><span class="hljs-keyword">import</span> &#123; <span class="hljs-title class_">Form</span> <span class="hljs-keyword">as</span> <span class="hljs-title class_">AntForm</span>, <span class="hljs-title class_">Input</span>, <span class="hljs-title class_">Button</span>, <span class="hljs-title class_">Table</span> &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;antd&quot;</span>;<br><span class="hljs-keyword">import</span> &#123; useSubmit, useNavigation, useLoaderData &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;react-router&quot;</span>;<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">UsersPage</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-keyword">const</span> users = <span class="hljs-title function_">useLoaderData</span>();<br>  <span class="hljs-keyword">const</span> submit = <span class="hljs-title function_">useSubmit</span>();<br>  <span class="hljs-keyword">const</span> navigation = <span class="hljs-title function_">useNavigation</span>();<br>  <span class="hljs-keyword">const</span> isSubmitting = navigation.<span class="hljs-property">state</span> === <span class="hljs-string">&quot;submitting&quot;</span>;<br><br>  <span class="hljs-keyword">return</span> (<br>    <span class="language-xml"><span class="hljs-tag">&lt;&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">AntForm</span></span></span><br><span class="hljs-tag"><span class="language-xml">        <span class="hljs-attr">layout</span>=<span class="hljs-string">&quot;inline&quot;</span></span></span><br><span class="hljs-tag"><span class="language-xml">        <span class="hljs-attr">onFinish</span>=<span class="hljs-string">&#123;(values)</span> =&gt;</span> submit(values, &#123; method: &quot;post&quot; &#125;)&#125;</span><br><span class="language-xml">      &gt;</span><br><span class="language-xml">        <span class="hljs-tag">&lt;<span class="hljs-name">AntForm.Item</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;name&quot;</span> <span class="hljs-attr">rules</span>=<span class="hljs-string">&#123;[&#123;</span> <span class="hljs-attr">required:</span> <span class="hljs-attr">true</span> &#125;]&#125;&gt;</span></span><br><span class="language-xml">          <span class="hljs-tag">&lt;<span class="hljs-name">Input</span> /&gt;</span></span><br><span class="language-xml">        <span class="hljs-tag">&lt;/<span class="hljs-name">AntForm.Item</span>&gt;</span></span><br><span class="language-xml">        <span class="hljs-tag">&lt;<span class="hljs-name">Button</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;primary&quot;</span> <span class="hljs-attr">htmlType</span>=<span class="hljs-string">&quot;submit&quot;</span> <span class="hljs-attr">loading</span>=<span class="hljs-string">&#123;isSubmitting&#125;</span>&gt;</span></span><br><span class="language-xml">          添加</span><br><span class="language-xml">        <span class="hljs-tag">&lt;/<span class="hljs-name">Button</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;/<span class="hljs-name">AntForm</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">Table</span> <span class="hljs-attr">rowKey</span>=<span class="hljs-string">&quot;id&quot;</span> <span class="hljs-attr">columns</span>=<span class="hljs-string">&#123;columns&#125;</span> <span class="hljs-attr">dataSource</span>=<span class="hljs-string">&#123;users&#125;</span> /&gt;</span></span><br><span class="language-xml">    <span class="hljs-tag">&lt;/&gt;</span></span><br>  );<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong>关键点</strong>：Antd 表单负责 UI 和校验，<code>onFinish</code> 里用 <code>useSubmit()</code> 触发 action；action 执行后 React Router <strong>自动重新执行 loader</strong>，列表自动刷新，组件里不需要任何手动状态管理。</p>
+<hr>
+<h2 id="七、Outlet-的渲染机制"><a href="#七、Outlet-的渲染机制" class="headerlink" title="七、Outlet 的渲染机制"></a>七、<code>Outlet</code> 的渲染机制</h2><p><code>&lt;Outlet&gt;</code> 是布局组件里的”内容插槽”，它渲染的是<strong>当前 URL 匹配链中、自己下一层的路由元素</strong>。</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-title function_">createBrowserRouter</span>([<br>  &#123;<br>    <span class="hljs-attr">path</span>: <span class="hljs-string">&quot;/&quot;</span>,<br>    <span class="hljs-attr">element</span>: <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">BasicLayout</span> /&gt;</span></span>, <span class="hljs-comment">// 内部有 &lt;Outlet /&gt;</span><br>    <span class="hljs-attr">children</span>: [<br>      &#123; <span class="hljs-attr">path</span>: <span class="hljs-string">&quot;dashboard&quot;</span>, <span class="hljs-attr">element</span>: <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">Dashboard</span> /&gt;</span></span> &#125;,<br>      &#123;<br>        <span class="hljs-attr">path</span>: <span class="hljs-string">&quot;users&quot;</span>,<br>        <span class="hljs-attr">children</span>: [<br>          &#123; <span class="hljs-attr">index</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">element</span>: <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">UserList</span> /&gt;</span></span> &#125;,<br>          &#123; <span class="hljs-attr">path</span>: <span class="hljs-string">&quot;:id&quot;</span>, <span class="hljs-attr">element</span>: <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">UserDetail</span> /&gt;</span></span> &#125;,<br>        ],<br>      &#125;,<br>    ],<br>  &#125;,<br>]);<br></code></pre></td></tr></table></figure>
+
+<p>访问 <code>/users/123</code> 时：匹配链为 <code>/</code> → <code>users</code> → <code>:id</code>，渲染 <code>BasicLayout</code>，其 <code>&lt;Outlet /&gt;</code> 渲染下一层，逐层嵌套到 <code>UserDetail</code>。布局（侧边栏、顶栏）保持不变，只替换 <code>Outlet</code> 内容。</p>
+<p><strong>无 <code>path</code> 的路由</strong>（如 <code>{ Component: Layout, children: [...] }</code>）不贡献 URL 段，只做布局包装或统一守卫分组，是常见写法。需要编程控制时可用 <code>useOutlet()</code> 获取子元素。</p>
+<hr>
+<h2 id="八、代码分割：Component-lazy-与路由级-lazy"><a href="#八、代码分割：Component-lazy-与路由级-lazy" class="headerlink" title="八、代码分割：Component + lazy() 与路由级 lazy"></a>八、代码分割：<code>Component + lazy()</code> 与路由级 <code>lazy</code></h2><p>两种懒加载方式职责不同：</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-comment">// 写法 A：React.lazy，渲染阶段加载</span><br>&#123;<br>  <span class="hljs-attr">path</span>: <span class="hljs-string">&quot;/dashboard&quot;</span>,<br>  <span class="hljs-title class_">Component</span>: <span class="hljs-title function_">lazy</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-keyword">import</span>(<span class="hljs-string">&quot;@/views/dashboard&quot;</span>)),<br>&#125;<br><br><span class="hljs-comment">// 写法 B：路由级 lazy，导航阶段加载</span><br>&#123;<br>  <span class="hljs-attr">path</span>: <span class="hljs-string">&quot;/dashboard&quot;</span>,<br>  <span class="hljs-attr">lazy</span>: <span class="hljs-title function_">async</span> () =&gt; &#123;<br>    <span class="hljs-keyword">const</span> mod = <span class="hljs-keyword">await</span> <span class="hljs-keyword">import</span>(<span class="hljs-string">&quot;@/views/dashboard&quot;</span>);<br>    <span class="hljs-keyword">return</span> &#123; <span class="hljs-title class_">Component</span>: mod.<span class="hljs-property">default</span>, <span class="hljs-attr">loader</span>: mod.<span class="hljs-property">loader</span> &#125;;<br>  &#125;,<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th align="left">维度</th>
+<th align="left"><code>Component: lazy()</code></th>
+<th align="left">路由级 <code>lazy</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">加载控制方</td>
+<td align="left">React（渲染阶段）</td>
+<td align="left">React Router（导航阶段）</td>
+</tr>
+<tr>
+<td align="left">是否需要 <code>&lt;Suspense&gt;</code></td>
+<td align="left">需要</td>
+<td align="left">不需要</td>
+</tr>
+<tr>
+<td align="left">能否懒加载 <code>loader</code> &#x2F; <code>action</code></td>
+<td align="left">不能</td>
+<td align="left">能，一起返回</td>
+</tr>
+<tr>
+<td align="left">加载失败错误归属</td>
+<td align="left">React 渲染错误</td>
+<td align="left">路由错误，走 <code>errorElement</code></td>
+</tr>
+<tr>
+<td align="left">加载态展示</td>
+<td align="left">各布局套 <code>&lt;Suspense&gt;</code></td>
+<td align="left"><code>useNavigation().state</code> 统一处理</td>
+</tr>
+</tbody></table>
+<p><strong>数据路由项目建议统一用路由级 <code>lazy</code></strong>：<code>loader</code> 与组件同 chunk 按需加载，错误能走 <code>errorElement</code> 兜底，布局无需为每个页面包 <code>&lt;Suspense&gt;</code>。</p>
+<hr>
+<h2 id="九、菜单权限控制"><a href="#九、菜单权限控制" class="headerlink" title="九、菜单权限控制"></a>九、菜单权限控制</h2><p>核心思路：<strong>权限数据决定”能进哪些路由”，路由配置决定”能渲染什么”，菜单从路由表派生</strong>。</p>
+<h3 id="1-路由配置挂权限标识"><a href="#1-路由配置挂权限标识" class="headerlink" title="1. 路由配置挂权限标识"></a>1. 路由配置挂权限标识</h3><p>React Router 用 <code>handle</code> 字段（非 Vue 的 <code>meta</code>）挂自定义数据，通过 <code>useMatches()</code> 读取。</p>
+<figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs jsx">&#123;<br>  <span class="hljs-attr">path</span>: <span class="hljs-string">&quot;settings&quot;</span>,<br>  <span class="hljs-attr">element</span>: <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">Settings</span> /&gt;</span></span>,<br>  <span class="hljs-attr">loader</span>: <span class="hljs-title function_">requirePermission</span>(<span class="hljs-string">&quot;settings:view&quot;</span>),<br>  <span class="hljs-attr">handle</span>: &#123; <span class="hljs-attr">title</span>: <span class="hljs-string">&quot;系统设置&quot;</span>, <span class="hljs-attr">icon</span>: <span class="hljs-string">&quot;setting&quot;</span>, <span class="hljs-attr">permission</span>: <span class="hljs-string">&quot;settings:view&quot;</span> &#125;,<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-全局认证-Context"><a href="#2-全局认证-Context" class="headerlink" title="2. 全局认证 Context"></a>2. 全局认证 Context</h3><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">const</span> <span class="hljs-title class_">AuthContext</span> = <span class="hljs-title function_">createContext</span>(<span class="hljs-literal">null</span>);<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">AuthProvider</span>(<span class="hljs-params">&#123; children &#125;</span>) &#123;<br>  <span class="hljs-keyword">const</span> [user, setUser] = <span class="hljs-title function_">useState</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>    <span class="hljs-keyword">const</span> raw = <span class="hljs-variable language_">localStorage</span>.<span class="hljs-title function_">getItem</span>(<span class="hljs-string">&quot;user&quot;</span>);<br>    <span class="hljs-keyword">return</span> raw ? <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">parse</span>(raw) : <span class="hljs-literal">null</span>;<br>  &#125;);<br><br>  <span class="hljs-comment">// user: &#123; name, permissions: [&quot;dashboard:view&quot;, ...] &#125;</span><br>  <span class="hljs-keyword">const</span> <span class="hljs-title function_">hasPermission</span> = (<span class="hljs-params">code</span>) =&gt; &#123;<br>    <span class="hljs-keyword">if</span> (!code) <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>    <span class="hljs-keyword">if</span> (!user) <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>    <span class="hljs-keyword">return</span> user.<span class="hljs-property">permissions</span>.<span class="hljs-title function_">includes</span>(code);<br>  &#125;;<br><br>  <span class="hljs-keyword">return</span> (<br>    <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">AuthContext.Provider</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&#123;&#123;</span> <span class="hljs-attr">user</span>, <span class="hljs-attr">setUser</span>, <span class="hljs-attr">hasPermission</span> &#125;&#125;&gt;</span></span><br><span class="language-xml">      &#123;children&#125;</span><br><span class="language-xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">AuthContext.Provider</span>&gt;</span></span><br>  );<br>&#125;<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> <span class="hljs-title function_">useAuth</span> = (<span class="hljs-params"></span>) =&gt; <span class="hljs-title function_">useContext</span>(<span class="hljs-title class_">AuthContext</span>);<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-路由守卫（loader-拦截）"><a href="#3-路由守卫（loader-拦截）" class="headerlink" title="3. 路由守卫（loader 拦截）"></a>3. 路由守卫（loader 拦截）</h3><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">requirePermission</span>(<span class="hljs-params">code</span>) &#123;<br>  <span class="hljs-keyword">return</span> <span class="hljs-function">() =&gt;</span> &#123;<br>    <span class="hljs-keyword">const</span> user = <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">parse</span>(<span class="hljs-variable language_">localStorage</span>.<span class="hljs-title function_">getItem</span>(<span class="hljs-string">&quot;user&quot;</span>) || <span class="hljs-string">&quot;null&quot;</span>);<br>    <span class="hljs-keyword">const</span> permissions = user?.<span class="hljs-property">permissions</span> || [];<br>    <span class="hljs-keyword">if</span> (code &amp;&amp; !permissions.<span class="hljs-title function_">includes</span>(code)) &#123;<br>      <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Response</span>(<span class="hljs-string">&quot;无权限访问&quot;</span>, &#123; <span class="hljs-attr">status</span>: <span class="hljs-number">403</span> &#125;);<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>  &#125;;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>无权限时 <code>loader</code> 抛 403，由 <code>errorElement</code> 统一渲染。<strong>不要只靠菜单隐藏</strong>——手动输入 URL 也必须被拦截。</p>
+<h3 id="4-菜单从路由表派生"><a href="#4-菜单从路由表派生" class="headerlink" title="4. 菜单从路由表派生"></a>4. 菜单从路由表派生</h3><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs jsx"><span class="hljs-keyword">function</span> <span class="hljs-title function_">buildMenu</span>(<span class="hljs-params">routes, hasPermission</span>) &#123;<br>  <span class="hljs-keyword">const</span> menus = [];<br>  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> route <span class="hljs-keyword">of</span> routes) &#123;<br>    <span class="hljs-keyword">const</span> handle = route.<span class="hljs-property">handle</span>;<br>    <span class="hljs-keyword">if</span> (!handle || handle.<span class="hljs-property">hidden</span>) <span class="hljs-keyword">continue</span>;<br>    <span class="hljs-keyword">if</span> (handle.<span class="hljs-property">permission</span> &amp;&amp; !<span class="hljs-title function_">hasPermission</span>(handle.<span class="hljs-property">permission</span>)) <span class="hljs-keyword">continue</span>;<br><br>    <span class="hljs-keyword">const</span> item = &#123; <span class="hljs-attr">key</span>: route.<span class="hljs-property">path</span>, <span class="hljs-attr">label</span>: handle.<span class="hljs-property">title</span>, <span class="hljs-attr">icon</span>: handle.<span class="hljs-property">icon</span> &#125;;<br>    <span class="hljs-keyword">if</span> (route.<span class="hljs-property">children</span>?.<span class="hljs-property">length</span>) &#123;<br>      <span class="hljs-keyword">const</span> children = <span class="hljs-title function_">buildMenu</span>(route.<span class="hljs-property">children</span>, hasPermission);<br>      <span class="hljs-keyword">if</span> (children.<span class="hljs-property">length</span>) item.<span class="hljs-property">children</span> = children;<br>    &#125;<br>    menus.<span class="hljs-title function_">push</span>(item);<br>  &#125;<br>  <span class="hljs-keyword">return</span> menus;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>菜单、路由守卫、按钮显隐共用同一个 <code>hasPermission</code>，保证权限逻辑只有一处来源。<strong>前端权限只控制体验，真正的安全必须由后端校验。</strong></p>
+<hr>
+<h2 id="十、从-v6-到-v7-的迁移"><a href="#十、从-v6-到-v7-的迁移" class="headerlink" title="十、从 v6 到 v7 的迁移"></a>十、从 v6 到 v7 的迁移</h2><h3 id="核心结论：渐进升级，风险可控"><a href="#核心结论：渐进升级，风险可控" class="headerlink" title="核心结论：渐进升级，风险可控"></a>核心结论：渐进升级，风险可控</h3><p>v7 的主要变化：</p>
+<ul>
+<li><strong>包合并</strong>：所有功能整合进 <code>react-router</code>，<code>react-router-dom</code> 仅作兼容导出。迁移时卸载 <code>react-router-dom</code>，安装 <code>react-router</code>，修改导入路径。</li>
+<li><strong>数据路由成为默认范式</strong>：推荐 <code>createBrowserRouter</code> + <code>RouterProvider</code>；JSX 写法仍可用但功能冻结。</li>
+<li><strong>移除废弃 API</strong>：<code>json</code> 和 <code>defer</code> 被移除，改用普通对象或 <code>Response.json()</code>。</li>
+<li><strong>版本要求</strong>：Node 20+、React 18+。</li>
+</ul>
+<h3 id="推荐迁移路径"><a href="#推荐迁移路径" class="headerlink" title="推荐迁移路径"></a>推荐迁移路径</h3><ol>
+<li>先升级到 v6 最新小版本，确保无弃用警告；</li>
+<li><strong>逐个开启 Future Flags</strong>（如 <code>v7_startTransition</code>、<code>v7_relativeSplatPath</code>），每开一个测试并提交，精确定位问题；</li>
+<li>在 v6 阶段替换 <code>json()</code> &#x2F; <code>defer()</code>；</li>
+<li>全部开启且测试通过后，升级到 v7 并修正导入路径。</li>
+</ol>
+<hr>
+<h2 id="十一、速查清单"><a href="#十一、速查清单" class="headerlink" title="十一、速查清单"></a>十一、速查清单</h2><table>
+<thead>
+<tr>
+<th align="left">场景</th>
+<th align="left">推荐做法</th>
+<th align="left">避坑要点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">获取动态参数</td>
+<td align="left"><code>useParams()</code> &#x2F; <code>loader</code> 的 <code>params</code></td>
+<td align="left">值是字符串，需 <code>Number()</code></td>
+</tr>
+<tr>
+<td align="left">获取查询参数</td>
+<td align="left"><code>useSearchParams()</code> &#x2F; <code>new URL(request.url).searchParams</code></td>
+<td align="left">给默认值，注意 <code>null</code></td>
+</tr>
+<tr>
+<td align="left">列表翻页</td>
+<td align="left">页码放 URL，<code>setSearchParams</code> 触发 <code>loader</code> 重跑</td>
+<td align="left">不要用 <code>useState</code> 存页码</td>
+</tr>
+<tr>
+<td align="left">表单提交</td>
+<td align="left">Antd <code>onFinish</code> + <code>useSubmit()</code></td>
+<td align="left">action 后自动重跑 <code>loader</code></td>
+</tr>
+<tr>
+<td align="left">提交加载态</td>
+<td align="left"><code>useNavigation().state === &quot;submitting&quot;</code></td>
+<td align="left">不要用组件自己的 loading 状态</td>
+</tr>
+<tr>
+<td align="left">布局嵌套</td>
+<td align="left">父路由 <code>element</code> + <code>&lt;Outlet /&gt;</code></td>
+<td align="left">无 <code>path</code> 路由不贡献 URL 段</td>
+</tr>
+<tr>
+<td align="left">代码分割</td>
+<td align="left">路由级 <code>lazy</code> 返回 <code>{ Component, loader }</code></td>
+<td align="left">数据路由优先于 <code>React.lazy</code></td>
+</tr>
+<tr>
+<td align="left">权限守卫</td>
+<td align="left"><code>loader</code> 校验 + <code>errorElement</code> 兜底</td>
+<td align="left">不能只靠菜单隐藏</td>
+</tr>
+<tr>
+<td align="left">路由自定义数据</td>
+<td align="left"><code>handle</code> + <code>useMatches()</code></td>
+<td align="left">不是 Vue 的 <code>meta</code></td>
+</tr>
+<tr>
+<td align="left">v6→v7 升级</td>
+<td align="left">先开 Future Flags 再升版本</td>
+<td align="left">未用插件则零破坏性变更</td>
+</tr>
+</tbody></table>
+<hr>
+<p>以上就是 React Router 从 v6 基础到 v7 数据路由实战的完整梳理。掌握<strong>参数获取、列表翻页、表单提交、<code>Outlet</code> 嵌套、代码分割、权限控制、版本迁移</strong>这几个模块，基本可以覆盖中后台应用中的绝大多数路由场景。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/React/" class="category-chain-item">React</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/React-Router/" class="print-no-link">#React Router</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>React Router 全面指南</div>
+      <div>http://example.com/2026/10/01/React/React Router 全面指南/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年10月1日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/10/10/%E5%89%8D%E7%AB%AF/%E6%B5%8F%E8%A7%88%E5%99%A8%E4%BA%94%E5%A4%A7%20Observer%20API/" title="浏览器五大 Observer API">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">浏览器五大 Observer API</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/10/01/Vue/Vue%20Router%20%E5%85%A8%E9%9D%A2%E6%8C%87%E5%8D%97/" title="Vue Router 全面指南">
+                        <span class="hidden-mobile">Vue Router 全面指南</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

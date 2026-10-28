@@ -227,15 +227,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2025/08/10/%E5%89%8D%E7%AB%AF/react-image-crop%EF%BC%9AReact%20%E5%9B%BE%E5%83%8F%E5%89%AA%E8%A3%81%E5%B7%A5%E5%85%B7/" target="_self">
-          react-image-crop：React 图像剪裁工具
+        <a href="/2025/08/10/React/%E3%80%90React%E3%80%91Fiber%20%E8%B0%83%E5%BA%A6%E5%92%8C%E4%BC%98%E5%85%88%E7%BA%A7/" target="_self">
+          【React】Fiber 的调度和优先级
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/08/10/%E5%89%8D%E7%AB%AF/react-image-crop%EF%BC%9AReact%20%E5%9B%BE%E5%83%8F%E5%89%AA%E8%A3%81%E5%B7%A5%E5%85%B7/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/08/10/React/%E3%80%90React%E3%80%91Fiber%20%E8%B0%83%E5%BA%A6%E5%92%8C%E4%BC%98%E5%85%88%E7%BA%A7/" target="_self">
         <div>
-          react-image-crop介绍react-image-crop 是一个无依赖的React图像裁剪工具。 特点 响应式（可以用像素或百分比） 可触控 可以用任意比例进行剪裁（方形&#x2F;圆形） 没有依赖&#x2F;小容量（&lt;5KB gzip） 最小&#x2F;最大作物尺寸  缺点 需要自己使用 Canvas 导出图片 原生功能图片不支持缩放，可以自己使用 CSS 的 transfor
+          Fiber 的调度和优先级React 把更新拆成带优先级的任务，交给 Scheduler 按时间片调度。高优先级任务可以打断低优先级任务，Render 阶段可中断，Commit 阶段不可中断。优先级通过 Lane 模型表示，挂在 Fiber 的 lanes &#x2F; childLanes 上。 一、为什么需要调度没有调度时的问题：  一次更新可能构建整棵 Fiber 树，耗时长。 主线程被长时
         </div>
       </a>
 
@@ -259,7 +259,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/react/" class="category-chain-item">react</a>
+  <a href="/categories/React/" class="category-chain-item">React</a>
   
   
 
@@ -274,9 +274,131 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/react/">#react</a>
+              <a href="/tags/Fiber/">#Fiber</a>
             
-              <a href="/tags/%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93/">#第三方库</a>
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2025/08/10/React/%E3%80%90React%E3%80%91Hooks%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E8%83%BD%E6%9D%A1%E4%BB%B6%E8%B0%83%E7%94%A8/" target="_self">
+          【React】Hooks 为什么不能条件调用
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/08/10/React/%E3%80%90React%E3%80%91Hooks%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E8%83%BD%E6%9D%A1%E4%BB%B6%E8%B0%83%E7%94%A8/" target="_self">
+        <div>
+          Hooks 为什么不能条件调用 Hooks 的状态不是存在组件上，而是存在 Fiber 的 memoizedState 链表里。调用顺序就是“地址”。一旦条件调用导致顺序变化，React 就会把状态错配到别的 Hook 上。   一、Hooks 状态存在哪函数组件本身没有实例，useState 返回的 state 不能存在函数里，因为函数每次 render 都会重新执行，局部变量会丢失。 Reac
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-08-10 00:00" pubdate>
+              2025-08-10
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/React/" class="category-chain-item">React</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/React/">#React</a>
+            
+              <a href="/tags/Hook/">#Hook</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2025/08/10/TypeScript/TypeScript%20%E5%9C%A8%E5%8A%A8%E6%80%81%E9%85%8D%E7%BD%AE%E6%B8%B2%E6%9F%93%E5%9C%BA%E6%99%AF%E4%B8%AD%E7%9A%84%E7%B1%BB%E5%9E%8B%E5%AE%89%E5%85%A8%E8%AE%BE%E8%AE%A1/" target="_self">
+          TypeScript 在动态配置渲染场景中的类型安全设计
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/08/10/TypeScript/TypeScript%20%E5%9C%A8%E5%8A%A8%E6%80%81%E9%85%8D%E7%BD%AE%E6%B8%B2%E6%9F%93%E5%9C%BA%E6%99%AF%E4%B8%AD%E7%9A%84%E7%B1%BB%E5%9E%8B%E5%AE%89%E5%85%A8%E8%AE%BE%E8%AE%A1/" target="_self">
+        <div>
+          TypeScript 在动态配置渲染场景中的类型安全设计1. 背景与问题在 React 项目中，我们经常遇到“配置驱动渲染”的需求：后端返回一组配置数据，前端根据配置动态渲染不同组件。例如： 12345678// 基础配置接口export interface ICompConfigs&lt;T&gt; &#123;  id: number;  moduleType: TModuleType; //
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-08-10 00:00" pubdate>
+              2025-08-10
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/TypeScript/" class="category-chain-item">TypeScript</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/TypeScript/">#TypeScript</a>
             
           </div>
         
@@ -291,7 +413,7 @@
       <h2 class="index-header">
         
         <a href="/2025/08/10/%E5%89%8D%E7%AB%AF/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%EF%BC%9AJest/" target="_self">
-          React + Jest 前端项目单元测试
+          单元测试：Jest
         </a>
       </h2>
 
@@ -463,7 +585,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/react/">#react</a>
+              <a href="/tags/React/">#React</a>
             
               <a href="/tags/%E5%9B%BE%E7%89%87%E8%A3%81%E5%89%AA/">#图片裁剪</a>
             
@@ -496,6 +618,67 @@
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
             <time datetime="2025-08-01 10:00" pubdate>
+              2025-08-01
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Codex/" class="category-chain-item">Codex</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Codex/">#Codex</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2025/08/01/AI/Codex%20%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8/" target="_self">
+          Codex 安装与使用
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/08/01/AI/Codex%20%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8/" target="_self">
+        <div>
+          安装 Codex CLI1npm install -g @openai/codex  进入 Codex12345# 进入新的 Codex 会话codex# 进入最近的会话codex resume --last  常用命令Codex 的快捷操作主要分为斜杠命令 (/) 和键盘快捷键两类，分别用于控制 Codex 本身和操作界面。 常用键盘快捷键 (TUI)这些快捷键主要用于在 Codex 的终端界面
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-08-01 00:00" pubdate>
               2025-08-01
             </time>
           </div>
@@ -603,67 +786,6 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2025/08/01/AI/Codex%20%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8/" target="_self">
-          Codex 安装与使用
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/08/01/AI/Codex%20%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8/" target="_self">
-        <div>
-          安装 Codex CLI1npm install -g @openai/codex  进入 Codex12345# 进入新的 Codex 会话codex# 进入最近的会话codex resume --last  常用命令Codex 的快捷操作主要分为斜杠命令 (/) 和键盘快捷键两类，分别用于控制 Codex 本身和操作界面。 常用键盘快捷键 (TUI)这些快捷键主要用于在 Codex 的终端界面
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-08-01 00:00" pubdate>
-              2025-08-01
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/Codex/" class="category-chain-item">Codex</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Codex/">#Codex</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
         <a href="/2025/08/01/%E5%B0%8F%E7%A8%8B%E5%BA%8F/Taro%20%E5%A4%9A%E5%B9%B3%E5%8F%B0%E9%80%82%E9%85%8D/" target="_self">
           Taro 多平台适配
         </a>
@@ -723,144 +845,11 @@
     </article>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2025/07/01/%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E5%AE%9E%E7%8E%B0%E6%B5%81%E5%BC%8F%E8%BE%93%E5%87%BA/" target="_self">
-          微信小程序实现流式输出
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/07/01/%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E5%AE%9E%E7%8E%B0%E6%B5%81%E5%BC%8F%E8%BE%93%E5%87%BA/" target="_self">
-        <div>
-          微信小程序实现流式输出 SSE小程序实现流式输出（打字机效果）的核心思路，是绕过浏览器标准的 EventSource，利用小程序原生 wx.request 的分块传输能力来模拟 SSE（Server-Sent Events）接收。 核心实现方案：enableChunked + onChunkReceived微信小程序基础库支持在 wx.request 中开启 enableChunked: true
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-07-01 10:00" pubdate>
-              2025-07-01
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98/" class="category-chain-item">项目实战</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98/%E5%B0%8F%E7%A8%8B%E5%BA%8F/" class="category-chain-item">小程序</a>
-  
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/">#微信小程序</a>
-            
-              <a href="/tags/SSE/">#SSE</a>
-            
-              <a href="/tags/%E6%B5%81%E5%BC%8F%E8%BE%93%E5%87%BA/">#流式输出</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2025/06/10/%E5%89%8D%E7%AB%AF/%E5%A6%82%E4%BD%95%E7%A6%81%E6%AD%A2%E7%94%A8%E6%88%B7%E5%A4%8D%E5%88%B6%E9%A1%B5%E9%9D%A2%E5%86%85%E5%AE%B9/" target="_self">
-          如何禁止用户复制页面内容
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/06/10/%E5%89%8D%E7%AB%AF/%E5%A6%82%E4%BD%95%E7%A6%81%E6%AD%A2%E7%94%A8%E6%88%B7%E5%A4%8D%E5%88%B6%E9%A1%B5%E9%9D%A2%E5%86%85%E5%AE%B9/" target="_self">
-        <div>
-          如何禁止用户复制页面内容一、使用 user-select 属性使用 user-select 属性可以禁止用户选中文本，从而无法复制。 12-webkit-user-select: none;user-select: none;  二、阻止默认事件JS阻止复制、剪切、右键菜单、Ctrl+C &#x2F; Ctrl+V &#x2F; Ctrl+U（查看源码）等快捷键 12345678910111213
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-06-10 17:57" pubdate>
-              2025-06-10
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E5%89%8D%E7%AB%AF/" class="category-chain-item">前端</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E7%A6%81%E6%AD%A2%E5%A4%8D%E5%88%B6/">#禁止复制</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
 
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <a class="extend prev" rel="prev" href="/page/9/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/#board">8</a><a class="page-number" href="/page/9/#board">9</a><span class="page-number current">10</span><a class="page-number" href="/page/11/#board">11</a><a class="page-number" href="/page/12/#board">12</a><span class="space">&hellip;</span><a class="page-number" href="/page/26/#board">26</a><a class="extend next" rel="next" href="/page/11/#board"><i class="iconfont icon-arrowright"></i></a>
+      <a class="extend prev" rel="prev" href="/page/9/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/#board">8</a><a class="page-number" href="/page/9/#board">9</a><span class="page-number current">10</span><a class="page-number" href="/page/11/#board">11</a><a class="page-number" href="/page/12/#board">12</a><span class="space">&hellip;</span><a class="page-number" href="/page/27/#board">27</a><a class="extend next" rel="next" href="/page/11/#board"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
 

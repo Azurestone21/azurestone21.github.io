@@ -227,6 +227,134 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2024/12/01/React/%E3%80%90React%E3%80%91%E9%AB%98%E9%98%B6%E7%BB%84%E4%BB%B6/" target="_self">
+          React 高阶组件（HOC）
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/12/01/React/%E3%80%90React%E3%80%91%E9%AB%98%E9%98%B6%E7%BB%84%E4%BB%B6/" target="_self">
+        <div>
+          React 高阶组件（HOC）一、概述高阶组件（Higher-Order Component，HOC）是 React 中一种复用组件逻辑的模式。它本身不是 React API，而是一个函数： 1接收一个组件，返回一个新组件。  签名： 1const EnhancedComponent = higherOrderComponent(WrappedComponent);   WrappedCompon
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-12-01 00:00" pubdate>
+              2024-12-01
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/React/" class="category-chain-item">React</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/React/">#React</a>
+            
+              <a href="/tags/%E9%AB%98%E9%98%B6%E7%BB%84%E4%BB%B6/">#高阶组件</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2024/12/01/Vue/%E3%80%90Vue%E3%80%91watch%E5%92%8CwatchEffect/" target="_self">
+          Vue watch 和 watchEffect
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/12/01/Vue/%E3%80%90Vue%E3%80%91watch%E5%92%8CwatchEffect/" target="_self">
+        <div>
+          【Vue】watch 和 watchEffect在 Vue 3 的 Composition API 中，watch 和 watchEffect 都是用来监听响应式数据变化并执行副作用的。核心区别一句话概括：  watch 是“显式指定依赖，惰性执行”；watchEffect 是“自动收集依赖，立即执行”。   一、watch1. 基本用法123456789&lt;script setup&gt;i
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-12-01 00:00" pubdate>
+              2024-12-01
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Vue/" class="category-chain-item">Vue</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Vue/">#Vue</a>
+            
+              <a href="/tags/watch/">#watch</a>
+            
+              <a href="/tags/watchEffect/">#watchEffect</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2024/12/01/Vue/%E3%80%90Vue%E3%80%91ref%E5%92%8Creactive/" target="_self">
           【Vue】ref和reactive
         </a>
@@ -279,6 +407,69 @@
               <a href="/tags/Vue/">#Vue</a>
             
               <a href="/tags/reactive/">#reactive</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2024/12/01/Vue/%E3%80%90Vue%E3%80%91%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8E%9F%E7%90%86/" target="_self">
+          Vue 响应式原理
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/12/01/Vue/%E3%80%90Vue%E3%80%91%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8E%9F%E7%90%86/" target="_self">
+        <div>
+          Vue 响应式原理 目标：理解 Vue 如何做到数据变化时自动更新视图。核心思想：依赖收集 + 派发更新（发布订阅模式）。Vue 2 用 Object.defineProperty，Vue 3 用 Proxy。   一、整体概念Vue 的响应式系统解决一个问题：  当数据变化时，如何知道哪些地方用到了这个数据，并自动更新它们？  答案分三步：  数据劫持：把普通数据变成响应式数据，拦截读写。 依赖
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-12-01 00:00" pubdate>
+              2024-12-01
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Vue/" class="category-chain-item">Vue</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Vue/">#Vue</a>
+            
+              <a href="/tags/%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8E%9F%E7%90%86/">#响应式原理</a>
             
           </div>
         
@@ -481,6 +672,71 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2024/12/01/%E5%89%8D%E7%AB%AF/%E3%80%90Web%E5%AE%89%E5%85%A8%E3%80%91%E8%B7%A8%E5%9F%9F/" target="_self">
+          跨域
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/12/01/%E5%89%8D%E7%AB%AF/%E3%80%90Web%E5%AE%89%E5%85%A8%E3%80%91%E8%B7%A8%E5%9F%9F/" target="_self">
+        <div>
+          跨域一、概述1. 什么是同源？同源指：协议、域名、端口 三者完全相同。    当前页面 请求地址 是否同源    http://localhost:8080 http://localhost:8080/api ✅ 同源   http://localhost:8080 https://localhost:8080/api ❌ 协议不同   http://localhost:8080 http://l
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-12-01 00:00" pubdate>
+              2024-12-01
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%89%8D%E7%AB%AF/" class="category-chain-item">前端</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E8%B7%A8%E5%9F%9F/">#跨域</a>
+            
+              <a href="/tags/CORS/">#CORS</a>
+            
+              <a href="/tags/%E9%A2%84%E6%A3%80%E8%AF%B7%E6%B1%82/">#预检请求</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2024/11/14/%E6%9C%8D%E5%8A%A1%E7%AB%AF/Windows%E5%90%91Linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%BC%A0%E8%BE%93%E6%96%87%E4%BB%B6/" target="_self">
           Windows向Linux服务器传输文件
         </a>
@@ -603,259 +859,11 @@
     </article>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/11/12/%E6%9C%8D%E5%8A%A1%E7%AB%AF/Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" target="_self">
-          Linux常用命令
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/11/12/%E6%9C%8D%E5%8A%A1%E7%AB%AF/Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" target="_self">
-        <div>
-          命令lsof 查看端口占用进程12345yum install lsof # 如果命令不存在，需要安装lsof -i # 查看所有端口lsof -i:80 # 查看某个端口  查询所有开启的端口1netstat -tlnp  查询所有80端口进程1netstat -apn|grep :80  查询80端口是否启动1firewall-cmd --query-port=80/tcp  添加80端口之后
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-11-12 21:01" pubdate>
-              2024-11-12
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/Linux/" class="category-chain-item">Linux</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Linux/">#Linux</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/11/12/%E6%9C%8D%E5%8A%A1%E7%AB%AF/Nginx%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE%EF%BC%88Linux%EF%BC%89/" target="_self">
-          Nginx安装与配置（Linux）
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/11/12/%E6%9C%8D%E5%8A%A1%E7%AB%AF/Nginx%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE%EF%BC%88Linux%EF%BC%89/" target="_self">
-        <div>
-          Nginx 是由伊戈尔·赛索耶夫为俄罗斯访问量第二的 Rambler.ru 站点（俄文：Рамблер）开发的，公开版本1.19.6发布于2020年12月15日。 Nginx (engine x) 是一个高性能的 HTTP 和反向代理web服务器，同时也提供了IMAP&#x2F;POP3&#x2F;SMTP服务。可在 BSD-like 协议下发行。其特点是占有内存少，并发能力强。 安装 Nginx
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-11-12 21:01" pubdate>
-              2024-11-12
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/Nginx/" class="category-chain-item">Nginx</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Linux/">#Linux</a>
-            
-              <a href="/tags/Nginx/">#Nginx</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/11/12/%E6%9C%8D%E5%8A%A1%E7%AB%AF/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%83%A8%E7%BD%B2%E5%89%8D%E7%AB%AF%E9%A1%B9%E7%9B%AE/" target="_self">
-          Linux服务器部署前端项目
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/11/12/%E6%9C%8D%E5%8A%A1%E7%AB%AF/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%83%A8%E7%BD%B2%E5%89%8D%E7%AB%AF%E9%A1%B9%E7%9B%AE/" target="_self">
-        <div>
-          Linux服务器部署前端项目前端项目打包项目1npm run build  上传项目文件到服务器使用 xftp 把打包后的项目文件上传到 /data/project/admin-vue 目录（这个目录后面需要配置到Nginx里面） 配置 nginx1vim /usr/local/nginx/conf/nginx.conf  1234567891011121314151617server &#123
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-11-12 21:01" pubdate>
-              2024-11-12
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E6%9C%8D%E5%8A%A1%E5%99%A8/" class="category-chain-item">服务器</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Linux/">#Linux</a>
-            
-              <a href="/tags/%E9%83%A8%E7%BD%B2/">#部署</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2024/09/01/%E5%89%8D%E7%AB%AF/%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/" target="_self">
-          单点登录
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2024/09/01/%E5%89%8D%E7%AB%AF/%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/" target="_self">
-        <div>
-          单点登录一、基础概念1. 同源策略同源 &#x3D; 协议 + 域名 + 端口 完全相同。    父页面 子页面 是否同源    https://a.com https://a.com/sub 是   https://a.com https://sub.a.com 否（子域不同）   https://a.com http://a.com 否（协议不同）   https://a.com https:
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2024-09-01 00:00" pubdate>
-              2024-09-01
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/Web%E5%BC%80%E5%8F%91/" class="category-chain-item">Web开发</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/">#单点登录</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
 
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <a class="extend prev" rel="prev" href="/page/14/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/#board">13</a><a class="page-number" href="/page/14/#board">14</a><span class="page-number current">15</span><a class="page-number" href="/page/16/#board">16</a><a class="page-number" href="/page/17/#board">17</a><span class="space">&hellip;</span><a class="page-number" href="/page/26/#board">26</a><a class="extend next" rel="next" href="/page/16/#board"><i class="iconfont icon-arrowright"></i></a>
+      <a class="extend prev" rel="prev" href="/page/14/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/#board">13</a><a class="page-number" href="/page/14/#board">14</a><span class="page-number current">15</span><a class="page-number" href="/page/16/#board">16</a><a class="page-number" href="/page/17/#board">17</a><span class="space">&hellip;</span><a class="page-number" href="/page/27/#board">27</a><a class="extend next" rel="next" href="/page/16/#board"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
 

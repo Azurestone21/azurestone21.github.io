@@ -27,9 +27,9 @@
 <meta property="og:description" content="react-image-crop：实现图片缩放裁剪 从零到一，解决大图适配、缩放平移、精准导出三大核心难题。  前言react-image-crop 是 React 生态中最流行的图片裁剪库之一（GitHub 4k+ stars）。但它只提供了”裁剪框”的能力——缩放、平移、导出这些环节都要自己拼。官方 Demo 比较简陋，实际项目中会遇到一堆坑。 本文基于生产环境组件的实践经验，带你一步步实现一">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-08-09T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-10-19T08:57:30.764Z">
+<meta property="article:modified_time" content="2026-10-26T16:28:29.825Z">
 <meta property="article:author" content="Azure">
-<meta property="article:tag" content="react">
+<meta property="article:tag" content="React">
 <meta property="article:tag" content="图片裁剪">
 <meta name="twitter:card" content="summary_large_image">
   
@@ -224,7 +224,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          5.3k 字
+          5.1k 字
         
       </span>
     
@@ -235,7 +235,7 @@
         
         
         
-          44 分钟
+          43 分钟
         
       </span>
     
@@ -282,47 +282,6 @@
 </blockquote>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p><code>react-image-crop</code> 是 React 生态中最流行的图片裁剪库之一（GitHub 4k+ stars）。但它只提供了”裁剪框”的能力——<strong>缩放、平移、导出这些环节都要自己拼</strong>。官方 Demo 比较简陋，实际项目中会遇到一堆坑。</p>
 <p>本文基于生产环境组件的实践经验，带你一步步实现一个<strong>支持缩放、平移、精准导出</strong>的完整裁剪组件。</p>
-<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ul>
-<li><a href="#react-image-crop%E5%AE%9E%E7%8E%B0%E5%9B%BE%E7%89%87%E7%BC%A9%E6%94%BE%E8%A3%81%E5%89%AA">react-image-crop：实现图片缩放裁剪</a><ul>
-<li><a href="#%E5%89%8D%E8%A8%80">前言</a></li>
-<li><a href="#%E7%9B%AE%E5%BD%95">目录</a></li>
-<li><a href="#%E4%B8%80%E5%9F%BA%E7%A1%80%E6%9C%80%E5%B0%8F%E5%8F%AF%E7%94%A8%E7%9A%84%E8%A3%81%E5%89%AA%E7%BB%84%E4%BB%B6">一、基础：最小可用的裁剪组件</a><ul>
-<li><a href="#react-image-crop-%E5%86%85%E7%BD%AE%E7%9A%84%E4%B8%A4%E4%B8%AA%E8%BE%85%E5%8A%A9%E5%87%BD%E6%95%B0">react-image-crop 内置的两个辅助函数</a></li>
-<li><a href="#%E8%87%AA%E5%B7%B1%E5%B0%81%E8%A3%85-centeraspectcrop">自己封装 centerAspectCrop</a></li>
-<li><a href="#%E4%B8%89%E4%B8%AA%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5">三个核心概念</a></li>
-<li><a href="#%E4%B8%80%E4%B8%AA%E5%AE%B9%E6%98%93%E5%BF%BD%E7%95%A5%E7%9A%84%E7%82%B9">一个容易忽略的点</a></li>
-</ul>
-</li>
-<li><a href="#%E4%BA%8C%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%9D%91%E5%A4%A7%E5%9B%BE%E6%92%91%E7%88%86%E5%AE%B9%E5%99%A8">二、第一个坑：大图撑爆容器</a><ul>
-<li><a href="#%E6%96%B9%E6%A1%88js-%E5%AE%9E%E7%8E%B0-object-fit-contain">方案：JS 实现 object-fit: contain</a></li>
-<li><a href="#%E6%98%BE%E7%A4%BA%E5%B0%BA%E5%AF%B8%E7%8A%B6%E6%80%81">显示尺寸状态</a></li>
-</ul>
-</li>
-<li><a href="#%E4%B8%89%E8%BF%9B%E9%98%B6%E4%B8%80%E7%BC%A9%E6%94%BE%E5%8A%9F%E8%83%BD">三、进阶一：缩放功能</a><ul>
-<li><a href="#%E4%BD%86-scale-%E6%9C%89%E4%B8%A4%E4%B8%AA%E9%97%AE%E9%A2%98">但 scale 有两个问题</a></li>
-</ul>
-</li>
-<li><a href="#%E5%9B%9B%E8%BF%9B%E9%98%B6%E4%BA%8Cpanoffset-%E5%B9%B3%E7%A7%BB%E7%B3%BB%E7%BB%9F">四、进阶二：PanOffset 平移系统</a><ul>
-<li><a href="#%E6%A0%B8%E5%BF%83%E6%80%9D%E8%B7%AF">核心思路</a></li>
-<li><a href="#%E7%8A%B6%E6%80%81--%E8%BE%B9%E7%95%8C%E7%BA%A6%E6%9D%9F">状态 &amp; 边界约束</a></li>
-<li><a href="#pointer-events-%E5%AE%9E%E7%8E%B0%E6%8B%96%E5%8A%A8">Pointer Events 实现拖动</a></li>
-</ul>
-</li>
-<li><a href="#%E4%BA%94%E8%BF%9B%E9%98%B6%E4%B8%89%E4%BA%8B%E4%BB%B6%E5%88%86%E5%B1%82">五、进阶三：事件分层</a></li>
-<li><a href="#%E5%85%AD%E8%BF%9B%E9%98%B6%E5%9B%9Bcanvas-%E5%AF%BC%E5%87%BA%E7%BC%A9%E6%94%BE%E5%B9%B3%E7%A7%BB%E4%BF%AE%E6%AD%A3">六、进阶四：Canvas 导出（缩放+平移修正）</a><ul>
-<li><a href="#%E5%9D%90%E6%A0%87%E6%98%A0%E5%B0%84%E5%8E%9F%E7%90%86">坐标映射原理</a></li>
-<li><a href="#%E4%BA%A4%E9%9B%86%E8%AE%A1%E7%AE%97%E7%9A%84%E5%BF%85%E8%A6%81%E6%80%A7">交集计算的必要性</a></li>
-<li><a href="#%E5%AE%8C%E6%95%B4%E7%9A%84-drawtocanvas">完整的 drawToCanvas</a></li>
-<li><a href="#%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96offscreencanvas">性能优化：OffscreenCanvas</a></li>
-</ul>
-</li>
-<li><a href="#%E4%B8%83%E6%94%B6%E5%B0%BEflex-%E5%B8%83%E5%B1%80%E8%AE%A9%E4%B8%80%E5%88%87%E9%A1%BA%E6%BB%91">七、收尾：Flex 布局让一切顺滑</a></li>
-<li><a href="#%E5%85%AB%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81">八、完整代码</a></li>
-<li><a href="#%E4%B9%9D%E6%80%BB%E7%BB%93">九、总结</a></li>
-<li><a href="#%E9%99%84%E8%B8%A9%E5%9D%91%E6%97%B6%E9%97%B4%E7%BA%BF%E6%88%91%E7%9A%84%E8%BF%AD%E4%BB%A3%E8%AE%B0%E5%BD%95">附：踩坑时间线（我的迭代记录）</a></li>
-</ul>
-</li>
-</ul>
 <hr>
 <h2 id="一、基础：最小可用的裁剪组件"><a href="#一、基础：最小可用的裁剪组件" class="headerlink" title="一、基础：最小可用的裁剪组件"></a>一、基础：最小可用的裁剪组件</h2><p>先跑通最基础的裁剪功能。</p>
 <h3 id="react-image-crop-内置的两个辅助函数"><a href="#react-image-crop-内置的两个辅助函数" class="headerlink" title="react-image-crop 内置的两个辅助函数"></a>react-image-crop 内置的两个辅助函数</h3><p>在写自己的 <code>centerAspectCrop</code> 之前，得先理解 react-image-crop 暴露的两个工具函数：</p>
@@ -585,7 +544,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/react/" class="print-no-link">#react</a>
+        <a href="/tags/React/" class="print-no-link">#React</a>
       
         <a href="/tags/%E5%9B%BE%E7%89%87%E8%A3%81%E5%89%AA/" class="print-no-link">#图片裁剪</a>
       
