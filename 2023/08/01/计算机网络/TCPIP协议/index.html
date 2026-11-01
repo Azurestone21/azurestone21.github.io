@@ -308,7 +308,7 @@
 </tr>
 </tbody></table>
 <p>与 OSI 七层大致对应：</p>
-<pre><code class=" mermaid">flowchart LR
+<pre><code class="hljs mermaid">flowchart LR
     subgraph OSI[&quot;OSI 七层模型&quot;]
         O7[&quot;7 应用层&quot;]
         O6[&quot;6 表示层&quot;]
@@ -332,8 +332,7 @@
     O4 --&gt; T3
     O3 --&gt; T2
     O2 --&gt; T1
-    O1 --&gt; T1
-</code></pre>
+    O1 --&gt; T1</code></pre>
 
 <h2 id="2-核心协议"><a href="#2-核心协议" class="headerlink" title="2. 核心协议"></a>2. 核心协议</h2><h3 id="IP-协议"><a href="#IP-协议" class="headerlink" title="IP 协议"></a>IP 协议</h3><p>负责“送到哪”。无连接、尽力而为，不保证可靠。IPv4 是 32 位地址，IPv6 是 128 位地址。负责寻址、路由、分片等。</p>
 <h3 id="TCP-协议（传输控制协议）"><a href="#TCP-协议（传输控制协议）" class="headerlink" title="TCP 协议（传输控制协议）"></a>TCP 协议（传输控制协议）</h3><p>负责“可靠地送”。面向连接、可靠、有序、全双工、字节流。通过序列号、确认应答、超时重传、校验和、滑动窗口、拥塞控制等保证可靠性。</p>
@@ -753,5 +752,12 @@
   <noscript>
     <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
   </noscript>
-</body>
+<!-- hexo injector body_end start -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    mermaid.initialize({"startOnLoad":true,"theme":"default"});
+  });
+</script>
+<!-- hexo injector body_end end --></body>
 </html>

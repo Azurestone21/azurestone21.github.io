@@ -1,0 +1,706 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="MCP 模型上下文协议一、MCP 是什么MCP（Model Context Protocol） 是一份开放协议，用于标准化 AI 应用与外部工具、数据源之间的连接方式。它的核心定位是解决“工具怎么被发现、怎么被调用、怎么跨应用复用”的问题，而不涉及“模型怎么决定调工具”——那是 Function Calling 的职责。 一句话记忆：MCP 管“工具从哪来、怎么接”，Function Callin">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MCP 模型上下文协议">
+<meta property="og:url" content="http://example.com/2025/08/01/AI/MCP%20%E6%A8%A1%E5%9E%8B%E4%B8%8A%E4%B8%8B%E6%96%87%E5%8D%8F%E8%AE%AE/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="MCP 模型上下文协议一、MCP 是什么MCP（Model Context Protocol） 是一份开放协议，用于标准化 AI 应用与外部工具、数据源之间的连接方式。它的核心定位是解决“工具怎么被发现、怎么被调用、怎么跨应用复用”的问题，而不涉及“模型怎么决定调工具”——那是 Function Calling 的职责。 一句话记忆：MCP 管“工具从哪来、怎么接”，Function Callin">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-07-31T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-31T07:23:03.546Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="MCP">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>MCP 模型上下文协议 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">MCP 模型上下文协议</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-08-01 00:00" pubdate>
+          2025年8月1日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          11 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">MCP 模型上下文协议</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="MCP-模型上下文协议"><a href="#MCP-模型上下文协议" class="headerlink" title="MCP 模型上下文协议"></a>MCP 模型上下文协议</h1><h2 id="一、MCP-是什么"><a href="#一、MCP-是什么" class="headerlink" title="一、MCP 是什么"></a>一、MCP 是什么</h2><p>MCP（Model Context Protocol） 是一份开放协议，用于标准化 AI 应用与外部工具、数据源之间的连接方式。它的核心定位是<strong>解决“工具怎么被发现、怎么被调用、怎么跨应用复用”的问题</strong>，而不涉及“模型怎么决定调工具”——那是 Function Calling 的职责。</p>
+<p>一句话记忆：<strong>MCP 管“工具从哪来、怎么接”，Function Calling 管“模型怎么表达要调它”。</strong></p>
+<p>MCP 的设计灵感来自 Language Server Protocol（LSP）——LSP 让编辑器无需为每种编程语言单独适配，MCP 让 AI 应用无需为每个工具单独写对接代码。</p>
+<h2 id="二、谁定义的，现在归谁管"><a href="#二、谁定义的，现在归谁管" class="headerlink" title="二、谁定义的，现在归谁管"></a>二、谁定义的，现在归谁管</h2><p>MCP 由 <strong>Anthropic</strong> 于 2024 年 11 月开源。2025 年 12 月，Anthropic 将 MCP 捐赠给 <strong>Linux 基金会</strong>旗下的 <strong>Agentic AI Foundation（AAIF）</strong>，该基金会由 Anthropic、Block 和 OpenAI 共同创立，Google、Microsoft、AWS、Cloudflare 等提供支持。治理模式不变，但协议归属已从单一厂商变为中立基金会。</p>
+<h2 id="三、架构：Host、Client、Server-三层"><a href="#三、架构：Host、Client、Server-三层" class="headerlink" title="三、架构：Host、Client、Server 三层"></a>三、架构：Host、Client、Server 三层</h2><p>MCP 采用 Host–Client–Server 架构，职责严格分离：</p>
+<p><strong>Host（宿主应用）</strong>：面向用户的程序，如 Claude Desktop、Cursor、自研 Agent。它创建并管理多个 Client，控制连接权限和安全策略，持有完整对话历史。<strong>Server 看不到完整对话</strong>，这是 MCP 的安全边界。</p>
+<p><strong>Client（客户端）</strong>：Host 内部的连接器，每个 Client 与一个 Server 建立<strong>一对一</strong>连接。负责协议协商、消息路由，在 Server 之间维持隔离。</p>
+<p><strong>Server（服务端）</strong>：能力的提供方，通过 MCP 原语暴露功能。设计原则是“容易构建”和“可组合”——每个 Server 只做一件聚焦的事。</p>
+<h2 id="四、Server-暴露什么：三大原语"><a href="#四、Server-暴露什么：三大原语" class="headerlink" title="四、Server 暴露什么：三大原语"></a>四、Server 暴露什么：三大原语</h2><p>MCP Server 通过三种原语提供能力：</p>
+<p><strong>Resources（资源）</strong>：只读的上下文数据，如文档、数据库记录、文件内容。供模型或用户读取，用于减少幻觉、提供真实信息。</p>
+<p><strong>Prompts（提示词模板）</strong>：可复用的交互模板，引导模型在特定领域遵循一致的工作流。</p>
+<p><strong>Tools（工具）</strong>：可执行的函数，如发送邮件、查询订单、调用 API。这是与 Function Calling 直接对接的部分。</p>
+<h2 id="五、通信机制：JSON-RPC-2-0-无状态设计"><a href="#五、通信机制：JSON-RPC-2-0-无状态设计" class="headerlink" title="五、通信机制：JSON-RPC 2.0 + 无状态设计"></a>五、通信机制：JSON-RPC 2.0 + 无状态设计</h2><p>MCP 底层使用 <strong>JSON-RPC 2.0</strong> 消息格式。协议是<strong>无状态</strong>的：每个请求自包含，携带自己的协议版本和客户端能力声明。</p>
+<p><strong>传输方式</strong>有两种标准实现：</p>
+<ul>
+<li><strong>stdio</strong>：客户端启动 Server 作为子进程，通过标准输入输出通信。适合本地工具。</li>
+<li><strong>Streamable HTTP</strong>：每条消息是一个 HTTP POST，响应可以是 JSON 或 SSE 流。适合远程服务。</li>
+</ul>
+<p>连接建立时双方进行<strong>能力协商</strong>：Server 声明支持工具、资源还是提示词；Client 声明支持采样、elicitation 等。未声明的功能不可用，保证可扩展性和向后兼容。</p>
+<h2 id="六、安全原则"><a href="#六、安全原则" class="headerlink" title="六、安全原则"></a>六、安全原则</h2><p>MCP 规范明确了几条底线：</p>
+<ul>
+<li><strong>用户知情与同意</strong>：所有数据访问和操作，用户必须明确知情并同意。</li>
+<li><strong>数据最小化</strong>：Server 只收到必要的上下文信息，完整对话历史留在 Host。</li>
+<li><strong>工具即代码执行</strong>：Tools 本质上是任意代码执行路径，必须谨慎对待。工具描述中的注解应视为不可信，除非来自可信 Server。</li>
+<li><strong>显式授权</strong>：Host 在调用任何工具前必须获得用户明确同意。</li>
+</ul>
+<p>实现者应构建健壮的同意与授权流程，实施适当的访问控制，并遵循安全最佳实践。</p>
+<h2 id="七、和-Function-Calling-的关系（核心区别）"><a href="#七、和-Function-Calling-的关系（核心区别）" class="headerlink" title="七、和 Function Calling 的关系（核心区别）"></a>七、和 Function Calling 的关系（核心区别）</h2><p>这是最容易混淆的地方，必须分清：</p>
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="left">Function Calling</th>
+<th align="left">MCP</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>本质</strong></td>
+<td align="left">模型能力（API 内置）</td>
+<td align="left">连接协议（标准化）</td>
+</tr>
+<tr>
+<td align="left"><strong>解决什么</strong></td>
+<td align="left">模型怎么“说”要调什么</td>
+<td align="left">工具怎么“接”进来</td>
+</tr>
+<tr>
+<td align="left"><strong>谁生成调用</strong></td>
+<td align="left">模型生成 <code>tool_calls</code></td>
+<td align="left">不生成调用，只传递</td>
+</tr>
+<tr>
+<td align="left"><strong>执行在哪</strong></td>
+<td align="left">应用侧</td>
+<td align="left">应用侧（可能经 MCP Client 转发）</td>
+</tr>
+</tbody></table>
+<p><strong>完整链路</strong>：MCP Server 暴露工具定义 → Client 转换成模型能识别的 Function Calling Schema → 模型生成调用请求 → 应用执行（可能经 MCP Client 发给 Server）→ 结果回填模型继续推理。</p>
+<p>所以 <strong>MCP 提供的是工具来源，不是直接喂给 Function Calling 的上游数据</strong>。用了 MCP，底层仍然是模型在生成调用意图。</p>
+<h2 id="八、生态现状（截至-2025-年底）"><a href="#八、生态现状（截至-2025-年底）" class="headerlink" title="八、生态现状（截至 2025 年底）"></a>八、生态现状（截至 2025 年底）</h2><p>根据 Anthropic 官方数据：</p>
+<ul>
+<li>超过 <strong>10,000</strong> 个活跃的公开 MCP Server</li>
+<li>ChatGPT、Cursor、Gemini、Microsoft Copilot、VS Code 等主流产品已采纳</li>
+<li>AWS、Cloudflare、Google Cloud、Microsoft Azure 提供部署支持</li>
+<li>Python 和 TypeScript SDK 月下载量合计 <strong>9700 万+</strong></li>
+</ul>
+<h2 id="九、总结"><a href="#九、总结" class="headerlink" title="九、总结"></a>九、总结</h2><p><strong>MCP 是 AI 应用连接外部世界的“USB 接口标准”</strong>：它不决定模型要不要插设备，只保证插上去能识别、能通信、能复用。Function Calling 是模型说“我要用哪个设备”，MCP 是让这个设备真正能被找到和调用的基础设施。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/AI/" class="category-chain-item">AI</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/MCP/" class="print-no-link">#MCP</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>MCP 模型上下文协议</div>
+      <div>http://example.com/2025/08/01/AI/MCP 模型上下文协议/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年8月1日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/08/01/AI/Codex%20%E5%AE%89%E8%A3%85%E4%B8%8E%E4%BD%BF%E7%94%A8/" title="Codex 安装与使用">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Codex 安装与使用</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/08/01/JavaScript/%E3%80%90JS%E3%80%91JS%E7%9A%84%E8%AE%A1%E6%97%B6%E5%99%A8%E7%B2%BE%E7%A1%AE%E5%90%97%EF%BC%9F/" title="【JS】JS的计时器精确吗？">
+                        <span class="hidden-mobile">【JS】JS的计时器精确吗？</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+<!-- hexo injector body_end start -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    mermaid.initialize({"startOnLoad":true,"theme":"default"});
+  });
+</script>
+<!-- hexo injector body_end end --></body>
+</html>

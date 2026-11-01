@@ -27,7 +27,7 @@
 <meta property="og:description" content="MobX 响应式机制与依赖收集 一句话概括：MobX 的响应式系统是一个基于 Proxy 数据劫持的发布-订阅模型，通过全局执行上下文在运行时自动收集依赖，实现精确到属性级的变更通知，并利用批量异步更新最大化性能。  1. 响应式的核心三要素MobX 的响应式系统由三类角色协作完成： flowchart LR     subgraph Observable[&quot;① Observable（被">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-08-09T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-10-14T15:19:14.478Z">
+<meta property="article:modified_time" content="2026-10-29T03:36:36.061Z">
 <meta property="article:author" content="Azure">
 <meta property="article:tag" content="MobX">
 <meta property="article:tag" content="Proxy">
@@ -226,7 +226,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.9k 字
+          3k 字
         
       </span>
     
@@ -237,7 +237,7 @@
         
         
         
-          25 分钟
+          26 分钟
         
       </span>
     
@@ -283,7 +283,7 @@
 <p>一句话概括：MobX 的响应式系统是一个<strong>基于 Proxy 数据劫持的发布-订阅模型</strong>，通过<strong>全局执行上下文</strong>在运行时<strong>自动收集依赖</strong>，实现<strong>精确到属性级的变更通知</strong>，并利用<strong>批量异步更新</strong>最大化性能。</p>
 </blockquote>
 <h2 id="1-响应式的核心三要素"><a href="#1-响应式的核心三要素" class="headerlink" title="1. 响应式的核心三要素"></a>1. 响应式的核心三要素</h2><p>MobX 的响应式系统由三类角色协作完成：</p>
-<pre><code class=" mermaid">flowchart LR
+<pre><code class="hljs mermaid">flowchart LR
     subgraph Observable[&quot;① Observable（被观察者）&quot;]
         O1[可观察数据]
         O2[内部维护 observers 列表]
@@ -303,8 +303,7 @@
     Observable --&gt;|读取时建立连接| Reaction
     Reaction --&gt;|修改时通知| Observable
     Observable --&gt;|依赖变化时| Derivation
-    Derivation --&gt;|被读取时| Reaction
-</code></pre>
+    Derivation --&gt;|被读取时| Reaction</code></pre>
 
 <table>
 <thead>
@@ -336,7 +335,7 @@
 <li>当 Observable 被读取时，检查这个指针，如果有值则建立连接。</li>
 <li>执行完毕后，立即将指针置空。</li>
 </ul>
-<pre><code class=" mermaid">sequenceDiagram
+<pre><code class="hljs mermaid">sequenceDiagram
     participant User as 开发者代码
     participant AR as autorun 实例
     participant Global as globalState.trackingDerivation
@@ -361,26 +360,24 @@
 
     AR-&gt;&gt;Global: ⑪ 出栈：trackingDerivation = null
 
-    Note over Global: ✅ 依赖收集完成！仅追踪实际读取的属性
-</code></pre>
+    Note over Global: ✅ 依赖收集完成！仅追踪实际读取的属性</code></pre>
 
-<h3 id="2-2-入栈与出栈的微观时序"><a href="#2-2-入栈与出栈的微观时序" class="headerlink" title="2.2 入栈与出栈的微观时序"></a>2.2 入栈与出栈的微观时序</h3><pre><code class=" mermaid">timeline
+<h3 id="2-2-入栈与出栈的微观时序"><a href="#2-2-入栈与出栈的微观时序" class="headerlink" title="2.2 入栈与出栈的微观时序"></a>2.2 入栈与出栈的微观时序</h3><pre><code class="hljs mermaid">timeline
     title 依赖收集的完整时序
     section 执行前
         A : globalState.trackingDerivation = null
-    section 执行中（1）
+    section 执行中 1
         B : autorun 开始执行
         B : trackingDerivation = 该 autorun
         B : 读取 store.a → ✅ 建立连接
-    section 执行中（2）
+    section 执行中 2
         C : 读取 store.b → ✅ 建立连接
         C : 读取 store.c → ✅ 建立连接
     section 执行后
         D : trackingDerivation = null
-        D : 依赖收集完成！
-        D : 仅追踪 a、b、c（实际读取的）
-        D : 未读取的 d 完全不知晓
-</code></pre>
+        D : 依赖收集完成
+        D : 仅追踪 a、b、c 即实际读取的
+        D : 未读取的 d 完全不知晓</code></pre>
 
 <h3 id="2-3-双向绑定的数据结构"><a href="#2-3-双向绑定的数据结构" class="headerlink" title="2.3 双向绑定的数据结构"></a>2.3 双向绑定的数据结构</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// 依赖收集完成后，形成双向索引：</span><br><br><span class="hljs-comment">// 1. Observable 记住 Reaction（数据 → 观察者）</span><br>observable.<span class="hljs-property">count</span>.<span class="hljs-property">observers</span> = [autorunInstance];<br><br><span class="hljs-comment">// 2. Reaction 记住 Observable（观察者 → 数据）</span><br>autorunInstance.<span class="hljs-property">dependencies</span> = [observable.<span class="hljs-property">count</span>];<br></code></pre></td></tr></table></figure>
 
@@ -451,33 +448,33 @@
 
 <h3 id="3-4-获取原始对象"><a href="#3-4-获取原始对象" class="headerlink" title="3.4 获取原始对象"></a>3.4 获取原始对象</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">import</span> &#123; toJS &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;mobx&quot;</span>;<br><br><span class="hljs-keyword">const</span> rawData = <span class="hljs-title function_">toJS</span>(store.<span class="hljs-property">user</span>); <span class="hljs-comment">// 递归转换为普通 JS 对象</span><br></code></pre></td></tr></table></figure>
 
-<h2 id="4-变更通知与批量更新机制"><a href="#4-变更通知与批量更新机制" class="headerlink" title="4. 变更通知与批量更新机制"></a>4. 变更通知与批量更新机制</h2><h3 id="4-1-完整数据流全景图"><a href="#4-1-完整数据流全景图" class="headerlink" title="4.1 完整数据流全景图"></a>4.1 完整数据流全景图</h3><pre><code class=" mermaid">flowchart TD
-    Start[创建 observable 数据] --&gt; AR[创建 autorun / observer 组件]
-    AR --&gt; Execute[执行回调函数]
-    Execute --&gt; Check&#123;读取 observable 属性?&#125;
+<h2 id="4-变更通知与批量更新机制"><a href="#4-变更通知与批量更新机制" class="headerlink" title="4. 变更通知与批量更新机制"></a>4. 变更通知与批量更新机制</h2><h3 id="4-1-完整数据流全景图"><a href="#4-1-完整数据流全景图" class="headerlink" title="4.1 完整数据流全景图"></a>4.1 完整数据流全景图</h3><pre><code class="hljs mermaid">flowchart TD
+    Start[&quot;创建 observable 数据&quot;] --&gt; AR[&quot;创建 autorun / observer 组件&quot;]
+    AR --&gt; Execute[&quot;执行回调函数&quot;]
+    Execute --&gt; Check&#123;&quot;读取 observable 属性?&quot;&#125;
 
-    Check --&gt;|是| Getter[触发 getter 拦截]
-    Check --&gt;|否| Done[执行完毕]
+    Check --&gt;|是| Getter[&quot;触发 getter 拦截&quot;]
+    Check --&gt;|否| Done[&quot;执行完毕&quot;]
 
-    Getter --&gt; Global&#123;trackingDerivation&lt;br&gt;是否有值?&#125;
+    Getter --&gt; Global&#123;&quot;trackingDerivation&lt;br&gt;是否有值?&quot;&#125;
 
-    Global --&gt;|有| Bind[双向绑定:&lt;br&gt;属性.observers.add(观察者)&lt;br&gt;观察者.dependencies.add(属性)]
-    Global --&gt;|无| NoBind[不建立连接&lt;br&gt;仅返回值]
+    Global --&gt;|有| Bind[&quot;双向绑定:&lt;br&gt;属性.observers.add(观察者)&lt;br&gt;观察者.dependencies.add(属性)&quot;]
+    Global --&gt;|无| NoBind[&quot;不建立连接&lt;br&gt;仅返回值&quot;]
 
-    Bind --&gt; Continue[继续执行下一条语句]
+    Bind --&gt; Continue[&quot;继续执行下一条语句&quot;]
     NoBind --&gt; Continue
     Continue --&gt; Check
 
-    Done --&gt; Clear[出栈: trackingDerivation = null]
+    Done --&gt; Clear[&quot;出栈: trackingDerivation = null&quot;]
 
-    subgraph 变更阶段[&quot;--- 变更阶段（异步批量） ---&quot;]
-        Mutate[修改 observable 属性] --&gt; Setter[触发 setter 拦截]
-        Setter --&gt; Find[查找属性.observers 列表]
-        Find --&gt; Mark[标记观察者为&quot;脏&quot;]
-        Mark --&gt; Enqueue[加入待处理队列（Set 去重）]
-        Enqueue --&gt; Schedule[触发微任务调度]
-        Schedule --&gt; Batch[微任务执行：遍历队列]
-        Batch --&gt; React[观察者重新执行]
+    subgraph 变更阶段 [&quot;--- 变更阶段（异步批量） ---&quot;]
+        Mutate[&quot;修改 observable 属性&quot;] --&gt; Setter[&quot;触发 setter 拦截&quot;]
+        Setter --&gt; Find[&quot;查找属性.observers 列表&quot;]
+        Find --&gt; Mark[&quot;标记观察者为&#x27;脏&#x27;&quot;]
+        Mark --&gt; Enqueue[&quot;加入待处理队列（Set 去重）&quot;]
+        Enqueue --&gt; Schedule[&quot;触发微任务调度&quot;]
+        Schedule --&gt; Batch[&quot;微任务执行：遍历队列&quot;]
+        Batch --&gt; React[&quot;观察者重新执行&quot;]
     end
 
     Clear -.-&gt;|后续状态变化| Mutate
@@ -485,8 +482,7 @@
     style Global fill:#ff9,stroke:#333
     style Bind fill:#9f9,stroke:#333
     style Mark fill:#f99,stroke:#333
-    style Batch fill:#9cf,stroke:#333
-</code></pre>
+    style Batch fill:#9cf,stroke:#333</code></pre>
 
 <h3 id="4-2-批量更新的核心机制"><a href="#4-2-批量更新的核心机制" class="headerlink" title="4.2 批量更新的核心机制"></a>4.2 批量更新的核心机制</h3><p>MobX 通过 <strong>“事务（Transaction）+ 去重队列（Set）+ 微任务（Microtask）”</strong> 实现批量更新。</p>
 <p><strong>时序对比</strong>：</p>
@@ -495,7 +491,7 @@
 <h3 id="4-3-事务控制（Action-的边界）"><a href="#4-3-事务控制（Action-的边界）" class="headerlink" title="4.3 事务控制（Action 的边界）"></a>4.3 事务控制（Action 的边界）</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-title function_">runInAction</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>  <span class="hljs-comment">// 🔒 事务开始</span><br>  store.<span class="hljs-property">count</span> = <span class="hljs-number">1</span>; <span class="hljs-comment">// 入队（不执行）</span><br>  store.<span class="hljs-property">count</span> = <span class="hljs-number">2</span>; <span class="hljs-comment">// 已存在，跳过</span><br>  store.<span class="hljs-property">count</span> = <span class="hljs-number">3</span>; <span class="hljs-comment">// 已存在，跳过</span><br>  <span class="hljs-comment">// 🔓 事务结束 → 触发微任务调度</span><br>&#125;);<br><span class="hljs-comment">// 微任务执行：autorun 运行 1 次，count = 3</span><br></code></pre></td></tr></table></figure>
 
 <h2 id="5-全局指针-trackingDerivation-详解"><a href="#5-全局指针-trackingDerivation-详解" class="headerlink" title="5. 全局指针 trackingDerivation 详解"></a>5. 全局指针 trackingDerivation 详解</h2><h3 id="5-1-是什么？"><a href="#5-1-是什么？" class="headerlink" title="5.1 是什么？"></a>5.1 是什么？</h3><p><code>globalState.trackingDerivation</code> 是一个<strong>全局单例指针</strong>，指向当前正在执行的 Reaction 实例。</p>
-<h3 id="5-2-什么时候有值，什么时候为-null？"><a href="#5-2-什么时候有值，什么时候为-null？" class="headerlink" title="5.2 什么时候有值，什么时候为 null？"></a>5.2 什么时候有值，什么时候为 null？</h3><pre><code class=" mermaid">flowchart LR
+<h3 id="5-2-什么时候有值，什么时候为-null？"><a href="#5-2-什么时候有值，什么时候为-null？" class="headerlink" title="5.2 什么时候有值，什么时候为 null？"></a>5.2 什么时候有值，什么时候为 null？</h3><pre><code class="hljs mermaid">flowchart LR
     subgraph 有值[&quot;✅ trackingDerivation 不为 null&quot;]
         A1[observer 组件渲染函数执行中]
         A2[autorun/reaction/when 回调执行中]
@@ -509,8 +505,7 @@
         B3[useEffect 直接读取（无 autorun）]
         B4[普通函数/工具函数]
         B5[action 内部（非 Reaction 调用链）]
-    end
-</code></pre>
+    end</code></pre>
 
 <h3 id="5-3-各场景追踪状态速查"><a href="#5-3-各场景追踪状态速查" class="headerlink" title="5.3 各场景追踪状态速查"></a>5.3 各场景追踪状态速查</h3><table>
 <thead>
@@ -568,7 +563,7 @@
 <li><strong>避免内存泄漏</strong>：如果异步回调建立了依赖，回调函数会被永久挂在 <code>observers</code> 列表中。</li>
 <li><strong>防止死循环</strong>：避免在 Action 中读取数据时意外建立依赖，导致修改时再次触发自身。</li>
 </ol>
-<h2 id="7-computed-的懒执行与挂起"><a href="#7-computed-的懒执行与挂起" class="headerlink" title="7. computed 的懒执行与挂起"></a>7. computed 的懒执行与挂起</h2><h3 id="7-1-状态机"><a href="#7-1-状态机" class="headerlink" title="7.1 状态机"></a>7.1 状态机</h3><pre><code class=" mermaid">stateDiagram-v2
+<h2 id="7-computed-的懒执行与挂起"><a href="#7-computed-的懒执行与挂起" class="headerlink" title="7. computed 的懒执行与挂起"></a>7. computed 的懒执行与挂起</h2><h3 id="7-1-状态机"><a href="#7-1-状态机" class="headerlink" title="7.1 状态机"></a>7.1 状态机</h3><pre><code class="hljs mermaid">stateDiagram-v2
     [*] --&gt; 挂起_Suspended: 创建 computed，无观察者
 
     挂起_Suspended --&gt; 追踪_Tracking: 被 autorun/组件 读取
@@ -595,26 +590,32 @@
     note right of 脏_Stale
         缓存已失效
         等待下次读取时重新计算
-    end note
-</code></pre>
+    end note</code></pre>
 
-<h3 id="7-2-有观察者-vs-无观察者"><a href="#7-2-有观察者-vs-无观察者" class="headerlink" title="7.2 有观察者 vs 无观察者"></a>7.2 有观察者 vs 无观察者</h3><pre><code class=" mermaid">flowchart LR
-    subgraph 有观察者[&quot;✅ 有观察者（在 autorun 内读取）&quot;]
-        A1[computed 被读取] --&gt; A2[检查 observers 列表]
-        A2 --&gt; A3[有 autorun 在列表中]
-        A3 --&gt; A4[激活：监听上游变化]
-        A4 --&gt; A5[上游变化 → 缓存失效 → 重新计算]
-        A5 --&gt; A6[多次读取 → 直接返回缓存]
+<h3 id="7-2-有观察者-vs-无观察者"><a href="#7-2-有观察者-vs-无观察者" class="headerlink" title="7.2 有观察者 vs 无观察者"></a>7.2 有观察者 vs 无观察者</h3><pre><code class="hljs mermaid">flowchart LR
+    subgraph hasObs [&quot;✅ 有观察者 (在 autorun 内读取)&quot;]
+        direction TB
+        A1[&quot;computed 被读取&quot;] --&gt; A2[&quot;检查 observers 列表&quot;]
+        A2 --&gt; A3[&quot;有 autorun 在列表中&quot;]
+        A3 --&gt; A4[&quot;激活: 监听上游变化&quot;]
+        A4 --&gt; A5[&quot;上游变化 → 缓存失效 → 重新计算&quot;]
+        A5 --&gt; A6[&quot;多次读取 → 直接返回缓存&quot;]
     end
 
-    subgraph 无观察者[&quot;❌ 无观察者（在 autorun 外读取）&quot;]
-        B1[computed 被读取] --&gt; B2[检查 observers 列表]
-        B2 --&gt; B3[列表为空]
-        B3 --&gt; B4[挂起：不监听上游]
-        B4 --&gt; B5[上游变化 → 不知道，无反应]
-        B5 --&gt; B6[多次读取 → 每次都重新计算]
+    subgraph noObs [&quot;❌ 无观察者 (在 autorun 外读取)&quot;]
+        direction TB
+        B1[&quot;computed 被读取&quot;] --&gt; B2[&quot;检查 observers 列表&quot;]
+        B2 --&gt; B3[&quot;列表为空&quot;]
+        B3 --&gt; B4[&quot;挂起: 不监听上游&quot;]
+        B4 --&gt; B5[&quot;上游变化 → 不知道, 无反应&quot;]
+        B5 --&gt; B6[&quot;多次读取 → 每次都重新计算&quot;]
     end
-</code></pre>
+
+    %% 使用隐形连线强制左右并排（隐形线不显示箭头和线条）
+    hasObs ~~~ noObs
+
+    style hasObs fill:#f0fdf4,stroke:#22c55e,stroke-width:2px
+    style noObs fill:#fef2f2,stroke:#ef4444,stroke-width:2px</code></pre>
 
 <h2 id="8-核心原则与调试建议"><a href="#8-核心原则与调试建议" class="headerlink" title="8. 核心原则与调试建议"></a>8. 核心原则与调试建议</h2><h3 id="8-1-响应式核心原则"><a href="#8-1-响应式核心原则" class="headerlink" title="8.1 响应式核心原则"></a>8.1 响应式核心原则</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs text">🔴 原则一：依赖收集是同步的<br>   → 异步回调中无法建立依赖<br><br>🟡 原则二：修改是异步批量处理的<br>   → 连续修改 10 次，autorun 只执行 1 次<br><br>🟢 原则三：computed 是懒执行的<br>   → 没人读就不计算，有人读才计算并缓存<br><br>🔵 原则四：追踪精确到属性级别<br>   → 只追踪实际被读取的属性，不扫描整个对象<br></code></pre></td></tr></table></figure>
 
@@ -837,9 +838,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2024/08/10/%E7%8A%B6%E6%80%81%E7%AE%A1%E7%90%86/MobX%20%E4%B8%AD%E7%9A%84%E5%BC%82%E6%AD%A5%E6%93%8D%E4%BD%9C/" title="MobX 中的异步操作">
+                      <a href="/2024/08/10/%E5%89%8D%E7%AB%AF/GPU%20%E5%9C%A8%E5%89%8D%E7%AB%AF%E7%9A%84%E8%BF%90%E7%94%A8/" title="GPU 在前端的运用">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">MobX 中的异步操作</span>
+                        <span class="hidden-mobile">GPU 在前端的运用</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -847,8 +848,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2024/08/10/%E7%8A%B6%E6%80%81%E7%AE%A1%E7%90%86/MobX%20%E5%A4%9Astore%E8%81%94%E5%8A%A8/" title="MobX 多store联动">
-                        <span class="hidden-mobile">MobX 多store联动</span>
+                      <a href="/2024/08/10/%E7%8A%B6%E6%80%81%E7%AE%A1%E7%90%86/MobX%20%E4%B8%AD%E7%9A%84%E5%BC%82%E6%AD%A5%E6%93%8D%E4%BD%9C/" title="MobX 中的异步操作">
+                        <span class="hidden-mobile">MobX 中的异步操作</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -1099,5 +1100,12 @@
   <noscript>
     <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
   </noscript>
-</body>
+<!-- hexo injector body_end start -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    mermaid.initialize({"startOnLoad":true,"theme":"default"});
+  });
+</script>
+<!-- hexo injector body_end end --></body>
 </html>

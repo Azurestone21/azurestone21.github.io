@@ -19,23 +19,22 @@
   <meta name="author" content="Azure">
   <meta name="keywords" content="">
   
-    <meta name="description" content="package.json 和 package-lock.json 是 Node.js 项目中管理依赖的两个核心文件。 package.json 是什么作用： 项目的「配置清单」，记录项目基本信息和依赖管理的核心配置。项目必需文件，没有它无法通过 npm install 安装依赖。 主要内容  项目元信息：名称、版本、作者、许可证等 依赖声明：dependencies（生产依赖）和 devDepen">
+    <meta name="description" content="Prompt Engineering 提示词工程核心概念定义提示词工程（Prompt Engineering） 是在不修改模型权重的前提下，通过优化用户指令（Prompt），引导大模型输出符合预期结果的技术。 核心价值 提升质量：减少幻觉、歧义、无关内容，提高准确性与专业性。 增强可控：精确控制输出格式、风格、长度、结构。 降低成本：无需微调模型，零成本挖掘模型潜能。 扩展能力：让通用模型执行代码">
 <meta property="og:type" content="article">
-<meta property="og:title" content="package.json和package-lock.json">
-<meta property="og:url" content="http://example.com/2025/09/20/%E5%89%8D%E7%AB%AF/package.json%E5%92%8Cpackage-lock.json/index.html">
+<meta property="og:title" content="Prompt Engineering 提示词工程">
+<meta property="og:url" content="http://example.com/2026/02/23/AI/Prompt%20Engineering%20%E6%8F%90%E7%A4%BA%E8%AF%8D%E5%B7%A5%E7%A8%8B/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="package.json 和 package-lock.json 是 Node.js 项目中管理依赖的两个核心文件。 package.json 是什么作用： 项目的「配置清单」，记录项目基本信息和依赖管理的核心配置。项目必需文件，没有它无法通过 npm install 安装依赖。 主要内容  项目元信息：名称、版本、作者、许可证等 依赖声明：dependencies（生产依赖）和 devDepen">
+<meta property="og:description" content="Prompt Engineering 提示词工程核心概念定义提示词工程（Prompt Engineering） 是在不修改模型权重的前提下，通过优化用户指令（Prompt），引导大模型输出符合预期结果的技术。 核心价值 提升质量：减少幻觉、歧义、无关内容，提高准确性与专业性。 增强可控：精确控制输出格式、风格、长度、结构。 降低成本：无需微调模型，零成本挖掘模型潜能。 扩展能力：让通用模型执行代码">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2025-09-20T12:09:04.000Z">
-<meta property="article:modified_time" content="2026-10-14T15:19:14.376Z">
+<meta property="article:published_time" content="2026-02-23T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-31T07:25:43.355Z">
 <meta property="article:author" content="Azure">
-<meta property="article:tag" content="package-lock.json">
-<meta property="article:tag" content="package.json">
+<meta property="article:tag" content="提示词">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>package.json和package-lock.json - Hexo</title>
+  <title>Prompt Engineering 提示词工程 - Hexo</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -201,7 +200,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle">package.json和package-lock.json</span>
+            <span id="subtitle">Prompt Engineering 提示词工程</span>
           
         </div>
 
@@ -212,8 +211,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2025-09-20 20:09" pubdate>
-          2025年9月20日 晚上
+        <time datetime="2026-02-23 10:00" pubdate>
+          2026年2月23日 上午
         </time>
       </span>
     
@@ -224,7 +223,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          681 字
+          1.9k 字
         
       </span>
     
@@ -235,7 +234,7 @@
         
         
         
-          6 分钟
+          16 分钟
         
       </span>
     
@@ -272,62 +271,189 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">package.json和package-lock.json</h1>
+            <h1 id="seo-header">Prompt Engineering 提示词工程</h1>
             
             
               <div class="markdown-body">
                 
-                <p><code>package.json</code> 和 <code>package-lock.json</code> 是 Node.js 项目中管理依赖的两个核心文件。</p>
-<h2 id="package-json-是什么"><a href="#package-json-是什么" class="headerlink" title="package.json 是什么"></a>package.json 是什么</h2><p><strong>作用：</strong> 项目的「配置清单」，记录项目基本信息和依赖管理的核心配置。项目必需文件，没有它无法通过 npm install 安装依赖。</p>
-<p><strong>主要内容</strong></p>
+                <h1 id="Prompt-Engineering-提示词工程"><a href="#Prompt-Engineering-提示词工程" class="headerlink" title="Prompt Engineering 提示词工程"></a>Prompt Engineering 提示词工程</h1><h2 id="核心概念"><a href="#核心概念" class="headerlink" title="核心概念"></a>核心概念</h2><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p><strong>提示词工程（Prompt Engineering）</strong> 是在不修改模型权重的前提下，通过优化用户指令（Prompt），引导大模型输出符合预期结果的技术。</p>
+<h3 id="核心价值"><a href="#核心价值" class="headerlink" title="核心价值"></a>核心价值</h3><ul>
+<li>提升质量：减少幻觉、歧义、无关内容，提高准确性与专业性。</li>
+<li>增强可控：精确控制输出格式、风格、长度、结构。</li>
+<li>降低成本：无需微调模型，零成本挖掘模型潜能。</li>
+<li>扩展能力：让通用模型执行代码、推理、创作、分析等复杂任务。</li>
+</ul>
+<p>Prompt 设计直接决定模型输出质量，是大模型应用开发的基础必修课。优秀的提示词能让基础模型的输出效果媲美微调后的模型。</p>
+<p>无论是 RAG、Agent 还是其他复杂应用，本质都是在提示词层面做优化。</p>
+<h3 id="核心思想"><a href="#核心思想" class="headerlink" title="核心思想"></a>核心思想</h3><p>大模型交互本质是：<strong>用户输入 → 模型输出</strong>，提示词工程就是用更清晰、有逻辑、有参考的提问，获得期望结果。</p>
+<hr>
+<h2 id="Zero-shot-与-Few-shot-思想"><a href="#Zero-shot-与-Few-shot-思想" class="headerlink" title="Zero-shot 与 Few-shot 思想"></a>Zero-shot 与 Few-shot 思想</h2><h3 id="1-Zero-shot（零样本学习）"><a href="#1-Zero-shot（零样本学习）" class="headerlink" title="1. Zero-shot（零样本学习）"></a>1. Zero-shot（零样本学习）</h3><ul>
+<li><strong>模型训练层面</strong>：<ul>
+<li>模型未见过测试类别的数据，基于已学习的属性&#x2F;语义关联，推理识别新类别。</li>
+<li>例：已知马（四脚兽）、虎（条纹）、熊猫（黑白），推理识别斑马。</li>
+</ul>
+</li>
+<li><strong>提示词优化层面</strong>：<ul>
+<li>不提供任何示例，仅用<strong>语言描述任务要求</strong>，依赖模型预训练知识直接生成结果。</li>
+<li>例：直接让模型判断用户评论的情感倾向（正面&#x2F;负面）。</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-Few-shot（少样本学习）"><a href="#2-Few-shot（少样本学习）" class="headerlink" title="2. Few-shot（少样本学习）"></a>2. Few-shot（少样本学习）</h3><ul>
+<li><strong>模型训练层面</strong>：<ul>
+<li>基于少量样本 + 相似度判断，快速泛化识别新样本（包含 one-shot 单样本场景）。</li>
+<li>例：用少量企鹅样本，推理识别未知图片中的企鹅。</li>
+</ul>
+</li>
+<li><strong>提示词优化层面</strong>：<ul>
+<li>提供<strong>少量示例（Demo）</strong>，引导模型对齐示例格式与逻辑，提升输出精度。</li>
+<li>例：提供2个产品信息抽取示例，让模型按相同格式处理新的产品描述。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="提示词框架"><a href="#提示词框架" class="headerlink" title="提示词框架"></a>提示词框架</h2><h3 id="RTF-框架"><a href="#RTF-框架" class="headerlink" title="RTF 框架"></a>RTF 框架</h3><p><strong>框架构成</strong></p>
 <ul>
-<li>项目元信息：名称、版本、作者、许可证等</li>
-<li>依赖声明：<code>dependencies</code>（生产依赖）和 <code>devDependencies</code>（开发依赖）</li>
-<li>脚本命令：<code>scripts</code> 字段定义可执行命令（如 <code>npm run build</code>）</li>
-<li>其他配置：入口文件、兼容 Node 版本、模块类型等</li>
+<li>R (Role) - 角色：指定 AI 需要扮演的角色</li>
+<li>T (Task) - 任务：明确具体要完成的任务</li>
+<li>F (Format) - 格式：指定输出的格式要求</li>
 </ul>
-<p><strong>生成 <code>package.json</code></strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">npm init<br></code></pre></td></tr></table></figure>
-
-<p>执行该命令后，npm 会引导填写项目的基本信息（如名称、版本、描述、入口文件等），完成后自动生成 <code>package.json</code> 文件。</p>
-<p>如果想跳过交互提问，直接生成默认配置的 <code>package.json</code>，可以使用：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">npm init -y<br><span class="hljs-comment"># 或</span><br>npm init --<span class="hljs-built_in">yes</span><br></code></pre></td></tr></table></figure>
-
-<h2 id="package-lock-json-是什么"><a href="#package-lock-json-是什么" class="headerlink" title="package-lock.json 是什么"></a>package-lock.json 是什么</h2><p><strong>作用：</strong>「锁定依赖版本」的文件，由 npm 自动生成和维护。保证团队协作或部署时，所有人安装的依赖版本完全一致。</p>
-<p><strong>主要内容：</strong></p>
+<p><strong>应用场景</strong></p>
+<p>框架非常简洁直观，适合简单明确的任务场景。</p>
+<h3 id="CRISPE-框架"><a href="#CRISPE-框架" class="headerlink" title="CRISPE 框架"></a>CRISPE 框架</h3><p>CRISPE 框架是一个结构化的提示词设计框架，通过五个关键要素帮助构建清晰、个性化的提示词。</p>
+<p><strong>框架构成</strong></p>
 <ul>
-<li>记录项目中<strong>所有依赖（包括嵌套依赖）的精确版本号</strong></li>
-<li>依赖的安装来源（如 npm 仓库地址）</li>
-<li>依赖树结构和校验信息（确保文件完整性）</li>
-</ul>
-<p><strong>生成</strong> <code>package-lock.json</code></p>
-<p><code>package-lock.json</code>不需要手动生成，在<code>npm install</code>或<code>npm update</code>后会自动生成。</p>
-<h2 id="依赖版本"><a href="#依赖版本" class="headerlink" title="依赖版本"></a>依赖版本</h2><p>版本号根据<strong>大版本.次要版本.小版本</strong> 格式规定</p>
-<p>通常用范围符号（^、~）表示允许的版本范围（如 ^1.2.3），而非精确版本。</p>
+<li><p>C&amp;R (Capacity and Role) - 角色</p>
 <ul>
-<li><code>^</code>（插入符号）<ul>
-<li>表示允许更新到不改变主版本号的最新版本</li>
-<li>例如 ^1.2.3 允许安装 1.2.3 及以上，但小于 2.0.0 的版本（如 1.2.4、1.3.0 等）</li>
-<li>这是大多数情况下的默认选择，平衡了稳定性和获取 bug 修复的需求</li>
+<li>定义 ：明确 AI 需要扮演的专业角色或身份</li>
+<li>作用 ：确立专业视角和知识领域，让 AI 从特定专业角度思考问题</li>
+<li>示例 ：”作为一名资深软件架构师…”、”作为一名市场营销专家…”</li>
 </ul>
 </li>
-<li><code>~</code>（波浪号）<ul>
-<li>表示允许更新到不改变主版本号和次版本号的最新版本</li>
-<li>例如 ~1.2.3 允许安装 1.2.3 及以上，但小于 1.3.0 的版本（如 1.2.4、1.2.5 等）</li>
-<li>比 ^ 更严格，只接受补丁级别的更新，适合对稳定性要求极高的场景</li>
+<li><p>I (Insight) - 洞察</p>
+<ul>
+<li>定义 ：提供充足的背景信息和上下文</li>
+<li>作用 ：帮助 AI 更好地理解问题的背景、历史和约束条件</li>
+<li>示例 ：”我们公司正在考虑进入云计算市场，目前面临技术选型和团队建设的挑战…”</li>
 </ul>
 </li>
-<li><code>*</code><ul>
-<li>表示允许安装最新版本的依赖包，但可能会导致版本不兼容，慎用。</li>
+<li><p>S (Statement) - 声明</p>
+<ul>
+<li>定义 ：明确地陈述需求或问题</li>
+<li>作用 ：帮助 AI 更好地理解问题的背景、历史和约束条件</li>
+<li>示例 ：”我们公司正在考虑进入云计算市场，目前面临技术选型和团队建设的挑战…”</li>
 </ul>
 </li>
-<li>空<ul>
-<li>版本号前没有符号（如 <code>1.2.3</code>），则表示只能安装<strong>精确的指定版本</strong>。</li>
+<li><p>P (Personality) - 个性</p>
+<ul>
+<li>定义 ：指定输出的风格、语气、格式等个性化要求</li>
+<li>作用 ：控制输出的表达方式和呈现形式</li>
+<li>示例 ：”请以简洁专业的语言，分点列出分析结果，并提供具体的数据支持…”</li>
+</ul>
+</li>
+<li><p>E (Experiment) - 实验</p>
+<ul>
+<li>定义 ：要求提供多个答案或建议进行比较</li>
+<li>作用 ：对于宽泛问题，通过多方案对比帮助做出更优选择</li>
+<li>示例 ：”请提供至少3种不同的技术方案，并分析每种方案的成本、风险和实施难度…”</li>
 </ul>
 </li>
 </ul>
-<h3 id="如何安装依赖"><a href="#如何安装依赖" class="headerlink" title="如何安装依赖"></a>如何安装依赖</h3><p>首次安装依赖时，npm 根据 package.json 的范围规则选择合适版本，同时生成 package-lock.json 锁定该版本。</p>
-<p>后续安装时，npm 会优先遵循 package-lock.json 中的精确版本，而非重新解析 package.json 的范围。</p>
+<p><strong>应用场景</strong></p>
+<ol>
+<li>专业咨询任务 ：需要特定专业知识和个性化建议的场景</li>
+<li>复杂问题分析 ：需要深入洞察和多角度思考的问题</li>
+<li>创意生成 ：需要提供多种可能性和选择的创意任务</li>
+<li>个性化内容创作 ：需要特定风格和表达方式的内容创作</li>
+</ol>
+<h3 id="BROKE-框架（目标-战略）"><a href="#BROKE-框架（目标-战略）" class="headerlink" title="BROKE 框架（目标 &#x2F; 战略）"></a>BROKE 框架（目标 &#x2F; 战略）</h3><p>BROKE 框架是一个用于提示词工程的<strong>结构化</strong>方法，特别适用于 目标&#x2F;战略导向 的任务。它通过五个关键要素帮助构建清晰、有效的提示词。</p>
+<p><strong>框架构成</strong></p>
+<ul>
+<li><p>B (Background) - 背景信息</p>
+<ul>
+<li>定义 ：提供任务相关的上下文和背景知识</li>
+<li>作用 ：帮助 AI 理解问题的历史、环境和约束条件</li>
+<li>示例：”你正在为一家初创科技公司制定营销策略…”</li>
+</ul>
+</li>
+<li><p>R (Role) - 角色设定</p>
+<ul>
+<li>定义 ：明确 AI 需要扮演的专业角色或身份</li>
+<li>作用 ：确立专业视角和知识领域</li>
+<li>示例：”作为一名资深数字营销专家…”</li>
+</ul>
+</li>
+<li><p>O (Objectives) - 目标设定</p>
+<ul>
+<li>定义 ：清晰定义要达成的具体目标</li>
+<li>作用 ：明确任务的方向性和预期成果</li>
+<li>示例：”目标是提高产品的市场占有率和品牌知名度…”</li>
+</ul>
+</li>
+<li><p>K (Key Results) - 关键结果</p>
+<ul>
+<li>定义 ：设定可衡量的成果指标</li>
+<li>作用 ：提供评估任务完成质量的标准</li>
+<li>示例：”1. 社交媒体关注度提升30%；2. 转化率提高20%…”</li>
+</ul>
+</li>
+<li><p>E (Evolve) - 迭代优化</p>
+<ul>
+<li>定义 ：设计反馈和改进机制</li>
+<li>作用 ：支持持续优化和调整策略</li>
+<li>示例：”根据第一轮执行结果，调整内容策略和投放渠道…”</li>
+</ul>
+</li>
+</ul>
+<p><strong>应用场景</strong></p>
+<ol>
+<li>战略规划任务 ：需要明确目标和衡量标准的长期规划</li>
+<li>项目管理 ：设定项目目标、角色分工和成果指标</li>
+<li>商业策略制定 ：营销、产品、运营等领域的策略规划</li>
+<li>复杂任务分解 ：将大目标分解为可执行的关键结果</li>
+</ol>
+<h4 id="ICIO-框架（数据-结构化）"><a href="#ICIO-框架（数据-结构化）" class="headerlink" title="ICIO 框架（数据 &#x2F; 结构化）"></a>ICIO 框架（数据 &#x2F; 结构化）</h4><p><strong>框架构成</strong></p>
+<ul>
+<li>I (Instruction) - 指令<ul>
+<li>定义：需要 AI 做什么任务。</li>
+<li>作用：指定 AI 要完成的具体任务，如总结、翻译、提取、分析、编写、纠错、分类等。</li>
+</ul>
+</li>
+<li>C (Context) - 上下文<ul>
+<li>定义：任务的环境、前提、约束、规则</li>
+<li>作用：帮助 AI 理解问题的环境、约束、规则。</li>
+<li>示例：”你正在为一家初创科技公司制定营销策略…”</li>
+</ul>
+</li>
+<li>I (Input) - 输入<ul>
+<li>定义：给 AI 处理的原始材料</li>
+<li>作用：提供任务给 AI 处理的原始材料。</li>
+<li>示例：文本、代码、对话、数据、问题等。</li>
+</ul>
+</li>
+<li>O (Output) - 输出<ul>
+<li>定义：以什么形式返回。</li>
+<li>作用：指定 AI 输出的格式、语气、格式等个性化要求。</li>
+</ul>
+</li>
+</ul>
+<h4 id="Chain-of-Thought-CoT-框架"><a href="#Chain-of-Thought-CoT-框架" class="headerlink" title="Chain-of-Thought (CoT) 框架"></a>Chain-of-Thought (CoT) 框架</h4><p>通过引导模型一步步思考来解决复杂问题，特别适合需要推理的任务：</p>
+<ul>
+<li>提供示例展示思考过程</li>
+<li>鼓励模型展示中间推理步骤</li>
+<li>适用于数学问题、逻辑推理、因果分析等</li>
+</ul>
+<h3 id="ReAct-框架"><a href="#ReAct-框架" class="headerlink" title="ReAct 框架"></a>ReAct 框架</h3><p>结合推理和行动的框架</p>
+<p><strong>框架构成</strong></p>
+<ul>
+<li>Reason - 推理：分析问题并决定下一步行动</li>
+<li>Action - 行动：执行工具调用或查询</li>
+<li>Observe - 观察：查看行动结果</li>
+<li>循环上述步骤直到解决问题</li>
+</ul>
+<p><strong>应用场景</strong></p>
+<p>适合需要多步骤交互的复杂任务。</p>
+<hr>
 
                 
               </div>
@@ -346,7 +472,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/%E5%89%8D%E7%AB%AF/" class="category-chain-item">前端</a>
+  <a href="/categories/AI/" class="category-chain-item">AI</a>
   
   
 
@@ -361,9 +487,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/package-json/" class="print-no-link">#package.json</a>
-      
-        <a href="/tags/package-lock-json/" class="print-no-link">#package-lock.json</a>
+        <a href="/tags/%E6%8F%90%E7%A4%BA%E8%AF%8D/" class="print-no-link">#提示词</a>
       
     </div>
   
@@ -375,8 +499,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>package.json和package-lock.json</div>
-      <div>http://example.com/2025/09/20/前端/package.json和package-lock.json/</div>
+      <div>Prompt Engineering 提示词工程</div>
+      <div>http://example.com/2026/02/23/AI/Prompt Engineering 提示词工程/</div>
     </div>
     <div class="license-meta">
       
@@ -388,7 +512,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2025年9月20日</div>
+          <div>2026年2月23日</div>
         </div>
       
       
@@ -420,9 +544,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2025/09/24/%E5%85%B6%E4%BB%96/Cron%E8%A1%A8%E8%BE%BE%E5%BC%8F/" title="Cron表达式">
+                      <a href="/2026/02/23/AI/Context%20Engineering%20%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/" title="Context Engineering 上下文工程">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Cron表达式</span>
+                        <span class="hidden-mobile">Context Engineering 上下文工程</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -430,8 +554,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2025/09/05/%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98/React+Antd%20%E5%AE%9E%E7%8E%B0%20textarea%20%E8%8E%B7%E5%8F%96%E5%85%89%E6%A0%87%E4%BD%8D%E7%BD%AE%E5%B9%B6%E5%9C%A8%E5%85%89%E6%A0%87%E5%A4%84%E6%8F%92%E5%85%A5%E6%96%87%E5%AD%97/" title="React+Antd 实现 textarea 获取光标位置并在光标处插入文字">
-                        <span class="hidden-mobile">React+Antd 实现 textarea 获取光标位置并在光标处插入文字</span>
+                      <a href="/2026/01/30/%E5%B0%8F%E7%A8%8B%E5%BA%8F/%E3%80%90%E5%9D%91%E3%80%91%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8Fcanvas%E4%BD%BF%E7%94%A8filter%E5%92%8CglobalAlpha%E5%B1%9E%E6%80%A7%EF%BC%8C%E7%9C%9F%E6%9C%BA%E9%87%8C%E4%B8%8D%E7%94%9F%E6%95%88/" title="【坑】微信小程序canvas使用filter和globalAlpha属性，真机里不生效">
+                        <span class="hidden-mobile">【坑】微信小程序canvas使用filter和globalAlpha属性，真机里不生效</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -682,5 +806,12 @@
   <noscript>
     <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
   </noscript>
-</body>
+<!-- hexo injector body_end start -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    mermaid.initialize({"startOnLoad":true,"theme":"default"});
+  });
+</script>
+<!-- hexo injector body_end end --></body>
 </html>

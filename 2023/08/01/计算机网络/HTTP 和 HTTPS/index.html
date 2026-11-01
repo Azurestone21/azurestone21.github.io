@@ -446,7 +446,7 @@
 </tbody></table>
 <hr>
 <h2 id="5-HTTPS-工作流程（以-TLS-1-2-为例）"><a href="#5-HTTPS-工作流程（以-TLS-1-2-为例）" class="headerlink" title="5. HTTPS 工作流程（以 TLS 1.2 为例）"></a>5. HTTPS 工作流程（以 TLS 1.2 为例）</h2><p>TLS 1.2 完整握手通常需要 <strong>2-RTT</strong>。下面用 Mermaid 时序图和 ASCII 简图表示。</p>
-<h3 id="5-1-Mermaid-时序图"><a href="#5-1-Mermaid-时序图" class="headerlink" title="5.1 Mermaid 时序图"></a>5.1 Mermaid 时序图</h3><pre><code class=" mermaid">sequenceDiagram
+<h3 id="5-1-Mermaid-时序图"><a href="#5-1-Mermaid-时序图" class="headerlink" title="5.1 Mermaid 时序图"></a>5.1 Mermaid 时序图</h3><pre><code class="hljs mermaid">sequenceDiagram
     autonumber
     participant C as 客户端（浏览器）
     participant S as 服务器（网站）
@@ -489,8 +489,7 @@
     C-&gt;&gt;S: close_notify
     S-&gt;&gt;C: close_notify
     C-&gt;&gt;S: TCP FIN
-    S-&gt;&gt;C: TCP ACK
-</code></pre>
+    S-&gt;&gt;C: TCP ACK</code></pre>
 
 <h3 id="5-2-阶段说明"><a href="#5-2-阶段说明" class="headerlink" title="5.2 阶段说明"></a>5.2 阶段说明</h3><table>
 <thead>
@@ -1060,5 +1059,12 @@
   <noscript>
     <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
   </noscript>
-</body>
+<!-- hexo injector body_end start -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    mermaid.initialize({"startOnLoad":true,"theme":"default"});
+  });
+</script>
+<!-- hexo injector body_end end --></body>
 </html>

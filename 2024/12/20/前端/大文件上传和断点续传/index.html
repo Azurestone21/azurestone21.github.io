@@ -1,0 +1,740 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="大文件上传和断点续传一、大文件上传的问题直接上传大文件通常存在两个问题：  上传时间长：上传过程中用户往往只能等待，无法进行其他操作。 容易失败：网络波动或请求超时会导致整个文件重新上传，浪费时间和带宽。  解决思路主要有两个：  文件切片：将大文件拆分成多个小分片，分批上传。 断点续传：记录已上传的分片，中断后只补传未完成的部分。  在此基础上，还可以结合秒传（相同文件不重复上传）进一步优化体验">
+<meta property="og:type" content="article">
+<meta property="og:title" content="大文件上传和断点续传">
+<meta property="og:url" content="http://example.com/2024/12/20/%E5%89%8D%E7%AB%AF/%E5%A4%A7%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E5%92%8C%E6%96%AD%E7%82%B9%E7%BB%AD%E4%BC%A0/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="大文件上传和断点续传一、大文件上传的问题直接上传大文件通常存在两个问题：  上传时间长：上传过程中用户往往只能等待，无法进行其他操作。 容易失败：网络波动或请求超时会导致整个文件重新上传，浪费时间和带宽。  解决思路主要有两个：  文件切片：将大文件拆分成多个小分片，分批上传。 断点续传：记录已上传的分片，中断后只补传未完成的部分。  在此基础上，还可以结合秒传（相同文件不重复上传）进一步优化体验">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-12-20T12:09:04.000Z">
+<meta property="article:modified_time" content="2026-10-29T05:57:39.589Z">
+<meta property="article:author" content="Azure">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>大文件上传和断点续传 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">大文件上传和断点续传</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-12-20 20:09" pubdate>
+          2024年12月20日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          19 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">大文件上传和断点续传</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="大文件上传和断点续传"><a href="#大文件上传和断点续传" class="headerlink" title="大文件上传和断点续传"></a>大文件上传和断点续传</h1><h2 id="一、大文件上传的问题"><a href="#一、大文件上传的问题" class="headerlink" title="一、大文件上传的问题"></a>一、大文件上传的问题</h2><p>直接上传大文件通常存在两个问题：</p>
+<ol>
+<li><strong>上传时间长</strong>：上传过程中用户往往只能等待，无法进行其他操作。</li>
+<li><strong>容易失败</strong>：网络波动或请求超时会导致整个文件重新上传，浪费时间和带宽。</li>
+</ol>
+<p>解决思路主要有两个：</p>
+<ul>
+<li><strong>文件切片</strong>：将大文件拆分成多个小分片，分批上传。</li>
+<li><strong>断点续传</strong>：记录已上传的分片，中断后只补传未完成的部分。</li>
+</ul>
+<p>在此基础上，还可以结合<strong>秒传</strong>（相同文件不重复上传）进一步优化体验。</p>
+<h2 id="二、整体流程"><a href="#二、整体流程" class="headerlink" title="二、整体流程"></a>二、整体流程</h2><p>一次完整的大文件上传通常包含以下步骤：</p>
+<ol>
+<li>读取用户选择的文件。</li>
+<li>将文件切成固定大小的分片。</li>
+<li>计算文件内容的唯一 hash。</li>
+<li>将 hash 发送给服务端校验：<ul>
+<li>文件已存在 → 秒传成功；</li>
+<li>文件部分存在 → 返回已上传的分片列表，进入断点续传；</li>
+<li>文件不存在 → 上传全部分片。</li>
+</ul>
+</li>
+<li>上传缺失的分片。</li>
+<li>所有分片上传完成后，请求服务端合并分片。</li>
+<li>服务端合并完成，上传结束。</li>
+</ol>
+<h2 id="三、读取文件"><a href="#三、读取文件" class="headerlink" title="三、读取文件"></a>三、读取文件</h2><p>监听 <code>input</code> 的 <code>change</code> 事件，用户选择文件后即可在回调中拿到 <code>File</code> 对象：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">const</span> <span class="hljs-title function_">handleUpload</span> = (<span class="hljs-params">e</span>) =&gt; &#123;<br>  <span class="hljs-keyword">const</span> files = e.<span class="hljs-property">target</span>.<span class="hljs-property">files</span>;<br>  <span class="hljs-keyword">if</span> (!files || !files.<span class="hljs-property">length</span>) &#123;<br>    <span class="hljs-keyword">return</span>;<br>  &#125;<br>  <span class="hljs-keyword">const</span> file = files[<span class="hljs-number">0</span>];<br>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(file);<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<h2 id="四、文件切片"><a href="#四、文件切片" class="headerlink" title="四、文件切片"></a>四、文件切片</h2><p>在 JavaScript 中，<code>File</code> 继承自 <code>Blob</code>，而 <code>Blob</code> 提供了 <code>slice(start, end)</code> 方法，可以对二进制内容进行截取。利用它即可把大文件拆成多个分片。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">CHUNK_SIZE</span> = <span class="hljs-number">1024</span> * <span class="hljs-number">1024</span> * <span class="hljs-number">5</span>; <span class="hljs-comment">// 每片 5MB，可按需调整</span><br><br><span class="hljs-keyword">const</span> <span class="hljs-title function_">createFileChunks</span> = (<span class="hljs-params">file</span>) =&gt; &#123;<br>  <span class="hljs-keyword">const</span> chunks = [];<br>  <span class="hljs-keyword">let</span> cur = <span class="hljs-number">0</span>;<br>  <span class="hljs-keyword">while</span> (cur &lt; file.<span class="hljs-property">size</span>) &#123;<br>    chunks.<span class="hljs-title function_">push</span>(&#123;<br>      <span class="hljs-attr">file</span>: file.<span class="hljs-title function_">slice</span>(cur, cur + <span class="hljs-variable constant_">CHUNK_SIZE</span>),<br>      <span class="hljs-attr">index</span>: chunks.<span class="hljs-property">length</span>,<br>    &#125;);<br>    cur += <span class="hljs-variable constant_">CHUNK_SIZE</span>;<br>  &#125;<br>  <span class="hljs-keyword">return</span> chunks;<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<p><strong>分片大小的选择</strong>：分片过小会导致请求数量过多，增加网络和服务端压力；分片过大则单次失败重传成本高。常见取值在 1MB～10MB 之间，可根据网络环境和业务场景调整。</p>
+<h2 id="五、计算文件-hash"><a href="#五、计算文件-hash" class="headerlink" title="五、计算文件 hash"></a>五、计算文件 hash</h2><p>服务端不能仅凭文件名区分文件（文件名可被修改），需要根据<strong>文件内容</strong>生成唯一标识。常用做法是计算文件内容的 MD5 或 SHA 值。</p>
+<p>这里使用 <code>spark-md5</code> 计算。如果文件很大，把每个分片全部读入计算会比较耗时，常见优化有两点：</p>
+<ul>
+<li><strong>抽样计算</strong>：只取首片、尾片和中间若干片参与计算，速度更快，但严格来说不是完整文件 hash；</li>
+<li><strong>放入 Web Worker</strong>：避免阻塞主线程，用户在计算期间仍可正常操作页面。</li>
+</ul>
+<p>下面示例是<strong>完整计算</strong>并放在 Worker 中执行的版本。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// public/hash.js</span><br>self.<span class="hljs-property">onmessage</span> = <span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> &#123;<br>  <span class="hljs-keyword">const</span> &#123; fileChunkList &#125; = e.<span class="hljs-property">data</span>;<br>  <span class="hljs-keyword">const</span> spark = <span class="hljs-keyword">new</span> self.<span class="hljs-property">SparkMD5</span>.<span class="hljs-title class_">ArrayBuffer</span>();<br>  <span class="hljs-keyword">let</span> count = <span class="hljs-number">0</span>;<br>  <span class="hljs-keyword">let</span> percentage = <span class="hljs-number">0</span>;<br><br>  <span class="hljs-keyword">const</span> <span class="hljs-title function_">loadNext</span> = (<span class="hljs-params">index</span>) =&gt; &#123;<br>    <span class="hljs-keyword">const</span> reader = <span class="hljs-keyword">new</span> <span class="hljs-title class_">FileReader</span>();<br>    reader.<span class="hljs-title function_">readAsArrayBuffer</span>(fileChunkList[index].<span class="hljs-property">file</span>);<br>    reader.<span class="hljs-property">onload</span> = <span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> &#123;<br>      count++;<br>      spark.<span class="hljs-title function_">append</span>(e.<span class="hljs-property">target</span>.<span class="hljs-property">result</span>);<br><br>      <span class="hljs-keyword">if</span> (count === fileChunkList.<span class="hljs-property">length</span>) &#123;<br>        self.<span class="hljs-title function_">postMessage</span>(&#123;<br>          <span class="hljs-attr">percentage</span>: <span class="hljs-number">100</span>,<br>          <span class="hljs-attr">hash</span>: spark.<span class="hljs-title function_">end</span>(),<br>        &#125;);<br>        self.<span class="hljs-title function_">close</span>();<br>        <span class="hljs-keyword">return</span>;<br>      &#125;<br><br>      percentage += <span class="hljs-number">100</span> / fileChunkList.<span class="hljs-property">length</span>;<br>      self.<span class="hljs-title function_">postMessage</span>(&#123; percentage &#125;);<br>      <span class="hljs-title function_">loadNext</span>(count);<br>    &#125;;<br>  &#125;;<br><br>  <span class="hljs-title function_">loadNext</span>(count);<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<p>主线程使用：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">const</span> worker = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Worker</span>(<span class="hljs-string">&quot;/hash.js&quot;</span>);<br>worker.<span class="hljs-title function_">postMessage</span>(&#123; fileChunkList &#125;);<br>worker.<span class="hljs-property">onmessage</span> = <span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> &#123;<br>  <span class="hljs-keyword">const</span> &#123; percentage, hash &#125; = e.<span class="hljs-property">data</span>;<br>  <span class="hljs-keyword">if</span> (hash) &#123;<br>    <span class="hljs-comment">// hash 计算完成，可以进入上传流程</span><br>  &#125; <span class="hljs-keyword">else</span> &#123;<br>    <span class="hljs-comment">// 更新 hash 计算进度</span><br>  &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<h2 id="六、上传分片"><a href="#六、上传分片" class="headerlink" title="六、上传分片"></a>六、上传分片</h2><h3 id="1-校验文件状态"><a href="#1-校验文件状态" class="headerlink" title="1. 校验文件状态"></a>1. 校验文件状态</h3><p>上传前先请求服务端校验：</p>
+<ul>
+<li>文件是否已经存在（秒传）；</li>
+<li>已上传了哪些分片（断点续传）。</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * shouldUpload：是否需要继续上传</span><br><span class="hljs-comment"> * uploadedList：服务端已存在的分片 hash 列表</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">const</span> &#123; shouldUpload, uploadedList &#125; = <span class="hljs-keyword">await</span> <span class="hljs-title function_">verifyUpload</span>(fileName, fileHash);<br><br><span class="hljs-keyword">if</span> (!shouldUpload) &#123;<br>  <span class="hljs-comment">// 文件已存在，秒传成功</span><br>  <span class="hljs-keyword">return</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-上传缺失的分片"><a href="#2-上传缺失的分片" class="headerlink" title="2. 上传缺失的分片"></a>2. 上传缺失的分片</h3><p>只上传服务端不存在的分片，实现断点续传：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">uploadChunks</span>(<span class="hljs-params">fileChunks, uploadedList = []</span>) &#123;<br>  <span class="hljs-keyword">const</span> requestList = fileChunks<br>    .<span class="hljs-title function_">filter</span>(<span class="hljs-function">(<span class="hljs-params">&#123; hash &#125;</span>) =&gt;</span> !uploadedList.<span class="hljs-title function_">includes</span>(hash))<br>    .<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">&#123; file, hash, index &#125;</span>) =&gt;</span> &#123;<br>      <span class="hljs-keyword">const</span> formData = <span class="hljs-keyword">new</span> <span class="hljs-title class_">FormData</span>();<br>      formData.<span class="hljs-title function_">append</span>(<span class="hljs-string">&quot;chunk&quot;</span>, file);<br>      formData.<span class="hljs-title function_">append</span>(<span class="hljs-string">&quot;hash&quot;</span>, hash);<br>      formData.<span class="hljs-title function_">append</span>(<span class="hljs-string">&quot;filename&quot;</span>, fileName);<br>      formData.<span class="hljs-title function_">append</span>(<span class="hljs-string">&quot;fileHash&quot;</span>, fileHash);<br>      <span class="hljs-keyword">return</span> &#123; formData, index &#125;;<br>    &#125;)<br>    .<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">&#123; formData, index &#125;</span>) =&gt;</span><br>      <span class="hljs-title function_">request</span>(&#123;<br>        <span class="hljs-attr">url</span>: <span class="hljs-string">&quot;/upload&quot;</span>,<br>        <span class="hljs-attr">data</span>: formData,<br>        <span class="hljs-attr">onProgress</span>: <span class="hljs-title function_">createProgressHandler</span>(index),<br>      &#125;),<br>    );<br><br>  <span class="hljs-comment">// 并发上传所有分片</span><br>  <span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">all</span>(requestList);<br><br>  <span class="hljs-comment">// 已上传分片数 + 本次上传数 = 总分片数，说明全部完成，请求合并</span><br>  <span class="hljs-keyword">if</span> (uploadedList.<span class="hljs-property">length</span> + requestList.<span class="hljs-property">length</span> === fileChunks.<span class="hljs-property">length</span>) &#123;<br>    <span class="hljs-keyword">await</span> <span class="hljs-title function_">mergeRequest</span>();<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-并发控制"><a href="#3-并发控制" class="headerlink" title="3. 并发控制"></a>3. 并发控制</h3><p><code>Promise.all</code> 会一次性发出所有请求，分片较多时可能压垮浏览器或服务端。实践中通常限制并发数量，例如同时最多 4～6 个请求：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">limitRequest</span>(<span class="hljs-params">tasks, limit = <span class="hljs-number">4</span></span>) &#123;<br>  <span class="hljs-keyword">const</span> results = [];<br>  <span class="hljs-keyword">const</span> executing = [];<br><br>  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> task <span class="hljs-keyword">of</span> tasks) &#123;<br>    <span class="hljs-keyword">const</span> p = <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>().<span class="hljs-title function_">then</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">task</span>());<br>    results.<span class="hljs-title function_">push</span>(p);<br><br>    <span class="hljs-keyword">if</span> (limit &lt;= tasks.<span class="hljs-property">length</span>) &#123;<br>      <span class="hljs-keyword">const</span> e = p.<span class="hljs-title function_">then</span>(<span class="hljs-function">() =&gt;</span> executing.<span class="hljs-title function_">splice</span>(executing.<span class="hljs-title function_">indexOf</span>(e), <span class="hljs-number">1</span>));<br>      executing.<span class="hljs-title function_">push</span>(e);<br>      <span class="hljs-keyword">if</span> (executing.<span class="hljs-property">length</span> &gt;= limit) &#123;<br>        <span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">race</span>(executing);<br>      &#125;<br>    &#125;<br>  &#125;<br><br>  <span class="hljs-keyword">return</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">all</span>(results);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-暂停与继续"><a href="#4-暂停与继续" class="headerlink" title="4. 暂停与继续"></a>4. 暂停与继续</h3><p>断点续传的核心是<strong>记录已上传的分片</strong>。实现方式有两种：</p>
+<ul>
+<li><strong>服务端记录</strong>：每次上传成功后服务端持久化分片状态，下次上传前通过校验接口取回；</li>
+<li><strong>前端记录</strong>：将已上传的分片 hash 存入 <code>localStorage</code>，配合服务端校验使用。</li>
+</ul>
+<p>用户点击“暂停”时，取消未完成的请求（如使用 <code>AbortController</code>）；再次点击“继续”时重新走校验接口，只上传缺失分片。</p>
+<h2 id="七、合并分片"><a href="#七、合并分片" class="headerlink" title="七、合并分片"></a>七、合并分片</h2><p>所有分片上传完成后，需要服务端将分片合并为完整文件。常见方案有三种：</p>
+<ol>
+<li><strong>前端主动通知</strong>：分片全部上传后，前端发送合并请求，服务端收到后合并。</li>
+<li><strong>服务端自动合并</strong>：服务端记录分片上传状态，检测到所有分片齐全后自动合并。</li>
+<li><strong>按偏移写入</strong>：服务端创建一个与原文件大小相同的目标文件，按每个分片的起始位置直接写入对应区间。这种方式可以实现并行写入，效率更高。</li>
+</ol>
+<p>无论采用哪种方式，合并完成后服务端都应清理临时分片文件，避免占用磁盘空间。</p>
+<h2 id="八、断点续传"><a href="#八、断点续传" class="headerlink" title="八、断点续传"></a>八、断点续传</h2><p>断点续传是一种网络传输机制：当传输中断后，可以从上次中断的位置继续，而不必从头开始。它在大文件、弱网、带宽有限的场景下尤其有价值，能够节省时间、减少带宽浪费、提升用户体验。</p>
+<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><ol>
+<li>将大文件切分为多个分片，每个分片有唯一标识（通常是 <code>文件 hash + 分片序号</code>）。</li>
+<li>客户端与服务端分别记录已成功上传的分片。</li>
+<li>传输中断后，客户端重新校验，只上传服务端缺失的分片。</li>
+<li>所有分片齐全后合并为完整文件。</li>
+</ol>
+<p>断点续传需要客户端与服务端配合：客户端负责切片、校验、补传；服务端负责记录分片状态、提供校验接口、最终合并。</p>
+<h2 id="九、秒传"><a href="#九、秒传" class="headerlink" title="九、秒传"></a>九、秒传</h2><p>秒传是指：当用户上传的文件在服务端已存在时，直接复用已有文件，无需真正上传内容。</p>
+<h3 id="实现方式"><a href="#实现方式" class="headerlink" title="实现方式"></a>实现方式</h3><ol>
+<li>前端计算文件内容的 hash（如 MD5）。</li>
+<li>上传前将 hash 发送给服务端校验。</li>
+<li>服务端在文件记录中查找相同 hash：<ul>
+<li>存在 → 直接返回成功，并把已有文件关联到当前用户&#x2F;业务；</li>
+<li>不存在 → 走正常上传流程。</li>
+</ul>
+</li>
+<li>服务端需要维护一张文件信息表，记录文件 hash、存储路径、大小、分片状态等。</li>
+</ol>
+<h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><ul>
+<li>文件 hash 必须具备<strong>唯一性和稳定性</strong>，否则无法正确判断“相同文件”。</li>
+<li>完整计算大文件 hash 耗时较长，可结合抽样 hash + 完整校验，或使用服务端已有的快速校验机制。</li>
+<li>秒传本质是<strong>内容去重</strong>，适合多用户上传相同文件的场景；对安全性要求高的场景，还需考虑权限校验与文件归属关系。</li>
+</ul>
+<h3 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h3><ul>
+<li>减少重复上传，节省带宽；</li>
+<li>降低服务端存储与处理压力；</li>
+<li>用户上传相同文件时几乎瞬间完成，体验更好。</li>
+</ul>
+<h2 id="十、小结"><a href="#十、小结" class="headerlink" title="十、小结"></a>十、小结</h2><p>大文件上传与断点续传的核心可以概括为：</p>
+<ul>
+<li><strong>切片</strong>：把大文件拆小，降低单次请求失败成本；</li>
+<li><strong>hash</strong>：用文件内容生成唯一标识，用于校验、秒传和续传；</li>
+<li><strong>校验</strong>：上传前先问服务端“缺什么”；</li>
+<li><strong>补传</strong>：只上传缺失分片，配合并发控制与暂停&#x2F;继续；</li>
+<li><strong>合并</strong>：所有分片齐全后由服务端合并并清理临时文件。</li>
+</ul>
+<p>整套方案需要前后端协同设计，前端负责切片、hash、并发与进度展示，后端负责分片存储、状态记录、校验与合并。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%89%8D%E7%AB%AF/" class="category-chain-item">前端</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>大文件上传和断点续传</div>
+      <div>http://example.com/2024/12/20/前端/大文件上传和断点续传/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年12月20日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/12/20/%E5%89%8D%E7%AB%AF/%E5%8D%95%E9%A1%B5%E5%BA%94%E7%94%A8%20SPA/" title="单页应用 SPA">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">单页应用 SPA</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/12/20/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/HTTP%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="HTTP 学习笔记">
+                        <span class="hidden-mobile">HTTP 学习笔记</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+<!-- hexo injector body_end start -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    mermaid.initialize({"startOnLoad":true,"theme":"default"});
+  });
+</script>
+<!-- hexo injector body_end end --></body>
+</html>

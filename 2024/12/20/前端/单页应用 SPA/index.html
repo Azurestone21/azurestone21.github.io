@@ -1,0 +1,808 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="单页应用 SPA（Single Page Application）1. 什么是单页应用单页应用 SPA（Single Page Application） 指的是以一个 HTML 文件作为应用入口，首次加载后由 JavaScript 接管页面渲染与交互，通过前端路由在不同“页面&#x2F;视图”之间切换的 Web 应用形态。 它的典型特征是：  应用只有一个 HTML 入口文件，首次访问时加载该 H">
+<meta property="og:type" content="article">
+<meta property="og:title" content="单页应用 SPA">
+<meta property="og:url" content="http://example.com/2024/12/20/%E5%89%8D%E7%AB%AF/%E5%8D%95%E9%A1%B5%E5%BA%94%E7%94%A8%20SPA/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="单页应用 SPA（Single Page Application）1. 什么是单页应用单页应用 SPA（Single Page Application） 指的是以一个 HTML 文件作为应用入口，首次加载后由 JavaScript 接管页面渲染与交互，通过前端路由在不同“页面&#x2F;视图”之间切换的 Web 应用形态。 它的典型特征是：  应用只有一个 HTML 入口文件，首次访问时加载该 H">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-12-20T12:09:04.000Z">
+<meta property="article:modified_time" content="2026-10-29T09:08:39.199Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="SPA">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>单页应用 SPA - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">单页应用 SPA</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-12-20 20:09" pubdate>
+          2024年12月20日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          30 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">单页应用 SPA</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="单页应用-SPA（Single-Page-Application）"><a href="#单页应用-SPA（Single-Page-Application）" class="headerlink" title="单页应用 SPA（Single Page Application）"></a>单页应用 SPA（Single Page Application）</h1><h2 id="1-什么是单页应用"><a href="#1-什么是单页应用" class="headerlink" title="1. 什么是单页应用"></a>1. 什么是单页应用</h2><p><strong>单页应用 SPA（Single Page Application）</strong> 指的是以<strong>一个 HTML 文件作为应用入口</strong>，首次加载后由 JavaScript 接管页面渲染与交互，通过前端路由在不同“页面&#x2F;视图”之间切换的 Web 应用形态。</p>
+<p>它的典型特征是：</p>
+<ul>
+<li>应用只有一个 HTML 入口文件，首次访问时加载该 HTML 以及所需的 JS、CSS、字体、图片等资源。</li>
+<li>后续的“页面跳转”不再向服务器请求新的 HTML 文档，而是由前端路由匹配到对应组件，<strong>局部更新 DOM</strong>。</li>
+<li>页面展示和功能由 JavaScript 完成布局与渲染，数据通常通过接口异步获取。</li>
+<li>浏览器地址栏的 URL 变化由前端路由管理（History API 或 hash 模式），以支持前进、后退和刷新。</li>
+</ul>
+<blockquote>
+<p>常见 SPA 框架&#x2F;库包括 React、Vue、Angular、Ember、Svelte 等。但要注意：<strong>用了这些框架不等于一定是 SPA</strong>，它们也可以用于 SSR、SSG 或 Islands 架构。</p>
+</blockquote>
+<p>一个简化的 SPA 加载与切换过程：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs text">首次访问：<br>浏览器请求 index.html<br>  → 下载 JS/CSS 等资源<br>  → 执行 JS，挂载根组件<br>  → 前端路由匹配当前 URL，渲染对应视图<br>  → 后续数据通过 API 异步获取<br><br>路由切换：<br>点击链接 / 调用 router.push<br>  → 前端路由匹配新视图<br>  → 卸载旧组件、挂载新组件<br>  → 局部更新 DOM，不刷新整个页面<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="2-单页应用的优点"><a href="#2-单页应用的优点" class="headerlink" title="2. 单页应用的优点"></a>2. 单页应用的优点</h2><ol>
+<li><p><strong>页面切换流畅，交互体验接近原生应用</strong><br>路由切换不重新加载整个 HTML 文档，减少了白屏和资源重复解析，局部更新让交互更连贯。</p>
+</li>
+<li><p><strong>前后端职责分离，开发协作更清晰</strong><br>前端专注视图与交互，后端专注 API 与业务逻辑。前端可以独立开发、调试和部署，接口契约清晰时协作效率较高。</p>
+</li>
+<li><p><strong>减轻服务器渲染压力</strong><br>页面渲染主要发生在浏览器端，服务器更多承担静态资源分发和 API 响应，减少了服务端模板渲染的负担。</p>
+</li>
+<li><p><strong>状态保持与过渡体验更好</strong><br>页面不刷新，播放中的音视频、滚动位置、全局状态、WebSocket 连接等更容易保持；配合过渡动画可以获得更连贯的体验。</p>
+</li>
+<li><p><strong>适合强交互、长会话型应用</strong><br>后台管理系统、在线协作、IM、仪表盘、编辑器等场景，SPA 的局部更新和状态保持优势明显。</p>
+</li>
+</ol>
+<hr>
+<h2 id="3-单页应用的缺点"><a href="#3-单页应用的缺点" class="headerlink" title="3. 单页应用的缺点"></a>3. 单页应用的缺点</h2><ol>
+<li><p><strong>不利于 SEO（搜索引擎优化）</strong><br>首屏内容依赖 JavaScript 执行和数据接口返回，爬虫获取内容的质量取决于其 JS 渲染能力、渲染等待策略以及页面是否有可索引的初始内容。对内容型、营销型站点来说，这是需要认真处理的问题。</p>
+</li>
+<li><p><strong>首屏加载慢，容易出现白屏</strong><br>SPA 通常需要在首屏加载框架运行时、路由、UI 库和业务代码，资源体积大、主线程执行时间长，弱网或低端设备上白屏时间更明显。</p>
+</li>
+<li><p><strong>首屏 HTML 内容空洞</strong><br>服务器返回的往往只是一个挂载点（如 <code>&lt;div id=&quot;app&quot;&gt;&lt;/div&gt;</code>），在 JS 执行完成前，用户和爬虫看到的内容有限。</p>
+</li>
+<li><p><strong>内存泄漏和长会话性能衰减</strong><br>SPA 不刷新页面，组件卸载时若未清理定时器、事件监听、WebSocket、第三方实例等，副作用会逐次累积。表现往往不是首屏慢，而是<strong>用久了越来越卡</strong>。</p>
+</li>
+<li><p><strong>浏览器行为与工程复杂度更高</strong><br>前进&#x2F;后退、刷新、深链接、滚动位置恢复、页面标题与 meta 管理、埋点、错误监控等，都需要前端路由和框架额外处理；相比多页应用，工程复杂度更高。</p>
+</li>
+<li><p><strong>安全面更集中</strong><br>大量逻辑和数据暴露在前端，XSS、敏感信息泄露、接口鉴权不严等风险需要额外关注。前端代码不是安全边界，关键校验必须在服务端完成。</p>
+</li>
+</ol>
+<hr>
+<h2 id="4-优化方向"><a href="#4-优化方向" class="headerlink" title="4. 优化方向"></a>4. 优化方向</h2><p>SPA 优化的核心矛盾是：<strong>用 JavaScript 换取交互体验，但 JavaScript 的下载、解析和执行本身有成本</strong>。因此优化要分层进行：构建阶段控制“发出去多少代码”，网络阶段控制“关键资源何时到达”，运行时控制“主线程和内存负担”，架构层面则要判断“这个页面是否真的需要整个应用都是 SPA”。</p>
+<h3 id="4-1-构建阶段：控制初始代码体积"><a href="#4-1-构建阶段：控制初始代码体积" class="headerlink" title="4.1 构建阶段：控制初始代码体积"></a>4.1 构建阶段：控制初始代码体积</h3><p><strong>（1）代码分割与懒加载</strong></p>
+<ul>
+<li><strong>路由级分割</strong>：每个路由对应独立 chunk，首屏只加载当前路由需要的代码。React 可用 <code>React.lazy</code> + <code>Suspense</code>，Vue 可用异步组件 <code>() =&gt; import(...)</code>。</li>
+<li><strong>组件级分割</strong>：对首屏非必需的重型组件（图表、富文本编辑器、地图、数据表格）动态导入，延迟加载。</li>
+<li><strong>第三方库按需引入</strong>：UI 框架只引入使用的组件；工具库优先使用支持 Tree Shaking 的 ESM 版本，如 <code>lodash-es</code> 替代 <code>lodash</code>。</li>
+</ul>
+<blockquote>
+<p>注意不要过度分割。初始包很小时，碎片化带来的额外请求可能抵消收益；应先看初始包体积是否真的构成瓶颈，再决定拆分粒度。</p>
+</blockquote>
+<p><strong>（2）Tree Shaking 与生产构建</strong></p>
+<p>使用 ES Module，生产模式构建，移除未引用导出和调试代码（<code>console.log</code>、<code>debugger</code>），用 Terser、cssnano 等压缩 JS&#x2F;CSS。</p>
+<p><strong>（3）依赖去重与 vendor 拆分</strong></p>
+<p>“组件重复打包”的根源通常是多个依赖引入了同一库的不同版本，或某个大依赖被多个 chunk 重复包含。可用包分析工具（<code>webpack-bundle-analyzer</code>、<code>rollup-plugin-visualizer</code>）定位重复模块，通过 <code>resolutions</code> &#x2F; <code>overrides</code> 统一版本；用 <code>splitChunks</code> 或 <code>manualChunks</code> 把稳定的大依赖提取为独立 vendor chunk，利用长期缓存。</p>
+<p><strong>（4）图片与字体优化</strong></p>
+<ul>
+<li>图片优先使用 WebP&#x2F;AVIF，配合 <code>srcset</code> 提供响应式尺寸；非首屏图片加 <code>loading=&quot;lazy&quot;</code>；<strong>始终设置宽高或宽高比</strong>，避免 CLS。</li>
+<li>字体使用 <code>font-display: swap</code>，只加载实际用到的字重和字符子集，避免字体阻塞渲染。</li>
+<li>首屏关键 CSS 可内联，其余 CSS 异步加载，避免 <code>&lt;head&gt;</code> 中阻塞渲染的巨型样式表。</li>
+</ul>
+<h3 id="4-2-网络与缓存：让关键资源先到、让重复访问更快"><a href="#4-2-网络与缓存：让关键资源先到、让重复访问更快" class="headerlink" title="4.2 网络与缓存：让关键资源先到、让重复访问更快"></a>4.2 网络与缓存：让关键资源先到、让重复访问更快</h3><p><strong>（1）传输压缩</strong></p>
+<p>在服务器或 CDN 上开启 <strong>Brotli</strong> 和 <strong>Gzip</strong>，按 <code>Accept-Encoding</code> 协商。文本资源优先 Brotli，压缩率通常更好。</p>
+<p><strong>（2）HTTP 缓存策略</strong></p>
+<ul>
+<li>构建产物使用内容哈希文件名，对静态资源设置长缓存：<code>Cache-Control: public, max-age=31536000, immutable</code>。</li>
+<li><code>index.html</code> 使用 <code>no-cache</code> 或短缓存，确保发版后能及时拿到新的资源引用。</li>
+<li>API 数据可结合 <code>ETag</code> &#x2F; <code>If-None-Match</code> 做协商缓存，或采用 SWR（Stale-While-Revalidate）策略：先展示缓存，再后台刷新。</li>
+</ul>
+<p><strong>（3）资源提示与预取</strong></p>
+<ul>
+<li>对首屏必需的字体、关键 JS&#x2F;CSS 使用 <code>&lt;link rel=&quot;preload&quot;&gt;</code>，提高请求优先级。</li>
+<li>对用户可能访问的路由 chunk 使用 <code>prefetch</code> 低优先级预取。预取要有节制，弱网或移动流量下无差别预取会浪费带宽，最好结合网络状况或交互意图触发。</li>
+<li>使用 Service Worker 对静态资源做离线缓存和请求拦截，使二次访问更快；可用 Workbox 管理 CacheFirst、StaleWhileRevalidate 等策略。</li>
+</ul>
+<h3 id="4-3-运行时：避免“加载完了却卡”"><a href="#4-3-运行时：避免“加载完了却卡”" class="headerlink" title="4.3 运行时：避免“加载完了却卡”"></a>4.3 运行时：避免“加载完了却卡”</h3><p><strong>（1）长列表使用虚拟滚动</strong></p>
+<p>一次性渲染数千个 DOM 节点会导致样式计算、布局和绘制成本线性上升。虚拟列表只渲染可视区域内的列表项，回收不可见节点。React 可用 <code>react-window</code>、<code>@tanstack/react-virtual</code>，Vue 可用 <code>vue-virtual-scroller</code>。</p>
+<p><strong>（2）控制高频事件与长任务</strong></p>
+<p>滚动、resize、输入等高频事件使用防抖&#x2F;节流；复杂计算移入 Web Worker，避免阻塞主线程。主线程阻塞会直接恶化交互响应延迟（INP）。</p>
+<p><strong>（3）组件卸载时清理副作用</strong></p>
+<p>定时器、<code>setInterval</code>、全局事件监听、WebSocket、ResizeObserver、图表&#x2F;编辑器实例等，都应在组件卸载时显式销毁。这是 SPA 长会话场景下最容易被忽视、但对“用久了卡不卡”影响很大的优化。</p>
+<p><strong>（4）渲染与动画性能</strong></p>
+<p>批量修改 DOM，避免强制同步布局；动画优先使用 <code>transform</code> 和 <code>opacity</code>；列表使用稳定 <code>key</code>，减少不必要的 diff。</p>
+<h3 id="4-4-架构层面：SPA-不是唯一解"><a href="#4-4-架构层面：SPA-不是唯一解" class="headerlink" title="4.4 架构层面：SPA 不是唯一解"></a>4.4 架构层面：SPA 不是唯一解</h3><p><strong>SSR、SSG、ISR、Islands 不是简单的“SPA 优化开关”，而是渲染架构的选择。</strong></p>
+<table>
+<thead>
+<tr>
+<th>策略</th>
+<th>适用场景</th>
+<th>对 SPA 痛点的作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SSR（服务端渲染）</td>
+<td>首屏需有内容、SEO 敏感、个性化&#x2F;实时性强的页面</td>
+<td>首屏返回完整 HTML，减少白屏；但需承担 hydration 成本</td>
+</tr>
+<tr>
+<td>SSG（静态生成）</td>
+<td>博客、文档、营销页等变化不频繁的内容</td>
+<td>构建时生成 HTML，首屏快、SEO 好，无需运行时渲染服务器</td>
+</tr>
+<tr>
+<td>ISR（增量静态再生成）</td>
+<td>周期性更新的内容</td>
+<td>兼顾静态速度与内容新鲜度</td>
+</tr>
+<tr>
+<td>Islands &#x2F; 选择性 hydration</td>
+<td>大部分静态、少数交互组件的页面</td>
+<td>只 hydrate 交互“岛屿”，大幅减少 JS 体积</td>
+</tr>
+</tbody></table>
+<p>关键认知：</p>
+<ul>
+<li><strong>hydration 有真实成本</strong>。SSR 返回 HTML 后，浏览器仍需下载并执行 JS 才能让页面可交互；如果 JS 体积大，首屏可见不等于可交互。</li>
+<li><strong>SEO 的关键不只是“能不能爬 JS”</strong> ，更在于首屏内容是否可见、Core Web Vitals 是否良好、内容是否可索引。单纯把 CSR 换成 SSR，不解决这些，搜索表现未必改善。</li>
+<li>不必全站一刀切。可以按路由选择策略：营销页&#x2F;文档用 SSG，登录后的仪表盘用 SPA 或 SSR，个别交互模块用 Islands。现有 SPA 也不必为了优化而全量重写，可以先从首屏关键路由的预渲染、骨架屏、关键资源优化入手，逐步演进。</li>
+</ul>
+<h3 id="4-5-衡量：没有度量就没有优化"><a href="#4-5-衡量：没有度量就没有优化" class="headerlink" title="4.5 衡量：没有度量就没有优化"></a>4.5 衡量：没有度量就没有优化</h3><p>优化前先建立基线，优化后验证收益。重点关注 <strong>Core Web Vitals</strong>：</p>
+<ul>
+<li><strong>LCP（最大内容绘制）</strong> ：良好 ≤ 2.5 s。重点优化首屏英雄图、大文本块和阻塞渲染的资源。</li>
+<li><strong>INP（交互到下一次绘制）</strong> ：良好 ≤ 200 ms。减少主线程长任务、拆分大计算、避免交互时同步布局。</li>
+<li><strong>CLS（累积布局偏移）</strong> ：为图片和嵌入内容预留尺寸，避免动态注入内容把已有元素“挤下去”。</li>
+</ul>
+<p>SPA 还要特别注意<strong>路由切换后的性能</strong>：传统指标主要衡量首次进入，但 SPA 的软导航同样影响真实体验。应关注路由切换后的渲染耗时、交互延迟和布局稳定性，而不是只看首屏。</p>
+<hr>
+<h2 id="5-适用场景与选型建议"><a href="#5-适用场景与选型建议" class="headerlink" title="5. 适用场景与选型建议"></a>5. 适用场景与选型建议</h2><p><strong>适合 SPA 的场景：</strong></p>
+<ul>
+<li>后台管理系统、仪表盘、CRM、数据可视化平台；</li>
+<li>IM、在线协作、编辑器等强交互、长会话应用；</li>
+<li>登录后的应用内部页面，SEO 要求低、交互频繁；</li>
+<li>需要较好状态保持和过渡体验的产品。</li>
+</ul>
+<p><strong>不一定适合 SPA 的场景：</strong></p>
+<ul>
+<li>内容型网站、博客、文档站、营销落地页：SSG&#x2F;SSR&#x2F;Islands 通常更轻，首屏和 SEO 更友好；</li>
+<li>对首屏速度和可索引性要求极高的公开页面；</li>
+<li>弱网、低端设备用户占比高的产品，应严格控制初始 JS 体积；</li>
+<li>简单展示型页面，引入完整 SPA 运行时可能得不偿失。</li>
+</ul>
+<p><strong>选型时问三个问题：</strong></p>
+<ol>
+<li>这个页面需要多强的交互和状态保持？如果只是展示，SSG 可能更合适。</li>
+<li>首屏内容和 SEO 有多重要？如果重要，优先考虑 SSR&#x2F;SSG&#x2F;Islands，而不是先上 SPA 再补 SSR。</li>
+<li>团队能否承担 SPA 的路由、缓存、监控、内存治理等工程复杂度？如果答案是否定的，多页应用或混合架构可能更务实。</li>
+</ol>
+<hr>
+<h2 id="6-常见误区"><a href="#6-常见误区" class="headerlink" title="6. 常见误区"></a>6. 常见误区</h2><ul>
+<li><strong>把 SPA 当默认架构</strong>：不是所有网站都需要 SPA。内容型站点套上完整 SPA 运行时，是在为不必要的 JS 付出首屏和 SEO 代价。</li>
+<li><strong>把 SSR 当成 SEO 银弹</strong>：不解决 LCP、内容可索引性和 hydration 成本，单纯 SSR 不一定改善搜索表现。</li>
+<li><strong>过度代码分割</strong>：初始包不大时，碎片化带来的额外请求可能抵消收益。</li>
+<li><strong>无节制预取</strong>：对所有链接 prefetch，可能浪费移动流量，甚至与首屏关键资源争抢带宽。</li>
+<li><strong>只优化首屏、忽略长会话</strong>：SPA 的内存泄漏和主线程累积负担不会在第一秒暴露，但会在用户使用几分钟后集中体现。</li>
+<li><strong>认为前端做了校验就安全</strong>：前端不是安全边界，鉴权和关键校验必须在服务端完成。</li>
+</ul>
+<hr>
+<h2 id="7-总结"><a href="#7-总结" class="headerlink" title="7. 总结"></a>7. 总结</h2><p>SPA 的本质是<strong>用一个 HTML 入口 + 前端路由 + JavaScript 渲染</strong>换取更流畅的局部更新和更强的状态保持能力。它的优势在强交互、长会话应用中最明显；它的代价集中在<strong>首屏体积、SEO、内存与工程复杂度</strong>上。</p>
+<p>优化 SPA 不应是堆叠关键词，而应按层次推进：</p>
+<ol>
+<li><strong>构建阶段</strong>控制初始代码体积：代码分割、Tree Shaking、依赖去重、图片字体优化；</li>
+<li><strong>网络阶段</strong>让关键资源先到并善用缓存：Brotli&#x2F;Gzip、内容哈希长缓存、preload&#x2F;prefetch、Service Worker；</li>
+<li><strong>运行时</strong>控制主线程与内存：虚拟列表、防抖节流、Web Worker、副作用清理；</li>
+<li><strong>架构层面</strong>诚实判断是否需要 SPA：SSR&#x2F;SSG&#x2F;ISR&#x2F;Islands 是按场景选择的渲染策略，不是万能优化开关；</li>
+<li><strong>持续衡量</strong>：用 LCP、INP、CLS 和路由切换性能验证优化效果，避免凭感觉优化。</li>
+</ol>
+<p>一句话：<strong>SPA 不是目的，合适的渲染架构和可衡量的用户体验才是。</strong></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%89%8D%E7%AB%AF/" class="category-chain-item">前端</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/SPA/" class="print-no-link">#SPA</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>单页应用 SPA</div>
+      <div>http://example.com/2024/12/20/前端/单页应用 SPA/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年12月20日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/12/20/%E5%89%8D%E7%AB%AF/%E5%89%8D%E7%AB%AF%E6%A8%A1%E5%9D%97%E5%8C%96/" title="前端模块化">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">前端模块化</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/12/20/%E5%89%8D%E7%AB%AF/%E5%A4%A7%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E5%92%8C%E6%96%AD%E7%82%B9%E7%BB%AD%E4%BC%A0/" title="大文件上传和断点续传">
+                        <span class="hidden-mobile">大文件上传和断点续传</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+<!-- hexo injector body_end start -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    mermaid.initialize({"startOnLoad":true,"theme":"default"});
+  });
+</script>
+<!-- hexo injector body_end end --></body>
+</html>

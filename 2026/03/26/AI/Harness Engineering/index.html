@@ -1,0 +1,753 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Harness Engineering一、定义Harness 是模型之外的一切。 Agent &#x3D; Model + Harness。模型提供推理能力，Harness 提供让这种能力真正落地干活的所有外围系统：工具执行、上下文管理、记忆、安全边界、编排调度。 这个词借用了“马具”的意象：模型是一匹好马，但光有马跑不了运输；Harness 是缰绳、马鞍、道路和围栏，控制方向、划定边界，让马按人">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Harness Engineering">
+<meta property="og:url" content="http://example.com/2026/03/26/AI/Harness%20Engineering/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Harness Engineering一、定义Harness 是模型之外的一切。 Agent &#x3D; Model + Harness。模型提供推理能力，Harness 提供让这种能力真正落地干活的所有外围系统：工具执行、上下文管理、记忆、安全边界、编排调度。 这个词借用了“马具”的意象：模型是一匹好马，但光有马跑不了运输；Harness 是缰绳、马鞍、道路和围栏，控制方向、划定边界，让马按人">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-03-26T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-31T09:27:16.423Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="Harness Engineering">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Harness Engineering - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">Harness Engineering</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-03-26 10:00" pubdate>
+          2026年3月26日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          15 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Harness Engineering</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Harness-Engineering"><a href="#Harness-Engineering" class="headerlink" title="Harness Engineering"></a>Harness Engineering</h1><h2 id="一、定义"><a href="#一、定义" class="headerlink" title="一、定义"></a>一、定义</h2><p><strong>Harness 是模型之外的一切。</strong> Agent &#x3D; Model + Harness。模型提供推理能力，Harness 提供让这种能力真正落地干活的所有外围系统：工具执行、上下文管理、记忆、安全边界、编排调度。</p>
+<p>这个词借用了“马具”的意象：模型是一匹好马，但光有马跑不了运输；Harness 是缰绳、马鞍、道路和围栏，控制方向、划定边界，让马按人的目标拉车。</p>
+<h2 id="二、为什么是-2026-年"><a href="#二、为什么是-2026-年" class="headerlink" title="二、为什么是 2026 年"></a>二、为什么是 2026 年</h2><p>关键词的演变轨迹很清晰：2023-2024 是 Prompt Engineering（怎么跟模型说话），2025 是 Context Engineering（让模型看到什么），2026 是 <strong>Harness Engineering</strong>（搭建模型周围的整套系统）。</p>
+<p>三个推动力：</p>
+<p><strong>模型的无状态性无法靠模型自己解决。</strong> 大模型本身无状态、不能执行、不能记忆、不能遵守组织规则。Agent 要跟业务系统关联、要规划分解、要记忆、要行动，这些“不能”全靠 Harness 补。</p>
+<p><strong>Harness 是厂商建立粘性的关键。</strong> 无状态的模型谁好就用谁；有状态的 Harness 一旦业务逻辑、记忆、工具链沉淀下来，迁移成本就高了。模型厂商把边界往外拓，Harness 绕不开。</p>
+<p><strong>调 Harness 比调模型便宜，效果却可能差一个量级。</strong> LangChain 让 Nemotron 3 Ultra 跑 Deep Agents 评测，<strong>没有重新训练模型权重</strong>，只调整了系统 Prompt、工具描述和中间件，成绩就追到了与最高分闭源模型持平的水平，而单次评测成本只有后者的十分之一。这说明同一个模型放进不同 Harness，释放出的能力可以差出量级。</p>
+<h2 id="三、Harness-包含什么：三层-三特性"><a href="#三、Harness-包含什么：三层-三特性" class="headerlink" title="三、Harness 包含什么：三层 + 三特性"></a>三、Harness 包含什么：三层 + 三特性</h2><p>CCF 对话中李庆丰给出的框架是 <strong>“3+3”</strong>：三层核心能力，三个辅助特性。</p>
+<h3 id="三层核心"><a href="#三层核心" class="headerlink" title="三层核心"></a>三层核心</h3><p><strong>第一层：执行环境与工具管理。</strong> 让 AI 的执行贴合真实工作场景。包括工具列表、沙箱隔离（LocalShellBackend、OpenSandbox）、文件读写、命令执行。关键是“工具系统 &#x3D; 工具列表 + 受控的执行环境”，不能只给工具不给边界。</p>
+<p><strong>第二层：上下文与记忆。</strong> 核心是提升模型的注意力——内容跟目标越精准，执行越好。包括上下文过滤&#x2F;总结&#x2F;检索、持久化记忆（会话进度、用户确认、历史操作）、Todo 跟踪。腾讯云的文章把这一层拆得更细：上下文精细化管“每轮看到什么”，记忆与状态管“能否连续作战”。</p>
+<p><strong>第三层：业务编排与多 Agent 调度。</strong> 把模型能力转化成跟业务结合的具体目标。包括执行顺序安排、子 Agent 委托、后台并行、何时等待用户确认、何时终止。</p>
+<h3 id="三特性"><a href="#三特性" class="headerlink" title="三特性"></a>三特性</h3><p><strong>可验证性、可观测性、可治理性。</strong> 完整的执行轨迹是审计依据，也是持续优化的燃料。权限围栏、沙箱、审批策略都在这一层。CCF 对话中强调：<strong>提示注入无法在模型层可靠修复，缓解措施必须放在 Harness 中</strong>，通过控制 Agent 能访问什么、被允许执行什么来防御。</p>
+<h2 id="四、六层架构"><a href="#四、六层架构" class="headerlink" title="四、六层架构"></a>四、六层架构</h2><table>
+<thead>
+<tr>
+<th align="left">层</th>
+<th align="left">管什么</th>
+<th align="left">关键问题</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">上下文精细化</td>
+<td align="left">模型每轮看到什么</td>
+<td align="left">过滤噪声、总结历史、按需检索</td>
+</tr>
+<tr>
+<td align="left">广义工具系统</td>
+<td align="left">工具 + 受控执行环境</td>
+<td align="left">沙箱边界、文件权限、命令白名单</td>
+</tr>
+<tr>
+<td align="left">执行编排</td>
+<td align="left">任务如何推进</td>
+<td align="left">顺序、子任务委托、等待&#x2F;终止条件</td>
+</tr>
+<tr>
+<td align="left">记忆与状态</td>
+<td align="left">能否连续作战</td>
+<td align="left">进度、用户确认、历史决策持久化</td>
+</tr>
+<tr>
+<td align="left">评估与观测</td>
+<td align="left">过程可信吗</td>
+<td align="left">完整轨迹、失败原因、质量评估</td>
+</tr>
+<tr>
+<td align="left">约束与恢复</td>
+<td align="left">出错后怎么办</td>
+<td align="left">权限边界、自动纠错、回退、降级</td>
+</tr>
+</tbody></table>
+<h2 id="五、关键工程要点"><a href="#五、关键工程要点" class="headerlink" title="五、关键工程要点"></a>五、关键工程要点</h2><h3 id="5-1-模型越强，Harness-越要做减法"><a href="#5-1-模型越强，Harness-越要做减法" class="headerlink" title="5.1 模型越强，Harness 越要做减法"></a>5.1 模型越强，Harness 越要做减法</h3><p>CCF 对话中一个反直觉的判断：<strong>Harness 并不是去束缚模型的智能，反而要做减法</strong>——从外围让系统更可管理、可演化。模型能力越强，Harness 越应该收敛到“控制方向与边界”，而不是加更多规则去限制模型。</p>
+<h3 id="5-2-压缩（Compaction）是标配"><a href="#5-2-压缩（Compaction）是标配" class="headerlink" title="5.2 压缩（Compaction）是标配"></a>5.2 压缩（Compaction）是标配</h3><p>长工具调用循环会撑爆上下文窗口。Microsoft 的 HarnessAgent 提供 token 预算感知的压缩策略，传入最大窗口和最大输出即可启用；也可以用自定义策略或关闭。这是 Harness 在上下文工程层面的基础能力。</p>
+<h3 id="5-3-工具审批是-Harness-职责，不是模型职责"><a href="#5-3-工具审批是-Harness-职责，不是模型职责" class="headerlink" title="5.3 工具审批是 Harness 职责，不是模型职责"></a>5.3 工具审批是 Harness 职责，不是模型职责</h3><p>Shell 执行、文件写入、外部 API 调用，这些操作的审批策略（哪些需要人工确认、哪些自动放行）由 Harness 管理。Microsoft 的 HarnessAgent 默认启用工具审批和自动审批规则，shell 命令的 deny-list 只是 UX 预过滤，<strong>不是安全边界</strong>——真正的边界在执行侧。</p>
+<h3 id="5-4-Harness-是-RSI-的切入点"><a href="#5-4-Harness-是-RSI-的切入点" class="headerlink" title="5.4 Harness 是 RSI 的切入点"></a>5.4 Harness 是 RSI 的切入点</h3><p>CCF 对话中提出：现阶段模型不具备在线持续学习能力，所以自我改进先从 Harness 层动。Harness 本质是配置工程，在这一层做自动优化比改模型权重更容易。等 Harness 固化到一定程度，再进入模型本身的优化，形成“Harness ↔ 模型”的协同迭代。</p>
+<h2 id="六、与之前概念的层级关系"><a href="#六、与之前概念的层级关系" class="headerlink" title="六、与之前概念的层级关系"></a>六、与之前概念的层级关系</h2><p>Harness 是前面所有概念的<strong>上位整合层</strong>：</p>
+<table>
+<thead>
+<tr>
+<th align="left">概念</th>
+<th align="left">在 Harness 中的位置</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>Context Engineering</strong></td>
+<td align="left">Harness 的核心子问题之一（上下文精细化 + 记忆层）</td>
+</tr>
+<tr>
+<td align="left"><strong>Function Calling</strong></td>
+<td align="left">Harness 执行工具调用的底层机制</td>
+</tr>
+<tr>
+<td align="left"><strong>MCP</strong></td>
+<td align="left">Harness 连接外部工具的标准化协议层</td>
+</tr>
+<tr>
+<td align="left"><strong>Spec Coding</strong></td>
+<td align="left">Harness 在开发流程层面的实践：把约束从对话变成持久化文档</td>
+</tr>
+</tbody></table>
+<p>一句话：Context Engineering 管“看什么”，Function Calling 管“怎么说”，MCP 管“怎么接”，<strong>Harness 管的是这一切如何组装成一个能安全、可控、持续干活系统</strong>。</p>
+<h2 id="七、总结"><a href="#七、总结" class="headerlink" title="七、总结"></a>七、总结</h2><table>
+<thead>
+<tr>
+<th align="left">问题</th>
+<th align="left">答案</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Harness 是什么？</td>
+<td align="left">模型之外的一切，Agent &#x3D; Model + Harness</td>
+</tr>
+<tr>
+<td align="left">为什么火？</td>
+<td align="left">模型瓶颈转移到外围；Harness 是厂商粘性载体；调 Harness 性价比极高</td>
+</tr>
+<tr>
+<td align="left">包含什么？</td>
+<td align="left">三层：执行&#x2F;工具、上下文&#x2F;记忆、编排&#x2F;调度；三特性：可验证、可观测、可治理</td>
+</tr>
+<tr>
+<td align="left">和 Context Engineering 什么关系？</td>
+<td align="left">Context 是 Harness 的核心子问题之一</td>
+</tr>
+<tr>
+<td align="left">模型越强 Harness 越复杂？</td>
+<td align="left">反了，越强越要做减法，收敛到边界控制</td>
+</tr>
+<tr>
+<td align="left">一句话收束</td>
+<td align="left">模型负责推理，Harness 负责让推理安全、可控、可追溯地变成真实动作</td>
+</tr>
+</tbody></table>
+<p><strong>Harness 不是让模型更聪明，而是让模型“能干活”。</strong> 它把上下文窗口当有限资源治理，把工具执行关进受控边界，把长任务拆成可恢复的步骤，把每一次决策留下可审计的轨迹。模型在变强，但 Harness 决定的是：这份智能最终能安全地释放出多少。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Harness-Engineering/" class="category-chain-item">Harness Engineering</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Harness-Engineering/" class="print-no-link">#Harness Engineering</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Harness Engineering</div>
+      <div>http://example.com/2026/03/26/AI/Harness Engineering/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年3月26日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/03/26/AI/AI%20%E5%8F%91%E5%B1%95/" title="AI 发展">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">AI 发展</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/03/26/AI/LangChain%E5%AD%A6%E4%B9%A0/" title="LangChain 学习">
+                        <span class="hidden-mobile">LangChain 学习</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+<!-- hexo injector body_end start -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    mermaid.initialize({"startOnLoad":true,"theme":"default"});
+  });
+</script>
+<!-- hexo injector body_end end --></body>
+</html>

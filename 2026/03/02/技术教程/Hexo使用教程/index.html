@@ -19,15 +19,15 @@
   <meta name="author" content="Azure">
   <meta name="keywords" content="">
   
-    <meta name="description" content="Hexo使用教程文档：https:&#x2F;&#x2F;hexo.io&#x2F;zh-cn&#x2F; 初始化项目 安装 hexo  1npm install -g hexo-cli  hexo@8.1.1需要 nodejs 版本&gt;&#x3D;20.19.0  初始化 hexo 项目（我这里是已经创建了文件夹，直接使用hexo init）  1hexo init   启动项目  1hexo s   部署  1hexo d  常用命令 新">
+    <meta name="description" content="Hexo使用教程文档：https:&#x2F;&#x2F;hexo.io&#x2F;zh-cn&#x2F; 初始化项目 安装 hexo  1npm install -g hexo-cli  hexo@8.1.1需要 nodejs 版本&gt;&#x3D;20.19.0  初始化 hexo 项目（我这里是已经创建了文件夹，直接使用hexo init）  1hexo init   启动项目  1hexo s  常用命令 新建页面  12# 创建「关于">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Hexo使用教程">
 <meta property="og:url" content="http://example.com/2026/03/02/%E6%8A%80%E6%9C%AF%E6%95%99%E7%A8%8B/Hexo%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="Hexo使用教程文档：https:&#x2F;&#x2F;hexo.io&#x2F;zh-cn&#x2F; 初始化项目 安装 hexo  1npm install -g hexo-cli  hexo@8.1.1需要 nodejs 版本&gt;&#x3D;20.19.0  初始化 hexo 项目（我这里是已经创建了文件夹，直接使用hexo init）  1hexo init   启动项目  1hexo s   部署  1hexo d  常用命令 新">
+<meta property="og:description" content="Hexo使用教程文档：https:&#x2F;&#x2F;hexo.io&#x2F;zh-cn&#x2F; 初始化项目 安装 hexo  1npm install -g hexo-cli  hexo@8.1.1需要 nodejs 版本&gt;&#x3D;20.19.0  初始化 hexo 项目（我这里是已经创建了文件夹，直接使用hexo init）  1hexo init   启动项目  1hexo s  常用命令 新建页面  12# 创建「关于">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-03-02T07:56:21.000Z">
-<meta property="article:modified_time" content="2026-10-14T15:19:14.384Z">
+<meta property="article:modified_time" content="2026-10-29T03:15:43.367Z">
 <meta property="article:author" content="Azure">
 <meta property="article:tag" content="Hexo">
 <meta name="twitter:card" content="summary_large_image">
@@ -223,7 +223,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          369 字
+          394 字
         
       </span>
     
@@ -293,11 +293,6 @@
 </ol>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">hexo s<br></code></pre></td></tr></table></figure>
 
-<ol start="4">
-<li>部署</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">hexo d<br></code></pre></td></tr></table></figure>
-
 <h2 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h2><ol>
 <li>新建页面</li>
 </ol>
@@ -308,6 +303,8 @@
 </ol>
 <p>Hexo 中所有博客文章（post）的默认存放目录是：<code>博客根目录/source/_posts/</code></p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">示例1：创建一篇文章（路径：<span class="hljs-built_in">source</span>/_posts/文章标题.md）</span><br>hexo new 文章标题<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">示例2：在指定目录创建文章（路径：<span class="hljs-built_in">source</span>/自定义路径/文章标题.md）</span><br>hexo new -p 自定义路径/文章标题<br></code></pre></td></tr></table></figure>
+
+<h2 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs Shell">hexo clean // 清理缓存<br><br>hexo generate // 生成静态文件<br>hexo g // 简写<br><br>hexo deploy // 部署到服务器<br>hexo d // 简写<br></code></pre></td></tr></table></figure>
 
 <h2 id="Front-matter-配置"><a href="#Front-matter-配置" class="headerlink" title="Front-matter 配置"></a>Front-matter 配置</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs shell">---<br>title: 自定义标题  # 文章标题<br>date: 2026-03-03 18:00:00  # 发布日期<br>categories: 教程  # 分类（可选）<br>tags: [Hexo, Fluid]  # 标签（可选）<br>---<br></code></pre></td></tr></table></figure>
 
@@ -429,8 +426,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/02/23/AI/%E6%8F%90%E7%A4%BA%E8%AF%8D%E5%B7%A5%E7%A8%8B/" title="提示词工程（Prompt Engineering）">
-                        <span class="hidden-mobile">提示词工程（Prompt Engineering）</span>
+                      <a href="/2026/02/23/AI/Context%20Engineering%20%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/" title="Context Engineering 上下文工程">
+                        <span class="hidden-mobile">Context Engineering 上下文工程</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -681,5 +678,12 @@
   <noscript>
     <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
   </noscript>
-</body>
+<!-- hexo injector body_end start -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    mermaid.initialize({"startOnLoad":true,"theme":"default"});
+  });
+</script>
+<!-- hexo injector body_end end --></body>
 </html>

@@ -1,0 +1,724 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Azure">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="AI 发展第一阶段：大模型唤醒（2022–2023）——“会说”的诞生关键词：ChatGPT、GPT-4、百模大战 2022 年 11 月 30 日，OpenAI 发布 ChatGPT，基于 GPT-3.5 并引入 RLHF 人类对齐，两个月内用户破亿，成为历史上增长最快的消费级应用。它的前身可以追溯到 2022 年 2 月的 InstructGPT，那是“对齐”思路的首次系统验证。 2023 年">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AI 发展">
+<meta property="og:url" content="http://example.com/2026/03/26/AI/AI%20%E5%8F%91%E5%B1%95/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="AI 发展第一阶段：大模型唤醒（2022–2023）——“会说”的诞生关键词：ChatGPT、GPT-4、百模大战 2022 年 11 月 30 日，OpenAI 发布 ChatGPT，基于 GPT-3.5 并引入 RLHF 人类对齐，两个月内用户破亿，成为历史上增长最快的消费级应用。它的前身可以追溯到 2022 年 2 月的 InstructGPT，那是“对齐”思路的首次系统验证。 2023 年">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-03-26T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-31T09:37:51.114Z">
+<meta property="article:author" content="Azure">
+<meta property="article:tag" content="AI">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>AI 发展 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":false,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Azure的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle">AI 发展</span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-03-26 10:00" pubdate>
+          2026年3月26日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          16 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">AI 发展</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="AI-发展"><a href="#AI-发展" class="headerlink" title="AI 发展"></a>AI 发展</h1><h3 id="第一阶段：大模型唤醒（2022–2023）——“会说”的诞生"><a href="#第一阶段：大模型唤醒（2022–2023）——“会说”的诞生" class="headerlink" title="第一阶段：大模型唤醒（2022–2023）——“会说”的诞生"></a>第一阶段：大模型唤醒（2022–2023）——“会说”的诞生</h3><p><strong>关键词：ChatGPT、GPT-4、百模大战</strong></p>
+<p><strong>2022 年 11 月 30 日</strong>，OpenAI 发布 <strong>ChatGPT</strong>，基于 GPT-3.5 并引入 RLHF 人类对齐，两个月内用户破亿，成为历史上增长最快的消费级应用。它的前身可以追溯到 2022 年 2 月的 InstructGPT，那是“对齐”思路的首次系统验证。</p>
+<p><strong>2023 年 3 月 14–15 日</strong>，OpenAI 发布 <strong>GPT-4</strong>，引入多模态和复杂推理能力，被广泛视为“地表最强模型”。大模型从“能聊天”进化为“能看图、能推理”。</p>
+<p>中国的“百模大战”几乎与 GPT-4 同步打响。<strong>2023 年 3 月</strong>，<strong>百度</strong>率先发布 <strong>文心一言</strong>；<strong>4 月</strong>，<strong>阿里</strong>上线 <strong>通义千问</strong>；<strong>5 月</strong>，<strong>科大讯飞</strong>发布 <strong>星火认知大模型</strong>；<strong>7 月</strong>，<strong>华为云盘古 3.0</strong> 和 <strong>京东云言犀</strong>相继问世。至少 130 家公司投入大模型研发。</p>
+<p>这一阶段的 AI 本质上是对话式文本生成器：它能写、能译、能答，但不能主动做事。模型无状态，知识截止于训练数据。开发者的全部武器，是<strong>Prompt Engineering</strong>——角色设定、Few-shot、思维链。Prompt 管的是“这一次怎么说”，它的天花板很快就暴露了。</p>
+<h3 id="第二阶段：从“说”到“做”的转折（2023–2024）——“手”和“脑”的第一次尝试"><a href="#第二阶段：从“说”到“做”的转折（2023–2024）——“手”和“脑”的第一次尝试" class="headerlink" title="第二阶段：从“说”到“做”的转折（2023–2024）——“手”和“脑”的第一次尝试"></a>第二阶段：从“说”到“做”的转折（2023–2024）——“手”和“脑”的第一次尝试</h3><p><strong>关键词：Function Calling、AutoGPT&#x2F;BabyAGI、o1</strong></p>
+<p><strong>2023 年 3 月</strong>，<strong>AutoGPT</strong> 发布（GPT-4 上线后两周内），<strong>BabyAGI</strong> 紧随其后。它们试图让模型自主规划、调用工具、循环执行多步任务，GitHub 星标数周内突破 10 万。但可靠性很低：容易陷入循环、偏离目标、无法从错误中恢复。这是“自主 Agent”的第一次公开尝试，也是第一次公开失败。</p>
+<p><strong>2023 年 6 月 13 日</strong>，OpenAI 发布 <strong>Function Calling</strong>，让模型以结构化 JSON 输出工具调用意图，工具从 Prompt 里的文本约定，变成 API 的一等公民。这是 Agent 从“文本解析”走向“结构化调用”的分水岭。</p>
+<p><strong>2024 年 9 月</strong>，OpenAI 发布 <strong>o1</strong> 系列推理模型，首次将“慢思考”内化到模型本身，在数学、科学、代码任务上大幅超越 GPT-4o（例如美国数学奥林匹克预选赛准确率从 13% 跃升至 83%）。推理能力开始从外部框架（Plan-and-Execute、Reflexion）迁移到模型内部。</p>
+<p><strong>2024 年 11 月</strong>，Anthropic 开源 <strong>MCP（Model Context Protocol）</strong>，把“工具怎么被发现、怎么被调用”标准化。这是连接层的奠基，但它的上下文开销问题很快暴露，为下一阶段的 Context Engineering 埋下伏笔。</p>
+<p>这一阶段的核心矛盾是：模型学会了“调用工具”，但还不知道“在什么信息环境下调用才可靠”。</p>
+<h3 id="第三阶段：Agent-元年与成本革命（2025）——“会做”开始真正跑通"><a href="#第三阶段：Agent-元年与成本革命（2025）——“会做”开始真正跑通" class="headerlink" title="第三阶段：Agent 元年与成本革命（2025）——“会做”开始真正跑通"></a>第三阶段：Agent 元年与成本革命（2025）——“会做”开始真正跑通</h3><p><strong>关键词：DeepSeek R1、编程 Agent、Context Engineering、MCP 与 Skill 的生态化</strong></p>
+<p><strong>2025 年 1 月 20 日</strong>，<strong>深度求索（DeepSeek）</strong> 发布 <strong>DeepSeek R1</strong>，6710 亿参数的开放权重推理模型，性能对标 OpenAI o1，训练成本仅约 <strong>560 万美元</strong>，远低于美国巨头的数亿乃至数十亿美元投入。发布后英伟达市值大幅蒸发，市场第一次认真对待“顶尖能力不必依赖天价算力”这个命题。R1 的开放权重特性，也让研究人员第一次能“打开引擎盖”研究推理模型的内部机制。</p>
+<p>编程 Agent 成为这一年第一个真正跑通的产品形态。<strong>2025 年 2 月 24 日</strong>，Anthropic 以研究预览形式发布 <strong>Claude Code</strong>，<strong>5 月</strong>全面上线，三个月内使用量增长超 10 倍，年化收入突破 5 亿美元，随后迅速攀升至 25 亿美元量级。<strong>2025 年 4 月 17 日</strong>，OpenAI 发布开源终端编程智能体 <strong>Codex CLI</strong>，与 o3&#x2F;o4-mini 同步推出。AI 从“补全代码”进化为“分析任务、修改多文件、运行测试、提交 PR”的执行者。</p>
+<p><strong>2025 年</strong>，<strong>Context Engineering</strong> 成为行业共识。Karpathy 等人的推动让行业意识到：模型能力不再是唯一瓶颈，<strong>让模型在每一步看到恰好够用的信息</strong>才是工程关键。METR 的数据显示，AI 能独立完成的任务时长大约每 <strong>7 个月</strong>翻一番。</p>
+<p>这一年也是连接层和流程层生态化的关键年。MCP 在 11 月满一周年时，公共服务器已超过 <strong>10,000</strong> 个，被 ChatGPT、Cursor、Gemini、Microsoft Copilot、VS Code 等主流产品采纳，SDK 月下载量超过 9700 万。<strong>2025 年 10 月</strong>，Anthropic 推出 <strong>Agent Skills</strong>，12 月作为开放标准发布，到 2026 年已有超过 <strong>70</strong> 个智能体平台集成，累计发布 <strong>100 万</strong>个 Skill、安装近 <strong>2.8 亿</strong>次。Skill 回答的是“这一类事按什么流程做”，与 MCP 的“能不能连”形成互补。</p>
+<h3 id="第四阶段：Harness-时代（2026）——让“会做”变得可靠、安全、可治理"><a href="#第四阶段：Harness-时代（2026）——让“会做”变得可靠、安全、可治理" class="headerlink" title="第四阶段：Harness 时代（2026）——让“会做”变得可靠、安全、可治理"></a>第四阶段：Harness 时代（2026）——让“会做”变得可靠、安全、可治理</h3><p><strong>关键词：Harness Engineering、Agent &#x3D; Model + Harness、编程 Agent 产品市场契合</strong></p>
+<p><strong>2026 年 2 月 5 日</strong>，HashiCorp 联合创始人 <strong>Mitchell Hashimoto</strong> 在博客中首次命名 <strong>Harness Engineering</strong>；<strong>2 月 11 日</strong>，OpenAI 发布《Harness engineering: leveraging Codex in an agent-first world》，将这一概念推向行业中心。</p>
+<p><strong>Agent &#x3D; Model + Harness</strong> 成为共识。模型提供推理，Harness 提供工具执行、上下文管理、记忆、安全边界、编排调度。一个被反复引用的工程事实是：同一个模型，只调整 Harness 层的系统提示、工具描述和中间件，评测成绩就能从明显落后追到接近榜首，而成本只有对方的十分之一左右。</p>
+<p>编程 Agent 在这一年达到产品市场契合。Claude Code 的年化收入从 2025 年的 5 亿美元级别，在 2026 年初攀升至 <strong>25 亿美元</strong>量级，用户平均每周使用 <strong>20 小时</strong>。有团队开始实践“代码不由人类编写，也不由人类审查”的工作流，人类负责定义目标和验收标准，AI 负责生成和验证。与此同时，Agent 的可靠性、安全边界、长任务稳定性仍然是核心挑战。提示注入无法在模型层可靠修复，缓解措施必须放在 Harness 中——通过控制 Agent 能访问什么、被允许执行什么来防御。</p>
+<h3 id="能力迁移总表：瓶颈在往哪里走"><a href="#能力迁移总表：瓶颈在往哪里走" class="headerlink" title="能力迁移总表：瓶颈在往哪里走"></a>能力迁移总表：瓶颈在往哪里走</h3><table>
+<thead>
+<tr>
+<th align="left">年份</th>
+<th align="left">关键节点（公司 &#x2F; 模型 &#x2F; 概念）</th>
+<th align="left">核心瓶颈</th>
+<th align="left">工程焦点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>2022.11</strong></td>
+<td align="left">OpenAI <strong>ChatGPT</strong></td>
+<td align="left">模型能不能对话</td>
+<td align="left">Prompt Engineering</td>
+</tr>
+<tr>
+<td align="left"><strong>2023.03</strong></td>
+<td align="left">OpenAI <strong>GPT-4</strong>；百度<strong>文心一言</strong>；AutoGPT&#x2F;BabyAGI</td>
+<td align="left">模型能不能理解复杂指令、能不能自主循环</td>
+<td align="left">Prompt Engineering、早期 Agent 实验</td>
+</tr>
+<tr>
+<td align="left"><strong>2023.06</strong></td>
+<td align="left">OpenAI <strong>Function Calling</strong></td>
+<td align="left">模型能不能结构化地“说”要调工具</td>
+<td align="left">Function Calling、工具标准化</td>
+</tr>
+<tr>
+<td align="left"><strong>2024.09</strong></td>
+<td align="left">OpenAI <strong>o1</strong></td>
+<td align="left">模型能不能“慢思考”</td>
+<td align="left">推理模型、Agent 循环</td>
+</tr>
+<tr>
+<td align="left"><strong>2024.11</strong></td>
+<td align="left">Anthropic <strong>MCP</strong></td>
+<td align="left">工具能不能标准化连接</td>
+<td align="left">连接层标准化</td>
+</tr>
+<tr>
+<td align="left"><strong>2025.01</strong></td>
+<td align="left">深度求索 <strong>DeepSeek R1</strong></td>
+<td align="left">顶尖能力能不能低成本获得</td>
+<td align="left">成本革命、开放权重</td>
+</tr>
+<tr>
+<td align="left"><strong>2025 上半年</strong></td>
+<td align="left">Anthropic <strong>Claude Code</strong>、OpenAI <strong>Codex CLI</strong></td>
+<td align="left">AI 能不能真正干完编程活</td>
+<td align="left">编程 Agent 产品化</td>
+</tr>
+<tr>
+<td align="left"><strong>2025.10–12</strong></td>
+<td align="left">Anthropic <strong>Agent Skills</strong></td>
+<td align="left">这一类事怎么按标准流程做</td>
+<td align="left">流程复用、渐进式加载</td>
+</tr>
+<tr>
+<td align="left"><strong>2026.02</strong></td>
+<td align="left">Mitchell Hashimoto &#x2F; OpenAI <strong>Harness Engineering</strong></td>
+<td align="left">整个系统能不能安全、可控、持续地干活</td>
+<td align="left">Harness 治理、执行边界、可观测性</td>
+</tr>
+</tbody></table>
+<p><strong>一句话总结这几年</strong>：模型从“会说”走向“会做”。<strong>Prompt 管这一次怎么说，Function Calling 管怎么“说”要调工具，MCP 管工具怎么接，Skill 管这一类事怎么做，Context Engineering 管每一步看什么，Harness 管整个系统怎么安全地一直做下去。</strong> 每一层都在补上一层的缺口，而不是取代上一层。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/AI/" class="category-chain-item">AI</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/AI/" class="print-no-link">#AI</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>AI 发展</div>
+      <div>http://example.com/2026/03/26/AI/AI 发展/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Azure</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年3月26日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/03/28/%E7%A7%BB%E5%8A%A8%E7%AB%AF/%E5%AD%A6%E4%B9%A0Flutter5%EF%BC%9A%E7%8A%B6%E6%80%81%E7%AE%A1%E7%90%86/" title="学习Flutter5：状态管理">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">学习Flutter5：状态管理</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/03/26/AI/Harness%20Engineering/" title="Harness Engineering">
+                        <span class="hidden-mobile">Harness Engineering</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+<!-- hexo injector body_end start -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    mermaid.initialize({"startOnLoad":true,"theme":"default"});
+  });
+</script>
+<!-- hexo injector body_end end --></body>
+</html>
