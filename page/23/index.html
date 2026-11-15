@@ -357,15 +357,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2023/08/10/JavaScript/%E3%80%90JS%E3%80%91null%E5%92%8Cundefined/" target="_self">
-          【JS】null和undefined
+        <a href="/2023/08/10/JavaScript/%E3%80%90JS%E3%80%91polyfill/" target="_self">
+          JS polyfill
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/08/10/JavaScript/%E3%80%90JS%E3%80%91null%E5%92%8Cundefined/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/08/10/JavaScript/%E3%80%90JS%E3%80%91polyfill/" target="_self">
         <div>
-          【JS】null和undefined核心区别：undefined 是”系统没给值”，null 是”你主动给了个空值”。 一、本质区别   维度 undefined null    含义 未定义、缺失 空值、有意置空   类型 &quot;undefined&quot; &quot;object&quot;（历史 bug）   转数字 NaN 0   转布尔 false false   转字符串 &
+          JS polyfill下面把之前关于 polyfill 的内容整合成一份系统笔记，方便复习和查阅。  1. 什么是 polyfillpolyfill 就是“垫片”或“补丁代码”：用一段 JS 代码，为旧浏览器或旧运行环境补上它们原生不支持的新 API，让新代码在旧环境里也能运行。 核心思路：  先检测环境有没有这个特性，没有就自己实现一个，有就用原生的。  例子： 12345if (!Array.
         </div>
       </a>
 
@@ -404,9 +404,9 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/undefined/">#undefined</a>
+              <a href="/tags/JavaScript/">#JavaScript</a>
             
-              <a href="/tags/void-0/">#void 0</a>
+              <a href="/tags/polyfill/">#polyfill</a>
             
           </div>
         
@@ -487,15 +487,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2023/08/10/JavaScript/%E3%80%90JS%E3%80%91polyfill/" target="_self">
-          JS polyfill
+        <a href="/2023/08/10/JavaScript/%E3%80%90JS%E3%80%91null%E5%92%8Cundefined/" target="_self">
+          【JS】null和undefined
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/08/10/JavaScript/%E3%80%90JS%E3%80%91polyfill/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/08/10/JavaScript/%E3%80%90JS%E3%80%91null%E5%92%8Cundefined/" target="_self">
         <div>
-          JS polyfill下面把之前关于 polyfill 的内容整合成一份系统笔记，方便复习和查阅。  1. 什么是 polyfillpolyfill 就是“垫片”或“补丁代码”：用一段 JS 代码，为旧浏览器或旧运行环境补上它们原生不支持的新 API，让新代码在旧环境里也能运行。 核心思路：  先检测环境有没有这个特性，没有就自己实现一个，有就用原生的。  例子： 12345if (!Array.
+          【JS】null和undefined核心区别：undefined 是”系统没给值”，null 是”你主动给了个空值”。 一、本质区别   维度 undefined null    含义 未定义、缺失 空值、有意置空   类型 &quot;undefined&quot; &quot;object&quot;（历史 bug）   转数字 NaN 0   转布尔 false false   转字符串 &
         </div>
       </a>
 
@@ -534,9 +534,70 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/JavaScript/">#JavaScript</a>
+              <a href="/tags/undefined/">#undefined</a>
             
-              <a href="/tags/polyfill/">#polyfill</a>
+              <a href="/tags/void-0/">#void 0</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2023/08/10/%E5%89%8D%E7%AB%AF/%E4%B8%BA%E4%BB%80%E4%B9%88%E5%89%8D%E7%AB%AF%E9%A1%B9%E7%9B%AE%E9%9C%80%E8%A6%81%E4%BD%BF%E7%94%A8CDN%E6%89%98%E7%AE%A1%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90/" target="_self">
+          为什么前端项目需要使用CDN托管静态资源
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/08/10/%E5%89%8D%E7%AB%AF/%E4%B8%BA%E4%BB%80%E4%B9%88%E5%89%8D%E7%AB%AF%E9%A1%B9%E7%9B%AE%E9%9C%80%E8%A6%81%E4%BD%BF%E7%94%A8CDN%E6%89%98%E7%AE%A1%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90/" target="_self">
+        <div>
+          为什么前端项目要使用CDN托管静态资源？前端项目使用CDN（内容分发网络）托管静态资源，主要是为了优化性能、提升可用性并降低成本。 1.加速资源加载，提升用户体验 就近访问：CDN将静态资源（如JS、CSS、图片、字体）缓存至全球分布的边缘节点，用户访问时从地理距离最近的节点获取资源，大幅降低网络延迟。 减少往返时间（RTT）：通过边缘节点直接响应，避免跨地域、跨运营商的网络拥塞，缩短资源加载时间
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-08-10 10:00" pubdate>
+              2023-08-10
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%89%8D%E7%AB%AF/" class="category-chain-item">前端</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/CDN/">#CDN</a>
             
           </div>
         
@@ -600,67 +661,6 @@
               <a href="/tags/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/">#微信小程序</a>
             
               <a href="/tags/H5/">#H5</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2023/08/10/%E5%89%8D%E7%AB%AF/%E4%B8%BA%E4%BB%80%E4%B9%88%E5%89%8D%E7%AB%AF%E9%A1%B9%E7%9B%AE%E9%9C%80%E8%A6%81%E4%BD%BF%E7%94%A8CDN%E6%89%98%E7%AE%A1%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90/" target="_self">
-          为什么前端项目需要使用CDN托管静态资源
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/08/10/%E5%89%8D%E7%AB%AF/%E4%B8%BA%E4%BB%80%E4%B9%88%E5%89%8D%E7%AB%AF%E9%A1%B9%E7%9B%AE%E9%9C%80%E8%A6%81%E4%BD%BF%E7%94%A8CDN%E6%89%98%E7%AE%A1%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90/" target="_self">
-        <div>
-          为什么前端项目要使用CDN托管静态资源？前端项目使用CDN（内容分发网络）托管静态资源，主要是为了优化性能、提升可用性并降低成本。 1.加速资源加载，提升用户体验 就近访问：CDN将静态资源（如JS、CSS、图片、字体）缓存至全球分布的边缘节点，用户访问时从地理距离最近的节点获取资源，大幅降低网络延迟。 减少往返时间（RTT）：通过边缘节点直接响应，避免跨地域、跨运营商的网络拥塞，缩短资源加载时间
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-08-10 10:00" pubdate>
-              2023-08-10
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E5%89%8D%E7%AB%AF/" class="category-chain-item">前端</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/CDN/">#CDN</a>
             
           </div>
         
@@ -807,15 +807,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2023/08/10/JavaScript/%E3%80%90JS%E3%80%91call%E3%80%81apply%E3%80%81bind%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" target="_self">
-          【JS】call、apply、bind的实现原理
+        <a href="/2023/08/10/JavaScript/%E3%80%90JS%E3%80%91new%20%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" target="_self">
+          【JS】new 的实现原理
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/08/10/JavaScript/%E3%80%90JS%E3%80%91call%E3%80%81apply%E3%80%81bind%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/08/10/JavaScript/%E3%80%90JS%E3%80%91new%20%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" target="_self">
         <div>
-          【JS】call、apply、bind的实现原理call、apply、bind 的实现原理是前端面试的高频考点。理解它们的关键在于搞清楚 「如何让函数在执行时 this 指向指定对象」。下面从原理到手写实现，逐层拆解。  一、核心原理一句话 把函数临时挂到目标对象上，作为该对象的方法调用，这样 this 自然指向目标对象，调用完再删掉。  这是 call 和 apply 的通用套路。bind 在此
+          new 的实现原理new 到底做了什么 new Foo(…args) 执行时，引擎内部大致做这四步：  创建一个新的空对象 把新对象的原型（[[Prototype]]）指向构造函数的 prototype 把构造函数里的 this 绑定到这个新对象，并执行构造函数 处理返回值： 如果构造函数返回的是对象（含函数、数组等），就返回这个对象； 如果返回的是原始值（或没返回），就返回第 1 步创建的新对象
         </div>
       </a>
 
@@ -854,9 +854,9 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/JavaScript/">#JavaScript</a>
-            
               <a href="/tags/%E5%8E%9F%E7%90%86/">#原理</a>
+            
+              <a href="/tags/new/">#new</a>
             
           </div>
         

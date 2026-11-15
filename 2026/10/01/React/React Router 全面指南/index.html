@@ -19,15 +19,15 @@
   <meta name="author" content="Azure">
   <meta name="keywords" content="">
   
-    <meta name="description" content="React Router 全面指南：从 v6 基础到 v7 数据路由实战React Router 是 React 生态中官方推荐的路由解决方案，用于在单页应用（SPA）中根据 URL 动态渲染组件，实现不刷新页面的”页面”跳转。它的核心机制是将 URL 与路由配置进行匹配，并渲染对应的组件树。 本文从 v6 的基础写法讲起，覆盖参数获取、列表翻页、表单提交、权限控制等核心场景，再过渡到 v7 的数">
+    <meta name="description" content="React Router 全面指南：从 v6 基础到 v7 数据路由实战React Router 是 React 生态中官方推荐的路由解决方案，用于在单页应用（SPA）中根据 URL 动态渲染组件，实现不刷新页面的”页面”跳转。它的核心机制是将 URL 与路由配置进行匹配，并渲染对应的组件树。  一、核心概念与版本脉络基础概念 路由配置：将路径（path）映射到组件（element &#x2F;">
 <meta property="og:type" content="article">
 <meta property="og:title" content="React Router 全面指南">
 <meta property="og:url" content="http://example.com/2026/10/01/React/React%20Router%20%E5%85%A8%E9%9D%A2%E6%8C%87%E5%8D%97/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="React Router 全面指南：从 v6 基础到 v7 数据路由实战React Router 是 React 生态中官方推荐的路由解决方案，用于在单页应用（SPA）中根据 URL 动态渲染组件，实现不刷新页面的”页面”跳转。它的核心机制是将 URL 与路由配置进行匹配，并渲染对应的组件树。 本文从 v6 的基础写法讲起，覆盖参数获取、列表翻页、表单提交、权限控制等核心场景，再过渡到 v7 的数">
+<meta property="og:description" content="React Router 全面指南：从 v6 基础到 v7 数据路由实战React Router 是 React 生态中官方推荐的路由解决方案，用于在单页应用（SPA）中根据 URL 动态渲染组件，实现不刷新页面的”页面”跳转。它的核心机制是将 URL 与路由配置进行匹配，并渲染对应的组件树。  一、核心概念与版本脉络基础概念 路由配置：将路径（path）映射到组件（element &#x2F;">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-09-30T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-10-26T16:15:31.241Z">
+<meta property="article:modified_time" content="2026-11-02T01:39:33.208Z">
 <meta property="article:author" content="Azure">
 <meta property="article:tag" content="React Router">
 <meta name="twitter:card" content="summary_large_image">
@@ -223,7 +223,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.8k 字
+          2.7k 字
         
       </span>
     
@@ -234,7 +234,7 @@
         
         
         
-          24 分钟
+          23 分钟
         
       </span>
     
@@ -277,7 +277,6 @@
               <div class="markdown-body">
                 
                 <h1 id="React-Router-全面指南：从-v6-基础到-v7-数据路由实战"><a href="#React-Router-全面指南：从-v6-基础到-v7-数据路由实战" class="headerlink" title="React Router 全面指南：从 v6 基础到 v7 数据路由实战"></a>React Router 全面指南：从 v6 基础到 v7 数据路由实战</h1><p>React Router 是 React 生态中官方推荐的路由解决方案，用于在单页应用（SPA）中根据 URL 动态渲染组件，实现不刷新页面的”页面”跳转。它的核心机制是将 URL 与路由配置进行匹配，并渲染对应的组件树。</p>
-<p>本文从 v6 的基础写法讲起，覆盖参数获取、列表翻页、表单提交、权限控制等核心场景，再过渡到 v7 的数据路由范式与迁移路径，形成完整的版本脉络。</p>
 <hr>
 <h2 id="一、核心概念与版本脉络"><a href="#一、核心概念与版本脉络" class="headerlink" title="一、核心概念与版本脉络"></a>一、核心概念与版本脉络</h2><h3 id="基础概念"><a href="#基础概念" class="headerlink" title="基础概念"></a>基础概念</h3><ul>
 <li><strong>路由配置</strong>：将路径（<code>path</code>）映射到组件（<code>element</code> &#x2F; <code>Component</code>）。</li>

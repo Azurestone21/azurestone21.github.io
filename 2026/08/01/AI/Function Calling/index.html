@@ -27,7 +27,7 @@
 <meta property="og:description" content="Function Calling 详解：模型如何”说出”要调什么，应用如何”真正”去执行一、先给定义：Function Calling 到底是什么用三句话回答：  Function Calling 是一种让大模型输出”结构化工具调用请求”的机制。 模型不再只生成自然语言，而是可以生成一段规定格式的数据：调用哪个工具、传什么参数。 模型只生成意图，不执行函数。 真正调用 API、查数据库、发邮件的，">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-07-31T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-10-31T06:53:56.208Z">
+<meta property="article:modified_time" content="2026-11-15T16:45:17.111Z">
 <meta property="article:author" content="Azure">
 <meta name="twitter:card" content="summary_large_image">
   
@@ -222,7 +222,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.2k 字
+          2.1k 字
         
       </span>
     
@@ -233,7 +233,7 @@
         
         
         
-          19 分钟
+          18 分钟
         
       </span>
     
@@ -323,8 +323,7 @@
 <p>另外，<code>tool_choice</code> 参数可以覆盖模型自主决策：<code>auto</code> 由模型判断，<code>required</code> 强制调用，<code>none</code> 禁止调用，也可指定具体工具。</p>
 <h3 id="3-3-一个容易被忽略的事实"><a href="#3-3-一个容易被忽略的事实" class="headerlink" title="3.3 一个容易被忽略的事实"></a>3.3 一个容易被忽略的事实</h3><p><strong>每次请求，所有工具定义都会序列化为文本计入上下文 token。</strong> 工具越多，上下文开销越大，模型选择时的注意力也越容易被稀释。所以工程上常做<strong>动态工具注册</strong>：按角色或场景只暴露当前需要的工具子集，既控权限，也提准确率。</p>
 <hr>
-<h2 id="四、边界：它不是什么"><a href="#四、边界：它不是什么" class="headerlink" title="四、边界：它不是什么"></a>四、边界：它不是什么</h2><p>清晰的定义也需要划清边界。</p>
-<h3 id="4-1-不是”模型自己执行函数”"><a href="#4-1-不是”模型自己执行函数”" class="headerlink" title="4.1 不是”模型自己执行函数”"></a>4.1 不是”模型自己执行函数”</h3><p>模型输出的只是一段结构化数据。执行权、鉴权、幂等、副作用控制全在应用侧。<strong>不能把安全边界交给模型</strong>——它可能被提示注入诱导调用不该调的工具，也可能填错参数。</p>
+<h2 id="四、边界：它不是什么"><a href="#四、边界：它不是什么" class="headerlink" title="四、边界：它不是什么"></a>四、边界：它不是什么</h2><h3 id="4-1-不是”模型自己执行函数”"><a href="#4-1-不是”模型自己执行函数”" class="headerlink" title="4.1 不是”模型自己执行函数”"></a>4.1 不是”模型自己执行函数”</h3><p>模型输出的只是一段结构化数据。执行权、鉴权、幂等、副作用控制全在应用侧。<strong>不能把安全边界交给模型</strong>——它可能被提示注入诱导调用不该调的工具，也可能填错参数。</p>
 <h3 id="4-2-不是-RAG"><a href="#4-2-不是-RAG" class="headerlink" title="4.2 不是 RAG"></a>4.2 不是 RAG</h3><ul>
 <li><strong>RAG</strong> 是”注入知识”：把检索到的文档片段放进上下文。</li>
 <li><strong>Function Calling</strong> 是”触发查询或动作”：让模型主动调用外部工具。</li>
@@ -354,10 +353,8 @@
 </ul>
 <p>关系：<strong>Agent 跑在客户端&#x2F;宿主里；宿主里包含 MCP Client；MCP Client 连 MCP Server。</strong></p>
 <hr>
-<h2 id="八、结语"><a href="#八、结语" class="headerlink" title="八、结语"></a>八、结语</h2><p>Function Calling 的价值不在于”让模型能调函数”，而在于建立了一套<strong>清晰的责任边界</strong>：模型负责语言理解和调用意图生成，应用负责执行、安全和治理。</p>
-<p>理解这一点，才能避免两个误区：既不要把 Function Calling 神化为”模型自己会执行”，也不要把工具接入的所有问题都归咎于模型”不够聪明”。<strong>模型决定”调不调、调哪个”；应用决定”接得稳不稳、执行得对不对”。</strong> 两者配合，才让大模型从”会说”真正走向”会做”。</p>
-<hr>
-<p><strong>本版相对上一版的核心改动</strong>：开篇用三句话定义 + 一个贯穿场景先回答”是什么”；新增”为什么需要它”和”它不是什么”两节划清边界；把”客户端自己决定调工具”这个常见误解显式写进边界；全文围绕”模型说、应用做、结果回填”这一主线组织，避免读者读完仍停留在流程细节里。</p>
+<h2 id="八、结语"><a href="#八、结语" class="headerlink" title="八、结语"></a>八、结语</h2><p>Function Calling 的价值不在于“让模型能调函数”，而在于建立了一套<strong>清晰的责任边界</strong>：模型负责语言理解和调用意图生成，应用负责执行、安全和治理。</p>
+<p>理解这一点，才能避免两个误区：既不要把 Function Calling 神化为“模型自己会执行”，也不要把工具接入的所有问题都归咎于模型”不够聪明”。<strong>模型决定“调不调、调哪个”；应用决定“接得稳不稳、执行得对不对”。</strong> 两者配合，才让大模型从“会说”真正走向“会做”。</p>
 
                 
               </div>

@@ -227,15 +227,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2023/08/10/JavaScript/%E3%80%90JS%E3%80%91new%20%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" target="_self">
-          【JS】new 的实现原理
+        <a href="/2023/08/10/JavaScript/%E3%80%90JS%E3%80%91call%E3%80%81apply%E3%80%81bind%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" target="_self">
+          【JS】call、apply、bind的实现原理
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/08/10/JavaScript/%E3%80%90JS%E3%80%91new%20%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/08/10/JavaScript/%E3%80%90JS%E3%80%91call%E3%80%81apply%E3%80%81bind%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" target="_self">
         <div>
-          new 的实现原理new 到底做了什么 new Foo(…args) 执行时，引擎内部大致做这四步：  创建一个新的空对象 把新对象的原型（[[Prototype]]）指向构造函数的 prototype 把构造函数里的 this 绑定到这个新对象，并执行构造函数 处理返回值： 如果构造函数返回的是对象（含函数、数组等），就返回这个对象； 如果返回的是原始值（或没返回），就返回第 1 步创建的新对象
+          【JS】call、apply、bind的实现原理call、apply、bind 的实现原理是前端面试的高频考点。理解它们的关键在于搞清楚 「如何让函数在执行时 this 指向指定对象」。下面从原理到手写实现，逐层拆解。  一、核心原理一句话 把函数临时挂到目标对象上，作为该对象的方法调用，这样 this 自然指向目标对象，调用完再删掉。  这是 call 和 apply 的通用套路。bind 在此
         </div>
       </a>
 
@@ -274,9 +274,9 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E5%8E%9F%E7%90%86/">#原理</a>
+              <a href="/tags/JavaScript/">#JavaScript</a>
             
-              <a href="/tags/new/">#new</a>
+              <a href="/tags/%E5%8E%9F%E7%90%86/">#原理</a>
             
           </div>
         
@@ -611,67 +611,6 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2023/08/10/%E5%89%8D%E7%AB%AF/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87/" target="_self">
-          性能指标
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/08/10/%E5%89%8D%E7%AB%AF/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87/" target="_self">
-        <div>
-          性能指标前端性能指标是衡量网页加载速度、交互流畅度和视觉稳定性的重要依据，对于优化用户体验至关重要。 FPFP （First Paint）首次绘制，标志着浏览器开始在屏幕上渲染任何内容，包括背景颜色改变。这是用户看到页面开始加载的第一个视觉反馈。 FP是一个相对宽泛的指标，但它能快速给出页面开始加载的初步指示。 优化  减少初始CSS和JavaScript的体积 优先加载关键CSS。使用&lt;l
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-08-10 00:00" pubdate>
-              2023-08-10
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E5%89%8D%E7%AB%AF/" class="category-chain-item">前端</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87/">#性能指标</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
         <a href="/2023/08/10/%E5%89%8D%E7%AB%AF/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" target="_self">
           前端性能优化
         </a>
@@ -722,6 +661,67 @@
               <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">#性能优化</a>
             
               <a href="/tags/%E5%B7%A5%E7%A8%8B%E5%8C%96/">#工程化</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2023/08/10/%E5%89%8D%E7%AB%AF/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87/" target="_self">
+          性能指标
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/08/10/%E5%89%8D%E7%AB%AF/%E5%89%8D%E7%AB%AF%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87/" target="_self">
+        <div>
+          性能指标前端性能指标是衡量网页加载速度、交互流畅度和视觉稳定性的重要依据，对于优化用户体验至关重要。 FPFP （First Paint）首次绘制，标志着浏览器开始在屏幕上渲染任何内容，包括背景颜色改变。这是用户看到页面开始加载的第一个视觉反馈。 FP是一个相对宽泛的指标，但它能快速给出页面开始加载的初步指示。 优化  减少初始CSS和JavaScript的体积 优先加载关键CSS。使用&lt;l
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-08-10 00:00" pubdate>
+              2023-08-10
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%89%8D%E7%AB%AF/" class="category-chain-item">前端</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87/">#性能指标</a>
             
           </div>
         
